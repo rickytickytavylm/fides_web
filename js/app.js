@@ -1,23 +1,25 @@
-/** Общая шапка — liquid glass, без бургера и лупы */
+/** Навигация как в iOS-приложении: нижний liquid glass tab bar */
 (function () {
   'use strict';
 
-  var header = document.querySelector('.site-header');
-
-  function updateHeader() {
-    if (!header || header.classList.contains('solid')) return;
-    header.classList.toggle('scrolled', window.scrollY > 32);
-  }
-  updateHeader();
-  window.addEventListener('scroll', updateHeader, { passive: true });
-
-  // Подсветка текущего раздела
   try {
     var file = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
-    if (!file || file === '') file = 'index.html';
-    document.querySelectorAll('.main-nav a').forEach(function (link) {
-      var href = (link.getAttribute('href') || '').toLowerCase();
-      if (href === file || (file === 'article.html' && href === 'archive.html')) {
+    if (!file) file = 'index.html';
+
+    var map = {
+      'index.html': 'home',
+      'archive.html': 'archive',
+      'article.html': 'archive',
+      'sections.html': 'archive',
+      'audio.html': 'audio',
+      'radio.html': 'audio',
+      'video.html': 'video',
+      'chat.html': 'chat',
+    };
+    var current = map[file] || '';
+
+    document.querySelectorAll('.app-tabbar .tab-item').forEach(function (link) {
+      if (link.getAttribute('data-tab') === current) {
         link.setAttribute('aria-current', 'page');
       }
     });
