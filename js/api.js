@@ -255,6 +255,29 @@
     );
   }
 
+  /** Оставляет только безопасный инлайн: strong/em/b/i/br */
+  function sanitizeInlineHtml(fragment) {
+    var s = String(fragment || '');
+    s = s
+      .replace(/<\s*b\b[^>]*>/gi, '[[B]]')
+      .replace(/<\s*\/\s*b\s*>/gi, '[[/B]]')
+      .replace(/<\s*strong\b[^>]*>/gi, '[[B]]')
+      .replace(/<\s*\/\s*strong\s*>/gi, '[[/B]]')
+      .replace(/<\s*i\b[^>]*>/gi, '[[I]]')
+      .replace(/<\s*\/\s*i\s*>/gi, '[[/I]]')
+      .replace(/<\s*em\b[^>]*>/gi, '[[I]]')
+      .replace(/<\s*\/\s*em\s*>/gi, '[[/I]]')
+      .replace(/<br\s*\/?>/gi, '[[BR]]');
+    s = s.replace(/<[^>]+>/g, '');
+    s = escapeHtml(decodeEntities(s));
+    return s
+      .replace(/\[\[B\]\]/g, '<strong>')
+      .replace(/\[\[\/B\]\]/g, '</strong>')
+      .replace(/\[\[I\]\]/g, '<em>')
+      .replace(/\[\[\/I\]\]/g, '</em>')
+      .replace(/\[\[BR\]\]/g, '<br />');
+  }
+
   function captionAfterImage(src, endIndex) {
     var window = src.slice(endIndex, endIndex + 500);
     // подпись сразу после img (как на Рускатолик: <figcaption>…</figcaption>)
@@ -276,7 +299,6 @@
     var re =
       /<img\b[^>]*\bsrc=["']([^"']+)["'][^>]*>|<(p|h[1-6]|blockquote)\b[^>]*>([\s\S]*?)<\/\2>/gi;
     var blocks = [];
-    var leadDone = false;
     var m;
     while ((m = re.exec(src))) {
       var full = m[0];
@@ -289,16 +311,13 @@
         continue;
       }
       var tag = String(m[2] || '').toLowerCase();
-      var text = stripTags(m[3] || '').trim();
+      var inner = m[3] || '';
+      var text = stripTags(inner).trim();
       if (!text) continue;
-      if (tag.indexOf('h') === 0) blocks.push({ type: 'heading', text: text });
-      else if (tag === 'blockquote') blocks.push({ type: 'quote', text: text });
-      else if (!leadDone) {
-        blocks.push({ type: 'lead', text: text });
-        leadDone = true;
-      } else {
-        blocks.push({ type: 'body', text: text });
-      }
+      var inline = sanitizeInlineHtml(inner);
+      if (tag.indexOf('h') === 0) blocks.push({ type: 'heading', text: text, html: inline });
+      else if (tag === 'blockquote') blocks.push({ type: 'quote', text: text, html: inline });
+      else blocks.push({ type: 'body', text: text, html: inline });
     }
     return blocks;
   }
@@ -330,6 +349,7 @@
     formatDate: formatDate,
     escapeHtml: escapeHtml,
     stripTags: stripTags,
+    sanitizeInlineHtml: sanitizeInlineHtml,
     htmlToBlocks: htmlToBlocks,
     articleHref: articleHref,
     coverStyle: coverStyle,

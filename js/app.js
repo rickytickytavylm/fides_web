@@ -1,58 +1,27 @@
-/** Общая шапка, меню, поиск — без модулей, file:// ок */
+/** Общая шапка — liquid glass, без бургера и лупы */
 (function () {
   'use strict';
 
   var header = document.querySelector('.site-header');
-  var menuToggle = document.querySelector('.menu-toggle');
-  var navigation = document.querySelector('.main-nav');
 
   function updateHeader() {
-    if (header) header.classList.toggle('scrolled', window.scrollY > 32);
+    if (!header || header.classList.contains('solid')) return;
+    header.classList.toggle('scrolled', window.scrollY > 32);
   }
   updateHeader();
   window.addEventListener('scroll', updateHeader, { passive: true });
 
-  if (menuToggle && navigation) {
-    menuToggle.addEventListener('click', function () {
-      var isOpen = navigation.classList.toggle('open');
-      menuToggle.setAttribute('aria-expanded', String(isOpen));
+  // Подсветка текущего раздела
+  try {
+    var file = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    if (!file || file === '') file = 'index.html';
+    document.querySelectorAll('.main-nav a').forEach(function (link) {
+      var href = (link.getAttribute('href') || '').toLowerCase();
+      if (href === file || (file === 'article.html' && href === 'archive.html')) {
+        link.setAttribute('aria-current', 'page');
+      }
     });
-    navigation.querySelectorAll('a').forEach(function (link) {
-      link.addEventListener('click', function () {
-        navigation.classList.remove('open');
-        menuToggle.setAttribute('aria-expanded', 'false');
-      });
-    });
-  }
-
-  var searchOverlay = document.querySelector('.search-overlay');
-  if (searchOverlay) {
-    var searchInput = searchOverlay.querySelector('input');
-    function setSearch(open) {
-      searchOverlay.hidden = !open;
-      document.body.style.overflow = open ? 'hidden' : '';
-      if (open && searchInput) searchInput.focus();
-    }
-    var searchBtn = document.querySelector('.search-button');
-    if (searchBtn) searchBtn.addEventListener('click', function () { setSearch(true); });
-    var closeBtn = searchOverlay.querySelector('.search-close');
-    if (closeBtn) closeBtn.addEventListener('click', function () { setSearch(false); });
-    searchOverlay.addEventListener('click', function (event) {
-      if (event.target === searchOverlay) setSearch(false);
-    });
-    document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && !searchOverlay.hidden) setSearch(false);
-    });
-    var form = searchOverlay.querySelector('.search-form');
-    if (form) {
-      form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        var q = (searchInput && searchInput.value || '').trim();
-        if (!q) return;
-        location.href = 'archive.html?q=' + encodeURIComponent(q);
-      });
-    }
-  }
+  } catch (e) {}
 
   if ('IntersectionObserver' in window) {
     var observer = new IntersectionObserver(

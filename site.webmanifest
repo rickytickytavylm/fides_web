@@ -1,0 +1,26 @@
+{
+  "name": "Вера и Разум",
+  "short_name": "Вера и Разум",
+  "description": "Католическое пространство: архив Рускатолик, медиа, радио и чат о вере.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#faf8f4",
+  "theme_color": "#100b07",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "brand-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "brand-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

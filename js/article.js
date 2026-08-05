@@ -11,10 +11,9 @@
     return fromHash || null;
   }
 
-  function linkifyText(text) {
+  function linkifyHtml(html) {
     var URL_RE = /(https?:\/\/[^\s<>"']+|www\.[^\s<>"']+)/gi;
-    var src = V.escapeHtml(text);
-    return src.replace(URL_RE, function (raw) {
+    return String(html || '').replace(URL_RE, function (raw) {
       var href = raw;
       if (href.indexOf('www.') === 0) href = 'https://' + href;
       href = href.replace(/[),.]+$/, '');
@@ -39,10 +38,10 @@
             '</figure>'
           );
         }
-        if (b.type === 'lead') return '<p class="lead-paragraph">' + linkifyText(b.text) + '</p>';
-        if (b.type === 'heading') return '<h2>' + V.escapeHtml(b.text) + '</h2>';
-        if (b.type === 'quote') return '<blockquote class="real-quote">' + V.escapeHtml(b.text) + '</blockquote>';
-        return '<p>' + linkifyText(b.text) + '</p>';
+        var inner = b.html || V.escapeHtml(b.text || '');
+        if (b.type === 'heading') return '<h2>' + inner + '</h2>';
+        if (b.type === 'quote') return '<blockquote class="real-quote">' + inner + '</blockquote>';
+        return '<p>' + linkifyHtml(inner) + '</p>';
       })
       .join('');
   }
@@ -55,10 +54,8 @@
       .filter(Boolean);
     if (!parts.length) return '<p class="archive-empty">Текст статьи недоступен.</p>';
     return parts
-      .map(function (p, i) {
-        return i === 0
-          ? '<p class="lead-paragraph">' + linkifyText(p) + '</p>'
-          : '<p>' + linkifyText(p) + '</p>';
+      .map(function (p) {
+        return '<p>' + linkifyHtml(V.escapeHtml(p)) + '</p>';
       })
       .join('');
   }
@@ -123,7 +120,6 @@
       '<h1>' +
       V.escapeHtml(article.title || 'Без названия') +
       '</h1>' +
-      (article.excerpt ? '<p class="deck">' + V.escapeHtml(article.excerpt) + '</p>' : '') +
       '<div class="byline"><div class="byline-main"><div>' +
       '<p class="byline-name">' +
       V.escapeHtml(article.author || 'Рускатолик') +
