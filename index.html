@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Вера и Разум — пространство веры, разума и красоты: молитвы, медиа и архив Рускатолик." />
+    <title>Вера и Разум</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="icon" href="brand-logo.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Вера и Разум — на главную">
+        <img class="brand-logo" src="brand-logo.png" alt="" width="36" height="36" />
+        <span class="brand-text">Вера и Разум</span>
+      </a>
+      <button class="menu-toggle" aria-label="Открыть меню" aria-expanded="false"><span></span><span></span></button>
+      <nav class="main-nav" aria-label="Основная навигация">
+        <div class="nav-item"><a href="index.html">Главная</a></div>
+        <div class="nav-item"><a href="archive.html">Архив</a></div>
+        <div class="nav-item"><a href="video.html">Видео</a></div>
+        <div class="nav-item"><a href="audio.html">Аудио</a></div>
+        <div class="nav-item"><a href="chat.html">Чат</a></div>
+      </nav>
+      <div class="header-actions">
+        <button class="search-button" aria-label="Поиск"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4.5 4.5"></path></svg></button>
+        <a class="support-link" href="chat.html">Чат</a>
+      </div>
+    </header>
+
+    <div class="search-overlay" hidden>
+      <div class="search-inner">
+        <form class="search-form" role="search">
+          <input type="search" placeholder="Поиск по архиву" aria-label="Поисковый запрос" />
+          <button type="submit">Найти</button>
+        </form>
+        <p class="eyebrow">Рубрики</p>
+        <div class="search-tags">
+          <a href="archive.html?category=spirituality">Духовность</a>
+          <a href="archive.html?category=saints">Святые</a>
+          <a href="archive.html?category=news">Новости</a>
+          <a href="archive.html?category=history">История</a>
+          <a href="archive.html?category=ask-priest">Вопрос священнику</a>
+        </div>
+      </div>
+      <button class="search-close" aria-label="Закрыть поиск">Закрыть ✕</button>
+    </div>
+
+    <main>
+      <section class="hero">
+        <div class="hero-backdrop"></div>
+        <div class="hero-content reveal">
+          <p class="eyebrow light">Католическое пространство</p>
+          <h1>Вера и Разум</h1>
+          <div class="hero-rule"></div>
+          <p class="hero-summary">Вера, разум и красота — в одном месте: молитвы, медиа и живой архив Рускатолик.</p>
+          <div class="hero-actions">
+            <a class="ghost-button" href="#archive-home">Читать</a>
+            <a class="ghost-button" href="archive.html">Весь архив</a>
+          </div>
+        </div>
+        <aside class="hero-aside reveal">
+          <p class="eyebrow light">Рядом с вами</p>
+          <p class="hero-aside-title">Слушать. Смотреть. Спрашивать.</p>
+          <p class="hero-aside-text">Аудио, видео, радио и чат — всё, что помогает идти в вере каждый день.</p>
+          <p class="hero-count" id="stats-line">Тысячи материалов</p>
+        </aside>
+      </section>
+
+      <div class="datebar">
+        <p>Сегодня</p>
+        <p class="values">Вера · Разум · Красота</p>
+        <p id="archive-status">Архив Рускатолик</p>
+      </div>
+
+      <section class="section home-sections">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Разделы</p>
+          <h2>Всё необходимое.</h2>
+          <a class="text-link" href="sections.html">Смотреть все <span>→</span></a>
+        </div>
+        <div class="home-section-row reveal">
+          <a class="home-section-link" href="archive.html"><strong>Архив</strong><span>Статьи и рубрики</span></a>
+          <a class="home-section-link" href="video.html"><strong>Видео</strong><span>Shorts и фильмы</span></a>
+          <a class="home-section-link" href="audio.html"><strong>Аудио</strong><span>Проповеди</span></a>
+          <a class="home-section-link" href="radio.html"><strong>Радио</strong><span>Прямой эфир</span></a>
+          <a class="home-section-link" href="chat.html"><strong>Чат</strong><span>Вопросы о вере</span></a>
+        </div>
+      </section>
+
+      <section class="featured section" id="archive-home">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Архив</p>
+          <h2>Рускатолик<br />рядом с вами.</h2>
+          <a class="text-link" href="archive.html">Все материалы <span>→</span></a>
+        </div>
+
+        <div class="archive-toolbar reveal">
+          <label class="archive-search-shell">
+            <span class="visually-hidden">Поиск</span>
+            <input id="archive-search" type="search" placeholder="Поиск по архиву…" />
+          </label>
+          <div class="chips" id="archive-chips"></div>
+        </div>
+
+        <div class="feature-grid">
+          <div id="archive-hero"></div>
+          <div class="secondary-stories" id="archive-list"></div>
+        </div>
+
+        <div class="archive-more-wrap">
+          <a class="ghost-button dark" href="archive.html">Ещё материалы</a>
+        </div>
+      </section>
+
+      <section class="manifesto">
+        <div class="manifesto-content reveal">
+          <p class="eyebrow light">О нас</p>
+          <h2>Тишина.<br />Глубина.<br /><em>Ясность.</em></h2>
+          <p style="max-width:420px;color:rgba(255,255,255,.78);line-height:1.7;font-size:14px">
+            Мы собираем лучшее для католиков: тексты, голос, образ и мысль — без шума и лишнего.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-brand">
+        <img class="brand-logo" src="brand-logo.png" alt="" width="40" height="40" />
+        <div>
+          <strong>Вера и Разум</strong>
+          <p>Вера · Разум · Красота</p>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="archive.html">Архив</a>
+        <a href="archive.html?category=spirituality">Духовность</a>
+        <a href="archive.html?category=news">Новости</a>
+      </div>
+      <p class="footer-copy">© Вера и Разум · Архив Рускатолик</p>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/home.js"></script>
+  </body>
+</html>

@@ -1,0 +1,93 @@
+﻿<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Архив Рускатолик — поиск и рубрики. Вера и Разум." />
+    <title>Архив — Вера и Разум</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
+    <link rel="icon" href="brand-logo.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header solid">
+      <a class="brand" href="index.html" aria-label="Вера и Разум — на главную">
+        <img class="brand-logo" src="brand-logo.png" alt="" width="36" height="36" />
+        <span class="brand-text">Вера и Разум</span>
+      </a>
+      <button class="menu-toggle" aria-label="Открыть меню" aria-expanded="false"><span></span><span></span></button>
+      <nav class="main-nav" aria-label="Основная навигация">
+        <div class="nav-item"><a href="index.html">Главная</a></div>
+        <div class="nav-item"><a href="archive.html">Архив</a></div>
+        <div class="nav-item"><a href="video.html">Видео</a></div>
+        <div class="nav-item"><a href="audio.html">Аудио</a></div>
+        <div class="nav-item"><a href="chat.html">Чат</a></div>
+      </nav>
+      <div class="header-actions">
+        <button class="search-button" aria-label="Поиск"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4.5 4.5"></path></svg></button>
+        <a class="support-link" href="index.html">На главную</a>
+      </div>
+    </header>
+
+    <div class="search-overlay" hidden>
+      <div class="search-inner">
+        <form class="search-form" role="search">
+          <input type="search" placeholder="Поиск по архиву" aria-label="Поисковый запрос" />
+          <button type="submit">Найти</button>
+        </form>
+      </div>
+      <button class="search-close" aria-label="Закрыть поиск">Закрыть ✕</button>
+    </div>
+
+    <main class="page-shell archive-page">
+      <nav class="breadcrumbs in-shell" aria-label="Хлебные крошки">
+        <a href="index.html">Главная</a><span>/</span><a href="archive.html">Архив</a>
+      </nav>
+
+      <header class="page-head in-shell">
+        <div>
+          <p class="eyebrow">Архив портала · Рускатолик</p>
+          <h1>Архив</h1>
+          <p class="page-rubric" id="page-rubric">Все рубрики</p>
+        </div>
+        <p class="page-desc">Тысячи материалов Рускатолик: поиск по теме, рубрики и спокойное чтение.</p>
+      </header>
+
+      <div class="archive-toolbar in-shell">
+        <label class="archive-search-shell">
+          <input id="archive-search" type="search" placeholder="Поиск по архиву…" />
+        </label>
+        <div class="chips" id="archive-chips"></div>
+      </div>
+
+      <div class="rubric-bar in-shell">
+        <p class="rubric-count" id="rubric-count"></p>
+      </div>
+
+      <div class="category-layout in-shell">
+        <div class="archive-feed-col">
+          <article class="lead-item reveal" id="lead-item"></article>
+          <div class="feed" id="feed"></div>
+          <button class="load-more" id="load-more" type="button">Ещё материалы ↓</button>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-brand">
+        <img class="brand-logo" src="brand-logo.png" alt="" width="40" height="40" />
+        <div>
+          <strong>Вера и Разум</strong>
+          <p>Архив Рускатолик</p>
+        </div>
+      </div>
+      <p class="footer-copy">© Вера и Разум</p>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/archive-page.js"></script>
+  </body>
+</html>

@@ -1,0 +1,90 @@
+﻿<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Видео — Вера и Разум" />
+    <title>Видео — Вера и Разум</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="icon" href="brand-logo.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header solid">
+      <a class="brand" href="index.html" aria-label="Вера и Разум — на главную">
+        <img class="brand-logo" src="brand-logo.png" alt="" width="36" height="36" />
+        <span class="brand-text">Вера и Разум</span>
+      </a>
+      <button class="menu-toggle" aria-label="Открыть меню" aria-expanded="false"><span></span><span></span></button>
+      <nav class="main-nav" aria-label="Основная навигация">
+        <div class="nav-item"><a href="index.html">Главная</a></div>
+        <div class="nav-item"><a href="archive.html">Архив</a></div>
+        <div class="nav-item"><a href="video.html">Видео</a></div>
+        <div class="nav-item"><a href="audio.html">Аудио</a></div>
+        <div class="nav-item"><a href="chat.html">Чат</a></div>
+      </nav>
+      <div class="header-actions">
+        <button class="search-button" aria-label="Поиск"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4.5 4.5"></path></svg></button>
+        <a class="support-link" href="archive.html">Архив</a>
+      </div>
+    </header>
+
+    <div class="search-overlay" hidden>
+      <div class="search-inner">
+        <form class="search-form" role="search">
+          <input type="search" placeholder="Поиск по архиву" aria-label="Поисковый запрос" />
+          <button type="submit">Найти</button>
+        </form>
+      </div>
+      <button class="search-close" aria-label="Закрыть поиск">Закрыть ✕</button>
+    </div>
+
+    <main class="page-shell">
+      <nav class="breadcrumbs in-shell" aria-label="Хлебные крошки">
+        <a href="index.html">Главная</a><span>/</span><span>Видео</span>
+      </nav>
+
+      <header class="page-head in-shell">
+        <div>
+          <p class="eyebrow">Смотреть</p>
+          <h1>Видео</h1>
+        </div>
+        <p class="page-desc">Короткие размышления и полные фильмы — для паузы, молитвы и разговора о вере.</p>
+      </header>
+
+      <div class="video-tabs" id="video-tabs">
+        <button type="button" class="chip active" data-type="all">Все</button>
+        <button type="button" class="chip" data-type="short">Shorts</button>
+        <button type="button" class="chip" data-type="long">Длинные</button>
+      </div>
+
+      <p class="archive-loading" id="video-status">Загрузка…</p>
+      <div class="video-grid web-video-grid" id="video-grid"></div>
+    </main>
+
+    <dialog class="video-dialog" id="video-dialog">
+      <form method="dialog" class="video-dialog-bar">
+        <p id="video-dialog-title"></p>
+        <button type="submit" class="ghost-button" value="close">Закрыть</button>
+      </form>
+      <video id="video-player" controls playsinline></video>
+    </dialog>
+
+    <footer class="site-footer">
+      <div class="footer-brand">
+        <img class="brand-logo" src="brand-logo.png" alt="" width="40" height="40" />
+        <div>
+          <strong>Вера и Разум</strong>
+          <p>Видео и архив</p>
+        </div>
+      </div>
+      <p class="footer-copy">© Вера и Разум</p>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/video.js"></script>
+  </body>
+</html>

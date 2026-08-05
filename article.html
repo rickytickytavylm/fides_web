@@ -1,0 +1,75 @@
+﻿<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Статья архива Рускатолик — Вера и Разум" />
+    <title>Статья — Вера и Разум</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
+    <link rel="icon" href="brand-logo.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="read-progress"><i></i></div>
+
+    <header class="site-header solid">
+      <a class="brand" href="index.html" aria-label="Вера и Разум — на главную">
+        <img class="brand-logo" src="brand-logo.png" alt="" width="36" height="36" />
+        <span class="brand-text">Вера и Разум</span>
+      </a>
+      <button class="menu-toggle" aria-label="Открыть меню" aria-expanded="false"><span></span><span></span></button>
+      <nav class="main-nav" aria-label="Основная навигация">
+        <div class="nav-item"><a href="index.html">Главная</a></div>
+        <div class="nav-item"><a href="archive.html">Архив</a></div>
+        <div class="nav-item"><a href="video.html">Видео</a></div>
+        <div class="nav-item"><a href="audio.html">Аудио</a></div>
+        <div class="nav-item"><a href="chat.html">Чат</a></div>
+      </nav>
+      <div class="header-actions">
+        <button class="search-button" aria-label="Поиск"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4.5 4.5"></path></svg></button>
+        <a class="support-link" href="archive.html">Архив</a>
+      </div>
+    </header>
+
+    <div class="search-overlay" hidden>
+      <div class="search-inner">
+        <form class="search-form" role="search">
+          <input type="search" placeholder="Поиск по архиву" aria-label="Поисковый запрос" />
+          <button type="submit">Найти</button>
+        </form>
+      </div>
+      <button class="search-close" aria-label="Закрыть поиск">Закрыть ✕</button>
+    </div>
+
+    <main class="article">
+      <div id="article-root"></div>
+
+      <section class="related-section">
+        <div class="related-inner">
+          <div class="related-head">
+            <p class="eyebrow">Ещё по теме</p>
+            <h2>Читайте также</h2>
+          </div>
+          <div class="secondary-stories" id="related"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer site-footer-narrow">
+      <div class="footer-brand">
+        <img class="brand-logo" src="brand-logo.png" alt="" width="40" height="40" />
+        <div>
+          <strong>Вера и Разум</strong>
+          <p>Архив Рускатолик</p>
+        </div>
+      </div>
+      <p class="footer-copy">© Вера и Разум</p>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/article.js"></script>
+  </body>
+</html>
