@@ -707,16 +707,27 @@ a.section-card:hover { border-color:var(--ink); background:var(--cream); }
 }
 
 /* ——— Chat / Audio / Radio ——— */
-.chat-page { background:var(--cream); }
+.chat-page {
+  background:var(--cream);
+  height:100dvh;
+  overflow:hidden;
+}
 .chat-shell {
   width:min(720px,100%);
   margin:0 auto;
-  min-height:100vh;
-  padding:100px 20px 28px;
+  height:100dvh;
+  max-height:100dvh;
+  min-height:0;
+  padding:88px 20px 12px;
+  box-sizing:border-box;
   display:flex;
   flex-direction:column;
+  overflow:hidden;
 }
-.chat-intro { margin-bottom:22px; }
+.chat-intro {
+  flex:0 0 auto;
+  margin-bottom:14px;
+}
 .chat-intro h1 {
   margin:8px 0 10px;
   font:500 clamp(36px,8vw,52px)/.95 var(--serif);
@@ -724,23 +735,27 @@ a.section-card:hover { border-color:var(--ink); background:var(--cream); }
 }
 .chat-intro-text { margin:0; max-width:36ch; color:var(--muted); font:400 14px/1.55 var(--read); }
 .chat-panel {
-  flex:1;
+  flex:1 1 auto;
   display:flex;
   flex-direction:column;
   min-height:0;
+  overflow:hidden;
   background:var(--paper);
   border:1px solid var(--line-warm);
   border-radius:2px;
 }
 .chat-messages {
-  flex:1;
-  overflow:auto;
+  flex:1 1 auto;
+  min-height:0;
+  max-height:none;
+  overflow-x:hidden;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
   padding:20px 18px;
   display:flex;
   flex-direction:column;
   gap:14px;
-  min-height:42vh;
-  max-height:min(58vh,560px);
 }
 .chat-welcome-title {
   margin:0 0 12px;
@@ -817,11 +832,13 @@ a.section-card:hover { border-color:var(--ink); background:var(--cream); }
   overflow:hidden;
 }
 .chat-composer {
+  flex:0 0 auto;
   display:flex;
   gap:10px;
   align-items:flex-end;
   padding:12px 14px;
   border-top:1px solid var(--line);
+  background:var(--paper);
 }
 .chat-composer textarea {
   flex:1;
@@ -844,7 +861,14 @@ a.section-card:hover { border-color:var(--ink); background:var(--cream); }
   cursor:pointer;
 }
 .chat-send:disabled { opacity:.4; cursor:default; }
-.chat-hint { margin:0; padding:0 14px 12px; color:var(--muted); font-size:11px; }
+.chat-hint {
+  flex:0 0 auto;
+  margin:0;
+  padding:0 14px 12px;
+  color:var(--muted);
+  font-size:11px;
+  background:var(--paper);
+}
 
 .audio-player-bar {
   margin:0 24px 22px;
@@ -1009,10 +1033,11 @@ a.section-card:hover { border-color:var(--ink); background:var(--cream); }
   .sections-grid { grid-template-columns:1fr; gap:12px; padding:0 20px; }
   .section-card { min-height:0; padding:22px 20px; }
   .section-card h2 { font-size:28px; }
-  .chat-shell { padding:84px 14px 18px; min-height:100svh; }
-  .chat-messages { max-height:none; flex:1; min-height:45svh; }
-  .chat-intro h1 { font-size:36px; }
-  .chat-intro-text { font-size:13px; }
+  .chat-shell { padding:76px 14px 10px; height:100dvh; max-height:100dvh; }
+  .chat-intro { margin-bottom:10px; }
+  .chat-intro h1 { font-size:32px; margin:6px 0 8px; }
+  .chat-intro-text { font-size:13px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .chat-messages { min-height:0; }
   .audio-list,.audio-player-bar,.radio-card,.radio-schedule-block { margin-left:0; margin-right:0; padding-left:20px; padding-right:20px; }
   .audio-meta strong { font-size:16px; }
   .radio-card { margin:0 20px 24px; }
