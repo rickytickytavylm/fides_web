@@ -3,10 +3,46 @@
   var V = window.Vera;
   if (!V) return;
 
+  // Рубрики раздела «Статьи» (реальные слаги бэкенда)
+  var ARTICLE_CHIPS = [
+    { slug: 'columns', label: 'Все' },
+    { slug: 'spirituality', label: 'Духовность' },
+    { slug: 'obraz-zhizni', label: 'Образ жизни' },
+    { slug: 'kultura', label: 'Культура' },
+    { slug: 'history', label: 'История' },
+    { slug: 'biografii', label: 'Биографии' },
+    { slug: 'bible', label: 'Библеистика' },
+    { slug: 'liturgy', label: 'Литургика' },
+    { slug: 'puteshestviya', label: 'Путешествия' },
+  ];
+  // Рубрики раздела «Новости»
+  var NEWS_CHIPS = [
+    { slug: 'news', label: 'Все' },
+    { slug: 'church-rus', label: 'КЦ в России' },
+    { slug: 'sng', label: 'КЦ в мире' },
+    { slug: 'pope', label: 'Папа Римский' },
+    { slug: 'santa-sede', label: 'Святой Престол' },
+    { slug: 'saints', label: 'Святые' },
+    { slug: 'announcement', label: 'Анонсы' },
+  ];
+
+  var ARTICLE_SLUGS = ARTICLE_CHIPS.map(function (c) { return c.slug; });
+  var LABELS = {};
+  ARTICLE_CHIPS.concat(NEWS_CHIPS).forEach(function (c) { LABELS[c.slug] = c.label; });
+  (V.ARCHIVE_CHIPS || []).forEach(function (c) { if (!LABELS[c.slug]) LABELS[c.slug] = c.label; });
+  LABELS.polka = 'Книжная полка';
+
+  function sectionOf(slug) {
+    if (slug === 'polka') return 'library';
+    if (ARTICLE_SLUGS.indexOf(slug) !== -1) return 'articles';
+    return 'news';
+  }
+
   var params = new URLSearchParams(location.search);
   var state = {
     category: params.get('category') || '',
     q: params.get('q') || '',
+    section: sectionOf(params.get('category') || ''),
     page: 1,
     total: 0,
     loading: false,
@@ -21,19 +57,19 @@
   var searchInput = document.getElementById('archive-search');
   var rubricEl = document.getElementById('page-rubric');
 
+  function sectionChips() {
+    if (state.section === 'articles') return ARTICLE_CHIPS;
+    if (state.section === 'library') return [{ slug: 'polka', label: 'Все' }];
+    return NEWS_CHIPS;
+  }
+
   function chipLabel() {
-    var found = V.ARCHIVE_CHIPS.filter(function (c) {
-      return c.slug === state.category;
-    })[0];
-    return (found && found.label) || 'Все рубрики';
+    return LABELS[state.category] || 'Все рубрики';
   }
 
   function pageHeading() {
-    if (state.category === 'columns') return 'Статьи';
-    if (state.category === 'polka') return 'Библиотека';
-    if (state.category === 'spirituality') return 'Духовность';
-    if (state.category === 'news' || state.category === 'church-rus') return 'Новости';
-    if (state.category) return chipLabel();
+    if (state.section === 'articles') return 'Статьи';
+    if (state.section === 'library') return 'Библиотека';
     return 'Новости';
   }
 
@@ -67,7 +103,7 @@
 
   function renderChips() {
     if (!chipsEl) return;
-    chipsEl.innerHTML = V.ARCHIVE_CHIPS.map(function (c) {
+    chipsEl.innerHTML = sectionChips().map(function (c) {
       return (
         '<button type="button" class="chip' +
         (c.slug === state.category ? ' active' : '') +
@@ -81,6 +117,7 @@
     chipsEl.querySelectorAll('.chip').forEach(function (btn) {
       btn.addEventListener('click', function () {
         state.category = btn.getAttribute('data-slug') || '';
+        state.section = sectionOf(state.category);
         state.page = 1;
         state.items = [];
         history.replaceState(
@@ -95,6 +132,26 @@
         load(true);
       });
     });
+  }
+
+  function skeletonFeed(n) {
+    var lead =
+      '<div class="lead-skeleton">' +
+      '<div class="card-image sk"></div>' +
+      '<div class="sk sk-line" style="width:32%;height:12px;margin:14px 0 10px"></div>' +
+      '<div class="sk sk-line" style="width:80%;height:26px;margin-bottom:10px"></div>' +
+      '<div class="sk sk-line" style="width:100%;height:14px"></div></div>';
+    var rows = '';
+    for (var i = 0; i < (n || 5); i++) {
+      rows +=
+        '<article class="feed-item"><div>' +
+        '<div class="sk sk-line" style="width:28%;height:11px;margin-bottom:10px"></div>' +
+        '<div class="sk sk-line" style="width:90%;height:20px;margin-bottom:8px"></div>' +
+        '<div class="sk sk-line" style="width:100%;height:13px"></div></div>' +
+        '<span class="feed-thumb sk"></span></article>';
+    }
+    if (leadEl) leadEl.innerHTML = lead;
+    if (feedEl) feedEl.innerHTML = rows;
   }
 
   function render() {
@@ -172,7 +229,11 @@
   function load(replace) {
     if (state.loading) return;
     state.loading = true;
-    if (moreBtn) moreBtn.textContent = 'Загрузка…';
+    if (replace && !state.items.length) skeletonFeed(5);
+    if (moreBtn) {
+      if (replace) moreBtn.hidden = true;
+      moreBtn.textContent = 'Загрузка…';
+    }
     V.getArticles({
       category: state.category,
       q: state.q,
@@ -192,7 +253,7 @@
       })
       .then(function () {
         state.loading = false;
-        if (moreBtn) moreBtn.textContent = 'Ещё материалы ↓';
+        if (moreBtn) moreBtn.textContent = 'Загрузить ещё';
       });
   }
 

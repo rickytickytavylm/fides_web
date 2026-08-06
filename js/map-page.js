@@ -159,6 +159,9 @@
     if (abortCtrl) abortCtrl.abort();
     abortCtrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
     setStatus('Загрузка…');
+    if (listEl && !temples.length) {
+      listEl.innerHTML = '<div class="loading-row"><span class="spinner" role="status" aria-label="Загрузка"></span></div>';
+    }
     API.search(bboxOfMap(), { signal: abortCtrl && abortCtrl.signal })
       .then(function (pack) {
         temples = pack.temples || [];

@@ -161,7 +161,7 @@
     var relatedEl = document.getElementById('related');
     var relatedSection = document.querySelector('.related-section');
     if (!relatedEl) return;
-    relatedEl.innerHTML = '<p class="archive-loading">Подбираем материалы…</p>';
+    relatedEl.innerHTML = '<div class="loading-row"><span class="spinner" role="status" aria-label="Загрузка"></span></div>';
     var slug = (article.categorySlugs && article.categorySlugs[0]) || '';
     V.getArticles({ category: slug, limit: 8 })
       .then(function (pack) {
@@ -220,7 +220,7 @@
     return;
   }
 
-  root.innerHTML = '<p class="archive-loading">Загрузка материала…</p>';
+  root.innerHTML = '<div class="loading-row"><span class="spinner" role="status" aria-label="Загрузка"></span></div>';
 
   V.getArticle(id)
     .then(function (article) {

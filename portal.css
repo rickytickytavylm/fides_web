@@ -501,6 +501,31 @@ body:not(.map-page) { padding-bottom: 0; }
   background-position: center;
   background-repeat: no-repeat;
 }
+
+/* ---------- Skeletons & spinner (анти-скачок) ---------- */
+@keyframes sk-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.sk {
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--stone-100) 37%, var(--surface-2) 63%);
+  background-size: 200% 100%; animation: sk-shimmer 1.25s linear infinite; border-radius: 8px;
+}
+.sk-line { border-radius: 6px; }
+.ncard .thumb.sk, .art .ph.sk, .feed-thumb.sk, .mini .thumb.sk, .lead-item .card-image.sk {
+  background-image: linear-gradient(90deg, var(--surface-2) 25%, var(--stone-100) 37%, var(--surface-2) 63%) !important;
+  background-size: 200% 100% !important; background-repeat: no-repeat;
+  animation: sk-shimmer 1.25s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  width: 26px; height: 26px; border-radius: 50%;
+  border: 3px solid var(--line-strong); border-top-color: var(--accent);
+  animation: spin .8s linear infinite; margin: 22px auto;
+}
+.loading-row { display: flex; justify-content: center; padding: 20px; }
+@media (prefers-reduced-motion: reduce) { .sk, .spinner { animation: none; } }
+
+/* Резервируем высоту, чтобы не было скачков при подгрузке */
+.news-grid, .art-grid { min-height: 180px; }
+#feed { min-height: 220px; }
 .load-more, .loadmore {
   margin: 28px auto 0; display: block; font-family: var(--ff); font-weight: 700; font-size: 13px;
   color: var(--bronze-dark); background: transparent; border: 0; padding: 12px 8px; border-radius: 0;

@@ -19,6 +19,27 @@
   function cat(item) { return (item.categories && item.categories[0]) || 'Материал'; }
   var esc = V.escapeHtml;
 
+  function skNcards(n) {
+    var s = '';
+    for (var i = 0; i < n; i++) {
+      s += '<div class="ncard"><div class="thumb sk"></div><div style="flex:1">' +
+        '<div class="sk sk-line" style="width:35%;height:10px;margin-bottom:9px"></div>' +
+        '<div class="sk sk-line" style="width:92%;height:15px;margin-bottom:7px"></div>' +
+        '<div class="sk sk-line" style="width:60%;height:15px"></div></div></div>';
+    }
+    return s;
+  }
+  function skArts(n) {
+    var s = '';
+    for (var i = 0; i < n; i++) {
+      s += '<div class="art"><div class="ph sk"></div><div class="in">' +
+        '<div class="sk sk-line" style="width:35%;height:10px;margin-bottom:9px"></div>' +
+        '<div class="sk sk-line" style="width:95%;height:16px;margin-bottom:7px"></div>' +
+        '<div class="sk sk-line" style="width:80%;height:12px"></div></div></div>';
+    }
+    return s;
+  }
+
   /* ---------- Hero slider ---------- */
   var heroEl = document.getElementById('hero');
   var dotsEl = document.getElementById('dots');
@@ -168,7 +189,7 @@
     renderTabs(id);
     if (!newsEl) return;
     if (newsCache[id]) { newsEl.innerHTML = newsCache[id].map(newsCard).join(''); return; }
-    newsEl.innerHTML = '<p class="ps-status">Загрузка…</p>';
+    newsEl.innerHTML = skNcards(4);
     var opts = { limit: 4, page: 1 };
     if (tab.slug) opts.category = tab.slug;
     if (tab.q) opts.q = tab.q;
@@ -182,23 +203,60 @@
   }
 
   /* ---------- Fresh articles ---------- */
+  function artCard(it, i) {
+    return (
+      '<a class="art" href="' + V.articleHref(it) + '">' +
+      '<div class="ph" style="background-image:' + bg(it.image, i) + '"></div>' +
+      '<div class="in"><div class="rub">' + esc(cat(it)) + '</div>' +
+      '<h4>' + esc(it.title) + '</h4>' +
+      '<p>' + esc(String(it.excerpt || '').slice(0, 120)) + '</p></div></a>'
+    );
+  }
+
   var freshEl = document.getElementById('fresh');
   function loadFresh() {
     if (!freshEl) return;
+    freshEl.innerHTML = skArts(4);
     V.getArticles({ category: 'columns', limit: 4, page: 1 })
       .then(function (pack) {
         var items = (pack.items || []).slice(0, 4);
-        freshEl.innerHTML = items.map(function (it, i) {
-          return (
-            '<a class="art" href="' + V.articleHref(it) + '">' +
-            '<div class="ph" style="background-image:' + bg(it.image, i) + '"></div>' +
-            '<div class="in"><div class="rub">' + esc(cat(it)) + '</div>' +
-            '<h4>' + esc(it.title) + '</h4>' +
-            '<p>' + esc(String(it.excerpt || '').slice(0, 120)) + '</p></div></a>'
-          );
-        }).join('');
+        freshEl.innerHTML = items.length ? items.map(artCard).join('') : '<p class="ps-status">Пока пусто</p>';
       })
       .catch(function () { freshEl.innerHTML = '<p class="ps-status">Не удалось загрузить статьи</p>'; });
+  }
+
+  /* ---------- Голоса: Интервью / Свидетельства ---------- */
+  var VOICES_TABS = [
+    { id: 'interview', label: 'Интервью', slug: 'interview' },
+    { id: 'svidetelstva', label: 'Свидетельства', slug: 'svidetelstva' },
+  ];
+  var voicesTabsEl = document.getElementById('voices-tabs');
+  var voicesEl = document.getElementById('voices');
+  var voicesCache = {};
+
+  function renderVoicesTabs(active) {
+    if (!voicesTabsEl) return;
+    voicesTabsEl.innerHTML = VOICES_TABS.map(function (t) {
+      return '<button' + (t.id === active ? ' class="on"' : '') + ' data-id="' + t.id + '">' + esc(t.label) + '</button>';
+    }).join('');
+    voicesTabsEl.querySelectorAll('button').forEach(function (b) {
+      b.addEventListener('click', function () { loadVoices(b.getAttribute('data-id')); });
+    });
+  }
+
+  function loadVoices(id) {
+    var tab = VOICES_TABS.filter(function (t) { return t.id === id; })[0] || VOICES_TABS[0];
+    renderVoicesTabs(tab.id);
+    if (!voicesEl) return;
+    if (voicesCache[tab.id]) { voicesEl.innerHTML = voicesCache[tab.id].map(artCard).join(''); return; }
+    voicesEl.innerHTML = skArts(4);
+    V.getArticles({ category: tab.slug, limit: 4, page: 1 })
+      .then(function (pack) {
+        var items = (pack.items || []).slice(0, 4);
+        voicesCache[tab.id] = items;
+        voicesEl.innerHTML = items.length ? items.map(artCard).join('') : '<p class="ps-status">Пока пусто</p>';
+      })
+      .catch(function () { voicesEl.innerHTML = '<p class="ps-status">Не удалось загрузить</p>'; });
   }
 
   /* ---------- Boot ---------- */
@@ -211,4 +269,5 @@
 
   loadNews('ru');
   loadFresh();
+  if (voicesEl) loadVoices('interview');
 })();
