@@ -31,7 +31,7 @@
             V.escapeHtml(b.uri) +
             '" alt="' +
             V.escapeHtml(b.caption || '') +
-            '" loading="lazy" />' +
+            '" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'" />' +
             (b.caption
               ? '<figcaption>' + V.escapeHtml(b.caption) + '</figcaption>'
               : '') +

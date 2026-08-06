@@ -219,14 +219,55 @@
       .replace(/"/g, '&quot;');
   }
 
+  function encodeUrlPath(url) {
+    try {
+      // Кодируем кириллицу/пробелы в path — иначе <img> на iOS часто ломается.
+      var m = String(url).match(/^(https?:\/\/[^\/]+)(\/[^?#]*)?(\?[^#]*)?(#.*)?$/i);
+      if (!m) return url;
+      var origin = m[1];
+      var path = m[2] || '';
+      var query = m[3] || '';
+      var hash = m[4] || '';
+      var encPath = path
+        .split('/')
+        .map(function (seg) {
+          if (!seg) return '';
+          try {
+            return encodeURIComponent(decodeURIComponent(seg));
+          } catch (e) {
+            return encodeURIComponent(seg);
+          }
+        })
+        .join('/');
+      return origin + encPath + query + hash;
+    } catch (e) {
+      return url;
+    }
+  }
+
   function resolveInlineSrc(src) {
     if (!src) return null;
-    var s = String(src).trim();
+    var s = decodeEntities(String(src).trim());
+    if (!s) return null;
+    // protocol-relative
+    if (s.indexOf('//') === 0) s = 'https:' + s;
+    // старый домен Рускатолик (punycode) отдаёт HTML вместо картинок
+    s = s.replace(
+      /^https?:\/\/(xn--80aqecdrlilg\.xn--p1ai|www\.xn--80aqecdrlilg\.xn--p1ai)/i,
+      'https://ruscatholic.org'
+    );
+    // относительные wp-uploads
+    if (/^\/wp-content\//i.test(s)) s = 'https://ruscatholic.org' + s;
     var local = s.match(/(?:^|\/)images\/(p\d+-\d+\.webp)$/i);
     if (local) return INLINE_CDN + local[1];
     var already = s.match(/\/ruscatholic\/inline\/(p\d+-\d+\.webp)$/i);
     if (already) return INLINE_CDN + already[1];
-    if (/^https?:\/\//i.test(s)) return s;
+    if (/^https?:\/\//i.test(s)) {
+      if (/^http:\/\//i.test(s) && /ruscatholic\.org/i.test(s)) {
+        s = 'https://' + s.slice(7);
+      }
+      return encodeUrlPath(s);
+    }
     return null;
   }
 

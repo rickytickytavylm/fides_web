@@ -57,6 +57,8 @@
     total: 0,
     loading: false,
     items: [],
+    limit: 12,
+    lastPageCount: 0,
   };
 
   var chipsEl = document.getElementById('archive-chips');
@@ -232,7 +234,11 @@
     }
 
     if (moreBtn) {
-      moreBtn.hidden = state.items.length >= state.total;
+      var hasMore =
+        state.total > 0
+          ? state.items.length < state.total
+          : state.lastPageCount >= state.limit;
+      moreBtn.hidden = !hasMore || !state.items.length;
       moreBtn.disabled = state.loading;
     }
   }
@@ -242,34 +248,56 @@
     state.loading = true;
     if (replace && !state.items.length) skeletonFeed(5);
     if (moreBtn) {
-      if (replace) moreBtn.hidden = true;
+      moreBtn.hidden = false;
+      moreBtn.disabled = true;
       moreBtn.textContent = 'Загрузка…';
     }
     V.getArticles({
       category: state.category,
       q: state.q,
       page: state.page,
-      limit: 20,
+      limit: state.limit,
     })
       .then(function (pack) {
-        state.total = pack.total || 0;
-        state.items = replace
-          ? pack.items || []
-          : state.items.concat(pack.items || []);
+        var batch = pack.items || [];
+        state.total = Number(pack.total) || 0;
+        state.lastPageCount = batch.length;
+        state.items = replace ? batch : state.items.concat(batch);
         render();
+        if (!replace && batch.length && feedEl) {
+          var firstNew = feedEl.querySelector('.feed-item:nth-last-child(' + Math.min(batch.length, 5) + ')');
+          if (firstNew && firstNew.scrollIntoView) {
+            try { firstNew.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) {}
+          }
+        }
       })
       .catch(function (e) {
         console.error(e);
-        if (leadEl) leadEl.innerHTML = '<p class="archive-empty">Не удалось загрузить архив</p>';
+        if (replace && leadEl) leadEl.innerHTML = '<p class="archive-empty">Не удалось загрузить архив</p>';
+        if (!replace && moreBtn) moreBtn.textContent = 'Повторить';
       })
       .then(function () {
         state.loading = false;
-        if (moreBtn) moreBtn.textContent = 'Загрузить ещё';
+        if (moreBtn) {
+          moreBtn.disabled = false;
+          if (moreBtn.textContent !== 'Повторить') moreBtn.textContent = 'Загрузить ещё';
+          var hasMore =
+            state.total > 0
+              ? state.items.length < state.total
+              : state.lastPageCount >= state.limit;
+          moreBtn.hidden = !hasMore || !state.items.length;
+        }
       });
   }
 
   if (moreBtn) {
-    moreBtn.addEventListener('click', function () {
+    moreBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (state.loading) return;
+      if (moreBtn.textContent === 'Повторить') {
+        load(false);
+        return;
+      }
       state.page += 1;
       load(false);
     });

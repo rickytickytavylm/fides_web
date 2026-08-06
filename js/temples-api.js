@@ -24,7 +24,8 @@
       address: 'ул. Малая Грузинская, 27/13', city: 'Москва',
       diocese: 'Архиепархия Божией Матери', lon: 37.5715, lat: 55.7672,
       hours: 'Пн–Пт 8:00–20:00 · Сб–Вс 8:00–21:00', url: 'https://www.cathedral.ru',
-      photo: 'https://upload.wikimedia.org/wikipedia/commons/b/b0/Moscow_Immaculate_Conception_Church_asv2019-06_img1.jpg',
+      // Локальные/стабильные обложки: Wikimedia часто отдаёт 403 без Referer.
+      photo: 'church.webp',
       description: 'Крупнейший католический храм России — неоготическая базилика 1911 года и кафедра Архиепархии Божией Матери.',
     }),
     mkFeature({
@@ -33,7 +34,7 @@
       address: 'ул. Малая Лубянка, 12', city: 'Москва',
       diocese: 'Архиепархия Божией Матери', lon: 37.6289, lat: 55.7609,
       hours: 'Ежедневно 8:00–20:00',
-      photo: 'https://upload.wikimedia.org/wikipedia/commons/4/41/%D0%9A%D0%B0%D1%82%D0%BE%D0%BB%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F_%D1%86%D0%B5%D1%80%D0%BA%D0%BE%D0%B2%D1%8C_%D0%9B%D1%8E%D0%B4%D0%BE%D0%B2%D0%B8%D0%BA%D0%B0_%D0%B2_%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B5.jpg',
+      photo: 'church.jpg',
       description: 'Один из старейших действующих католических храмов Москвы в стиле классицизма (1830-е годы).',
     }),
     mkFeature({
@@ -41,7 +42,7 @@
       name: 'Храм святых апостолов Петра и Павла',
       address: 'Милютинский пер., 18с4', city: 'Москва',
       diocese: 'Архиепархия Божией Матери', lon: 37.6335, lat: 55.7658,
-      photo: 'https://upload.wikimedia.org/wikipedia/commons/8/86/Moscow%2C_Milyutinskiy_lane_18_str_4_%282015%29_by_shakko_01.jpg',
+      photo: 'background.webp',
       description: 'Исторический католический храм в Милютинском переулке — памятник архитектуры XIX века.',
     }),
     mkFeature({
@@ -50,7 +51,7 @@
       address: 'Невский пр., 32–34', city: 'Санкт-Петербург',
       diocese: 'Архиепархия Божией Матери', lon: 30.3324, lat: 59.9350,
       hours: 'Ежедневно 8:00–20:00',
-      photo: 'https://upload.wikimedia.org/wikipedia/commons/5/52/Spb_06-2012_Nevsky_various_03.jpg',
+      photo: 'people-prayer.webp',
       description: 'Единственная в России малая базилика — храм XVIII века на Невском проспекте.',
     }),
     mkFeature({
@@ -58,7 +59,7 @@
       name: 'Храм Успения Пресвятой Девы Марии',
       address: '1-я Красноармейская ул., 11', city: 'Санкт-Петербург',
       diocese: 'Архиепархия Божией Матери', lon: 30.3122, lat: 59.9158,
-      photo: 'https://upload.wikimedia.org/wikipedia/commons/f/f6/Tserkvy_SPb_02_2012_4388.jpg',
+      photo: 'scale_art.webp',
       description: 'Католический храм Успения Пресвятой Девы Марии в Санкт-Петербурге.',
     }),
     demo('saratov-cathedral', 'Кафедральный собор свв. Петра и Павла', 'ул. Университетская, 70/76', 'Саратов', 'Епархия св. Климента', 46.0345, 51.5312, 'cathedral'),
@@ -124,6 +125,25 @@
     };
   }
 
+  function demoPhotoByName(name, city) {
+    var n = String(name || '').toLowerCase();
+    var c = String(city || '').toLowerCase();
+    for (var i = 0; i < DEMO_FEATURES.length; i++) {
+      var d = featureToTemple(DEMO_FEATURES[i]);
+      if (!d || !d.imageUrls.length) continue;
+      var dn = d.name.toLowerCase();
+      var dc = d.city.toLowerCase();
+      if (dn === n || (n && dn.indexOf(n.slice(0, 18)) !== -1 && (!c || dc.indexOf(c) !== -1))) {
+        return d.imageUrls;
+      }
+    }
+    // эвристика для собора на Грузинской
+    if (n.indexOf('непорочн') !== -1 && (c.indexOf('моск') !== -1 || n.indexOf('моск') !== -1)) {
+      return ['church.webp'];
+    }
+    return [];
+  }
+
   function normalizePack(data) {
     var features = (data && data.features) || [];
     var byId = {};
@@ -131,6 +151,9 @@
     for (var i = 0; i < features.length; i++) {
       var t = featureToTemple(features[i]);
       if (!t || byId[t.id]) continue;
+      if (!t.imageUrls.length) {
+        t.imageUrls = demoPhotoByName(t.name, t.city);
+      }
       byId[t.id] = true;
       list.push(t);
     }
