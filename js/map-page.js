@@ -83,11 +83,14 @@
       return;
     }
     listEl.innerHTML = items.map(function (t) {
+      var photo = t.imageUrls && t.imageUrls[0];
       return (
-        '<button type="button" class="map-item' + (t.id === selectedId ? ' on' : '') + '" data-id="' + esc(t.id) + '">' +
+        '<button type="button" class="map-item' + (photo ? ' has-photo' : '') + (t.id === selectedId ? ' on' : '') + '" data-id="' + esc(t.id) + '">' +
+        (photo ? '<span class="map-item-cover" style="background-image:url(\'' + esc(photo) + '\')"></span>' : '') +
+        '<span class="map-item-body">' +
         '<span class="kind">' + esc(kindLabel(t.kind)) + '</span>' +
         '<strong>' + esc(t.name) + '</strong>' +
-        '<small>' + esc(t.city || t.address) + '</small></button>'
+        '<small>' + esc(t.city || t.address) + '</small></span></button>'
       );
     }).join('');
     listEl.querySelectorAll('.map-item').forEach(function (btn) {
@@ -117,8 +120,10 @@
     var links = [];
     if (t.website) links.push('<a href="' + esc(t.website) + '" target="_blank" rel="noopener">Сайт</a>');
     if (t.phone) links.push('<a href="tel:' + esc(t.phone) + '">' + esc(t.phone) + '</a>');
+    var photo = t.imageUrls && t.imageUrls[0];
     detailEl.innerHTML =
       '<button type="button" class="map-detail-close" id="map-detail-close" aria-label="Закрыть">×</button>' +
+      (photo ? '<div class="map-detail-photo" style="background-image:url(\'' + esc(photo) + '\')"></div>' : '') +
       '<span class="kind">' + esc(kindLabel(t.kind)) + '</span>' +
       '<h3>' + esc(t.name) + '</h3>' +
       (t.diocese ? '<p class="diocese">' + esc(t.diocese) + '</p>' : '') +
