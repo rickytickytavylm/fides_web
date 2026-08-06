@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Карточка автора" />
-    <title>Автор — ЯКатолик</title>
+    <meta name="description" content="Авторы ЯКатолик — люди, которые делятся опытом веры и знаниями." />
+    <title>Авторы — ЯКатолик</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -35,7 +35,28 @@
       </div>
     </header>
 
-    <main class="page-shell" id="author-root"></main>
+    <main class="page-shell">
+      <nav class="breadcrumbs in-shell" aria-label="Хлебные крошки">
+        <a href="index.html">Главная</a><span>/</span><span>Авторы</span>
+      </nav>
+      <header class="page-head in-shell">
+        <div>
+          <p class="eyebrow">Сообщество</p>
+          <h1>Авторы</h1>
+        </div>
+        <p class="page-desc">Люди, которые делятся опытом веры и знаниями. Пилотный каталог по тегам архива Рускатолик.</p>
+      </header>
+
+      <div class="authors-toolbar">
+        <input type="search" id="authors-q" placeholder="Поиск по имени…" autocomplete="off" />
+        <div class="tabs" id="authors-sort" role="tablist">
+          <button type="button" data-sort="recent" class="on">По новизне</button>
+          <button type="button" data-sort="alpha">А–Я</button>
+          <button type="button" data-sort="count">По публикациям</button>
+        </div>
+      </div>
+      <div class="authors-grid" id="authors-grid"></div>
+    </main>
 
     <footer class="portal-footer"><div class="wrap">
       <a class="logo" href="index.html">

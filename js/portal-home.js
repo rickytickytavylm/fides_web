@@ -270,4 +270,7 @@
   loadNews('ru');
   loadFresh();
   if (voicesEl) loadVoices('interview');
+  if (typeof window.renderHomeAuthors === 'function') {
+    window.renderHomeAuthors(document.getElementById('authors-home'), 5);
+  }
 })();

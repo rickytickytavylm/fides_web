@@ -763,6 +763,144 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 }
 .chat-source-title { display: block; font-size: 12.5px; font-weight: 700; color: var(--bronze-dark); }
 .chat-source-excerpt { display: block; font-size: 11.5px; color: var(--stone-700); margin-top: 3px; }
+/* ---------- Guide walkers (О Церкви / Духовная жизнь) ---------- */
+.route-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 8px 0 28px;
+}
+.route-card {
+  display: flex; flex-direction: column; justify-content: flex-end;
+  min-height: 148px; padding: 18px 18px 16px; border-radius: 18px;
+  text-decoration: none; color: #fff; position: relative; overflow: hidden;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.route-card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(32,30,36,.18); }
+.route-card.wide { grid-column: 1 / -1; min-height: 120px; }
+.route-kicker {
+  font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+  opacity: .78; margin-bottom: 8px;
+}
+.route-card strong {
+  font-family: var(--serif); font-weight: 600; font-size: clamp(20px, 2.4vw, 28px);
+  line-height: 1.15; letter-spacing: -.02em;
+}
+.route-sub { margin-top: 8px; font-size: 13px; opacity: .85; line-height: 1.4; }
+.route-card.tone-a { background: linear-gradient(145deg, #3d4f6b, #6b86b0); }
+.route-card.tone-b { background: linear-gradient(145deg, #5a3d2b, #a67c52); }
+.route-card.tone-c { background: linear-gradient(145deg, #3f5240, #7a8f6a); }
+.route-card.tone-d { background: linear-gradient(145deg, #5c3a45, #b06a7a); }
+.route-card.tone-e { background: linear-gradient(145deg, #2f4558, #5d7a8c); }
+.route-card.tone-wide { background: linear-gradient(145deg, #4a3b28, #c9a227); }
+.route-card.tone-accent { background: linear-gradient(145deg, #6b3a1e, #c9713f); }
+.guide-body { max-width: 680px; font-size: 16px; line-height: 1.65; color: var(--stone-700); margin: 8px 0 28px; }
+.guide-body p { margin: 0 0 14px; }
+.guide-also { margin: 0 0 28px; }
+.guide-also h3 { margin: 0 0 10px; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--bronze-dark); }
+.guide-also ul { margin: 0; padding-left: 18px; }
+.guide-also a { font-weight: 600; }
+.guide-more, .guide-feed { margin: 28px 0; }
+.guide-more h2, .guide-feed h2 {
+  margin: 0 0 14px; font-family: var(--serif); font-weight: 600; font-size: 28px;
+}
+.nav-groups { display: grid; gap: 22px; margin-top: 8px; }
+.nav-group h2 { margin: 0 0 10px; font-size: 18px; }
+.nav-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.nav-list li {
+  padding: 12px 14px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--line);
+}
+.nav-list a { font-weight: 600; }
+.prayer-list { display: grid; gap: 10px; margin: 8px 0 28px; }
+.prayer-item {
+  border: 1px solid var(--line); border-radius: 14px; padding: 4px 14px; background: var(--surface);
+}
+.prayer-item summary {
+  cursor: pointer; font-weight: 700; padding: 12px 0; list-style: none;
+}
+.prayer-item summary::-webkit-details-marker { display: none; }
+.prayer-item p { margin: 0 0 14px; color: var(--stone-700); line-height: 1.6; }
+
+/* ---------- Authors ---------- */
+.authors-block {
+  background: linear-gradient(180deg, #f3ebe0 0%, var(--bg, #f7f4ef) 100%);
+  border-radius: 0;
+  margin-top: 8px;
+}
+.authors-block .wrap { padding-top: 8px; padding-bottom: 8px; }
+.authors-home {
+  display: grid; gap: 10px; margin-top: 6px;
+}
+.author-row {
+  display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: center;
+  padding: 10px 12px; border-radius: 14px; text-decoration: none;
+  background: rgba(255,255,255,.55); border: 1px solid rgba(0,0,0,.06);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.author-row:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(32,30,36,.08); }
+.author-row strong { display: block; font-size: 15px; }
+.author-row small { color: var(--stone-500); font-size: 12px; }
+.author-ava {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--surface-2) center/cover no-repeat; display: grid; place-items: center;
+  font-weight: 800; color: var(--bronze-dark); font-size: 15px;
+}
+.author-ava.initials { background: linear-gradient(145deg, #e8d9c4, #d4b896); }
+.authors-toolbar { display: grid; gap: 12px; margin: 0 0 18px; }
+.authors-toolbar input[type="search"] {
+  width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--surface); font: inherit;
+}
+.authors-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+}
+.author-card {
+  display: grid; gap: 12px; justify-items: start; padding: 16px;
+  border-radius: 16px; border: 1px solid var(--line); background: var(--surface);
+  text-decoration: none; transition: transform .15s ease, box-shadow .15s ease;
+}
+.author-card:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(32,30,36,.1); }
+.author-card-body { display: grid; gap: 4px; }
+.author-card strong { font-size: 16px; }
+.author-role { font-size: 12px; color: var(--bronze-dark); font-weight: 700; }
+.author-count { font-size: 12px; color: var(--stone-500); }
+.author-head {
+  display: grid; grid-template-columns: 120px 1fr; gap: 22px; align-items: start;
+  padding: 18px 0 28px; border-bottom: 1px solid var(--line); margin-bottom: 22px;
+}
+.author-head .author-ava { width: 120px; height: 120px; font-size: 32px; }
+.author-bio { margin: 10px 0 14px; color: var(--stone-700); line-height: 1.6; max-width: 560px; }
+.author-socials { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.author-social {
+  display: inline-block; padding: 6px 10px; border-radius: 999px; background: var(--accent-soft);
+  font-size: 12px; font-weight: 700; color: var(--bronze-dark); text-decoration: none;
+}
+.author-stats { display: flex; gap: 18px; flex-wrap: wrap; }
+.author-stats span { font-size: 13px; color: var(--stone-500); }
+.author-stats b { color: var(--ink); font-size: 18px; margin-right: 4px; }
+.author-pubs { display: grid; gap: 0; }
+.author-pub {
+  display: grid; gap: 6px; padding: 16px 0; border-bottom: 1px solid var(--line); text-decoration: none;
+}
+.author-pub time { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--stone-500); }
+.author-pub strong { font-size: 17px; line-height: 1.3; }
+.author-pub span { font-size: 13px; color: var(--stone-700); line-height: 1.5; }
+@media (max-width: 980px) {
+  .authors-grid { grid-template-columns: repeat(2, 1fr); }
+  .nav.top { gap: 10px; flex-wrap: wrap; }
+}
+@media (max-width: 720px) {
+  .route-grid { gap: 10px; }
+  .route-card { min-height: 120px; padding: 14px; border-radius: 14px; }
+  .route-card strong { font-size: 18px; }
+  .authors-grid { grid-template-columns: 1fr 1fr; }
+  .author-head { grid-template-columns: 72px 1fr; gap: 14px; }
+  .author-head .author-ava { width: 72px; height: 72px; font-size: 20px; }
+}
+@media (max-width: 520px) {
+  .authors-grid { grid-template-columns: 1fr; }
+}
+
 .chat-welcome { padding: 8px 4px 16px; }
 .chat-welcome-title { margin: 0 0 10px; font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--stone-500); }
 .chat-suggestions { display: flex; flex-wrap: wrap; gap: 8px; }
