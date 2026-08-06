@@ -28,7 +28,35 @@
     return (found && found.label) || 'Все рубрики';
   }
 
+  function pageHeading() {
+    if (state.category === 'columns') return 'Статьи';
+    if (state.category === 'polka') return 'Библиотека';
+    if (state.category === 'spirituality') return 'Духовность';
+    if (state.category === 'news' || state.category === 'church-rus') return 'Новости';
+    if (state.category) return chipLabel();
+    return 'Новости';
+  }
+
+  function syncPageChrome() {
+    var title = pageHeading();
+    var h1 = document.getElementById('page-title');
+    var crumb = document.getElementById('crumb-current');
+    var desc = document.getElementById('page-desc');
+    if (h1) h1.textContent = title;
+    if (crumb) crumb.textContent = title;
+    document.title = title + ' — ЯКатолик';
+    if (desc) {
+      desc.textContent =
+        title === 'Статьи'
+          ? 'Свежие статьи и колонки для спокойного чтения.'
+          : title === 'Библиотека'
+            ? 'Книжная полка и материалы для углублённого чтения.'
+            : 'Актуальные материалы: поиск по теме, рубрики и спокойное чтение.';
+    }
+  }
+
   function updateRubricLabel() {
+    syncPageChrome();
     if (!rubricEl) return;
     if (state.q) {
       rubricEl.textContent = 'Поиск: «' + state.q + '»';
@@ -82,7 +110,7 @@
       if (!hero) {
         leadEl.innerHTML = '<p class="archive-empty">Ничего не найдено</p>';
       } else {
-        var cat = (hero.categories && hero.categories[0]) || 'Рускатолик';
+        var cat = (hero.categories && hero.categories[0]) || 'Материал';
         leadEl.innerHTML =
           '<a class="card-image" href="' +
           V.articleHref(hero) +

@@ -334,7 +334,9 @@
 
   function coverStyle(url) {
     if (!url) return '';
-    return 'style="--img:url(\'' + String(url).replace(/'/g, '%27') + '\')"';
+    var resolved = resolveInlineSrc(url) || String(url).trim();
+    if (!resolved) return '';
+    return 'style="--img:url(\'' + resolved.replace(/'/g, '%27') + '\')"';
   }
 
   global.Vera = {

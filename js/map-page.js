@@ -20,9 +20,11 @@
 
   var map = L.map('map-canvas', {
     zoomControl: false,
-    attributionControl: true,
+    attributionControl: false,
   }).setView(MOSCOW, 11);
 
+  // Свой attribution без дефолтного prefix Leaflet (там бывает эмодзи-флаг)
+  L.control.attribution({ prefix: false, position: 'bottomright' }).addTo(map);
   L.control.zoom({ position: 'bottomright' }).addTo(map);
 
   // Тёмные тайлы под портал (Carto Dark Matter — без ключа)
@@ -217,13 +219,6 @@
       map.flyTo([55.0, 55.0], 4, { duration: 1 });
     });
   }
-
-  API.stats().then(function (s) {
-    var el = document.getElementById('map-stats');
-    if (el && s && s.count != null) {
-      el.textContent = Number(s.count).toLocaleString('ru-RU') + ' в базе · ' + (s.source || '');
-    }
-  });
 
   loadViewport();
 })();

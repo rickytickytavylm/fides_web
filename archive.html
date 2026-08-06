@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Архив Рускатолик — поиск и рубрики. ЯКатолик." />
-    <title>Архив — ЯКатолик</title>
+    <meta name="description" content="Новости и материалы — ЯКатолик" />
+    <title>Новости — ЯКатолик</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -14,10 +14,10 @@
     <meta name="theme-color" content="#201E24" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="ЯКатолик" />
-    <link rel="stylesheet" href="portal.css?v=10" />
+    <link rel="stylesheet" href="portal.css?v=13" />
   </head>
   <body>
-        <header class="masthead">
+    <header class="masthead">
       <div class="wrap">
         <a class="logo" href="index.html">
           <span class="mark"><img src="yakatolik-logo.svg" alt="ЯКатолик" width="34" height="34" /></span>
@@ -34,24 +34,22 @@
       </div>
     </header>
 
-
-<main class="page-shell archive-page">
+    <main class="page-shell archive-page">
       <nav class="breadcrumbs in-shell" aria-label="Хлебные крошки">
-        <a href="index.html">Главная</a><span>/</span><a href="archive.html">Архив</a>
+        <a href="index.html">Главная</a><span>/</span><span id="crumb-current">Новости</span>
       </nav>
 
       <header class="page-head in-shell">
         <div>
-          <p class="eyebrow">Архив портала · Рускатолик</p>
-          <h1>Архив</h1>
+          <h1 id="page-title">Новости</h1>
           <p class="page-rubric" id="page-rubric">Все рубрики</p>
         </div>
-        <p class="page-desc">Тысячи материалов Рускатолик: поиск по теме, рубрики и спокойное чтение.</p>
+        <p class="page-desc" id="page-desc">Актуальные материалы: поиск по теме, рубрики и спокойное чтение.</p>
       </header>
 
       <div class="archive-toolbar in-shell">
         <label class="archive-search-shell">
-          <input id="archive-search" type="search" placeholder="Поиск по архиву…" />
+          <input id="archive-search" type="search" placeholder="Поиск по материалам…" />
         </label>
         <div class="chips" id="archive-chips"></div>
       </div>
@@ -64,7 +62,7 @@
         <div class="archive-feed-col">
           <article class="lead-item reveal" id="lead-item"></article>
           <div class="feed" id="feed"></div>
-          <button class="load-more" id="load-more" type="button">Ещё материалы ↓</button>
+          <button class="load-more" id="load-more" type="button">Загрузить ещё</button>
         </div>
       </div>
     </main>
@@ -74,13 +72,13 @@
         <img class="brand-logo" src="yakatolik-logo.svg" alt="" width="40" height="40" />
         <div>
           <strong>ЯКатолик</strong>
-          <p>Архив Рускатолик</p>
+          <p>Католический портал</p>
         </div>
       </div>
       <p class="footer-copy">© ЯКатолик</p>
     </footer>
 
-        <nav class="app-tabbar" aria-label="Основная навигация">
+    <nav class="app-tabbar" aria-label="Основная навигация">
       <a class="tab-item" href="index.html" data-tab="home">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 10.5 12 4l7.5 6.5V20a1 1 0 0 1-1 1h-4.2v-5.2h-4.6V21H5.5a1 1 0 0 1-1-1v-9.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
         <span>Главная</span>
@@ -102,11 +100,10 @@
         <span>Спросить</span>
       </a>
     </nav>
-    <script src="js/config.js?v=10"></script>
-    <script src="js/api.js?v=10"></script>
-    <script src="js/portal-nav.js?v=10"></script>
-    <script src="js/app.js?v=10"></script>
-    <script src="js/archive-page.js?v=10"></script>
-      
+
+    <script src="js/config.js?v=13"></script>
+    <script src="js/api.js?v=13"></script>
+    <script src="js/portal-nav.js?v=13"></script>
+    <script src="js/archive-page.js?v=13"></script>
   </body>
 </html>

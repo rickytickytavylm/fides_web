@@ -29,7 +29,7 @@
     block.className = 'chat-sources';
     var label = document.createElement('p');
     label.className = 'chat-sources-label';
-    label.textContent = 'Из архива Рускатолик';
+    label.textContent = 'По теме';
     block.appendChild(label);
     sources.slice(0, 3).forEach(function (s) {
       if (!s || !s.id) return;

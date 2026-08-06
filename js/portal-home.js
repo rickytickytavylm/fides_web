@@ -16,7 +16,7 @@
     if (img) return "url('" + String(img).replace(/'/g, '%27') + "')";
     return grad(i);
   }
-  function cat(item) { return (item.categories && item.categories[0]) || 'Рускатолик'; }
+  function cat(item) { return (item.categories && item.categories[0]) || 'Материал'; }
   var esc = V.escapeHtml;
 
   /* ---------- Hero slider ---------- */

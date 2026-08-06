@@ -75,18 +75,32 @@
       out.push({ href: href, label: label });
     }
     if (linkOriginal && !seen[linkOriginal]) {
-      out.unshift({ href: linkOriginal, label: 'Оригинал на Рускатолик' });
+      out.unshift({ href: linkOriginal, label: 'Источник' });
     }
     return out.slice(0, 12);
   }
 
+  function pickCover(article, blocks) {
+    var cover = article.image || article.cover || article.thumbnail || '';
+    if (cover) return cover;
+    for (var i = 0; i < (blocks || []).length; i++) {
+      if (blocks[i].type === 'image' && blocks[i].uri) return blocks[i].uri;
+    }
+    return '';
+  }
+
   function renderArticle(article) {
-    var cat = (article.categories && article.categories[0]) || 'Рускатолик';
+    var cat = (article.categories && article.categories[0]) || 'Материал';
     var blocks = V.htmlToBlocks(article.contentHtml || '');
+    var cover = pickCover(article, blocks);
     var bodyHtml = blocks.length ? renderBlocks(blocks) : '';
     if (!bodyHtml.trim()) bodyHtml = fallbackBody(article);
     var sources = extractSources(article.contentHtml, article.linkOriginal);
-    var imageUrl = String(article.image || '').replace(/'/g, '%27');
+    var listHref = 'archive.html' + (article.categorySlugs && article.categorySlugs[0]
+      ? '?category=' + encodeURIComponent(article.categorySlugs[0])
+      : '');
+    var sectionLabel =
+      article.categorySlugs && article.categorySlugs[0] === 'columns' ? 'Статьи' : 'Новости';
 
     var sourcesHtml = '';
     if (sources.length) {
@@ -109,7 +123,7 @@
     return (
       '<nav class="breadcrumbs" aria-label="Хлебные крошки">' +
       '<a href="index.html">Главная</a><span>/</span>' +
-      '<a href="archive.html">Архив</a><span>/</span>' +
+      '<a href="' + listHref + '">' + sectionLabel + '</a><span>/</span>' +
       '<span>' +
       V.escapeHtml(cat) +
       '</span></nav>' +
@@ -122,25 +136,24 @@
       '</h1>' +
       '<div class="byline"><div class="byline-main"><div>' +
       '<p class="byline-name">' +
-      V.escapeHtml(article.author || 'Рускатолик') +
+      V.escapeHtml(article.author || 'Редакция') +
       '</p>' +
       '<p class="byline-meta"><time datetime="' +
       V.escapeHtml(article.date || '') +
       '">' +
       V.escapeHtml(V.formatDate(article.date)) +
-      '</time></p></div></div>' +
-      '<div class="share"><button class="copy-link" type="button">Скопировать ссылку</button></div></div></header>' +
-      (article.image
-        ? '<figure class="article-hero"><div class="hero-photo" style="--img:url(\'' +
-          imageUrl +
-          '\')"></div></figure>'
+      '</time></p></div></div></div></header>' +
+      (cover
+        ? '<figure class="article-hero"><div class="hero-photo" ' +
+          V.coverStyle(cover) +
+          '></div></figure>'
         : '') +
       '<div class="article-body">' +
       bodyHtml +
       '</div>' +
       sourcesHtml +
-      '<footer class="article-foot"><p>Архив Рускатолик · Вера и Разум</p>' +
-      '<a class="text-link" href="archive.html">Все материалы <span>→</span></a></footer>'
+      '<footer class="article-foot">' +
+      '<a class="text-link" href="' + listHref + '">Все материалы <span>→</span></a></footer>'
     );
   }
 
@@ -212,26 +225,14 @@
   V.getArticle(id)
     .then(function (article) {
       if (!article || !article.title) throw new Error('Article empty');
-      document.title = article.title + ' — Вера и Разум';
+      document.title = article.title + ' — ЯКатолик';
       root.innerHTML = renderArticle(article);
-      var copyBtn = document.querySelector('.copy-link');
-      if (copyBtn) {
-        copyBtn.addEventListener('click', function () {
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(location.href);
-          }
-          copyBtn.textContent = 'Ссылка скопирована';
-          setTimeout(function () {
-            copyBtn.textContent = 'Скопировать ссылку';
-          }, 2200);
-        });
-      }
       loadRelated(article);
     })
     .catch(function (e) {
       console.error(e);
       root.innerHTML =
-        '<p class="archive-empty">Не удалось загрузить статью. <a href="archive.html">Вернуться в архив</a></p>';
+        '<p class="archive-empty">Не удалось загрузить статью. <a href="archive.html">К материалам</a></p>';
       var relatedSection = document.querySelector('.related-section');
       if (relatedSection) relatedSection.hidden = true;
     });
