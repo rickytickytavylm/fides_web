@@ -100,7 +100,7 @@ section.block { padding: 36px 0; }
 .hero { display: grid; grid-template-columns: 1.5fr 1fr; gap: 18px; }
 .hero-main { position: relative; border-radius: 24px; overflow: hidden; min-height: 380px; box-shadow: var(--shadow-lift);
   display: flex; flex-direction: column; justify-content: flex-end; background: var(--surface); }
-.hero-slide { position: absolute; inset: 0; opacity: 0; transition: opacity .6s ease; background-size: cover; background-position: center; }
+.hero-slide { position: absolute; inset: 0; opacity: 0; transition: opacity .6s ease; background-size: cover; background-position: center; background-color: var(--surface); }
 .hero-slide.active { opacity: 1; }
 .hero-slide::after { content: ""; position: absolute; inset: 0;
   background: linear-gradient(180deg, rgba(15, 9, 6, 0) 28%, rgba(15, 9, 6, .9) 100%); }
@@ -108,9 +108,10 @@ section.block { padding: 36px 0; }
 .hero-cap .rub { display: inline-block; font-weight: 700; font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
   color: #fff; background: var(--accent); padding: 4px 12px; border-radius: 100px; margin-bottom: 13px; }
 .hero-cap h3 { color: #fff; font-size: 27px; line-height: 1.16; max-width: 22ch; font-weight: 700; }
-.hero-dots { position: absolute; z-index: 3; bottom: 18px; right: 20px; display: flex; gap: 7px; }
-.hero-dots button { width: 9px; height: 9px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, .45); cursor: pointer; padding: 0; }
-.hero-dots button.on { background: #fff; }
+.hero-dots { position: absolute; z-index: 3; bottom: 18px; right: 20px; display: flex; gap: 8px; align-items: center; }
+.hero-dots button { width: 10px; height: 10px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, .5);
+  cursor: pointer; padding: 0; transition: width .22s ease, background .22s ease; box-shadow: 0 1px 4px rgba(0, 0, 0, .35); }
+.hero-dots button.on { background: #fff; width: 24px; border-radius: 6px; }
 .hero-side { display: flex; flex-direction: column; gap: 12px; }
 .mini { display: flex; gap: 13px; align-items: center; padding: 13px; border-radius: 16px; background: var(--surface);
   box-shadow: var(--shadow-card); transition: transform .2s, box-shadow .2s; }
@@ -273,18 +274,19 @@ aside { display: flex; flex-direction: column; gap: 18px; }
   .block-head .rule { display: none; }
   .block-head .eyebrow.inline { width: 100%; margin-left: 22px; }
   .hero { grid-template-columns: 1fr; gap: 14px; }
-  .hero-main { min-height: 300px; border-radius: 20px; }
+  .hero-main { min-height: 360px; border-radius: 20px; }
   .hero-cap { padding: 22px 20px 28px; }
   .hero-cap h3 { font-size: 22px; max-width: none; }
   .hero-side { gap: 10px; }
   .mini { padding: 12px; border-radius: 14px; }
+  .mini .thumb { width: 96px; height: 74px; }
   .body-grid, .news-grid, .art-grid, .tree, .cols2 { grid-template-columns: 1fr; gap: 14px; }
   .body-grid { gap: 22px; }
   nav.top { display: none; }
   .search { padding: 8px 12px; font-size: 12px; }
   .ncard { padding: 12px; gap: 12px; border-radius: 14px; }
-  .ncard .thumb { width: 84px; height: 68px; }
-  .art .ph { height: 140px; }
+  .ncard .thumb { width: 108px; height: 84px; }
+  .art .ph { height: 200px; }
   .panel { padding: 18px; border-radius: 16px; }
   .widget { padding: 16px; }
   .portal-footer .wrap { padding-top: 22px; padding-bottom: 22px; }
@@ -307,14 +309,16 @@ aside { display: flex; flex-direction: column; gap: 18px; }
   .logo .wm { font-size: 17px; overflow: hidden; text-overflow: ellipsis; }
   .logo .mark { width: 30px; height: 30px; }
   section.block { padding: 22px 0; }
-  .hero-main { min-height: 260px; border-radius: 18px; }
+  .hero-main { min-height: 340px; border-radius: 18px; }
   .hero-cap { padding: 18px 16px 26px; }
   .hero-cap h3 { font-size: 20px; line-height: 1.2; }
-  .hero-dots { right: 14px; bottom: 14px; }
-  .mini .thumb { width: 68px; height: 54px; }
+  .hero-dots { right: 14px; bottom: 14px; gap: 9px; }
+  .hero-dots button { width: 11px; height: 11px; }
+  .hero-dots button.on { width: 26px; }
+  .mini .thumb { width: 92px; height: 70px; }
   .mini h4 { font-size: 13.5px; }
   .ncard { flex-direction: column; }
-  .ncard .thumb { width: 100%; height: 140px; }
+  .ncard .thumb { width: 100%; height: 210px; }
   .ncard h4 { font-size: 15px; }
   .tabs { gap: 6px; margin-bottom: 14px; }
   .tabs button { padding: 8px 14px; font-size: 13px; }

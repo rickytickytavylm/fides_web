@@ -25,10 +25,20 @@
   var sideEl = document.getElementById('hero-side');
   var slideTimer = null;
 
+  function preload(url) {
+    if (!url) return;
+    var img = new Image();
+    try { img.decoding = 'async'; } catch (e) {}
+    img.src = url;
+  }
+
   function buildHero(items) {
     if (!heroEl) return;
     var slides = items.slice(0, 3);
     var minis = items.slice(3, 7);
+
+    // Предзагружаем картинки героя, чтобы не подвисали/не мигали при переходах
+    slides.forEach(function (it) { preload(it.image); });
 
     var slidesHtml = slides.map(function (it, i) {
       return (
@@ -42,6 +52,7 @@
 
     if (sideEl) {
       sideEl.innerHTML = minis.map(function (it, i) {
+        preload(it.image);
         return (
           '<a class="mini" href="' + V.articleHref(it) + '">' +
           '<div class="thumb" style="background-image:' + bg(it.image, i + 3) + '"></div>' +
@@ -56,28 +67,64 @@
 
   function initSlider() {
     var slides = [].slice.call(heroEl.querySelectorAll('.hero-slide'));
-    if (!dotsEl || slides.length < 2) return;
-    dotsEl.innerHTML = '';
+    if (slides.length < 2) { if (dotsEl) dotsEl.innerHTML = ''; return; }
+    if (dotsEl) dotsEl.innerHTML = '';
     var idx = 0;
-    slides.forEach(function (_, i) {
-      var b = document.createElement('button');
-      if (i === 0) b.className = 'on';
-      b.setAttribute('aria-label', 'Слайд ' + (i + 1));
-      b.addEventListener('click', function (e) { e.preventDefault(); go(i); reset(); });
-      dotsEl.appendChild(b);
-    });
+
+    if (dotsEl) {
+      slides.forEach(function (_, i) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        if (i === 0) b.className = 'on';
+        b.setAttribute('aria-label', 'Слайд ' + (i + 1));
+        b.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); go(i); reset(); });
+        dotsEl.appendChild(b);
+      });
+    }
+
     function go(n) {
+      n = (n + slides.length) % slides.length;
       slides[idx].classList.remove('active');
-      dotsEl.children[idx].classList.remove('on');
+      if (dotsEl && dotsEl.children[idx]) dotsEl.children[idx].classList.remove('on');
       idx = n;
       slides[idx].classList.add('active');
-      dotsEl.children[idx].classList.add('on');
+      if (dotsEl && dotsEl.children[idx]) dotsEl.children[idx].classList.add('on');
     }
+
     var reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
     function reset() {
       if (slideTimer) clearInterval(slideTimer);
-      if (!reduce) slideTimer = setInterval(function () { go((idx + 1) % slides.length); }, 5000);
+      if (!reduce) slideTimer = setInterval(function () { go(idx + 1); }, 5000);
     }
+
+    // Свайп-переключение на самом герое
+    var startX = null, startY = null, swiping = false;
+    heroEl.addEventListener('touchstart', function (e) {
+      var t = e.touches[0];
+      startX = t.clientX; startY = t.clientY; swiping = false;
+    }, { passive: true });
+    heroEl.addEventListener('touchmove', function (e) {
+      if (startX == null) return;
+      var t = e.touches[0];
+      if (Math.abs(t.clientX - startX) > 10 && Math.abs(t.clientX - startX) > Math.abs(t.clientY - startY)) {
+        swiping = true;
+      }
+    }, { passive: true });
+    heroEl.addEventListener('touchend', function (e) {
+      if (startX == null) return;
+      var t = e.changedTouches[0];
+      var dx = t.clientX - startX, dy = t.clientY - startY;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+        go(idx + (dx < 0 ? 1 : -1));
+        reset();
+      }
+      startX = startY = null;
+    }, { passive: true });
+    // Если был свайп — не даём ссылке открыться
+    heroEl.addEventListener('click', function (e) {
+      if (swiping) { e.preventDefault(); e.stopPropagation(); swiping = false; }
+    }, true);
+
     reset();
   }
 
