@@ -58,11 +58,12 @@
     if (pack.demo || pack.fallback || pack.source === 'demo') {
       modeBadge.textContent = 'демо';
       modeBadge.className = 'chip v2';
-      modeBadge.title = 'Показывает демо-точки. Подключите Python → TEMPLES_API_BASE в js/config.js';
+      modeBadge.title = 'Показаны примерные точки';
+      modeBadge.hidden = true;
     } else {
-      modeBadge.textContent = 'live';
+      modeBadge.textContent = '';
       modeBadge.className = 'chip v1';
-      modeBadge.title = 'Данные с ' + (C.TEMPLES_API_BASE || '');
+      modeBadge.hidden = true;
     }
   }
 
@@ -163,12 +164,10 @@
         temples = pack.temples || [];
         updateModeBadge(pack);
         if (countEl) countEl.textContent = temples.length + ' на карте';
-        if (pack.fallback) {
-          setStatus('API недоступен — показано демо. Подключите Python (см. HANDOFF.md)', 'warn');
-        } else if (pack.source === 'demo') {
-          setStatus('Демо-режим. В js/config.js укажите TEMPLES_API_BASE', 'warn');
+        if (pack.fallback || pack.source === 'demo') {
+          setStatus('Показаны примеры приходов', 'warn');
         } else {
-          setStatus('Источник: ' + pack.source, 'ok');
+          setStatus('', 'ok');
         }
         paintMarkers(filtered());
         renderList();

@@ -14,7 +14,7 @@
     <meta name="theme-color" content="#201E24" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="ЯКатолик" />
-    <link rel="stylesheet" href="portal.css?v=10" />
+    <link rel="stylesheet" href="portal.css?v=11" />
   </head>
   <body>
     <header class="masthead">
@@ -38,8 +38,8 @@
       <!-- ГЛАВНОЕ -->
       <section class="block wrap">
         <div class="block-head">
-          <span class="kicker"></span><h2>Главное</h2><span class="chip v1">архив</span>
-          <span class="rule"></span><span class="eyebrow inline">свежее из архива Рускатолик</span>
+          <span class="kicker"></span><h2>Главное</h2>
+          <span class="rule"></span>
         </div>
         <div class="hero">
           <div class="hero-main" id="hero">
@@ -52,8 +52,8 @@
       <!-- НОВОСТИ -->
       <section class="block wrap" style="padding-top:4px">
         <div class="block-head">
-          <span class="kicker"></span><h2>Новости</h2><span class="chip v1">архив</span>
-          <span class="rule"></span><span class="eyebrow inline">рубрики = категории архива</span>
+          <span class="kicker"></span><h2>Новости</h2>
+          <span class="rule"></span>
         </div>
         <div class="tabs" id="news-tabs"></div>
         <div class="news-grid" id="news"></div>
@@ -65,113 +65,27 @@
         <div class="body-grid">
           <div>
             <div class="block-head">
-              <span class="kicker"></span><h2>Свежие статьи</h2><span class="chip v1">архив</span><span class="rule"></span>
+              <span class="kicker"></span><h2>Свежие статьи</h2><span class="rule"></span>
             </div>
             <div class="art-grid" id="fresh"></div>
           </div>
           <aside>
             <div class="widget">
-              <h3><span class="wdot"></span>Афиша <span class="chip v1" style="margin-left:auto">v1</span></h3>
-              <div class="afisha-item"><div class="afisha-date"><b>24</b><span>июл</span></div>
-                <div><h4>Реколлекции для молодёжи</h4><small>Приход св. Людовика, Москва</small></div></div>
-              <div class="afisha-item"><div class="afisha-date"><b>27</b><span>июл</span></div>
-                <div><h4>Органный концерт</h4><small>Кафедральный собор, СПб</small></div></div>
-              <div class="afisha-item"><div class="afisha-date"><b>02</b><span>авг</span></div>
-                <div><h4>Лекция: символы в храме</h4><small>Онлайн</small></div></div>
-            </div>
-            <div class="widget future"><h3><span class="wdot f"></span>День Церкви</h3>
-              <div class="day-row"><span>Святой дня</span><b>Св. Бонавентура</b></div>
-              <div class="day-row"><span>Чтение дня</span><b>Мф 11, 25–27</b></div>
-              <div class="day-row"><span>Молитва дня</span><b>Коллекта</b></div>
-              <div class="day-row"><span>Цитата дня</span><b>«…»</b></div>
-            </div>
-            <div class="widget future"><h3><span class="wdot f"></span>Блоги</h3>
-              <ul><li>Авторские колонки прихожан</li><li>Страница блогера + рейтинг</li><li>Топ по оценкам читателей</li></ul></div>
-            <div class="widget live">
-              <h3><span class="wdot l"></span>Карта храмов</h3>
-              <ul>
-                <li>Демо UI на сайте · Leaflet</li>
-                <li>Контракт API под его Python</li>
-                <li>Одна строка в <code>js/config.js</code></li>
-              </ul>
+              <h3><span class="wdot"></span>Карта храмов</h3>
+              <p style="font-size:13px;color:var(--stone-700);margin:0 0 12px;line-height:1.5">Католические приходы на карте — найдите храм рядом.</p>
               <a class="wlink" href="map.html">Открыть карту →</a>
             </div>
-            <div class="widget future"><h3><span class="wdot f"></span>Фотосток</h3>
-              <ul><li>Поиск по хэштегам</li><li>Карточка фото · автор · лицензия CC</li><li>Страницы фотографов</li></ul></div>
+            <div class="widget">
+              <h3><span class="wdot"></span>Спросить о вере</h3>
+              <p style="font-size:13px;color:var(--stone-700);margin:0 0 12px;line-height:1.5">Спокойные ответы о Катехизисе, молитве и христианской жизни.</p>
+              <a class="wlink" href="chat.html">Перейти в диалог →</a>
+            </div>
+            <div class="widget">
+              <h3><span class="wdot"></span>Библиотека</h3>
+              <p style="font-size:13px;color:var(--stone-700);margin:0 0 12px;line-height:1.5">Книжная полка и материалы для чтения.</p>
+              <a class="wlink" href="archive.html?category=polka">В библиотеку →</a>
+            </div>
           </aside>
-        </div>
-      </section>
-
-      <!-- КАРТА СТРУКТУРЫ САЙТА -->
-      <section class="sitemap-sec"><div class="wrap block">
-        <div class="block-head">
-          <span class="kicker"></span><h2>Карта структуры сайта</h2><span class="rule"></span>
-          <span class="eyebrow inline">разделы = раскладка категорий</span>
-        </div>
-        <div class="tree">
-          <div class="branch"><div class="node"><span class="ic"></span>Новости</div><ul>
-            <li><a href="archive.html?category=news">Новости</a> <span class="tag v1">v1</span></li>
-            <li><a href="archive.html?category=church-rus">КЦ в России</a> <span class="tag v1">v1</span></li>
-            <li><a href="archive.html?category=interview">Интервью</a> <span class="tag v1">v1</span></li>
-            <li>Лента рубрики · «Загрузить ещё» <small>241+</small></li></ul></div>
-          <div class="branch"><div class="node"><span class="ic"></span>Статьи</div><ul>
-            <li><a href="archive.html?category=spirituality">Духовность</a> <small>302</small></li>
-            <li><a href="archive.html?category=columns">Статьи</a> <small>218</small></li>
-            <li><a href="archive.html?category=history">История</a> <small>176</small></li>
-            <li>Карточка-читалка <span class="tag v1">v1</span></li></ul></div>
-          <div class="branch"><div class="node"><span class="ic"></span>Медиа / Фото</div><ul>
-            <li><a href="map.html">Карта храмов</a> <span class="tag v1">v1</span></li>
-            <li>Фото — галерея <span class="tag v2">v2</span></li>
-            <li>Фотосток с поиском <span class="tag v2">v2</span></li></ul></div>
-          <div class="branch"><div class="node"><span class="ic"></span>Афиша</div><ul>
-            <li>Встречи · Концерты <small>149</small></li><li>Лекции · Реколлекции <small>51</small></li>
-            <li>Лента событий <span class="tag v2">v2</span></li></ul></div>
-          <div class="branch"><div class="node"><span class="ic"></span>Персоналии</div><ul>
-            <li><a href="archive.html?category=interview">Интервью</a> <small>167</small></li>
-            <li><a href="archive.html?category=svidetelstva">Свидетельства · Святые</a> <small>438</small></li>
-            <li>Мартиролог — как статьи <small>121</small> <span class="tag v1">v1</span></li>
-            <li>Структурные Персоналии · таймлайн <span class="tag v2">v2</span></li></ul></div>
-          <div class="branch"><div class="node"><span class="ic"></span>О Церкви · Прочее</div><ul>
-            <li><a href="archive.html?category=polka">Библиотека / Книжная полка</a> <small>204</small></li>
-            <li><a href="chat.html">Спросите Церковь</a> <span class="tag v1">v1</span></li>
-            <li>История КЦ в России · таймлайн <span class="tag v2">v2</span></li>
-            <li>«Я пришёл — что дальше» <span class="tag v2">v2</span></li>
-            <li><a href="map.html">Карта храмов</a> <span class="tag v1">v1 · handoff</span></li></ul></div>
-        </div>
-      </div></section>
-
-      <!-- ЧТО РАБОТАЕТ В V1 -->
-      <section class="block wrap">
-        <div class="block-head"><span class="kicker"></span><h2>Что работает в v1</h2><span class="rule"></span></div>
-        <div class="cols2">
-          <div class="panel v1head"><h3><span class="dot v1"></span>Заводится на запуске</h3>
-            <p>Перенос всего контента + портал, который открывается в браузере.</p>
-            <ul class="flist">
-              <li class="ai"><span class="mk">✦</span><div><b>Чат «Спросите Церковь» · нейросеть</b><small>Наше решение: ИИ-ответы + рекомендации из архива (RAG), стриминг в реальном времени</small></div></li>
-              <li class="ai"><span class="mk">✦</span><div><b>Карта храмов · handoff</b><small>Крутое демо на сайте + контракт API — он подключает свой Python одной строкой в config</small></div></li>
-              <li><span class="mk">✓</span><div><b>Главный экран</b><small>Слайдер «Главное» + хронологическая лента</small></div></li>
-              <li><span class="mk">✓</span><div><b>Новости с рубриками</b><small>Россия / Святой Престол / Мир — переключение на лету</small></div></li>
-              <li><span class="mk">✓</span><div><b>Ленты разделов и рубрик</b><small>Превью + «Загрузить ещё», меню из категорий</small></div></li>
-              <li><span class="mk">✓</span><div><b>Карточка публикации</b><small>Лид, фото, тело, «Поделиться», рекомендации</small></div></li>
-              <li><span class="mk">✓</span><div><b>Страница автора</b><small>Профиль + его публикации</small></div></li>
-              <li><span class="mk">✓</span><div><b>Библиотека</b><small>Книжная полка архива · рубрика polka</small></div></li>
-              <li><span class="mk">✓</span><div><b>Мартиролог как статьи</b><small>121 биография в категории «Персоналии»</small></div></li>
-              <li><span class="mk">✓</span><div><b>Админка для редакции</b><small>Публикация, рубрики, флаг «Главное»</small></div></li>
-              <li><span class="mk">✓</span><div><b>SEO-непрерывность</b><small>Слаги 1:1, 301-редиректы со старых URL</small></div></li>
-            </ul></div>
-          <div class="panel v2head"><h3><span class="dot v2"></span>Роадмап — задел есть, строится позже</h3>
-            <p>Модель данных и API v1 оставляют место под это, но в v1 не делается.</p>
-            <ul class="flist">
-              <li><span class="mk">→</span><div><b>Фотосток с поиском</b><small>Хэштеги, страницы фотографов, лицензии CC</small></div></li>
-              <li><span class="mk">→</span><div><b>«Я пришёл — что дальше»</b><small>Интерактивные траектории, экскурсия по храму</small></div></li>
-              <li><span class="mk">→</span><div><b>История КЦ в России</b><small>Интерактивный таймлайн по периодам</small></div></li>
-              <li><span class="mk">→</span><div><b>Яндекс.Карты вместо Leaflet</b><small>Опционально: свой API-ключ, UI уже отделён от данных</small></div></li>
-              <li><span class="mk">→</span><div><b>Структурный мартиролог</b><small>Даты/события в поля, поиск по Персоналиям</small></div></li>
-              <li><span class="mk">→</span><div><b>Центр семьи · Спросите Церковь</b><small>Приём вопросов священнику / психологу</small></div></li>
-              <li><span class="mk">→</span><div><b>Блоги с рейтингами</b><small>Страницы блогеров, топ по оценкам</small></div></li>
-              <li><span class="mk">→</span><div><b>«День Церкви»</b><small>Святой / чтения / молитва / цитата дня</small></div></li>
-              <li><span class="mk">→</span><div><b>Отдача контента в приложение</b><small>Тот же REST API кормит KMP-клиент</small></div></li>
-            </ul></div>
         </div>
       </section>
     </main>
@@ -181,7 +95,7 @@
         <span class="mark"><img src="yakatolik-logo.svg" alt="ЯКатолик" width="30" height="30" /></span>
         <span class="wm">ЯКатолик</span>
       </a>
-      <div>Католический портал ЯКатолик · v1 → роадмап<br />Вера · Разум · Красота · архив Рускатолик</div>
+      <div>Католический портал · архив Рускатолик</div>
     </div></footer>
 
     <nav class="app-tabbar" aria-label="Основная навигация">
@@ -207,9 +121,9 @@
       </a>
     </nav>
 
-    <script src="js/config.js?v=10"></script>
-    <script src="js/api.js?v=10"></script>
-    <script src="js/portal-nav.js?v=10"></script>
-    <script src="js/portal-home.js?v=10"></script>
+    <script src="js/config.js?v=11"></script>
+    <script src="js/api.js?v=11"></script>
+    <script src="js/portal-nav.js?v=11"></script>
+    <script src="js/portal-home.js?v=11"></script>
   </body>
 </html>

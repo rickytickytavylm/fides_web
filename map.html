@@ -13,7 +13,7 @@
     <link rel="apple-touch-icon" href="yakatolik-logo.svg" />
     <link rel="manifest" href="site.webmanifest" />
     <meta name="theme-color" content="#201E24" />
-    <link rel="stylesheet" href="portal.css?v=10" />
+    <link rel="stylesheet" href="portal.css?v=11" />
   </head>
   <body class="map-page">
     <header class="masthead">
@@ -39,7 +39,7 @@
           <div class="block-head" style="margin:0">
             <span class="kicker"></span>
             <h2>Храмы</h2>
-            <span class="chip v1" id="map-mode">live</span>
+            <span class="chip v1" id="map-mode" hidden></span>
           </div>
           <p class="map-meta" id="map-stats">католические приходы России</p>
           <label class="ps-search map-search">
@@ -55,7 +55,6 @@
         </div>
         <div class="map-list" id="map-list"></div>
         <div class="map-detail" id="map-detail" hidden></div>
-        <p class="map-handnote">Подключение своего API: <code>js/config.js</code> → <code>TEMPLES_API_BASE</code>. Контракт и допущения — в <a href="docs/MAPS.md">docs/MAPS.md</a>.</p>
       </aside>
       <div id="map-canvas" role="application" aria-label="Карта храмов"></div>
     </section>
@@ -84,9 +83,9 @@
     </nav>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="js/config.js?v=10"></script>
-    <script src="js/temples-api.js?v=10"></script>
-    <script src="js/portal-nav.js?v=10"></script>
-    <script src="js/map-page.js?v=10"></script>
+    <script src="js/config.js?v=11"></script>
+    <script src="js/temples-api.js?v=11"></script>
+    <script src="js/portal-nav.js?v=11"></script>
+    <script src="js/map-page.js?v=11"></script>
   </body>
 </html>
