@@ -38,6 +38,16 @@
     return 'news';
   }
 
+  // Настоящие авторы Рускатолика зашиты в теги; поле author у большинства — служебное «ruscatholic».
+  // Показываем только осмысленное имя.
+  function authorLabel(item) {
+    var a = (item && item.author ? String(item.author) : '').trim();
+    if (!a) return '';
+    var low = a.toLowerCase();
+    if (low === 'ruscatholic' || low === 'admin' || low === 'редакция') return '';
+    return a;
+  }
+
   var params = new URLSearchParams(location.search);
   var state = {
     category: params.get('category') || '',
@@ -139,16 +149,16 @@
       '<div class="lead-skeleton">' +
       '<div class="card-image sk"></div>' +
       '<div class="sk sk-line" style="width:32%;height:12px;margin:14px 0 10px"></div>' +
-      '<div class="sk sk-line" style="width:80%;height:26px;margin-bottom:10px"></div>' +
-      '<div class="sk sk-line" style="width:100%;height:14px"></div></div>';
+      '<div class="sk sk-line" style="width:80%;height:26px;margin-bottom:6px"></div></div>';
     var rows = '';
     for (var i = 0; i < (n || 5); i++) {
       rows +=
-        '<article class="feed-item"><div>' +
-        '<div class="sk sk-line" style="width:28%;height:11px;margin-bottom:10px"></div>' +
-        '<div class="sk sk-line" style="width:90%;height:20px;margin-bottom:8px"></div>' +
-        '<div class="sk sk-line" style="width:100%;height:13px"></div></div>' +
-        '<span class="feed-thumb sk"></span></article>';
+        '<article class="feed-item">' +
+        '<span class="feed-thumb sk"></span>' +
+        '<div class="feed-body">' +
+        '<div class="sk sk-line" style="width:32%;height:11px;margin-bottom:10px"></div>' +
+        '<div class="sk sk-line" style="width:92%;height:18px;margin-bottom:8px"></div>' +
+        '<div class="sk sk-line" style="width:60%;height:18px"></div></div></article>';
     }
     if (leadEl) leadEl.innerHTML = lead;
     if (feedEl) feedEl.innerHTML = rows;
@@ -168,6 +178,7 @@
         leadEl.innerHTML = '<p class="archive-empty">Ничего не найдено</p>';
       } else {
         var cat = (hero.categories && hero.categories[0]) || 'Материал';
+        var heroAuthor = authorLabel(hero);
         leadEl.innerHTML =
           '<a class="card-image" href="' +
           V.articleHref(hero) +
@@ -178,15 +189,14 @@
           V.escapeHtml(cat) +
           '</span><time>' +
           V.escapeHtml(V.formatDate(hero.date)) +
-          '</time></p>' +
+          '</time>' +
+          (heroAuthor ? '<span class="byline-chip">' + V.escapeHtml(heroAuthor) + '</span>' : '') +
+          '</p>' +
           '<h2><a href="' +
           V.articleHref(hero) +
           '">' +
           V.escapeHtml(hero.title) +
-          '</a></h2>' +
-          '<p>' +
-          V.escapeHtml(hero.excerpt || '') +
-          '</p>';
+          '</a></h2>';
       }
     }
 
@@ -195,8 +205,15 @@
       feedEl.innerHTML = list
         .map(function (item) {
           var c = (item.categories && item.categories[0]) || 'Материал';
+          var au = authorLabel(item);
           return (
-            '<article class="feed-item reveal visible"><div>' +
+            '<article class="feed-item reveal visible">' +
+            '<a class="feed-thumb" href="' +
+            V.articleHref(item) +
+            '" ' +
+            V.coverStyle(item.image) +
+            ' aria-label="Открыть"></a>' +
+            '<div class="feed-body">' +
             '<p class="story-meta"><span>' +
             V.escapeHtml(c) +
             '</span><time>' +
@@ -207,14 +224,8 @@
             '">' +
             V.escapeHtml(item.title) +
             '</a></h3>' +
-            '<p>' +
-            V.escapeHtml(String(item.excerpt || '').slice(0, 180)) +
-            '</p></div>' +
-            '<a class="feed-thumb" href="' +
-            V.articleHref(item) +
-            '" ' +
-            V.coverStyle(item.image) +
-            ' aria-label="Открыть"></a></article>'
+            (au ? '<p class="feed-author">' + V.escapeHtml(au) + '</p>' : '') +
+            '</div></article>'
           );
         })
         .join('');

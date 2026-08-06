@@ -1,3 +1,4 @@
 {
-  "id": "202608061555"
+  "id": "202608061609",
+  "note": "Bump this id on every deploy; clients reload when it changes."
 }
