@@ -1,26 +1,20 @@
-{
-  "name": "Вера и Разум",
-  "short_name": "Вера и Разум",
-  "description": "Католическое пространство: архив Рускатолик, медиа, радио и чат о вере.",
+﻿{
+  "name": "ЯКатолик",
+  "short_name": "ЯКатолик",
+  "description": "Католический портал: новости, архив Рускатолик, карта храмов, медиа и чат о вере.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait-primary",
-  "background_color": "#faf8f4",
-  "theme_color": "#100b07",
+  "orientation": "any",
+  "background_color": "#201E24",
+  "theme_color": "#201E24",
   "lang": "ru",
   "icons": [
     {
-      "src": "brand-logo.png",
-      "sizes": "192x192",
-      "type": "image/png",
+      "src": "yakatolik-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
       "purpose": "any"
-    },
-    {
-      "src": "brand-logo.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
     }
   ]
 }

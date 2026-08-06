@@ -7,15 +7,25 @@
     <title>Новости — ЯКатолик</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=5" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="portal.css?v=9" />
   </head>
   <body>
-    <header class="site-brandbar">
-      <a class="brand" href="index.html" aria-label="Вера и Разум — на главную">
-        <img class="brand-logo" src="brand-logo.png" alt="" width="32" height="32" />
-        <span class="brand-text">Вера и Разум</span>
-      </a>
+        <header class="masthead">
+      <div class="wrap">
+        <a class="logo" href="index.html">
+          <span class="mark"><img src="yakatolik-logo.svg" alt="ЯКатолик" width="34" height="34" /></span>
+          <span class="wm">ЯКатолик</span>
+        </a>
+        <nav class="top" aria-label="Разделы">
+          <a href="archive.html?category=news">Новости</a>
+          <a href="archive.html?category=columns">Статьи</a>
+          <a href="map.html">Карта</a>
+          <a href="archive.html?category=polka">Библиотека</a>
+          <a href="chat.html">Спросить</a>
+        </nav>
+        <a class="search" href="archive.html">🔍 Поиск</a>
+      </div>
     </header>
 
 
@@ -113,26 +123,26 @@
     </footer>
     <script src="script.js"></script>
       
-  <nav class="app-tabbar" aria-label="Основная навигация">
+      <nav class="app-tabbar" aria-label="Основная навигация">
       <a class="tab-item" href="index.html" data-tab="home">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 10.5 12 4l7.5 6.5V20a1 1 0 0 1-1 1h-4.2v-5.2h-4.6V21H5.5a1 1 0 0 1-1-1v-9.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
         <span>Главная</span>
       </a>
-      <a class="tab-item" href="archive.html" data-tab="archive">
+      <a class="tab-item" href="archive.html?category=news" data-tab="news">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h14v13H5z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 9h8M8 12.5h8M8 16h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span>Новости</span>
+      </a>
+      <a class="tab-item" href="archive.html?category=columns" data-tab="articles">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.5h12v15H6z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M9 8.5h6M9 12h6M9 15.5h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-        <span>Архив</span>
+        <span>Статьи</span>
       </a>
-      <a class="tab-item" href="audio.html" data-tab="audio">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6.8l10-2.3V16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="18" r="2.2" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="17" cy="16" r="2.2" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
-        <span>Аудио</span>
-      </a>
-      <a class="tab-item" href="video.html" data-tab="video">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10.2 9.2v5.6L15.4 12z" fill="currentColor"/></svg>
-        <span>Видео</span>
+      <a class="tab-item" href="map.html" data-tab="map">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4.5 4.5 6.2v13.3L9 17.8l6 1.7 4.5-1.7V4.5L15 6.2 9 4.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 4.5v13.3M15 6.2v13.3" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+        <span>Карта</span>
       </a>
       <a class="tab-item" href="chat.html" data-tab="chat">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 6.5h13a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1-1.5 1.5H10l-3.8 2.6V16.5H5.5A1.5 1.5 0 0 1 4 15V8a1.5 1.5 0 0 1 1.5-1.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
-        <span>Чат</span>
+        <span>Спросить</span>
       </a>
     </nav>
   </body>

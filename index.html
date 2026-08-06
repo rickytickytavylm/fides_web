@@ -14,7 +14,7 @@
     <meta name="theme-color" content="#201E24" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="ЯКатолик" />
-    <link rel="stylesheet" href="portal.css?v=6" />
+    <link rel="stylesheet" href="portal.css?v=9" />
   </head>
   <body>
     <header class="masthead">
@@ -26,9 +26,8 @@
         <nav class="top" aria-label="Разделы">
           <a href="archive.html?category=news">Новости</a>
           <a href="archive.html?category=columns">Статьи</a>
-          <a href="archive.html?category=spirituality">Духовность</a>
-          <a href="video.html">Видео</a>
-          <a href="audio.html">Аудио</a>
+          <a href="map.html">Карта</a>
+          <a href="archive.html?category=polka">Библиотека</a>
           <a href="chat.html">Спросить</a>
         </nav>
         <a class="search" href="archive.html">🔍 Поиск</a>
@@ -88,6 +87,15 @@
             </div>
             <div class="widget future"><h3><span class="wdot f"></span>Блоги</h3>
               <ul><li>Авторские колонки прихожан</li><li>Страница блогера + рейтинг</li><li>Топ по оценкам читателей</li></ul></div>
+            <div class="widget live">
+              <h3><span class="wdot l"></span>Карта храмов</h3>
+              <ul>
+                <li>Демо UI на сайте · Leaflet</li>
+                <li>Контракт API под его Python</li>
+                <li>Одна строка в <code>js/config.js</code></li>
+              </ul>
+              <a class="wlink" href="map.html">Открыть карту →</a>
+            </div>
             <div class="widget future"><h3><span class="wdot f"></span>Фотосток</h3>
               <ul><li>Поиск по хэштегам</li><li>Карточка фото · автор · лицензия CC</li><li>Страницы фотографов</li></ul></div>
           </aside>
@@ -112,8 +120,8 @@
             <li><a href="archive.html?category=history">История</a> <small>176</small></li>
             <li>Карточка-читалка <span class="tag v1">v1</span></li></ul></div>
           <div class="branch"><div class="node"><span class="ic"></span>Медиа / Фото</div><ul>
-            <li><a href="video.html">Видео</a> <span class="tag v1">v1</span></li>
-            <li><a href="audio.html">Аудио · Проповеди</a> <span class="tag v1">v1</span></li>
+            <li><a href="map.html">Карта храмов</a> <span class="tag v1">v1</span></li>
+            <li>Фото — галерея <span class="tag v2">v2</span></li>
             <li>Фотосток с поиском <span class="tag v2">v2</span></li></ul></div>
           <div class="branch"><div class="node"><span class="ic"></span>Афиша</div><ul>
             <li>Встречи · Концерты <small>149</small></li><li>Лекции · Реколлекции <small>51</small></li>
@@ -128,7 +136,7 @@
             <li><a href="chat.html">Спросите Церковь</a> <span class="tag v1">v1</span></li>
             <li>История КЦ в России · таймлайн <span class="tag v2">v2</span></li>
             <li>«Я пришёл — что дальше» <span class="tag v2">v2</span></li>
-            <li>Карта храмов (из приложения) <span class="tag v2">v2</span></li></ul></div>
+            <li><a href="map.html">Карта храмов</a> <span class="tag v1">v1 · handoff</span></li></ul></div>
         </div>
       </div></section>
 
@@ -140,12 +148,13 @@
             <p>Перенос всего контента + портал, который открывается в браузере.</p>
             <ul class="flist">
               <li class="ai"><span class="mk">✦</span><div><b>Чат «Спросите Церковь» · нейросеть</b><small>Наше решение: ИИ-ответы + рекомендации из архива (RAG), стриминг в реальном времени</small></div></li>
+              <li class="ai"><span class="mk">✦</span><div><b>Карта храмов · handoff</b><small>Крутое демо на сайте + контракт API — он подключает свой Python одной строкой в config</small></div></li>
               <li><span class="mk">✓</span><div><b>Главный экран</b><small>Слайдер «Главное» + хронологическая лента</small></div></li>
               <li><span class="mk">✓</span><div><b>Новости с рубриками</b><small>Россия / Святой Престол / Мир — переключение на лету</small></div></li>
               <li><span class="mk">✓</span><div><b>Ленты разделов и рубрик</b><small>Превью + «Загрузить ещё», меню из категорий</small></div></li>
               <li><span class="mk">✓</span><div><b>Карточка публикации</b><small>Лид, фото, тело, «Поделиться», рекомендации</small></div></li>
               <li><span class="mk">✓</span><div><b>Страница автора</b><small>Профиль + его публикации</small></div></li>
-              <li><span class="mk">✓</span><div><b>Медиа-галереи</b><small>Видео и Фото простыми списками</small></div></li>
+              <li><span class="mk">✓</span><div><b>Библиотека</b><small>Книжная полка архива · рубрика polka</small></div></li>
               <li><span class="mk">✓</span><div><b>Мартиролог как статьи</b><small>121 биография в категории «Персоналии»</small></div></li>
               <li><span class="mk">✓</span><div><b>Админка для редакции</b><small>Публикация, рубрики, флаг «Главное»</small></div></li>
               <li><span class="mk">✓</span><div><b>SEO-непрерывность</b><small>Слаги 1:1, 301-редиректы со старых URL</small></div></li>
@@ -156,7 +165,7 @@
               <li><span class="mk">→</span><div><b>Фотосток с поиском</b><small>Хэштеги, страницы фотографов, лицензии CC</small></div></li>
               <li><span class="mk">→</span><div><b>«Я пришёл — что дальше»</b><small>Интерактивные траектории, экскурсия по храму</small></div></li>
               <li><span class="mk">→</span><div><b>История КЦ в России</b><small>Интерактивный таймлайн по периодам</small></div></li>
-              <li><span class="mk">→</span><div><b>Карта храмов на сайте</b><small>Из diocese-API приложения ЯКатолик</small></div></li>
+              <li><span class="mk">→</span><div><b>Яндекс.Карты вместо Leaflet</b><small>Опционально: свой API-ключ, UI уже отделён от данных</small></div></li>
               <li><span class="mk">→</span><div><b>Структурный мартиролог</b><small>Даты/события в поля, поиск по Персоналиям</small></div></li>
               <li><span class="mk">→</span><div><b>Центр семьи · Спросите Церковь</b><small>Приём вопросов священнику / психологу</small></div></li>
               <li><span class="mk">→</span><div><b>Блоги с рейтингами</b><small>Страницы блогеров, топ по оценкам</small></div></li>
@@ -180,17 +189,17 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 10.5 12 4l7.5 6.5V20a1 1 0 0 1-1 1h-4.2v-5.2h-4.6V21H5.5a1 1 0 0 1-1-1v-9.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
         <span>Главная</span>
       </a>
-      <a class="tab-item" href="archive.html" data-tab="archive">
+      <a class="tab-item" href="archive.html?category=news" data-tab="news">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h14v13H5z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 9h8M8 12.5h8M8 16h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span>Новости</span>
+      </a>
+      <a class="tab-item" href="archive.html?category=columns" data-tab="articles">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.5h12v15H6z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M9 8.5h6M9 12h6M9 15.5h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-        <span>Архив</span>
+        <span>Статьи</span>
       </a>
-      <a class="tab-item" href="audio.html" data-tab="audio">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6.8l10-2.3V16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="18" r="2.2" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="17" cy="16" r="2.2" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
-        <span>Аудио</span>
-      </a>
-      <a class="tab-item" href="video.html" data-tab="video">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10.2 9.2v5.6L15.4 12z" fill="currentColor"/></svg>
-        <span>Видео</span>
+      <a class="tab-item" href="map.html" data-tab="map">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4.5 4.5 6.2v13.3L9 17.8l6 1.7 4.5-1.7V4.5L15 6.2 9 4.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 4.5v13.3M15 6.2v13.3" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+        <span>Карта</span>
       </a>
       <a class="tab-item" href="chat.html" data-tab="chat">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 6.5h13a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1-1.5 1.5H10l-3.8 2.6V16.5H5.5A1.5 1.5 0 0 1 4 15V8a1.5 1.5 0 0 1 1.5-1.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
@@ -198,8 +207,9 @@
       </a>
     </nav>
 
-    <script src="js/api.js?v=6"></script>
-    <script src="js/portal-nav.js?v=6"></script>
-    <script src="js/portal-home.js?v=6"></script>
+    <script src="js/config.js?v=9"></script>
+    <script src="js/api.js?v=9"></script>
+    <script src="js/portal-nav.js?v=9"></script>
+    <script src="js/portal-home.js?v=9"></script>
   </body>
 </html>

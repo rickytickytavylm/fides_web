@@ -3,21 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Аудио и проповеди — ЯКатолик" />
-    <title>Аудио — ЯКатолик</title>
+    <meta name="description" content="Карта католических храмов — ЯКатолик" />
+    <title>Карта храмов — ЯКатолик</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <link rel="icon" href="yakatolik-logo.svg" />
     <link rel="apple-touch-icon" href="yakatolik-logo.svg" />
     <link rel="manifest" href="site.webmanifest" />
     <meta name="theme-color" content="#201E24" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="ЯКатолик" />
     <link rel="stylesheet" href="portal.css?v=9" />
   </head>
-  <body>
-        <header class="masthead">
+  <body class="map-page">
+    <header class="masthead">
       <div class="wrap">
         <a class="logo" href="index.html">
           <span class="mark"><img src="yakatolik-logo.svg" alt="ЯКатолик" width="34" height="34" /></span>
@@ -34,39 +33,34 @@
       </div>
     </header>
 
-
-<main class="page-shell">
-      <nav class="breadcrumbs in-shell" aria-label="Хлебные крошки">
-        <a href="index.html">Главная</a><span>/</span><span>Аудио</span>
-      </nav>
-      <header class="page-head in-shell">
-        <div>
-          <p class="eyebrow">Слушать</p>
-          <h1>Аудио</h1>
+    <section class="map-shell">
+      <aside class="map-side">
+        <div class="map-side-head">
+          <div class="block-head" style="margin:0">
+            <span class="kicker"></span>
+            <h2>Храмы</h2>
+            <span class="chip v1" id="map-mode">live</span>
+          </div>
+          <p class="map-meta" id="map-stats">католические приходы России</p>
+          <label class="ps-search map-search">
+            <span aria-hidden="true">🔍</span>
+            <input id="map-search" type="search" placeholder="Название, город, епархия…" />
+          </label>
+          <div class="map-actions">
+            <button type="button" id="map-locate">Рядом</button>
+            <button type="button" id="map-russia">Вся Россия</button>
+          </div>
+          <p class="map-status" id="map-status"></p>
+          <p class="map-count" id="map-count"></p>
         </div>
-        <p class="page-desc">Проповеди о. Павла Крупы — для тишины, дороги и воскресного размышления.</p>
-      </header>
+        <div class="map-list" id="map-list"></div>
+        <div class="map-detail" id="map-detail" hidden></div>
+        <p class="map-handnote">Подключение своего API: <code>js/config.js</code> → <code>TEMPLES_API_BASE</code>. Контракт и допущения — в <a href="docs/MAPS.md">docs/MAPS.md</a>.</p>
+      </aside>
+      <div id="map-canvas" role="application" aria-label="Карта храмов"></div>
+    </section>
 
-      <div class="audio-player-bar" id="audio-bar" hidden>
-        <p id="audio-now">—</p>
-        <audio id="audio-el" controls preload="none"></audio>
-      </div>
-
-      <div class="audio-list" id="audio-list"></div>
-      <p class="page-desc in-shell" style="margin-top:32px">
-        <a class="text-link" href="radio.html">Радио Мария <span>→</span></a>
-      </p>
-    </main>
-
-    <footer class="site-footer site-footer-narrow">
-      <div class="footer-brand">
-        <img class="brand-logo" src="yakatolik-logo.svg" alt="" width="40" height="40" />
-        <div><strong>ЯКатолик</strong><p>Аудио</p></div>
-      </div>
-      <p class="footer-copy">© ЯКатолик</p>
-    </footer>
-
-        <nav class="app-tabbar" aria-label="Основная навигация">
+    <nav class="app-tabbar" aria-label="Основная навигация">
       <a class="tab-item" href="index.html" data-tab="home">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 10.5 12 4l7.5 6.5V20a1 1 0 0 1-1 1h-4.2v-5.2h-4.6V21H5.5a1 1 0 0 1-1-1v-9.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
         <span>Главная</span>
@@ -88,11 +82,11 @@
         <span>Спросить</span>
       </a>
     </nav>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="js/config.js?v=9"></script>
-    <script src="js/api.js?v=9"></script>
+    <script src="js/temples-api.js?v=9"></script>
     <script src="js/portal-nav.js?v=9"></script>
-    <script src="js/app.js?v=9"></script>
-    <script src="js/audio.js?v=9"></script>
-      
+    <script src="js/map-page.js?v=9"></script>
   </body>
 </html>

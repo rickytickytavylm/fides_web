@@ -6,11 +6,14 @@
   'use strict';
 
   // Как в Вера и Разум/src/config/api.js
+  // Базу можно переопределить в js/config.js → ARCHIVE_API_BASE
   var RAILWAY_DIRECT = 'https://fides-at-ratioserver-production.up.railway.app';
   var PROXY_URL = 'https://fides.186-246-11-81.sslip.io';
   var USE_PROXY = true;
 
-  var API_BASE = USE_PROXY ? PROXY_URL : RAILWAY_DIRECT;
+  var API_BASE =
+    (global.VeraConfig && global.VeraConfig.ARCHIVE_API_BASE) ||
+    (USE_PROXY ? PROXY_URL : RAILWAY_DIRECT);
   var INLINE_CDN = 'https://storage.yandexcloud.net/fidesetratio/ruscatholic/inline/';
 
   var ARCHIVE_CHIPS = [

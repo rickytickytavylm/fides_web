@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" href="yakatolik-logo.svg" />
     <link rel="manifest" href="site.webmanifest" />
     <meta name="theme-color" content="#201E24" />
-    <link rel="stylesheet" href="portal.css?v=6" />
+    <link rel="stylesheet" href="portal.css?v=9" />
   </head>
   <body>
     <header class="masthead">
@@ -24,9 +24,8 @@
         <nav class="top" aria-label="Разделы">
           <a href="archive.html?category=news">Новости</a>
           <a href="archive.html?category=columns">Статьи</a>
-          <a href="archive.html?category=spirituality">Духовность</a>
-          <a href="video.html">Видео</a>
-          <a href="audio.html">Аудио</a>
+          <a href="map.html">Карта</a>
+          <a href="archive.html?category=polka">Библиотека</a>
           <a href="chat.html">Спросить</a>
         </nav>
         <a class="search" href="archive.html">🔍 Поиск</a>
@@ -82,17 +81,17 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 10.5 12 4l7.5 6.5V20a1 1 0 0 1-1 1h-4.2v-5.2h-4.6V21H5.5a1 1 0 0 1-1-1v-9.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
         <span>Главная</span>
       </a>
-      <a class="tab-item" href="archive.html" data-tab="archive">
+      <a class="tab-item" href="archive.html?category=news" data-tab="news">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h14v13H5z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 9h8M8 12.5h8M8 16h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span>Новости</span>
+      </a>
+      <a class="tab-item" href="archive.html?category=columns" data-tab="articles">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.5h12v15H6z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M9 8.5h6M9 12h6M9 15.5h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-        <span>Архив</span>
+        <span>Статьи</span>
       </a>
-      <a class="tab-item" href="photostock.html" data-tab="photo">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="9" cy="11" r="1.8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4.5 18l4.5-4 3 2.5 3-3 4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>Фото</span>
-      </a>
-      <a class="tab-item" href="video.html" data-tab="video">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10.2 9.2v5.6L15.4 12z" fill="currentColor"/></svg>
-        <span>Видео</span>
+      <a class="tab-item" href="map.html" data-tab="map">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4.5 4.5 6.2v13.3L9 17.8l6 1.7 4.5-1.7V4.5L15 6.2 9 4.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 4.5v13.3M15 6.2v13.3" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+        <span>Карта</span>
       </a>
       <a class="tab-item" href="chat.html" data-tab="chat">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 6.5h13a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1-1.5 1.5H10l-3.8 2.6V16.5H5.5A1.5 1.5 0 0 1 4 15V8a1.5 1.5 0 0 1 1.5-1.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
@@ -100,8 +99,9 @@
       </a>
     </nav>
 
-    <script src="js/api.js?v=6"></script>
-    <script src="js/portal-nav.js?v=6"></script>
-    <script src="js/photostock.js?v=6"></script>
+    <script src="js/config.js?v=9"></script>
+    <script src="js/api.js?v=9"></script>
+    <script src="js/portal-nav.js?v=9"></script>
+    <script src="js/photostock.js?v=9"></script>
   </body>
 </html>
