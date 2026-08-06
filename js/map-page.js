@@ -23,14 +23,12 @@
     attributionControl: false,
   }).setView(MOSCOW, 11);
 
-  // Свой attribution без дефолтного prefix Leaflet (там бывает эмодзи-флаг)
-  L.control.attribution({ prefix: false, position: 'bottomright' }).addTo(map);
   L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-  // Тёмные тайлы под портал (Carto Dark Matter — без ключа)
+  // Тёмные тайлы; attribution выключен целиком (без prefix/флага Leaflet)
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     maxZoom: 19,
-    attribution: '&copy; OpenStreetMap &copy; CARTO',
+    attribution: '',
   }).addTo(map);
 
   layerGroup = L.layerGroup().addTo(map);

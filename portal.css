@@ -417,8 +417,7 @@ body.map-page .masthead { flex: none; }
   line-height: 34px !important; border-radius: 10px !important;
 }
 .leaflet-bar { border: 0 !important; box-shadow: var(--shadow-card) !important; }
-.leaflet-control-attribution { background: rgba(32, 30, 36, .75) !important; color: var(--stone-500) !important; font-size: 10px !important; }
-.leaflet-control-attribution a { color: var(--stone-700) !important; }
+.leaflet-control-attribution { display: none !important; }
 
 @media (max-width: 880px) {
   body.map-page { overflow: auto; height: auto; padding-bottom: 92px; }
@@ -474,7 +473,12 @@ body:not(.map-page) { padding-bottom: 0; }
 .lead-item { padding-bottom: 28px; margin-bottom: 8px; border-bottom: 1px solid var(--line); }
 .lead-item .card-image, .lead-item .story-image {
   display: block; height: min(38vw, 360px); border-radius: 18px; margin-bottom: 18px;
-  background: var(--surface-2) center/cover no-repeat; box-shadow: var(--shadow-card);
+  background-color: var(--surface-2);
+  background-image: var(--img);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: var(--shadow-card);
 }
 .lead-item h2 { margin: 0 0 10px; font-size: clamp(24px, 3vw, 34px); line-height: 1.15; }
 .lead-item h2 a:hover { color: var(--bronze-dark); }
@@ -485,7 +489,14 @@ body:not(.map-page) { padding-bottom: 0; }
 .feed-item h3 { margin: 0 0 8px; font-size: clamp(18px, 2vw, 22px); line-height: 1.2; }
 .feed-item h3 a:hover { color: var(--bronze-dark); }
 .feed-item p:not(.story-meta) { margin: 0; color: var(--stone-700); font-size: 13px; line-height: 1.55; }
-.feed-thumb { display: block; height: 96px; border-radius: 12px; background: var(--surface-2) center/cover no-repeat; }
+.feed-thumb {
+  display: block; height: 96px; border-radius: 12px;
+  background-color: var(--surface-2);
+  background-image: var(--img);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 .load-more, .loadmore {
   margin: 28px auto 0; display: block; font-family: var(--ff); font-weight: 700; font-size: 13px;
   color: var(--bronze-dark); background: transparent; border: 0; padding: 12px 8px; border-radius: 0;
