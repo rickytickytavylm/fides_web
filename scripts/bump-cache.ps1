@@ -11,7 +11,8 @@ $pages = @(
   'index.html', 'archive.html', 'article.html', 'map.html', 'chat.html',
   'video.html', 'audio.html', 'radio.html', 'photostock.html', 'sections.html',
   'library.html', 'book.html', 'church.html', 'spiritual-life.html',
-  'authors.html', 'author.html', 'cycle.html', 'calendar.html', 'events.html', 'organizer.html'
+  'authors.html', 'author.html', 'cycle.html', 'calendar.html', 'events.html', 'organizer.html',
+  'page.html', 'media.html', 'category.html'
 )
 
 foreach ($f in $pages) {
@@ -19,6 +20,13 @@ foreach ($f in $pages) {
   $path = (Resolve-Path $f).Path
   $c = [System.IO.File]::ReadAllText($path)
   $c = $c -replace '\?v=\d+', "?v=$id"
+  $c = $c -replace '(<meta name="theme-color" content=")[^"]*(")', ('$1' + '#F3EBDD' + '$2')
+  if ($c -notmatch 'yak_theme_boot') {
+    $themeBoot = "<script id=`"yak_theme_boot`">try{document.documentElement.dataset.theme=localStorage.getItem('yak_theme')==='twilight'?'twilight':'light'}catch(e){document.documentElement.dataset.theme='light'}</script>"
+    if ($c -match '<link rel="stylesheet" href="portal\.css') {
+      $c = $c -replace '(<link rel="stylesheet" href="portal\.css)', ($themeBoot + "`r`n    " + '$1')
+    }
+  }
   if ($c -match 'YAK_BUILD') {
     $c = $c -replace "window\.YAK_BUILD\s*=\s*'[^']*'", "window.YAK_BUILD = '$id'"
   } else {
@@ -33,6 +41,15 @@ foreach ($f in $pages) {
     $c = $c -replace '</body>', ("    <script src=`"js/cache-bust.js?v=$id`"></script>`r`n  </body>")
   } else {
     $c = $c -replace 'js/cache-bust\.js\?v=[^"]+', "js/cache-bust.js?v=$id"
+  }
+  if ($c -notmatch 'js/theme\.js') {
+    if ($c -match '<script src="js/cache-bust\.js') {
+      $c = $c -replace '(<script src="js/cache-bust\.js)', ("<script src=`"js/theme.js?v=$id`"></script>`r`n    " + '$1')
+    } else {
+      $c = $c -replace '</body>', ("    <script src=`"js/theme.js?v=$id`"></script>`r`n  </body>")
+    }
+  } else {
+    $c = $c -replace 'js/theme\.js\?v=[^"]+', "js/theme.js?v=$id"
   }
   [System.IO.File]::WriteAllText($path, $c)
 }

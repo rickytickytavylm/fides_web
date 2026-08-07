@@ -1,13 +1,50 @@
 /* ============================================================
-   ЯКатолик — портал (тёмная тема)
+   ЯКатолик — портал
+   Основная тема: «Тёплый свет»; тёмная: «Сумерки»
    ============================================================ */
 
 :root {
+  color-scheme: light;
   --ff: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --serif: 'Cormorant Garamond', Georgia, serif;
   --maxw: 1180px;
   --ls: normal;
 
+  --paper: #F8F2E8;
+  --ground: #F3EBDD;
+  --surface: #FFFDF8;
+  --surface-2: #EDE2D2;
+  --ink: #2B241E;
+  --charcoal: #382E27;
+  --stone-700: #675C52;
+  --stone-500: #897C70;
+  --stone-300: #C7B9A8;
+  --stone-100: #E5D8C8;
+
+  --bronze: #A9784E;
+  --bronze-dark: #85562F;
+  --bronze-deep: #674126;
+  --accent: #AC5633;
+  --accent-2: #C76F43;
+  --accent-soft: rgba(172, 86, 51, .12);
+  --highlight: #B98525;
+
+  --marian: #4778AC;
+  --vatican: #9B7416;
+  --sage: #6E8252;
+  --rose: #A84F65;
+  --line: #DDD0BF;
+  --line-strong: #C8B7A3;
+  --v1: #2F8178;
+  --v1-soft: rgba(47, 129, 120, .12);
+  --v2: #B86D29;
+  --v2-soft: rgba(184, 109, 41, .12);
+  --shadow-card: 0 1px 2px rgba(68, 45, 27, .08), 0 8px 24px rgba(68, 45, 27, .08);
+  --shadow-lift: 0 12px 32px rgba(68, 45, 27, .15);
+}
+
+:root[data-theme="twilight"] {
+  color-scheme: dark;
   --paper: #2A282D;
   --ground: #201E24;
   --surface: #2E2C33;
@@ -18,7 +55,6 @@
   --stone-500: #9E9E9E;
   --stone-300: #5A554F;
   --stone-100: #3F3C3A;
-
   --bronze: #C99A6B;
   --bronze-dark: #D8B98A;
   --bronze-deep: #B89B6B;
@@ -26,7 +62,6 @@
   --accent-2: #C9713F;
   --accent-soft: rgba(172, 86, 51, .18);
   --highlight: #FFD700;
-
   --marian: #6FA0D8;
   --vatican: #E8B931;
   --sage: #9AAD77;
@@ -962,6 +997,56 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 .footer-links { display: flex; gap: 14px; flex-wrap: wrap; }
 .footer-links a { color: var(--stone-700); font-weight: 600; }
 .footer-links a:hover { color: var(--bronze-dark); }
+
+/* Оформление рядом с календарём: название на десктопе, тумблер на мобильном */
+.header-tools {
+  display: inline-flex; align-items: center; gap: 8px; flex: none;
+}
+.theme-toggle {
+  height: 42px; display: inline-flex; align-items: center; gap: 8px;
+  padding: 0 11px 0 8px; border-radius: 14px;
+  border: 1px solid var(--line-strong); background: var(--ground); color: var(--ink);
+  font: 700 11.5px/1 var(--ff); cursor: pointer; white-space: nowrap;
+  transition: border-color .15s, background .15s;
+}
+.theme-toggle:hover { border-color: var(--bronze); background: var(--surface-2); }
+.theme-toggle-track {
+  position: relative; width: 44px; height: 24px; border-radius: 999px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 4px; background: var(--surface-2); color: var(--stone-500);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.theme-toggle-track svg { width: 13px; height: 13px; display: block; z-index: 1; }
+.theme-toggle-track i {
+  position: absolute; top: 3px; left: 3px; width: 18px; height: 18px;
+  border-radius: 50%; background: var(--surface); box-shadow: var(--shadow-card);
+  transition: transform .2s ease;
+}
+.theme-toggle.is-twilight .theme-toggle-track i { transform: translateX(20px); }
+.theme-toggle:not(.is-twilight) .theme-sun { color: var(--bronze-dark); }
+.theme-toggle.is-twilight .theme-moon { color: var(--bronze-dark); }
+.theme-toggle-name { min-width: 72px; text-align: left; }
+
+/* Светлая стеклянная навигация; «Сумерки» сохраняют прежний вид */
+:root:not([data-theme="twilight"]) .app-tabbar {
+  border-color: rgba(116, 86, 59, .15);
+  box-shadow: 0 10px 34px rgba(77, 52, 31, .18), inset 0 1px 0 rgba(255, 255, 255, .7);
+}
+:root:not([data-theme="twilight"]) .author-ava.initials {
+  background: linear-gradient(145deg, #E6D7C5, #D8C4AE);
+}
+:root:not([data-theme="twilight"]) .map-sheet-close {
+  background: rgba(43, 36, 30, .72);
+}
+
+@media (max-width: 880px) {
+  .header-tools { gap: 6px; }
+  .theme-toggle {
+    width: 54px; height: 40px; justify-content: center;
+    padding: 0; border-radius: 12px;
+  }
+  .theme-toggle-name { display: none; }
+}
 
 /* Legacy brandbar hide if leftover */
 .site-brandbar { display: none !important; }
