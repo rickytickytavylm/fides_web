@@ -20,15 +20,15 @@
   }
 
   var RUBRICS = [
-    { slug: 'spirituality', title: 'Духовность', tone: 'a' },
-    { slug: 'obraz-zhizni', title: 'Образ жизни', tone: 'b' },
-    { slug: 'kultura', title: 'Культура', tone: 'c' },
-    { slug: 'history', title: 'История', tone: 'd' },
-    { slug: 'biografii', title: 'Биографии', tone: 'a' },
-    { slug: 'saints', title: 'Святые', tone: 'b' },
-    { slug: 'bible', title: 'Библеистика', tone: 'c' },
-    { slug: 'liturgy', title: 'Литургика', tone: 'd' },
-    { slug: 'puteshestviya', title: 'Путешествия', tone: 'e', wide: true },
+    { slug: 'spirituality', title: 'Духовность', tone: 'a', image: 'assets/cards/articles-spirituality.webp' },
+    { slug: 'obraz-zhizni', title: 'Образ жизни', tone: 'b', image: 'assets/cards/articles-lifestyle.webp' },
+    { slug: 'kultura', title: 'Культура', tone: 'c', image: 'assets/cards/articles-culture.webp' },
+    { slug: 'history', title: 'История', tone: 'd', image: 'assets/cards/articles-history.webp' },
+    { slug: 'biografii', title: 'Биографии', tone: 'a', image: 'assets/cards/articles-biographies.webp' },
+    { slug: 'saints', title: 'Святые', tone: 'b', image: 'assets/cards/articles-saints.webp' },
+    { slug: 'bible', title: 'Библеистика', tone: 'c', image: 'assets/cards/articles-biblical-studies.webp' },
+    { slug: 'liturgy', title: 'Литургика', tone: 'd', image: 'assets/cards/articles-liturgy.webp' },
+    { slug: 'puteshestviya', title: 'Путешествия', tone: 'e', wide: true, image: 'assets/cards/articles-travel.webp' },
   ];
 
   // Темы: где тега ещё нет — временный поиск q (см. HANDOFF §6)
@@ -41,32 +41,37 @@
   ];
 
   var QA = [
-    { title: 'Вопросы священнику', slug: 'ask-priest', tone: 'a' },
-    { title: 'Вопросы психологу', slug: 'psiholog', tone: 'b' },
+    { title: 'Вопросы священнику', slug: 'ask-priest', tone: 'a', image: 'assets/cards/articles-ask-priest.webp' },
+    { title: 'Вопросы психологу', slug: 'psiholog', tone: 'b', image: 'assets/cards/articles-ask-psychologist.webp' },
   ];
 
   var IDEAS = [
-    { title: 'Это интересно', slug: 'eto-interesno', tone: 'c' },
-    { title: 'Кино со смыслом', slug: 'kino-so-smyislom', tone: 'd' },
-    { title: 'Католическая кухня', slug: 'cook', tone: 'e' },
+    { title: 'Это интересно', slug: 'eto-interesno', tone: 'c', image: 'assets/cards/articles-interesting.webp' },
+    { title: 'Кино со смыслом', slug: 'kino-so-smyislom', tone: 'd', image: 'assets/cards/articles-meaningful-cinema.webp' },
+    { title: 'Католическая кухня', slug: 'cook', tone: 'e', image: 'assets/cards/articles-catholic-kitchen.webp' },
   ];
 
   var VOICES = [
-    { title: 'Интервью', slug: 'interview' },
-    { title: 'Свидетельства', slug: 'svidetelstva' },
-    { title: 'Проповеди', slug: 'propovedi' },
+    { title: 'Интервью', slug: 'interview', image: 'assets/cards/articles-interviews.webp' },
+    { title: 'Свидетельства', slug: 'svidetelstva', image: 'assets/cards/articles-testimonies.webp' },
+    { title: 'Проповеди', slug: 'propovedi', image: 'assets/cards/articles-sermons.webp' },
   ];
 
   function toneClass(item, i) {
-    if (item.wide) return 'route-card wide tone-' + (item.tone || 'wide');
-    return 'route-card tone-' + (item.tone || 'abcd'[i % 4]);
+    var classes = item.wide
+      ? 'route-card wide tone-' + (item.tone || 'wide')
+      : 'route-card tone-' + (item.tone || 'abcd'[i % 4]);
+    return classes + (item.image ? ' has-image' : '');
   }
 
   function cardGrid(items, kicker) {
     var html = '<div class="route-grid">';
     items.forEach(function (item, i) {
+      var imageStyle = item.image
+        ? ' style="--card-image:url(\'' + esc(item.image) + '\')"'
+        : '';
       html +=
-        '<a class="' + toneClass(item, i) + '" href="' + esc(hrefFor(item)) + '">' +
+        '<a class="' + toneClass(item, i) + '"' + imageStyle + ' href="' + esc(hrefFor(item)) + '">' +
         '<span class="route-kicker">' + esc(kicker || 'Открыть') + '</span>' +
         '<strong>' + esc(item.title) + '</strong>' +
         (item.note ? '<span class="route-sub">' + esc(item.note) + '</span>' : '') +

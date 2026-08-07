@@ -1146,14 +1146,23 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
   line-height: 1.15; letter-spacing: -.02em;
 }
 .route-sub { margin-top: 8px; font-size: 13px; opacity: .85; line-height: 1.4; }
-.route-card.tone-a { background: linear-gradient(145deg, #3d4f6b, #6b86b0); }
-.route-card.tone-b { background: linear-gradient(145deg, #5a3d2b, #a67c52); }
-.route-card.tone-c { background: linear-gradient(145deg, #3f5240, #7a8f6a); }
-.route-card.tone-d { background: linear-gradient(145deg, #5c3a45, #b06a7a); }
-.route-card.tone-e { background: linear-gradient(145deg, #2f4558, #5d7a8c); }
-.route-card.tone-f { background: linear-gradient(145deg, #4a3b28, #c9a227); }
-.route-card.tone-wide { background: linear-gradient(145deg, #4a3b28, #c9a227); }
-.route-card.tone-accent { background: linear-gradient(145deg, #6b3a1e, #c9713f); }
+.route-card.tone-a { --card-tone: linear-gradient(145deg, #3d4f6b, #6b86b0); background: var(--card-tone); }
+.route-card.tone-b { --card-tone: linear-gradient(145deg, #5a3d2b, #a67c52); background: var(--card-tone); }
+.route-card.tone-c { --card-tone: linear-gradient(145deg, #3f5240, #7a8f6a); background: var(--card-tone); }
+.route-card.tone-d { --card-tone: linear-gradient(145deg, #5c3a45, #b06a7a); background: var(--card-tone); }
+.route-card.tone-e { --card-tone: linear-gradient(145deg, #2f4558, #5d7a8c); background: var(--card-tone); }
+.route-card.tone-f { --card-tone: linear-gradient(145deg, #4a3b28, #c9a227); background: var(--card-tone); }
+.route-card.tone-wide { --card-tone: linear-gradient(145deg, #4a3b28, #c9a227); background: var(--card-tone); }
+.route-card.tone-accent { --card-tone: linear-gradient(145deg, #6b3a1e, #c9713f); background: var(--card-tone); }
+.route-card.has-image {
+  background-image:
+    linear-gradient(180deg, rgba(20,15,12,.08) 18%, rgba(20,15,12,.84) 100%),
+    var(--card-image),
+    var(--card-tone);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 /* ---------- Articles hub ---------- */
 .articles-toolbar {
   display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 22px;
