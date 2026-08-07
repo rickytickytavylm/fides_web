@@ -1,6 +1,6 @@
 /* ============================================================
    ЯКатолик — портал
-   Основная тема: «Свет»; тёмная: «Сумерки»
+   Темы: «Бежевый» · «Свет» · «Сумерки»
    ============================================================ */
 
 :root {
@@ -11,6 +11,63 @@
   --gutter: 24px;
   --ls: normal;
 
+  /* Бежевый (по умолчанию) */
+  --paper: #F6F3EE;
+  --ground: #ede9e2;
+  --surface: #FBFAF7;
+  --surface-2: #E3DFD7;
+  --ink: #2B241E;
+  --charcoal: #382E27;
+  --stone-700: #675C52;
+  --stone-500: #897C70;
+  --stone-300: #C7B9A8;
+  --stone-100: #E5D8C8;
+
+  --bronze: #A9784E;
+  --bronze-dark: #85562F;
+  --bronze-deep: #674126;
+  --accent: #AC5633;
+  --accent-2: #C76F43;
+  --accent-soft: rgba(172, 86, 51, .12);
+  --highlight: #B98525;
+
+  --marian: #4778AC;
+  --vatican: #9B7416;
+  --sage: #6E8252;
+  --rose: #A84F65;
+  --line: #DDD6CA;
+  --line-strong: #CBC3B6;
+  --v1: #2F8178;
+  --v1-soft: rgba(47, 129, 120, .12);
+  --v2: #B86D29;
+  --v2-soft: rgba(184, 109, 41, .12);
+  --shadow-card: 0 1px 2px rgba(68, 45, 27, .07), 0 8px 24px rgba(68, 45, 27, .08);
+  --shadow-lift: 0 12px 32px rgba(68, 45, 27, .14);
+}
+
+:root[data-theme="beige"] {
+  color-scheme: light;
+  --paper: #F6F3EE;
+  --ground: #ede9e2;
+  --surface: #FBFAF7;
+  --surface-2: #E3DFD7;
+  --ink: #2B241E;
+  --charcoal: #382E27;
+  --stone-700: #675C52;
+  --stone-500: #897C70;
+  --stone-300: #C7B9A8;
+  --stone-100: #E5D8C8;
+  --line: #DDD6CA;
+  --line-strong: #CBC3B6;
+  --accent-soft: rgba(172, 86, 51, .12);
+  --v1-soft: rgba(47, 129, 120, .12);
+  --v2-soft: rgba(184, 109, 41, .12);
+  --shadow-card: 0 1px 2px rgba(68, 45, 27, .07), 0 8px 24px rgba(68, 45, 27, .08);
+  --shadow-lift: 0 12px 32px rgba(68, 45, 27, .14);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
   --paper: #FFFFFF;
   --ground: #F7F8FA;
   --surface: #FFFFFF;
@@ -21,24 +78,10 @@
   --stone-500: #78716C;
   --stone-300: #D6D3D1;
   --stone-100: #E7E5E4;
-
-  --bronze: #A9784E;
-  --bronze-dark: #85562F;
-  --bronze-deep: #674126;
-  --accent: #AC5633;
-  --accent-2: #C76F43;
   --accent-soft: rgba(172, 86, 51, .10);
-  --highlight: #B98525;
-
-  --marian: #4778AC;
-  --vatican: #9B7416;
-  --sage: #6E8252;
-  --rose: #A84F65;
   --line: #E7E5E4;
   --line-strong: #D6D3D1;
-  --v1: #2F8178;
   --v1-soft: rgba(47, 129, 120, .10);
-  --v2: #B86D29;
   --v2-soft: rgba(184, 109, 41, .10);
   --shadow-card: 0 1px 2px rgba(28, 25, 23, .05), 0 8px 22px rgba(28, 25, 23, .06);
   --shadow-lift: 0 12px 28px rgba(28, 25, 23, .10);
@@ -1019,42 +1062,53 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 .footer-links a { color: var(--stone-700); font-weight: 600; }
 .footer-links a:hover { color: var(--bronze-dark); }
 
-/* Оформление рядом с календарём: название на десктопе, тумблер на мобильном */
+/* Оформление рядом с календарём: тройной тумблер */
 .header-tools {
   display: inline-flex; align-items: center; gap: 8px; flex: none;
 }
-.theme-toggle {
-  height: 42px; display: inline-flex; align-items: center; gap: 8px;
-  padding: 0 11px 0 8px; border-radius: 14px;
+.theme-switch {
+  height: 42px; display: inline-flex; align-items: center; gap: 9px;
+  padding: 0 11px 0 7px; border-radius: 14px;
   border: 1px solid var(--line-strong); background: var(--ground); color: var(--ink);
-  font: 700 11.5px/1 var(--ff); cursor: pointer; white-space: nowrap;
-  transition: border-color .15s, background .15s;
+  font: 700 11.5px/1 var(--ff); white-space: nowrap;
 }
-.theme-toggle:hover { border-color: var(--bronze); background: var(--surface-2); }
-.theme-toggle-track {
-  position: relative; width: 44px; height: 24px; border-radius: 999px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 4px; background: var(--surface-2); color: var(--stone-500);
-  box-shadow: inset 0 0 0 1px var(--line);
+.theme-switch-track {
+  position: relative; width: 78px; height: 28px; border-radius: 999px;
+  display: grid; grid-template-columns: repeat(3, 1fr); align-items: center;
+  background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line);
 }
-.theme-toggle-track svg { width: 13px; height: 13px; display: block; z-index: 1; }
-.theme-toggle-track i {
-  position: absolute; top: 3px; left: 3px; width: 18px; height: 18px;
+.theme-switch-track::before {
+  content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px;
   border-radius: 50%; background: var(--surface); box-shadow: var(--shadow-card);
   transition: transform .2s ease;
+  pointer-events: none;
 }
-.theme-toggle.is-twilight .theme-toggle-track i { transform: translateX(20px); }
-.theme-toggle:not(.is-twilight) .theme-sun { color: var(--bronze-dark); }
-.theme-toggle.is-twilight .theme-moon { color: var(--bronze-dark); }
-.theme-toggle-name { min-width: 58px; text-align: left; }
+.theme-switch[data-active="light"] .theme-switch-track::before { transform: translateX(26px); }
+.theme-switch[data-active="twilight"] .theme-switch-track::before { transform: translateX(52px); }
+.theme-opt {
+  position: relative; z-index: 1; width: 100%; height: 28px; padding: 0; border: 0;
+  background: transparent; color: var(--stone-500); cursor: pointer;
+  display: grid; place-items: center; border-radius: 999px;
+}
+.theme-opt svg { width: 13px; height: 13px; display: block; }
+.theme-opt[aria-checked="true"] { color: var(--bronze-dark); }
+.theme-opt:focus-visible { outline: 2px solid var(--bronze); outline-offset: 2px; }
+.theme-switch-name { min-width: 72px; text-align: left; }
 
-/* Светлая стеклянная навигация; «Сумерки» сохраняют прежний вид */
 :root:not([data-theme="twilight"]) .app-tabbar {
+  border-color: rgba(68, 45, 27, .12);
+  box-shadow: 0 10px 34px rgba(68, 45, 27, .14), inset 0 1px 0 rgba(255, 255, 255, .75);
+}
+:root[data-theme="beige"] .author-ava.initials,
+:root:not([data-theme="light"]):not([data-theme="twilight"]) .author-ava.initials {
+  background: linear-gradient(145deg, #E6D7C5, #D8C4AE);
+}
+:root[data-theme="light"] .author-ava.initials {
+  background: linear-gradient(145deg, #E7E5E4, #D6D3D1);
+}
+:root[data-theme="light"] .app-tabbar {
   border-color: rgba(28, 25, 23, .08);
   box-shadow: 0 10px 34px rgba(28, 25, 23, .12), inset 0 1px 0 rgba(255, 255, 255, .85);
-}
-:root:not([data-theme="twilight"]) .author-ava.initials {
-  background: linear-gradient(145deg, #E7E5E4, #D6D3D1);
 }
 :root:not([data-theme="twilight"]) .map-sheet-close {
   background: rgba(28, 25, 23, .72);
@@ -1062,11 +1116,15 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 
 @media (max-width: 880px) {
   .header-tools { gap: 6px; }
-  .theme-toggle {
-    width: 54px; height: 40px; justify-content: center;
-    padding: 0; border-radius: 12px;
+  .theme-switch {
+    height: 40px; padding: 0 6px; border-radius: 12px;
   }
-  .theme-toggle-name { display: none; }
+  .theme-switch-track { width: 72px; height: 26px; }
+  .theme-switch-track::before { width: 20px; height: 20px; }
+  .theme-switch[data-active="light"] .theme-switch-track::before { transform: translateX(24px); }
+  .theme-switch[data-active="twilight"] .theme-switch-track::before { transform: translateX(48px); }
+  .theme-opt { height: 26px; }
+  .theme-switch-name { display: none; }
 }
 
 /* Legacy brandbar hide if leftover */
