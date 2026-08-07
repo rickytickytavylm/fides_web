@@ -105,13 +105,23 @@
     var socials = (a.socials || []).map(function (s) {
       return '<a class="author-social" href="' + esc(s.href) + '" target="_blank" rel="noopener">' + esc(s.label) + '</a>';
     }).join('');
+    function pubCoverTone(slug) {
+      var tones = ['#5c5346', '#6b2d3c', '#2f5d8c', '#3d6b4f', '#8a5a2b', '#4a3f6b'];
+      var h = 0;
+      String(slug || '').split('').forEach(function (ch) { h = (h + ch.charCodeAt(0)) % tones.length; });
+      return tones[h];
+    }
+
     var feed = (a.recent || []).map(function (p) {
       var href = 'article.html?id=' + encodeURIComponent(p.slug);
+      var tone = pubCoverTone(p.slug);
       return (
-        '<a class="author-pub" href="' + href + '">' +
+        '<a class="author-pub" href="' + href + '" data-slug="' + esc(p.slug) + '">' +
+        '<span class="author-pub-cover" style="background:linear-gradient(155deg,' + tone + ',#1c1a18)" aria-hidden="true"></span>' +
+        '<span class="author-pub-body">' +
         '<time>' + esc(V ? V.formatDate(p.date) : p.date) + '</time>' +
         '<strong>' + esc(strip(p.title)) + '</strong>' +
-        '<span>' + esc(strip(p.excerpt)) + '</span></a>'
+        '<span>' + esc(strip(p.excerpt)) + '</span></span></a>'
       );
     }).join('');
 
@@ -149,6 +159,22 @@
       cyclesHtml +
       '<section class="guide-feed"><h2>Все публикации автора</h2>' +
       '<div class="author-pubs">' + (feed || '<p class="archive-empty">Пока нет материалов</p>') + '</div></section>';
+
+    /* Подтянуть обложки из архива (десктопная сетка с картинками) */
+    if (V && V.getArticle && a.recent && a.recent.length) {
+      a.recent.forEach(function (p) {
+        V.getArticle(p.slug).then(function (art) {
+          var img = (art && (art.image || art.cover || art.thumbnail)) || '';
+          if (!img) return;
+          var card = root.querySelector('.author-pub[data-slug="' + p.slug + '"] .author-pub-cover');
+          if (!card) return;
+          card.style.backgroundImage = 'url("' + String(img).replace(/"/g, '') + '")';
+          card.style.backgroundSize = 'cover';
+          card.style.backgroundPosition = 'center';
+          card.classList.add('has-photo');
+        }).catch(function () {});
+      });
+    }
   }
 
   /* ---------- Home block helper ---------- */

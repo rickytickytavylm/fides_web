@@ -259,6 +259,58 @@
       .catch(function () { voicesEl.innerHTML = '<p class="ps-status">Не удалось загрузить</p>'; });
   }
 
+  /* ---------- Home: Афиша + Библиотека ---------- */
+  function shortDay(iso) {
+    if (!iso) return '';
+    var p = String(iso).slice(0, 10).split('-');
+    var months = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+    return Number(p[2]) + ' ' + (months[Number(p[1]) - 1] || '');
+  }
+
+  function renderHomeEvents() {
+    var el = document.getElementById('home-events');
+    if (!el || !window.YakCalendar) return;
+    var list = (YakCalendar.upcomingEvents() || []).slice(0, 3);
+    if (!list.length) {
+      el.innerHTML = '<p class="home-panel-empty">Скоро появятся события</p>';
+      return;
+    }
+    el.innerHTML = list.map(function (e) {
+      var meta = [e.city || e.place, e.time].filter(Boolean).join(' · ');
+      return (
+        '<a class="home-event" href="' + esc(e.href || 'events.html') + '">' +
+        '<span class="home-event-date"><b>' + esc(shortDay(e.date)) + '</b></span>' +
+        '<span class="home-event-body"><strong>' + esc(e.title) + '</strong>' +
+        (meta ? '<small>' + esc(meta) + '</small>' : '') +
+        '</span></a>'
+      );
+    }).join('');
+  }
+
+  function renderHomeLibrary() {
+    var el = document.getElementById('home-library');
+    var L = window.YAK_LIBRARY;
+    if (!el || !L) return;
+    var items = (L.ITEMS || []).slice().sort(function (a, b) {
+      return L.popularityScore(b) - L.popularityScore(a);
+    }).slice(0, 4);
+    if (!items.length) {
+      el.innerHTML = '<p class="home-panel-empty">Раздел скоро откроется</p>';
+      return;
+    }
+    el.innerHTML = items.map(function (it) {
+      var title = L.displayTitle(it);
+      var tone = it.coverTone || '#5c5346';
+      return (
+        '<a class="home-lib-card" href="book.html?id=' + encodeURIComponent(it.id) + '" title="' + esc(title) + '">' +
+        '<span class="home-lib-cover" style="background:linear-gradient(160deg,' + esc(tone) + ',#1a1816)">' +
+        '<em>' + esc(String(title).slice(0, 28)) + '</em></span>' +
+        '<span class="home-lib-meta"><strong>' + esc(title) + '</strong>' +
+        '<small>' + esc(it.author || L.categoryLabel(it)) + '</small></span></a>'
+      );
+    }).join('');
+  }
+
   /* ---------- Boot ---------- */
   V.getArticles({ limit: 12, page: 1 })
     .then(function (pack) { buildHero(pack.items || []); })
@@ -273,4 +325,6 @@
   if (typeof window.renderHomeAuthors === 'function') {
     window.renderHomeAuthors(document.getElementById('authors-home'), 5);
   }
+  renderHomeEvents();
+  renderHomeLibrary();
 })();
