@@ -201,70 +201,7 @@
     }
   ];
 
-  /** Афиша: концерты, престольные праздники, визиты, встречи */
-  var EVENTS = [
-    {
-      id: 'organ-msk',
-      date: '2026-08-08',
-      time: '20:00',
-      title: 'Летний вечер в соборе: орган и скрипка',
-      place: 'Кафедральный собор, Москва · Малая Грузинская, 27/13',
-      city: 'Москва',
-      scope: 'ru',
-      kind: 'concert',
-      desc: 'Концерт в Римско-католическом кафедральном соборе Непорочного Зачатия.',
-      href: 'map.html'
-    },
-    {
-      id: 'dubinin-nw',
-      date: '2026-08-08',
-      time: '',
-      title: 'Паломничество по Северо-Западу',
-      place: 'Архиепархия Божией Матери',
-      city: 'Санкт-Петербург и регион',
-      scope: 'ru',
-      kind: 'pilgrimage',
-      desc: '3–9 августа: участие епископа Николая Дубинина в паломничестве по общим местам Северо-Запада.',
-      href: 'https://cathmos.ru/curia_message/raspisanie-episkopa-nikolaya-dubinina-na-avgust-4/'
-    },
-    {
-      id: 'assumption-spb',
-      date: '2026-08-15',
-      time: '19:00',
-      title: 'Торжественная Месса — престольный праздник Успения',
-      place: 'Приход Успения ПДМ, Санкт-Петербург',
-      city: 'Санкт-Петербург',
-      scope: 'ru',
-      kind: 'mass',
-      desc: 'По расписанию епископа Николая Дубинина.',
-      href: 'https://cathmos.ru/curia_message/raspisanie-episkopa-nikolaya-dubinina-na-avgust-4/'
-    },
-    {
-      id: 'hyacinth-vyborg',
-      date: '2026-08-16',
-      time: '12:00',
-      title: 'Престольный праздник св. Гиацинта',
-      place: 'Приход св. Гиацинта, Выборг',
-      city: 'Выборг',
-      scope: 'ru',
-      kind: 'mass',
-      desc: 'Торжественная Святая Месса в престольный праздник прихода.',
-      href: 'https://cathmos.ru/curia_message/raspisanie-episkopa-nikolaya-dubinina-na-avgust-4/'
-    },
-    {
-      id: 'assumption-world',
-      date: '2026-08-15',
-      time: '',
-      title: 'Успение Пресвятой Богородицы — торжество Церкви',
-      place: 'Вселенская Церковь',
-      city: '',
-      scope: 'world',
-      kind: 'feast-note',
-      desc: 'Главный богородичный день недели — см. также «День Церкви».',
-      href: 'calendar.html'
-    }
-  ];
-
+  /** Афиша живёт в js/events-data.js (YakAfisha). Здесь — тонкий прокси. */
   var WEEKDAY_SHORT = {
     'Понедельник': 'пн',
     'Вторник': 'вт',
@@ -302,22 +239,18 @@
   }
 
   function upcomingEvents(fromIso) {
-    var from = fromIso || todayIso();
-    return EVENTS.slice()
-      .filter(function (e) { return e.date >= from; })
-      .sort(function (a, b) {
-        if (a.date !== b.date) return a.date < b.date ? -1 : 1;
-        return String(a.time || '').localeCompare(String(b.time || ''));
-      });
+    if (global.YakAfisha) return global.YakAfisha.upcomingEvents(fromIso);
+    return [];
   }
 
   function eventsOn(iso) {
-    return EVENTS.filter(function (e) { return e.date === iso; });
+    if (global.YakAfisha) return global.YakAfisha.eventsOn(iso);
+    return [];
   }
 
   global.YakCalendar = {
     DAYS: DAYS,
-    EVENTS: EVENTS,
+    get EVENTS() { return global.YakAfisha ? global.YakAfisha.EVENTS : []; },
     WEEKDAY_SHORT: WEEKDAY_SHORT,
     todayIso: todayIso,
     byDate: byDate,
