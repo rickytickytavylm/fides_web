@@ -92,6 +92,8 @@ nav.top a:hover { background: var(--accent-soft); color: var(--bronze-dark); }
 section.block { padding: 36px 0; }
 .block-head { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
 .block-head h2 { font-size: 15px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; }
+.block-head h2 a { color: inherit; text-decoration: none; }
+.block-head h2 a:hover { color: var(--bronze-dark); }
 .rule { flex: 1; height: 1px; background: var(--line); }
 .kicker { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); flex: none; }
 .eyebrow.inline { font-size: 11px; }
@@ -263,10 +265,13 @@ aside { display: flex; flex-direction: column; gap: 18px; }
     border: 1px solid rgba(255, 255, 255, .08);
     box-shadow: 0 10px 34px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .1);
   }
-  .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 5px 2px;
-    color: var(--stone-500); border-radius: 16px; }
+  .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 8px 2px;
+    color: var(--stone-500); border-radius: 16px; text-align: center; min-width: 0; }
   .tab-item svg { width: 23px; height: 23px; }
-  .tab-item span { font-size: 10px; font-weight: 600; letter-spacing: .01em; }
+  .tab-item span {
+    font-size: 9px; font-weight: 700; letter-spacing: .01em; line-height: 1.15;
+    max-width: 100%; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
   .tab-item.active { color: var(--bronze-dark); }
   body { padding-bottom: 92px; }
 }
@@ -1013,6 +1018,48 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 .author-pub time { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--stone-500); }
 .author-pub strong { font-size: 17px; line-height: 1.3; }
 .author-pub span { font-size: 13px; color: var(--stone-700); line-height: 1.5; }
+
+/* ---------- Cycles ---------- */
+.author-cycles { margin: 8px 0 28px; }
+.author-cycles h2, .cycle-list h2 {
+  margin: 0 0 14px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 800;
+}
+.cycle-cards { display: grid; gap: 12px; }
+.cycle-card {
+  display: grid; gap: 8px; padding: 18px 16px; border-radius: 16px;
+  background: var(--surface); box-shadow: var(--shadow-card); border: 1px solid var(--line);
+  text-decoration: none; color: inherit; transition: transform .15s, box-shadow .15s;
+}
+.cycle-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+.cycle-card-kicker {
+  font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--bronze-dark);
+}
+.cycle-card strong { font-family: var(--serif); font-size: 22px; font-weight: 600; line-height: 1.15; }
+.cycle-card-meta { font-size: 12.5px; color: var(--stone-500); font-weight: 600; }
+.cycle-card-intro {
+  font-size: 13.5px; color: var(--stone-700); line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.cycle-meta { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 0 0 22px; }
+.cycle-items { display: grid; gap: 8px; }
+.cycle-item {
+  display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start;
+  padding: 14px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line);
+  text-decoration: none; color: inherit;
+}
+.cycle-item:hover { border-color: var(--bronze); }
+.cycle-num {
+  width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--accent-soft); color: var(--bronze-dark); font-weight: 800; font-size: 13px;
+}
+.cycle-item-body strong { font-size: 15px; line-height: 1.35; }
+.article-cycle { margin: 0 0 10px; }
+.article-cycle a {
+  display: inline-flex; font-size: 12px; font-weight: 800; letter-spacing: .04em;
+  color: var(--bronze-dark); background: var(--accent-soft); padding: 6px 10px; border-radius: 999px;
+}
+.article-cycle a:hover { color: var(--ink); }
+
 @media (max-width: 980px) {
   .authors-grid { grid-template-columns: repeat(2, 1fr); }
   .nav.top { gap: 10px; flex-wrap: wrap; }

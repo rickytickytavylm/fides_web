@@ -24,8 +24,7 @@
       address: 'ул. Малая Грузинская, 27/13', city: 'Москва',
       diocese: 'Архиепархия Божией Матери', lon: 37.5715, lat: 55.7672,
       hours: 'Пн–Пт 8:00–20:00 · Сб–Вс 8:00–21:00', url: 'https://www.cathedral.ru',
-      // Локальные/стабильные обложки: Wikimedia часто отдаёт 403 без Referer.
-      photo: 'church.webp',
+      photo: 'moscow-cathedral.jpg',
       description: 'Крупнейший католический храм России — неоготическая базилика 1911 года и кафедра Архиепархии Божией Матери.',
     }),
     mkFeature({
@@ -34,7 +33,7 @@
       address: 'ул. Малая Лубянка, 12', city: 'Москва',
       diocese: 'Архиепархия Божией Матери', lon: 37.6289, lat: 55.7609,
       hours: 'Ежедневно 8:00–20:00',
-      photo: 'church.jpg',
+      photo: 'moscow-louis.jpg',
       description: 'Один из старейших действующих католических храмов Москвы в стиле классицизма (1830-е годы).',
     }),
     mkFeature({
@@ -42,7 +41,7 @@
       name: 'Храм святых апостолов Петра и Павла',
       address: 'Милютинский пер., 18с4', city: 'Москва',
       diocese: 'Архиепархия Божией Матери', lon: 37.6335, lat: 55.7658,
-      photo: 'background.webp',
+      photo: 'moscow-peterpaul.jpg',
       description: 'Исторический католический храм в Милютинском переулке — памятник архитектуры XIX века.',
     }),
     mkFeature({
@@ -139,8 +138,10 @@
     }
     // эвристика для собора на Грузинской
     if (n.indexOf('непорочн') !== -1 && (c.indexOf('моск') !== -1 || n.indexOf('моск') !== -1)) {
-      return ['church.webp'];
+      return ['moscow-cathedral.jpg'];
     }
+    if (n.indexOf('людовик') !== -1) return ['moscow-louis.jpg'];
+    if (n.indexOf('петра и павла') !== -1 && c.indexOf('моск') !== -1) return ['moscow-peterpaul.jpg'];
     return [];
   }
 

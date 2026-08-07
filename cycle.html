@@ -3,22 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Аудио и проповеди — ЯКатолик" />
-    <title>Аудио — ЯКатолик</title>
+    <meta name="description" content="Цикл публикаций — ЯКатолик" />
+    <title>Цикл — ЯКатолик</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="icon" href="yakatolik-logo.svg" />
-    <link rel="apple-touch-icon" href="yakatolik-logo.svg" />
     <link rel="manifest" href="site.webmanifest" />
     <meta name="theme-color" content="#201E24" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <script>window.YAK_BUILD = '202608070843';</script>
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="ЯКатолик" />
     <link rel="stylesheet" href="portal.css?v=202608070843" />
   </head>
   <body>
-        <header class="masthead">
+    <header class="masthead">
       <div class="wrap">
         <a class="logo" href="index.html">
           <span class="mark"><img src="yakatolik-logo.svg" alt="ЯКатолик" width="34" height="34" /></span>
@@ -27,59 +25,41 @@
         <nav class="top" aria-label="Разделы">
           <a href="archive.html?category=news">Новости</a>
           <a href="archive.html?category=columns">Статьи</a>
-          <a href="map.html">Карта</a>
+          <a href="church.html">О Церкви</a>
+          <a href="spiritual-life.html">Духовная жизнь</a>
           <a href="library.html">Библиотека</a>
+          <a href="authors.html">Авторы</a>
+          <a href="map.html">Карта</a>
           <a href="chat.html">Спросить</a>
         </nav>
         <a class="search" href="archive.html">🔍 Поиск</a>
       </div>
     </header>
 
+    <main class="page-shell" id="cycle-root"></main>
 
-<main class="page-shell">
-      <nav class="breadcrumbs in-shell" aria-label="Хлебные крошки">
-        <a href="index.html">Главная</a><span>/</span><span>Аудио</span>
-      </nav>
-      <header class="page-head in-shell">
-        <div>
-          <p class="eyebrow">Слушать</p>
-          <h1>Аудио</h1>
-        </div>
-        <p class="page-desc">Проповеди о. Павла Крупы — для тишины, дороги и воскресного размышления.</p>
-      </header>
+    <footer class="portal-footer"><div class="wrap">
+      <a class="logo" href="index.html">
+        <span class="mark"><img src="yakatolik-logo.svg" alt="ЯКатолик" width="30" height="30" /></span>
+        <span class="wm">ЯКатолик</span>
+      </a>
+      <p class="footer-tagline">Католический портал</p>
+    </div></footer>
 
-      <div class="audio-player-bar" id="audio-bar" hidden>
-        <p id="audio-now">—</p>
-        <audio id="audio-el" controls preload="none"></audio>
-      </div>
-
-      <div class="audio-list" id="audio-list"></div>
-      <p class="page-desc in-shell" style="margin-top:32px">
-        <a class="text-link" href="radio.html">Радио Мария <span>→</span></a>
-      </p>
-    </main>
-
-    <footer class="site-footer site-footer-narrow">
-      <div class="footer-brand">
-        <img class="brand-logo" src="yakatolik-logo.svg" alt="" width="40" height="40" />
-        <div><strong>ЯКатолик</strong><p>Аудио</p></div>
-      </div>
-      <p class="footer-copy">© ЯКатолик</p>
-    </footer>
-
-            <nav class="app-tabbar" aria-label="Основная навигация">
+        <nav class="app-tabbar" aria-label="Основная навигация">
       <a class="tab-item" href="church.html" data-tab="church"><span>О Церкви</span></a>
       <a class="tab-item" href="spiritual-life.html" data-tab="spirit"><span>Духовная жизнь</span></a>
       <a class="tab-item" href="library.html" data-tab="library"><span>Библиотека</span></a>
       <a class="tab-item" href="map.html" data-tab="map"><span>Карта</span></a>
       <a class="tab-item" href="chat.html" data-tab="chat"><span>Спросить</span></a>
     </nav>
+
     <script src="js/config.js?v=202608070843"></script>
     <script src="js/api.js?v=202608070843"></script>
     <script src="js/portal-nav.js?v=202608070843"></script>
-    <script src="js/app.js?v=202608070843"></script>
-    <script src="js/audio.js?v=202608070843"></script>
-      
-      <script src="js/cache-bust.js?v=202608070843"></script>
+    <script src="js/authors-data.js?v=202608070843"></script>
+    <script src="js/cycles-data.js?v=202608070843"></script>
+    <script src="js/cycle-page.js?v=202608070843"></script>
+    <script src="js/cache-bust.js?v=202608070843"></script>
   </body>
 </html>

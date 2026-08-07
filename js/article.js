@@ -120,6 +120,18 @@
         '</ul></aside>';
     }
 
+    var cycle =
+      window.YakCycles && window.YakCycles.byArticleSlug
+        ? window.YakCycles.byArticleSlug(String(article.id || article.slug || ''))
+        : null;
+    var cycleHtml = cycle
+      ? '<p class="article-cycle"><a href="cycle.html?id=' +
+        encodeURIComponent(cycle.id) +
+        '">Из цикла: ' +
+        V.escapeHtml(cycle.title) +
+        '</a></p>'
+      : '';
+
     return (
       '<nav class="breadcrumbs" aria-label="Хлебные крошки">' +
       '<a href="index.html">Главная</a><span>/</span>' +
@@ -131,6 +143,7 @@
       '<p class="eyebrow">' +
       V.escapeHtml(cat) +
       '</p>' +
+      cycleHtml +
       '<h1>' +
       V.escapeHtml(article.title || 'Без названия') +
       '</h1>' +

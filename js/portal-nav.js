@@ -1,7 +1,7 @@
 /**
  * Подсветка активного пункта нижней навигации.
- * Состав таббара (ЯКатолик): Главная · Новости · Статьи · Карта · Спросить
- * Библиотека — в верхнем меню (desktop), не в таббаре.
+ * Таббар: О Церкви · Духовная жизнь · Библиотека · Карта · Спросить
+ * Главная — по логотипу; Новости/Статьи/Голоса — с заголовков на главной.
  */
 (function () {
   'use strict';
@@ -12,15 +12,12 @@
   } catch (e) {}
 
   var active = null;
-  if (path === 'index.html' || path === '') active = 'home';
+  if (path === 'church.html') active = 'church';
+  else if (path === 'spiritual-life.html') active = 'spirit';
+  else if (path === 'library.html' || path === 'book.html') active = 'library';
   else if (path === 'map.html') active = 'map';
   else if (path === 'chat.html') active = 'chat';
-  else if (path === 'library.html' || path === 'book.html') active = null;
-  else if (path === 'archive.html' || path === 'article.html' || path === 'category.html') {
-    if (params.category === 'news' || params.category === 'church-rus') active = 'news';
-    else if (params.category === 'polka') active = null;
-    else active = 'articles';
-  }
+  else if (path === 'authors.html' || path === 'author.html' || path === 'cycle.html') active = null;
 
   if (!active) return;
   document.querySelectorAll('.app-tabbar .tab-item').forEach(function (a) {

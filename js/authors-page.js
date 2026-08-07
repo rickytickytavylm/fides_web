@@ -115,6 +115,24 @@
       );
     }).join('');
 
+    var cycles = (window.YakCycles && window.YakCycles.forAuthor)
+      ? window.YakCycles.forAuthor(a.slug)
+      : [];
+    var cyclesHtml = cycles.length
+      ? '<section class="author-cycles"><h2>Циклы публикаций</h2>' +
+        '<div class="cycle-cards">' +
+        cycles.map(function (c) {
+          return (
+            '<a class="cycle-card" href="cycle.html?id=' + encodeURIComponent(c.id) + '">' +
+            '<span class="cycle-card-kicker">' + esc(c.subtitle || 'Цикл') + '</span>' +
+            '<strong>' + esc(c.title) + '</strong>' +
+            '<span class="cycle-card-meta">' + esc(String((c.items || []).length)) + ' материалов</span>' +
+            '<span class="cycle-card-intro">' + esc(c.intro || '') + '</span></a>'
+          );
+        }).join('') +
+        '</div></section>'
+      : '';
+
     root.innerHTML =
       '<nav class="breadcrumbs in-shell">' +
       '<a href="index.html">Главная</a><span>/</span><a href="authors.html">Авторы</a><span>/</span><span>' + esc(a.name) + '</span></nav>' +
@@ -128,6 +146,7 @@
       '<div class="author-stats"><span><b>' + esc(String(a.count || 0)) + '</b> статей</span>' +
       '<span><b>' + esc(String((a.recent || []).length)) + '</b> в ленте</span></div>' +
       '</div></section>' +
+      cyclesHtml +
       '<section class="guide-feed"><h2>Все публикации автора</h2>' +
       '<div class="author-pubs">' + (feed || '<p class="archive-empty">Пока нет материалов</p>') + '</div></section>';
   }
