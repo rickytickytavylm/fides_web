@@ -1,6 +1,6 @@
 /* ============================================================
    ЯКатолик — портал
-   Основная тема: «Тёплый свет»; тёмная: «Сумерки»
+   Основная тема: «Свет»; тёмная: «Сумерки»
    ============================================================ */
 
 :root {
@@ -11,37 +11,37 @@
   --gutter: 24px;
   --ls: normal;
 
-  --paper: #F8F2E8;
-  --ground: #F3EBDD;
-  --surface: #FFFDF8;
-  --surface-2: #EDE2D2;
-  --ink: #2B241E;
-  --charcoal: #382E27;
-  --stone-700: #675C52;
-  --stone-500: #897C70;
-  --stone-300: #C7B9A8;
-  --stone-100: #E5D8C8;
+  --paper: #FFFFFF;
+  --ground: #F7F8FA;
+  --surface: #FFFFFF;
+  --surface-2: #EFF1F4;
+  --ink: #1C1917;
+  --charcoal: #292524;
+  --stone-700: #57534E;
+  --stone-500: #78716C;
+  --stone-300: #D6D3D1;
+  --stone-100: #E7E5E4;
 
   --bronze: #A9784E;
   --bronze-dark: #85562F;
   --bronze-deep: #674126;
   --accent: #AC5633;
   --accent-2: #C76F43;
-  --accent-soft: rgba(172, 86, 51, .12);
+  --accent-soft: rgba(172, 86, 51, .10);
   --highlight: #B98525;
 
   --marian: #4778AC;
   --vatican: #9B7416;
   --sage: #6E8252;
   --rose: #A84F65;
-  --line: #DDD0BF;
-  --line-strong: #C8B7A3;
+  --line: #E7E5E4;
+  --line-strong: #D6D3D1;
   --v1: #2F8178;
-  --v1-soft: rgba(47, 129, 120, .12);
+  --v1-soft: rgba(47, 129, 120, .10);
   --v2: #B86D29;
-  --v2-soft: rgba(184, 109, 41, .12);
-  --shadow-card: 0 1px 2px rgba(68, 45, 27, .08), 0 8px 24px rgba(68, 45, 27, .08);
-  --shadow-lift: 0 12px 32px rgba(68, 45, 27, .15);
+  --v2-soft: rgba(184, 109, 41, .10);
+  --shadow-card: 0 1px 2px rgba(28, 25, 23, .05), 0 8px 22px rgba(28, 25, 23, .06);
+  --shadow-lift: 0 12px 28px rgba(28, 25, 23, .10);
 }
 
 :root[data-theme="twilight"] {
@@ -1046,18 +1046,18 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 .theme-toggle.is-twilight .theme-toggle-track i { transform: translateX(20px); }
 .theme-toggle:not(.is-twilight) .theme-sun { color: var(--bronze-dark); }
 .theme-toggle.is-twilight .theme-moon { color: var(--bronze-dark); }
-.theme-toggle-name { min-width: 72px; text-align: left; }
+.theme-toggle-name { min-width: 58px; text-align: left; }
 
 /* Светлая стеклянная навигация; «Сумерки» сохраняют прежний вид */
 :root:not([data-theme="twilight"]) .app-tabbar {
-  border-color: rgba(116, 86, 59, .15);
-  box-shadow: 0 10px 34px rgba(77, 52, 31, .18), inset 0 1px 0 rgba(255, 255, 255, .7);
+  border-color: rgba(28, 25, 23, .08);
+  box-shadow: 0 10px 34px rgba(28, 25, 23, .12), inset 0 1px 0 rgba(255, 255, 255, .85);
 }
 :root:not([data-theme="twilight"]) .author-ava.initials {
-  background: linear-gradient(145deg, #E6D7C5, #D8C4AE);
+  background: linear-gradient(145deg, #E7E5E4, #D6D3D1);
 }
 :root:not([data-theme="twilight"]) .map-sheet-close {
-  background: rgba(43, 36, 30, .72);
+  background: rgba(28, 25, 23, .72);
 }
 
 @media (max-width: 880px) {

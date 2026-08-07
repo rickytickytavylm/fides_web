@@ -1,6 +1,6 @@
 /**
  * Оформление портала:
- * - light: «Тёплый свет» (основная тема)
+ * - light: «Свет» (основная тема)
  * - twilight: «Сумерки» (сохранённая тёмная тема)
  */
 (function () {
@@ -19,7 +19,7 @@
     root.style.colorScheme = value === 'twilight' ? 'dark' : 'light';
 
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', value === 'twilight' ? '#201E24' : '#F3EBDD');
+    if (meta) meta.setAttribute('content', value === 'twilight' ? '#201E24' : '#F7F8FA');
 
     document.querySelectorAll('.theme-toggle').forEach(function (button) {
       var twilight = value === 'twilight';
@@ -27,10 +27,10 @@
       button.setAttribute('aria-pressed', twilight ? 'true' : 'false');
       button.setAttribute(
         'aria-label',
-        twilight ? 'Включить оформление «Тёплый свет»' : 'Включить оформление «Сумерки»'
+        twilight ? 'Включить оформление «Свет»' : 'Включить оформление «Сумерки»'
       );
       var name = button.querySelector('.theme-toggle-name');
-      if (name) name.textContent = twilight ? 'Сумерки' : 'Тёплый свет';
+      if (name) name.textContent = twilight ? 'Сумерки' : 'Свет';
     });
 
     if (persist) {
@@ -45,7 +45,7 @@
       '<svg class="theme-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>' +
       '<svg class="theme-moon" viewBox="0 0 24 24"><path d="M19.2 15.3A7.7 7.7 0 0 1 8.7 4.8 7.8 7.8 0 1 0 19.2 15.3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>' +
       '<i></i></span>' +
-      '<span class="theme-toggle-name">Тёплый свет</span>' +
+      '<span class="theme-toggle-name">Свет</span>' +
       '</button>'
     );
   }

@@ -20,7 +20,7 @@ foreach ($f in $pages) {
   $path = (Resolve-Path $f).Path
   $c = [System.IO.File]::ReadAllText($path)
   $c = $c -replace '\?v=\d+', "?v=$id"
-  $c = $c -replace '(<meta name="theme-color" content=")[^"]*(")', ('$1' + '#F3EBDD' + '$2')
+  $c = $c -replace '(<meta name="theme-color" content=")[^"]*(")', ('$1' + '#F7F8FA' + '$2')
   if ($c -notmatch 'yak_theme_boot') {
     $themeBoot = "<script id=`"yak_theme_boot`">try{document.documentElement.dataset.theme=localStorage.getItem('yak_theme')==='twilight'?'twilight':'light'}catch(e){document.documentElement.dataset.theme='light'}</script>"
     if ($c -match '<link rel="stylesheet" href="portal\.css') {

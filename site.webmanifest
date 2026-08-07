@@ -2,12 +2,12 @@
   "name": "ЯКатолик",
   "short_name": "ЯКатолик",
   "description": "Католический портал: новости, статьи, карта храмов и чат о вере.",
-  "start_url": "./index.html?b=202608071108",
+  "start_url": "./index.html?b=202608071110",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#F3EBDD",
-  "theme_color": "#F3EBDD",
+  "background_color": "#F7F8FA",
+  "theme_color": "#F7F8FA",
   "lang": "ru",
   "icons": [
     {
