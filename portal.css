@@ -184,7 +184,8 @@ nav.top a:hover { background: var(--accent-soft); color: var(--bronze-dark); }
 }
 
 /* ---------- Blocks ---------- */
-section.block { padding: 36px 0; }
+/* Only vertical — shorthand padding: N 0 would wipe .wrap side gutters on <section class="block wrap"> */
+section.block { padding-top: 36px; padding-bottom: 36px; }
 .block-head { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
 .block-head h2 { font-size: 15px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; }
 .block-head h2 a { color: inherit; text-decoration: none; }
@@ -394,7 +395,7 @@ aside { display: flex; flex-direction: column; gap: 18px; }
     padding-right: max(var(--gutter), env(safe-area-inset-right));
   }
   .masthead .wrap { padding-top: 12px; padding-bottom: 12px; }
-  section.block { padding: 28px 0; }
+  section.block { padding-top: 28px; padding-bottom: 28px; }
   .block-head { flex-wrap: wrap; gap: 8px 10px; margin-bottom: 16px; }
   .block-head .rule { display: none; }
   .block-head .eyebrow.inline { width: 100%; margin-left: 22px; }
@@ -423,7 +424,7 @@ aside { display: flex; flex-direction: column; gap: 18px; }
   }
 }
 @media (max-width: 520px) {
-  :root { --gutter: 22px; }
+  :root { --gutter: 24px; }
   .wrap {
     padding-left: max(var(--gutter), env(safe-area-inset-left));
     padding-right: max(var(--gutter), env(safe-area-inset-right));
@@ -435,7 +436,7 @@ aside { display: flex; flex-direction: column; gap: 18px; }
   .logo { gap: 9px; min-width: 0; }
   .logo .wm { font-size: 17px; overflow: hidden; text-overflow: ellipsis; }
   .logo .mark { width: 30px; height: 30px; }
-  section.block { padding: 22px 0; }
+  section.block { padding-top: 22px; padding-bottom: 22px; }
   .hero-main { min-height: 340px; border-radius: 18px; }
   .hero-cap { padding: 18px 16px 26px; }
   .hero-cap h3 { font-size: 20px; line-height: 1.2; }
