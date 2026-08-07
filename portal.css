@@ -930,6 +930,19 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 }
 .chat-source-title { display: block; font-size: 12.5px; font-weight: 700; color: var(--bronze-dark); }
 .chat-source-excerpt { display: block; font-size: 11.5px; color: var(--stone-700); margin-top: 3px; }
+.chat-nav { margin-top: 12px; }
+.chat-nav-label {
+  margin: 0 0 8px; font-size: 10px; font-weight: 800; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--bronze-dark); opacity: .9;
+}
+.chat-nav-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.chat-nav-link {
+  display: inline-flex; align-items: center; padding: 8px 12px; border-radius: 999px;
+  background: var(--accent-soft); color: var(--bronze-dark); font-size: 12.5px; font-weight: 700;
+  text-decoration: none; border: 1px solid transparent;
+  transition: border-color .15s, transform .15s;
+}
+.chat-nav-link:hover { border-color: var(--bronze); transform: translateY(-1px); }
 /* ---------- Guide walkers (О Церкви / Духовная жизнь) ---------- */
 .route-grid {
   display: grid;
