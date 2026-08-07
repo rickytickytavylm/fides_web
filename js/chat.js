@@ -232,29 +232,11 @@
     autoGrow();
     setBusy(true);
 
-    var intent = Guide ? Guide.detectIntent(text) : 'faith';
-    var links = Guide ? Guide.pickLinks(text, intent === 'faith' ? 0 : 5) : [];
-    if (intent === 'faith') links = [];
-
     var assistant = addBubble('assistant', '…');
     assistant.row.classList.add('chat-typing');
 
-    /* Чистая навигация — отвечаем локально по карте сайта, статьи не тянем */
-    if (intent === 'navigate' && Guide) {
-      var local = Guide.buildNavReply(text);
-      assistant.row.classList.remove('chat-typing');
-      assistant.body.textContent = local.reply;
-      addNavLinks(assistant.bubble, local.links);
-      history.push({ role: 'user', content: text });
-      history.push({ role: 'assistant', content: local.reply });
-      if (history.length > 20) history = history.slice(-20);
-      setBusy(false);
-      input.focus();
-      scrollBottom();
-      return;
-    }
-
-    var apiMessage = Guide ? Guide.enrichMessage(text, intent) : text;
+    /* Всегда в нейросеть. Структура сайта — только как контекст, без автоответов. */
+    var apiMessage = Guide && Guide.withSiteContext ? Guide.withSiteContext(text) : text;
 
     V.sendChat(apiMessage, history, function (partial) {
       if (assistant.row.classList.contains('chat-typing')) {
@@ -266,12 +248,13 @@
       .then(function (data) {
         var reply = (data && data.reply) || assistant.body.textContent || 'Не удалось получить ответ.';
         var sources = data && Array.isArray(data.sources) ? data.sources : [];
-        /* В гибриде статьи можно оставить; если модель всё же прислала — ок.
-           Навигационные ссылки добавляем всегда при hybrid. */
-        if (intent === 'navigate') sources = [];
         assistant.body.textContent = reply;
         if (sources.length) addSources(assistant.bubble, sources);
-        if (links.length) addNavLinks(assistant.bubble, links);
+        /* Кнопки разделов — только если модель сама их упомянула */
+        if (Guide && Guide.linksMentionedIn) {
+          var mentioned = Guide.linksMentionedIn(reply);
+          if (mentioned.length) addNavLinks(assistant.bubble, mentioned);
+        }
         history.push({ role: 'user', content: text });
         history.push({ role: 'assistant', content: reply });
         if (history.length > 20) history = history.slice(-20);
@@ -286,15 +269,7 @@
         var msg = 'Не удалось отправить. Попробуйте ещё раз.';
         if (err.status === 429) msg = 'Достигнут дневной лимит сообщений. Загляните завтра.';
         if (err.status === 403) msg = 'Доступ к диалогу временно ограничен.';
-        /* Даже при ошибке API — даём ориентацию по сайту */
-        if (intent !== 'faith' && Guide) {
-          var fallback = Guide.buildNavReply(text);
-          assistant.row.classList.remove('chat-row-error');
-          assistant.body.textContent = fallback.reply;
-          addNavLinks(assistant.bubble, fallback.links);
-        } else {
-          assistant.body.textContent = msg;
-        }
+        assistant.body.textContent = msg;
         console.error(err);
       })
       .then(function () {
