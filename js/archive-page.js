@@ -61,6 +61,12 @@
     lastPageCount: 0,
   };
 
+  // Книжная полка архива → полноценный раздел «Библиотека»
+  if (state.section === 'library' || state.category === 'polka') {
+    location.replace('library.html');
+    return;
+  }
+
   var chipsEl = document.getElementById('archive-chips');
   var feedEl = document.getElementById('feed');
   var leadEl = document.getElementById('lead-item');

@@ -1,6 +1,7 @@
 /**
  * Подсветка активного пункта нижней навигации.
  * Состав таббара (ЯКатолик): Главная · Новости · Статьи · Карта · Спросить
+ * Библиотека — в верхнем меню (desktop), не в таббаре.
  */
 (function () {
   'use strict';
@@ -14,9 +15,10 @@
   if (path === 'index.html' || path === '') active = 'home';
   else if (path === 'map.html') active = 'map';
   else if (path === 'chat.html') active = 'chat';
+  else if (path === 'library.html' || path === 'book.html') active = null;
   else if (path === 'archive.html' || path === 'article.html' || path === 'category.html') {
     if (params.category === 'news' || params.category === 'church-rus') active = 'news';
-    else if (params.category === 'polka') active = 'library';
+    else if (params.category === 'polka') active = null;
     else active = 'articles';
   }
 
