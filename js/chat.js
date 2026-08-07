@@ -12,18 +12,38 @@
   var history = [];
   var busy = false;
 
-  /* Жёсткая фиксация высоты под visualViewport (iOS/Android + клавиатура) */
+  /**
+   * iOS: клавиатура двигает visualViewport.offsetTop, а не только height.
+   * Оболочку #chat-app клеим к visualViewport — иначе поле «улетает» вверх.
+   */
   function lockChatViewport() {
-    var root = document.documentElement;
+    var app = document.getElementById('chat-app');
+    if (!app) return;
+
     function apply() {
+      try { window.scrollTo(0, 0); } catch (e) {}
       var vv = window.visualViewport;
-      var h = vv && vv.height ? vv.height : window.innerHeight;
-      root.style.setProperty('--chat-vh', Math.round(h) + 'px');
-      /* Клавиатура съела заметную часть экрана */
-      var keyboardOpen = vv && (window.innerHeight - vv.height > 120);
-      document.body.classList.toggle('chat-keyboard', !!keyboardOpen);
+      var h = window.innerHeight;
+      var top = 0;
+      var left = 0;
+      if (vv) {
+        h = vv.height;
+        top = vv.offsetTop || 0;
+        left = vv.offsetLeft || 0;
+      }
+      app.style.top = Math.round(top) + 'px';
+      app.style.left = Math.round(left) + 'px';
+      app.style.width = Math.round(vv && vv.width ? vv.width : window.innerWidth) + 'px';
+      app.style.height = Math.round(h) + 'px';
+      app.style.transform = 'none';
+
+      var keyboardOpen = vv ? (window.innerHeight - vv.height > 90) : false;
+      if (!keyboardOpen && document.activeElement === input) keyboardOpen = true;
+      document.body.classList.toggle('chat-keyboard', keyboardOpen);
+
       if (document.activeElement === input) scrollBottom();
     }
+
     apply();
     if (window.visualViewport) {
       visualViewport.addEventListener('resize', apply);
@@ -31,16 +51,10 @@
     }
     window.addEventListener('resize', apply);
     window.addEventListener('orientationchange', function () {
-      setTimeout(apply, 80);
-      setTimeout(apply, 320);
+      setTimeout(apply, 50);
+      setTimeout(apply, 250);
+      setTimeout(apply, 500);
     });
-    /* Блокируем «резиновый» скролл страницы вне ленты сообщений */
-    document.addEventListener('touchmove', function (e) {
-      if (!messagesEl) return;
-      if (messagesEl.contains(e.target)) return;
-      if (input && (e.target === input || input.contains(e.target))) return;
-      e.preventDefault();
-    }, { passive: false });
   }
   lockChatViewport();
 
@@ -167,15 +181,33 @@
     input.addEventListener('input', autoGrow);
     input.addEventListener('focus', function () {
       document.body.classList.add('chat-keyboard');
-      setTimeout(scrollBottom, 50);
-      setTimeout(scrollBottom, 300);
+      [50, 150, 300, 450].forEach(function (ms) {
+        setTimeout(function () {
+          try { window.scrollTo(0, 0); } catch (e) {}
+          if (window.visualViewport) {
+            var vv = window.visualViewport;
+            var app = document.getElementById('chat-app');
+            if (app) {
+              app.style.top = Math.round(vv.offsetTop || 0) + 'px';
+              app.style.height = Math.round(vv.height) + 'px';
+            }
+          }
+          scrollBottom();
+        }, ms);
+      });
     });
     input.addEventListener('blur', function () {
       setTimeout(function () {
         if (document.activeElement !== input) {
           document.body.classList.remove('chat-keyboard');
+          try { window.scrollTo(0, 0); } catch (e) {}
+          var app = document.getElementById('chat-app');
+          if (app && window.visualViewport) {
+            app.style.top = '0px';
+            app.style.height = Math.round(window.visualViewport.height) + 'px';
+          }
         }
-      }, 80);
+      }, 120);
     });
     input.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) {

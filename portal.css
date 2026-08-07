@@ -810,7 +810,7 @@ main.article { padding-bottom: 48px; }
 .radio-schedule-block h3 { margin: 0 0 12px; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
 .radio-schedule { margin: 0; white-space: pre-wrap; font-family: var(--ff); font-size: 13px; color: var(--stone-700); line-height: 1.55; }
 
-/* Chat — зафиксированный экран: без зума, без прыжков клавиатуры */
+/* Chat — оболочка привязана к visualViewport (iOS keyboard) */
 html.chat-lock {
   height: 100%;
   overflow: hidden;
@@ -828,27 +828,26 @@ body.chat-page {
   position: fixed;
   inset: 0;
   width: 100%;
-  height: var(--chat-vh, 100dvh);
-  max-height: var(--chat-vh, 100dvh);
-  display: flex;
-  flex-direction: column;
+  height: 100%;
   background: var(--ground);
 }
 body.chat-page .app-tabbar { display: none !important; }
 body.chat-page .portal-footer { display: none !important; }
 .chat-app {
-  flex: 1;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   min-height: 0;
-  height: 100%;
-  width: 100%;
   overflow: hidden;
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
+  box-sizing: border-box;
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
-  box-sizing: border-box;
+  /* top/height выставляет js/chat.js по visualViewport */
+  will-change: transform, height, top;
 }
 body.chat-page .masthead {
   flex: none;
@@ -914,16 +913,19 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 .chat-composer textarea:focus { border-color: var(--bronze); }
 .chat-send {
   width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--accent); color: #fff;
-  font-size: 18px; font-weight: 700; cursor: pointer; flex: none; touch-action: manipulation;
+  cursor: pointer; flex: none; touch-action: manipulation;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0; line-height: 0;
 }
+.chat-send svg { width: 20px; height: 20px; display: block; }
 .chat-send:disabled { opacity: .45; cursor: default; }
 .chat-hint { flex: none; margin: 0; padding: 0 14px 10px; font-size: 11px; color: var(--stone-500); }
 
 @media (max-width: 880px) {
-  body.chat-page.chat-keyboard .chat-intro-text { display: none; }
-  body.chat-page.chat-keyboard .chat-intro { padding-bottom: 4px; }
-  body.chat-page.chat-keyboard .chat-intro h1 { font-size: 20px; margin: 2px 0 0; }
+  body.chat-page.chat-keyboard .chat-intro { display: none; }
   body.chat-page.chat-keyboard .chat-hint { display: none; }
+  body.chat-page.chat-keyboard .chat-shell { padding: 6px 10px 8px; }
+  body.chat-page.chat-keyboard .masthead .wrap { padding-top: 6px; padding-bottom: 6px; }
   .chat-shell { padding: 4px 10px 8px; }
   .chat-panel { border-radius: 16px; }
 }

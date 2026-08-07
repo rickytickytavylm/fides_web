@@ -2,8 +2,8 @@
 <html lang="ru" class="chat-lock">
   <head>
     <meta charset="UTF-8" />
-    <!-- Заморозка масштаба на экране чата: без pinch/focus-zoom; клавиатура ресайзит контент -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content" />
+    <!-- Без pinch/focus-zoom. interactive-widget не ставим — на iOS даёт «улетание» -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <meta name="description" content="Спросите о вере — ЯКатолик" />
     <title>Спросить — ЯКатолик</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -14,11 +14,11 @@
     <link rel="manifest" href="site.webmanifest" />
     <meta name="theme-color" content="#201E24" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <script>window.YAK_BUILD = '202608071018';</script>
+    <script>window.YAK_BUILD = '202608071021';</script>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="ЯКатолик" />
     <meta name="format-detection" content="telephone=no" />
-    <link rel="stylesheet" href="portal.css?v=202608071018" />
+    <link rel="stylesheet" href="portal.css?v=202608071021" />
   </head>
   <body class="chat-page">
     <div class="chat-app" id="chat-app">
@@ -54,17 +54,19 @@
               autocapitalize="sentences"
               spellcheck="true"
             ></textarea>
-            <button type="submit" class="chat-send" id="chat-send" aria-label="Отправить">↑</button>
+            <button type="submit" class="chat-send" id="chat-send" aria-label="Отправить">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M12 5l-6 6M12 5l6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
           </form>
           <p class="chat-hint" id="chat-hint">Enter — отправить · Shift+Enter — новая строка</p>
         </div>
       </main>
     </div>
 
-    <script src="js/config.js?v=202608071018"></script>
-    <script src="js/api.js?v=202608071018"></script>
-    <script src="js/site-guide.js?v=202608071018"></script>
-    <script src="js/chat.js?v=202608071018"></script>
-    <script src="js/cache-bust.js?v=202608071018"></script>
+    <script src="js/config.js?v=202608071021"></script>
+    <script src="js/api.js?v=202608071021"></script>
+    <script src="js/site-guide.js?v=202608071021"></script>
+    <script src="js/chat.js?v=202608071021"></script>
+    <script src="js/cache-bust.js?v=202608071021"></script>
   </body>
 </html>
