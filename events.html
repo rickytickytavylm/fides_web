@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Библиотека ЯКатолик — документы Церкви и книги для чтения и скачивания." />
-    <title>Библиотека — ЯКатолик</title>
+    <meta name="description" content="Афиша ЯКатолик — события и мероприятия католиков России." />
+    <title>Афиша — ЯКатолик</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -27,7 +27,7 @@
           <a href="archive.html?category=columns">Статьи</a>
           <a href="church.html">О Церкви</a>
           <a href="spiritual-life.html">Духовная жизнь</a>
-          <a class="on" href="library.html">Библиотека</a>
+          <a href="library.html">Библиотека</a>
           <a href="authors.html">Авторы</a>
           <a href="map.html">Карта</a>
           <a href="chat.html">Спросить</a>
@@ -38,7 +38,7 @@
       </div>
     </header>
 
-    <main class="page-shell" id="library-root"></main>
+    <main class="page-shell" id="events-root"></main>
 
     <footer class="portal-footer"><div class="wrap">
       <a class="logo" href="index.html">
@@ -52,7 +52,7 @@
       </nav>
     </div></footer>
 
-            <nav class="app-tabbar" aria-label="Основная навигация">
+    <nav class="app-tabbar" aria-label="Основная навигация">
       <a class="tab-item" href="church.html" data-tab="church">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 4.5 8v12.5h5.2v-5.4h4.6v5.4h5.2V8L12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 3.5V1.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
         <span>О Церкви</span>
@@ -76,10 +76,9 @@
     </nav>
 
     <script src="js/config.js?v=202608070905"></script>
-    <script src="js/api.js?v=202608070905"></script>
     <script src="js/portal-nav.js?v=202608070905"></script>
-    <script src="js/library-data.js?v=202608070905"></script>
-    <script src="js/library-page.js?v=202608070905"></script>
+    <script src="js/calendar-data.js?v=202608070905"></script>
+    <script src="js/events-page.js?v=202608070905"></script>
     <script src="js/cache-bust.js?v=202608070905"></script>
   </body>
 </html>
