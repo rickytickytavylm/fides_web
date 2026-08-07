@@ -846,7 +846,7 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 
 /* ---------- Authors ---------- */
 .authors-block {
-  background: linear-gradient(180deg, #f3ebe0 0%, var(--bg, #f7f4ef) 100%);
+  background: transparent;
   border-radius: 0;
   margin-top: 8px;
 }
@@ -856,23 +856,27 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 }
 .author-row {
   display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: center;
-  padding: 10px 12px; border-radius: 14px; text-decoration: none;
-  background: rgba(255,255,255,.55); border: 1px solid rgba(0,0,0,.06);
+  padding: 12px 14px; border-radius: 16px; text-decoration: none;
+  background: var(--surface); box-shadow: var(--shadow-card); border: 1px solid var(--line);
+  color: var(--ink);
   transition: transform .15s ease, box-shadow .15s ease;
 }
-.author-row:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(32,30,36,.08); }
-.author-row strong { display: block; font-size: 15px; }
+.author-row:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+.author-row strong { display: block; font-size: 15px; color: var(--ink); }
 .author-row small { color: var(--stone-500); font-size: 12px; }
 .author-ava {
   width: 52px; height: 52px; border-radius: 50%;
   background: var(--surface-2) center/cover no-repeat; display: grid; place-items: center;
-  font-weight: 800; color: var(--bronze-dark); font-size: 15px;
+  font-weight: 800; color: var(--bronze-dark); font-size: 15px; flex: none;
 }
-.author-ava.initials { background: linear-gradient(145deg, #e8d9c4, #d4b896); }
+.author-ava.initials {
+  background: linear-gradient(145deg, #3a3430, #2a2522);
+  color: var(--bronze-dark); border: 1px solid var(--line-strong);
+}
 .authors-toolbar { display: grid; gap: 12px; margin: 0 0 18px; }
 .authors-toolbar input[type="search"] {
   width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: 12px;
-  border: 1px solid var(--line); background: var(--surface); font: inherit;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit;
 }
 .authors-grid {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
@@ -880,9 +884,11 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 .author-card {
   display: grid; gap: 12px; justify-items: start; padding: 16px;
   border-radius: 16px; border: 1px solid var(--line); background: var(--surface);
+  box-shadow: var(--shadow-card); color: var(--ink);
   text-decoration: none; transition: transform .15s ease, box-shadow .15s ease;
 }
-.author-card:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(32,30,36,.1); }
+.author-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+.author-card strong { color: var(--ink); }
 .author-card-body { display: grid; gap: 4px; }
 .author-card strong { font-size: 16px; }
 .author-role { font-size: 12px; color: var(--bronze-dark); font-weight: 700; }
