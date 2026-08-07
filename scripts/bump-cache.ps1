@@ -11,7 +11,7 @@ $pages = @(
   'index.html', 'archive.html', 'article.html', 'map.html', 'chat.html',
   'video.html', 'audio.html', 'radio.html', 'photostock.html', 'sections.html',
   'library.html', 'book.html', 'church.html', 'spiritual-life.html',
-  'authors.html', 'author.html', 'cycle.html'
+  'authors.html', 'author.html', 'cycle.html', 'calendar.html'
 )
 
 foreach ($f in $pages) {

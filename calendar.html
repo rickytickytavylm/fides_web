@@ -3,23 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Материал — ЯКатолик" />
-    <title>Статья — ЯКатолик</title>
+    <meta name="description" content="Календарь ЯКатолик — литургические дни и события католиков России." />
+    <title>Календарь — ЯКатолик</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="icon" href="yakatolik-logo.svg" />
-    <link rel="apple-touch-icon" href="yakatolik-logo.svg" />
     <link rel="manifest" href="site.webmanifest" />
     <meta name="theme-color" content="#201E24" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <script>window.YAK_BUILD = '202608070848';</script>
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="ЯКатолик" />
     <link rel="stylesheet" href="portal.css?v=202608070848" />
   </head>
   <body>
-        <header class="masthead">
+    <header class="masthead">
       <div class="wrap">
         <a class="logo" href="index.html">
           <span class="mark"><img src="yakatolik-logo.svg" alt="ЯКатолик" width="34" height="34" /></span>
@@ -35,52 +32,34 @@
           <a href="map.html">Карта</a>
           <a href="chat.html">Спросить</a>
         </nav>
-        <a class="cal-btn" href="calendar.html" aria-label="Календарь" title="Календарь">
+        <a class="cal-btn on" href="calendar.html" aria-label="Календарь" title="Календарь">
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 3.5v3.5M16 3.5v3.5M3.5 10h17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
         </a>
       </div>
     </header>
 
+    <main class="page-shell" id="calendar-root"></main>
 
-    <div class="read-progress"><i></i></div>
-<main class="article">
-      <div id="article-root"></div>
+    <footer class="portal-footer"><div class="wrap">
+      <a class="logo" href="index.html">
+        <span class="mark"><img src="yakatolik-logo.svg" alt="ЯКатолик" width="30" height="30" /></span>
+        <span class="wm">ЯКатолик</span>
+      </a>
+      <p class="footer-tagline">Католический портал</p>
+    </div></footer>
 
-      <section class="related-section">
-        <div class="related-inner">
-          <div class="related-head">
-            <p class="eyebrow">Ещё по теме</p>
-            <h2>Читайте также</h2>
-          </div>
-          <div class="secondary-stories" id="related"></div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="site-footer site-footer-narrow">
-      <div class="footer-brand">
-        <img class="brand-logo" src="yakatolik-logo.svg" alt="" width="40" height="40" />
-        <div>
-          <strong>ЯКатолик</strong>
-          <p>Католический портал</p>
-        </div>
-      </div>
-      <p class="footer-copy">© ЯКатолик</p>
-    </footer>
-
-            <nav class="app-tabbar" aria-label="Основная навигация">
+    <nav class="app-tabbar" aria-label="Основная навигация">
       <a class="tab-item" href="church.html" data-tab="church"><span>О Церкви</span></a>
       <a class="tab-item" href="spiritual-life.html" data-tab="spirit"><span>Духовная жизнь</span></a>
       <a class="tab-item" href="library.html" data-tab="library"><span>Библиотека</span></a>
       <a class="tab-item" href="map.html" data-tab="map"><span>Карта</span></a>
       <a class="tab-item" href="chat.html" data-tab="chat"><span>Спросить</span></a>
     </nav>
+
     <script src="js/config.js?v=202608070848"></script>
-    <script src="js/api.js?v=202608070848"></script>
     <script src="js/portal-nav.js?v=202608070848"></script>
-    <script src="js/app.js?v=202608070848"></script>
-    <script src="js/cycles-data.js?v=202608070848"></script>
-    <script src="js/article.js?v=202608070848"></script>
+    <script src="js/calendar-data.js?v=202608070848"></script>
+    <script src="js/calendar-page.js?v=202608070848"></script>
     <script src="js/cache-bust.js?v=202608070848"></script>
   </body>
 </html>
