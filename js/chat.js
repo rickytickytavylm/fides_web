@@ -12,6 +12,38 @@
   var history = [];
   var busy = false;
 
+  /* Жёсткая фиксация высоты под visualViewport (iOS/Android + клавиатура) */
+  function lockChatViewport() {
+    var root = document.documentElement;
+    function apply() {
+      var vv = window.visualViewport;
+      var h = vv && vv.height ? vv.height : window.innerHeight;
+      root.style.setProperty('--chat-vh', Math.round(h) + 'px');
+      /* Клавиатура съела заметную часть экрана */
+      var keyboardOpen = vv && (window.innerHeight - vv.height > 120);
+      document.body.classList.toggle('chat-keyboard', !!keyboardOpen);
+      if (document.activeElement === input) scrollBottom();
+    }
+    apply();
+    if (window.visualViewport) {
+      visualViewport.addEventListener('resize', apply);
+      visualViewport.addEventListener('scroll', apply);
+    }
+    window.addEventListener('resize', apply);
+    window.addEventListener('orientationchange', function () {
+      setTimeout(apply, 80);
+      setTimeout(apply, 320);
+    });
+    /* Блокируем «резиновый» скролл страницы вне ленты сообщений */
+    document.addEventListener('touchmove', function (e) {
+      if (!messagesEl) return;
+      if (messagesEl.contains(e.target)) return;
+      if (input && (e.target === input || input.contains(e.target))) return;
+      e.preventDefault();
+    }, { passive: false });
+  }
+  lockChatViewport();
+
   var SUGGESTIONS = [
     'Что такое Символ веры?',
     'Как начать молиться каждый день?',
@@ -133,6 +165,18 @@
 
   if (input) {
     input.addEventListener('input', autoGrow);
+    input.addEventListener('focus', function () {
+      document.body.classList.add('chat-keyboard');
+      setTimeout(scrollBottom, 50);
+      setTimeout(scrollBottom, 300);
+    });
+    input.addEventListener('blur', function () {
+      setTimeout(function () {
+        if (document.activeElement !== input) {
+          document.body.classList.remove('chat-keyboard');
+        }
+      }, 80);
+    });
     input.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
