@@ -102,6 +102,24 @@
     );
   }
 
+  var FRESH_TONES = [
+    'linear-gradient(145deg,#3d4f6b,#6b86b0)',
+    'linear-gradient(145deg,#5a3d2b,#a67c52)',
+    'linear-gradient(145deg,#3f5240,#7a8f6a)',
+    'linear-gradient(145deg,#5c3a45,#b06a7a)',
+    'linear-gradient(145deg,#2f4558,#5d7a8c)',
+    'linear-gradient(145deg,#4a3b28,#c9a227)',
+  ];
+
+  function freshCoverAttr(it, i) {
+    var img = it.image || it.cover || it.thumbnail || '';
+    if (img && V.coverStyle) {
+      var styled = V.coverStyle(img);
+      if (styled) return styled;
+    }
+    return 'style="background-image:' + FRESH_TONES[i % FRESH_TONES.length] + '"';
+  }
+
   function renderFresh(items) {
     if (!items.length) return '<p class="archive-empty">Пока нет материалов</p>';
     return (
@@ -110,7 +128,7 @@
         var rub = (it.categories && it.categories[0]) || 'Статья';
         return (
           '<a class="art" href="' + V.articleHref(it) + '">' +
-          '<div class="ph" ' + V.coverStyle(it.image) + '></div>' +
+          '<div class="ph" ' + freshCoverAttr(it, i) + '></div>' +
           '<div class="in"><div class="rub">' + esc(rub) + '</div>' +
           '<h4>' + esc(it.title) + '</h4></div></a>'
         );

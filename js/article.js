@@ -226,27 +226,47 @@
       });
   }
 
+  function articleSkeleton() {
+    return (
+      '<div class="article-skel" aria-busy="true" aria-label="Загрузка статьи">' +
+      '<div class="sk sk-line sk-eyebrow"></div>' +
+      '<div class="sk sk-line sk-title" style="margin-top:14px"></div>' +
+      '<div class="sk sk-line sk-title" style="width:64%;margin-top:10px;height:28px"></div>' +
+      '<div class="sk sk-line sk-meta"></div>' +
+      '</div>' +
+      '<div class="article-skel-hero"><div class="sk"></div></div>' +
+      '<div class="article-skel-lines">' +
+      '<div class="sk sk-line"></div><div class="sk sk-line"></div><div class="sk sk-line"></div>' +
+      '<div class="sk sk-line"></div><div class="sk sk-line"></div><div class="sk sk-line"></div>' +
+      '<div class="sk sk-line"></div><div class="sk sk-line"></div>' +
+      '</div>'
+    );
+  }
+
   var id = qs('id');
   var root = document.getElementById('article-root');
+  var relatedSection = document.querySelector('.related-section');
+  if (relatedSection) relatedSection.hidden = true;
+
   if (!id || !root) {
     if (root) root.innerHTML = '<p class="archive-empty">Статья не указана.</p>';
     return;
   }
 
-  root.innerHTML = '<div class="loading-row"><span class="spinner" role="status" aria-label="Загрузка"></span></div>';
+  root.innerHTML = articleSkeleton();
 
   V.getArticle(id)
     .then(function (article) {
       if (!article || !article.title) throw new Error('Article empty');
       document.title = article.title + ' — ЯКатолик';
       root.innerHTML = renderArticle(article);
+      if (relatedSection) relatedSection.hidden = false;
       loadRelated(article);
     })
     .catch(function (e) {
       console.error(e);
       root.innerHTML =
         '<p class="archive-empty">Не удалось загрузить статью. <a href="archive.html">К материалам</a></p>';
-      var relatedSection = document.querySelector('.related-section');
       if (relatedSection) relatedSection.hidden = true;
     });
 })();
