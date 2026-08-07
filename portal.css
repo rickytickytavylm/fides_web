@@ -8,6 +8,7 @@
   --ff: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --serif: 'Cormorant Garamond', Georgia, serif;
   --maxw: 1180px;
+  --gutter: 24px;
   --ls: normal;
 
   --paper: #F8F2E8;
@@ -90,8 +91,8 @@ body {
 .wrap {
   max-width: var(--maxw);
   margin: 0 auto;
-  padding-left: max(22px, env(safe-area-inset-left));
-  padding-right: max(22px, env(safe-area-inset-right));
+  padding-left: max(var(--gutter), env(safe-area-inset-left));
+  padding-right: max(var(--gutter), env(safe-area-inset-right));
 }
 h1, h2, h3, h4 { margin: 0; font-weight: 700; text-wrap: balance; letter-spacing: -.01em; }
 a { color: inherit; text-decoration: none; }
@@ -111,7 +112,13 @@ img { max-width: 100%; display: block; }
   background: color-mix(in srgb, var(--surface) 82%, transparent);
   backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2);
   border-bottom: 1px solid var(--line); }
-.masthead .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 13px 22px; }
+.masthead .wrap {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding-top: 13px;
+  padding-bottom: 13px;
+  padding-left: max(var(--gutter), env(safe-area-inset-left));
+  padding-right: max(var(--gutter), env(safe-area-inset-right));
+}
 .logo { display: inline-flex; align-items: center; gap: 11px; }
 .logo .mark { width: 34px; height: 34px; border-radius: 9px; overflow: hidden; flex: none; display: block; box-shadow: var(--shadow-card); }
 .logo .mark img, .logo .mark svg { display: block; width: 100%; height: 100%; object-fit: cover; }
@@ -265,7 +272,8 @@ aside { display: flex; flex-direction: column; gap: 18px; }
 /* ---------- Footer ---------- */
 .portal-footer { background: var(--surface-2); border-top: 1px solid var(--line); margin-top: 12px; }
 .portal-footer .wrap {
-  padding: 28px 22px; display: flex; flex-direction: column; align-items: flex-start;
+  padding: 28px max(var(--gutter), env(safe-area-inset-right)) 28px max(var(--gutter), env(safe-area-inset-left));
+  display: flex; flex-direction: column; align-items: flex-start;
   gap: 8px; color: var(--stone-700); font-size: 12.5px;
 }
 .portal-footer .logo { display: inline-flex; align-items: center; gap: 11px; }
@@ -337,9 +345,10 @@ aside { display: flex; flex-direction: column; gap: 18px; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 880px) {
+  :root { --gutter: 24px; }
   .wrap {
-    padding-left: max(20px, env(safe-area-inset-left));
-    padding-right: max(20px, env(safe-area-inset-right));
+    padding-left: max(var(--gutter), env(safe-area-inset-left));
+    padding-right: max(var(--gutter), env(safe-area-inset-right));
   }
   .masthead .wrap { padding-top: 12px; padding-bottom: 12px; }
   section.block { padding: 28px 0; }
@@ -366,18 +375,19 @@ aside { display: flex; flex-direction: column; gap: 18px; }
   .portal-footer .wrap { padding-top: 22px; padding-bottom: 22px; }
   .ps-grid { columns: 2 160px; }
   .page-shell {
-    padding-left: max(20px, env(safe-area-inset-left));
-    padding-right: max(20px, env(safe-area-inset-right));
+    padding-left: max(var(--gutter), env(safe-area-inset-left));
+    padding-right: max(var(--gutter), env(safe-area-inset-right));
   }
 }
 @media (max-width: 520px) {
+  :root { --gutter: 22px; }
   .wrap {
-    padding-left: max(18px, env(safe-area-inset-left));
-    padding-right: max(18px, env(safe-area-inset-right));
+    padding-left: max(var(--gutter), env(safe-area-inset-left));
+    padding-right: max(var(--gutter), env(safe-area-inset-right));
   }
   .masthead .wrap {
-    padding-left: max(16px, env(safe-area-inset-left));
-    padding-right: max(16px, env(safe-area-inset-right));
+    padding-left: max(var(--gutter), env(safe-area-inset-left));
+    padding-right: max(var(--gutter), env(safe-area-inset-right));
   }
   .logo { gap: 9px; min-width: 0; }
   .logo .wm { font-size: 17px; overflow: hidden; text-overflow: ellipsis; }
@@ -405,16 +415,22 @@ aside { display: flex; flex-direction: column; gap: 18px; }
   .tree { gap: 12px; }
   .ps-grid { columns: 1; }
   .page-shell {
-    padding-left: max(18px, env(safe-area-inset-left));
-    padding-right: max(18px, env(safe-area-inset-right));
+    padding-left: max(var(--gutter), env(safe-area-inset-left));
+    padding-right: max(var(--gutter), env(safe-area-inset-right));
     padding-bottom: 72px;
   }
   .article-head, .article-body, .article-foot, .article-hero {
-    padding-left: max(18px, env(safe-area-inset-left));
-    padding-right: max(18px, env(safe-area-inset-right));
+    padding-left: max(var(--gutter), env(safe-area-inset-left));
+    padding-right: max(var(--gutter), env(safe-area-inset-right));
   }
-  .article-hero { padding-left: max(18px, env(safe-area-inset-left)); padding-right: max(18px, env(safe-area-inset-right)); }
-  .related-inner { padding-left: max(18px, env(safe-area-inset-left)); padding-right: max(18px, env(safe-area-inset-right)); }
+  .article-hero {
+    padding-left: max(var(--gutter), env(safe-area-inset-left));
+    padding-right: max(var(--gutter), env(safe-area-inset-right));
+  }
+  .related-inner {
+    padding-left: max(var(--gutter), env(safe-area-inset-left));
+    padding-right: max(var(--gutter), env(safe-area-inset-right));
+  }
 }
 @media (prefers-reduced-motion: reduce) { .hero-slide, .mini, .art, .ncard { transition: none; } }
 
@@ -638,7 +654,11 @@ body:not(.map-page) { padding-bottom: 0; }
   body.chat-page { padding-bottom: 0; }
 }
 
-.page-shell { max-width: var(--maxw); margin: 0 auto; padding: 8px 22px 64px; }
+.page-shell {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 8px max(var(--gutter), env(safe-area-inset-right)) 64px max(var(--gutter), env(safe-area-inset-left));
+}
 .breadcrumbs { display: flex; flex-wrap: wrap; gap: 10px; padding: 18px 22px 0; color: var(--stone-500); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 .breadcrumbs a:hover { color: var(--bronze-dark); }
 #article-root > .breadcrumbs {
@@ -976,7 +996,8 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
   padding: 0; color: var(--stone-700); font-size: 12.5px;
 }
 .portal-footer .wrap {
-  padding: 28px 22px; display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+  padding: 28px max(var(--gutter), env(safe-area-inset-right)) 28px max(var(--gutter), env(safe-area-inset-left));
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
 }
 .portal-footer .footer-tagline {
   margin: 0; padding-left: 41px; font-size: 12.5px; color: var(--stone-500);
