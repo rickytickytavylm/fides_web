@@ -21,7 +21,7 @@ foreach ($f in $pages) {
   $c = [System.IO.File]::ReadAllText($path)
   $c = $c -replace '\?v=\d+', "?v=$id"
   $c = $c -replace '(<meta name="theme-color" content=")[^"]*(")', ('$1' + '#ede9e2' + '$2')
-  $themeBoot = "<script id=`"yak_theme_boot`">try{var t=localStorage.getItem('yak_theme');document.documentElement.dataset.theme=(t==='twilight'||t==='light'||t==='beige')?t:'beige'}catch(e){document.documentElement.dataset.theme='beige'}</script>"
+  $themeBoot = "<script id=`"yak_theme_boot`">try{document.documentElement.dataset.theme=localStorage.getItem('yak_theme')==='twilight'?'twilight':'light'}catch(e){document.documentElement.dataset.theme='light'}</script>"
   if ($c -match 'yak_theme_boot') {
     $c = $c -replace '<script id="yak_theme_boot">[\s\S]*?</script>', $themeBoot
   } else {
