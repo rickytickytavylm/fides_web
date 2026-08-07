@@ -261,8 +261,8 @@
       { id: 'liturgy', title: 'Литургия', tone: 'b' },
       { id: 'sacraments', title: 'Таинства', tone: 'c' },
       { id: 'pilgrimage', title: 'Паломничества', tone: 'd' },
-      { id: 'retreats', title: 'Реколлекции / Духовные упражнения', tone: 'e' },
-      { id: 'spirit-articles', title: 'Статьи о духовной жизни', tone: 'wide', href: 'archive.html?category=spirituality' },
+      { id: 'retreats', title: 'Реколлекции', tone: 'e' },
+      { id: 'spirit-articles', title: 'Статьи', tone: 'f', href: 'archive.html?category=spirituality' },
     ],
     nodes: {
       'prayer': {

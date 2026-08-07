@@ -927,24 +927,24 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 /* ---------- Guide walkers (О Церкви / Духовная жизнь) ---------- */
 .route-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
   margin: 8px 0 28px;
 }
 .route-card {
   display: flex; flex-direction: column; justify-content: flex-end;
-  min-height: 148px; padding: 18px 18px 16px; border-radius: 18px;
+  min-height: 132px; padding: 16px 14px 14px; border-radius: 18px;
   text-decoration: none; color: #fff; position: relative; overflow: hidden;
   transition: transform .2s ease, box-shadow .2s ease;
 }
 .route-card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(32,30,36,.18); }
-.route-card.wide { grid-column: 1 / -1; min-height: 120px; }
+.route-card.wide { grid-column: 1 / -1; min-height: 112px; }
 .route-kicker {
-  font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+  font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
   opacity: .78; margin-bottom: 8px;
 }
 .route-card strong {
-  font-family: var(--serif); font-weight: 600; font-size: clamp(20px, 2.4vw, 28px);
+  font-family: var(--serif); font-weight: 600; font-size: clamp(17px, 2.1vw, 26px);
   line-height: 1.15; letter-spacing: -.02em;
 }
 .route-sub { margin-top: 8px; font-size: 13px; opacity: .85; line-height: 1.4; }
@@ -953,6 +953,7 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 .route-card.tone-c { background: linear-gradient(145deg, #3f5240, #7a8f6a); }
 .route-card.tone-d { background: linear-gradient(145deg, #5c3a45, #b06a7a); }
 .route-card.tone-e { background: linear-gradient(145deg, #2f4558, #5d7a8c); }
+.route-card.tone-f { background: linear-gradient(145deg, #4a3b28, #c9a227); }
 .route-card.tone-wide { background: linear-gradient(145deg, #4a3b28, #c9a227); }
 .route-card.tone-accent { background: linear-gradient(145deg, #6b3a1e, #c9713f); }
 .guide-body { max-width: 680px; font-size: 16px; line-height: 1.65; color: var(--stone-700); margin: 8px 0 28px; }
@@ -1099,9 +1100,10 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
   .nav.top { gap: 10px; flex-wrap: wrap; }
 }
 @media (max-width: 720px) {
-  .route-grid { gap: 10px; }
-  .route-card { min-height: 120px; padding: 14px; border-radius: 14px; }
-  .route-card strong { font-size: 18px; }
+  .route-grid { gap: 8px; grid-template-columns: repeat(3, 1fr); }
+  .route-card { min-height: 108px; padding: 12px 10px 11px; border-radius: 14px; }
+  .route-card strong { font-size: 15px; }
+  .route-kicker { font-size: 8px; margin-bottom: 6px; }
   .authors-grid { grid-template-columns: 1fr 1fr; }
   .author-head { grid-template-columns: 72px 1fr; gap: 14px; }
   .author-head .author-ava { width: 72px; height: 72px; font-size: 20px; }
