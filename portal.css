@@ -941,6 +941,19 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 .chat-suggestions button:hover { border-color: var(--bronze); color: var(--bronze-dark); }
 
 /* ---------- Library ---------- */
+.lib-home-cta {
+  display: grid; gap: 8px; padding: 20px 18px; border-radius: 18px;
+  background: var(--surface); box-shadow: var(--shadow-card); text-decoration: none; color: inherit;
+  transition: transform .2s, box-shadow .2s;
+}
+.lib-home-cta:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+.lib-home-cta-kicker {
+  font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--bronze-dark);
+}
+.lib-home-cta strong {
+  font-family: var(--serif); font-size: 26px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1;
+}
+.lib-home-cta span:last-child { font-size: 13.5px; color: var(--stone-700); line-height: 1.45; }
 .lib-hub-sections {
   display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 0 0 22px;
 }
