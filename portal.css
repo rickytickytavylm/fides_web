@@ -1467,11 +1467,26 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 .cal-hero-main { margin-top: 14px; }
 .cal-hero h1 {
   margin: 10px 0 0; font-family: var(--serif); font-weight: 600;
-  font-size: clamp(28px, 5vw, 40px); letter-spacing: -.02em; line-height: 1.08;
+  font-size: clamp(26px, 4.5vw, 38px); letter-spacing: -.02em; line-height: 1.08;
 }
 .cal-hero-meta { margin: 10px 0 0; font-size: 13px; color: var(--stone-700); }
 .cal-hero-meta b { color: var(--ink); }
-.cal-hero-note { margin: 12px 0 0; font-size: 14px; color: var(--stone-700); line-height: 1.55; max-width: 62ch; }
+.cal-hero-fields {
+  display: grid; gap: 14px; margin-top: 18px; padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.cal-block h3 {
+  margin: 0 0 6px; font-size: 10px; font-weight: 800; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--bronze-dark);
+}
+.cal-block-body p, .cal-block-body a {
+  margin: 0; font-size: 14px; color: var(--stone-700); line-height: 1.55;
+}
+.cal-saint-link {
+  color: var(--ink); font-weight: 700; text-decoration: none; border-bottom: 1px solid var(--line-strong);
+}
+.cal-saint-link:hover { color: var(--bronze-dark); border-color: var(--bronze-dark); }
+.cal-quote { font-family: var(--serif); font-size: 16px !important; font-style: italic; color: var(--ink) !important; }
 .cal-rank {
   display: inline-flex; padding: 4px 10px; border-radius: 999px;
   font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
@@ -1481,20 +1496,29 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 .cal-rank-feast { background: var(--accent-soft); color: var(--bronze-dark); border-color: transparent; }
 .cal-rank-mem { background: var(--v1-soft); color: var(--v1); border-color: transparent; }
 .cal-rank-sun { background: rgba(111,160,216,.16); color: var(--marian); border-color: transparent; }
+.cal-rank-feria { background: var(--surface-2); color: var(--stone-700); }
 
+.cal-week-wrap { margin: 0 0 18px; }
+.cal-week-title {
+  margin: 0 0 10px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 800;
+}
 .cal-week {
-  display: grid; grid-template-columns: repeat(9, minmax(52px, 1fr)); gap: 8px;
-  overflow-x: auto; padding-bottom: 6px; margin: 0 0 16px; -webkit-overflow-scrolling: touch;
+  display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px;
+  margin: 0; overflow: visible;
 }
 .cal-week-day {
-  min-width: 52px; padding: 10px 6px 12px; border-radius: 16px; border: 1px solid var(--line);
+  min-width: 0; width: 100%; padding: 10px 2px 14px; border-radius: 14px; border: 1px solid var(--line);
   background: var(--surface); color: var(--ink); cursor: pointer; font: inherit;
   display: grid; gap: 4px; justify-items: center;
 }
-.cal-week-day .w { font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--stone-500); }
-.cal-week-day .n { font-size: 18px; font-weight: 800; line-height: 1; }
+.cal-week-day .w {
+  font-size: clamp(9px, 2.4vw, 11px); font-weight: 800; letter-spacing: .04em;
+  text-transform: lowercase; color: var(--stone-500);
+}
+.cal-week-day .n { font-size: clamp(15px, 3.8vw, 20px); font-weight: 800; line-height: 1; }
 .cal-week-day .dot { width: 5px; height: 5px; border-radius: 50%; background: transparent; }
 .cal-week-day .dot.hot { background: var(--accent); }
+.cal-week-day .dot.event { background: var(--v1); }
 .cal-week-day.on { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
 .cal-week-day.is-today .n { color: var(--bronze-dark); }
 
@@ -1543,11 +1567,15 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 .cal-footnote { margin: 16px 0 0; font-size: 12px; color: var(--stone-500); line-height: 1.5; }
 .cal-footnote a { color: var(--bronze-dark); font-weight: 700; }
 .cal-afisha-hint {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
-  margin: 0 0 22px; padding: 14px 16px; border-radius: 16px;
+  display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px;
+  margin: 0 0 18px; padding: 14px 16px; border-radius: 16px;
   background: var(--surface); border: 1px solid var(--line);
 }
 .cal-afisha-hint p { margin: 0; font-size: 13.5px; color: var(--stone-700); }
+.cal-afisha-list {
+  margin: 8px 0 0; padding: 0 0 0 18px; font-size: 13px; color: var(--stone-700); line-height: 1.45;
+}
+.cal-afisha-list li { margin: 0 0 4px; }
 .afisha-day { margin: 0 0 24px; }
 .afisha-day h2 {
   margin: 0 0 10px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 800; color: var(--stone-500);
@@ -1556,5 +1584,6 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 
 @media (max-width: 720px) {
   .cal-hero { padding: 18px 16px; border-radius: 18px; }
-  .cal-week { grid-template-columns: repeat(9, minmax(48px, 1fr)); }
+  .cal-week { gap: 4px; }
+  .cal-week-day { padding: 8px 1px 10px; border-radius: 12px; }
 }
