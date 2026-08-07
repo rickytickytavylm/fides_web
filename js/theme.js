@@ -55,8 +55,10 @@
   }
 
   function mount() {
+    document.querySelectorAll('.theme-switch').forEach(function (el) { el.remove(); });
+
     document.querySelectorAll('.masthead .wrap').forEach(function (header) {
-      if (header.querySelector('.theme-toggle, .theme-switch')) return;
+      if (header.querySelector('.theme-toggle')) return;
       var calendar = header.querySelector('.cal-btn');
       if (!calendar) return;
 
@@ -69,9 +71,6 @@
       }
       tools.insertAdjacentHTML('afterbegin', toggleHtml());
     });
-
-    // Убрать старый тройной переключатель, если остался в DOM
-    document.querySelectorAll('.theme-switch').forEach(function (el) { el.remove(); });
 
     document.querySelectorAll('.theme-toggle').forEach(function (button) {
       button.addEventListener('click', function () {
