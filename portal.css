@@ -268,22 +268,27 @@ aside { display: flex; flex-direction: column; gap: 18px; }
 @media (max-width: 880px) {
   .app-tabbar {
     position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 60;
-    display: flex; justify-content: space-around; align-items: center; gap: 2px;
+    display: flex; justify-content: space-around; align-items: stretch; gap: 2px;
     padding: 8px 6px; border-radius: 26px;
     background: color-mix(in srgb, var(--surface) 78%, transparent);
     backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4);
     border: 1px solid rgba(255, 255, 255, .08);
     box-shadow: 0 10px 34px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .1);
   }
-  .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 8px 2px;
-    color: var(--stone-500); border-radius: 16px; text-align: center; min-width: 0; }
-  .tab-item svg { width: 22px; height: 22px; flex: none; }
+  /* Иконки в одном ряду: подпись всегда резервирует 2 строки (как у «Духовная жизнь») */
+  .tab-item {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    justify-content: flex-start; gap: 3px; padding: 6px 2px 4px;
+    color: var(--stone-500); border-radius: 16px; text-align: center; min-width: 0;
+  }
+  .tab-item svg { width: 22px; height: 22px; flex: none; display: block; }
   .tab-item span {
     font-size: 9px; font-weight: 700; letter-spacing: .01em; line-height: 1.15;
+    min-height: calc(1.15em * 2);
     max-width: 100%; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
   }
   .tab-item.active { color: var(--bronze-dark); }
-  body { padding-bottom: 92px; }
+  body { padding-bottom: 98px; }
 
   /* Узкий таббар: карта и другие immersive-экраны */
   .app-tabbar--slim {
@@ -294,7 +299,7 @@ aside { display: flex; flex-direction: column; gap: 18px; }
   }
   .app-tabbar--slim .tab-item svg { display: none; }
   .app-tabbar--slim .tab-item span {
-    font-size: 10px; -webkit-line-clamp: 1; white-space: nowrap;
+    font-size: 10px; min-height: 0; -webkit-line-clamp: 1; white-space: nowrap;
   }
   body.map-page { padding-bottom: 0; }
 }
