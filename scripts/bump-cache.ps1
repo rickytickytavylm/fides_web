@@ -8,7 +8,7 @@ $id = Get-Date -Format 'yyyyMMddHHmm'
 Write-Host "BUILD = $id"
 
 $pages = @(
-  'index.html', 'archive.html', 'article.html', 'map.html', 'chat.html',
+  'index.html', 'archive.html', 'article.html', 'articles.html', 'map.html', 'chat.html',
   'video.html', 'audio.html', 'radio.html', 'photostock.html', 'sections.html',
   'library.html', 'book.html', 'church.html', 'spiritual-life.html',
   'authors.html', 'author.html', 'cycle.html', 'calendar.html', 'events.html', 'organizer.html',

@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-    <meta name="description" content="Афиша ЯКатолик — события и мероприятия католиков России." />
-    <title>Афиша — ЯКатолик</title>
+    <meta name="description" content="Статьи ЯКатолик — рубрики, темы, вопрос-ответ и подборки." />
+    <title>Статьи — ЯКатолик</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -14,7 +14,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <script>window.YAK_BUILD = '202608071236';</script>
     <script id="yak_theme_boot">try{document.documentElement.dataset.theme=localStorage.getItem('yak_theme')==='twilight'?'twilight':'light'}catch(e){document.documentElement.dataset.theme='light'}</script>
-    <link rel="stylesheet" href="portal.css?v=202608071236" />
+    <link rel="stylesheet" href="portal.css" />
   </head>
   <body>
     <header class="masthead">
@@ -25,7 +25,7 @@
         </a>
         <nav class="top" aria-label="Разделы">
           <a href="archive.html?category=news">Новости</a>
-          <a href="articles.html">Статьи</a>
+          <a class="on" href="articles.html">Статьи</a>
           <a href="church.html">О Церкви</a>
           <a href="spiritual-life.html">Духовная жизнь</a>
           <a href="library.html">Библиотека</a>
@@ -39,7 +39,7 @@
       </div>
     </header>
 
-    <main class="page-shell" id="events-root"></main>
+    <main class="page-shell" id="articles-root"></main>
 
     <footer class="portal-footer"><div class="wrap">
       <a class="logo" href="index.html">
@@ -76,11 +76,11 @@
       </a>
     </nav>
 
-    <script src="js/config.js?v=202608071236"></script>
-    <script src="js/portal-nav.js?v=202608071236"></script>
-    <script src="js/events-data.js?v=202608071236"></script>
-    <script src="js/events-page.js?v=202608071236"></script>
-    <script src="js/theme.js?v=202608071236"></script>
-    <script src="js/cache-bust.js?v=202608071236"></script>
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/portal-nav.js"></script>
+    <script src="js/articles-page.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/cache-bust.js"></script>
   </body>
 </html>

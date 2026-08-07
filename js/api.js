@@ -39,7 +39,30 @@
     });
   }
 
-  function getArticles(opts) {
+  function articleKey(it) {
+    return String((it && (it.id || it.linkOriginal || it.link || it.title)) || '');
+  }
+
+  function mergeArticlePacks(packs) {
+    var seen = {};
+    var items = [];
+    var total = 0;
+    (packs || []).forEach(function (pack) {
+      total += Number(pack && pack.total) || 0;
+      ((pack && pack.items) || []).forEach(function (it) {
+        var key = articleKey(it);
+        if (!key || seen[key]) return;
+        seen[key] = true;
+        items.push(it);
+      });
+    });
+    items.sort(function (a, b) {
+      return String(b.date || '').localeCompare(String(a.date || ''));
+    });
+    return { items: items, total: total };
+  }
+
+  function fetchArticlesRaw(opts) {
     opts = opts || {};
     var params = new URLSearchParams({
       page: String(opts.page || 1),
@@ -48,6 +71,57 @@
     if (opts.category) params.set('category', opts.category);
     if (opts.q) params.set('q', opts.q);
     return apiGet('/api/archive/ruscatholic/articles?' + params);
+  }
+
+  /**
+   * Правила портала / парсинга (фронт + ожидание бэкенда):
+   * - propovedi: API пока не фильтрует дочерний слаг → берём pastirstvo и оставляем propovedi
+   * - santa-sede: новости «Папа Римский» (pope) включаются в «Святой Престол»
+   * - pope: редирект/алиас на santa-sede на уровне UI
+   */
+  function getArticles(opts) {
+    opts = opts || {};
+    var cat = opts.category || '';
+
+    if (cat === 'pope') {
+      return getArticles(Object.assign({}, opts, { category: 'santa-sede' }));
+    }
+
+    if (cat === 'propovedi') {
+      return fetchArticlesRaw(Object.assign({}, opts, {
+        category: 'pastirstvo',
+        limit: Math.max(Number(opts.limit) || 20, 24),
+      })).then(function (pack) {
+        var items = (pack.items || []).filter(function (it) {
+          var slugs = it.categorySlugs || [];
+          if (slugs.indexOf('propovedi') !== -1) return true;
+          return (it.categories || []).some(function (c) {
+            return /проповед/i.test(String(c || ''));
+          });
+        });
+        return {
+          items: items.slice(0, Number(opts.limit) || 20),
+          total: items.length,
+        };
+      });
+    }
+
+    if (cat === 'santa-sede') {
+      var page = opts.page || 1;
+      var limit = opts.limit || 20;
+      return Promise.all([
+        fetchArticlesRaw({ category: 'santa-sede', page: page, limit: limit, q: opts.q }),
+        fetchArticlesRaw({ category: 'pope', page: page, limit: limit, q: opts.q }),
+      ]).then(function (packs) {
+        var merged = mergeArticlePacks(packs);
+        return {
+          items: merged.items.slice(0, limit),
+          total: merged.total,
+        };
+      });
+    }
+
+    return fetchArticlesRaw(opts);
   }
 
   function getArticle(idOrSlug) {

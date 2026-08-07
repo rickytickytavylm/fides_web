@@ -9,7 +9,7 @@
   var SECTIONS = [
     { id: 'home', title: 'Главная', href: 'index.html', blurb: 'Лента новостей, статей, авторов, афиша и библиотека.' },
     { id: 'news', title: 'Новости', href: 'archive.html?category=news', blurb: 'Новостная лента.' },
-    { id: 'articles', title: 'Статьи', href: 'archive.html?category=columns', blurb: 'Колонки и материалы архива.' },
+    { id: 'articles', title: 'Статьи', href: 'articles.html', blurb: 'Рубрики, темы, вопрос-ответ и подборки.' },
     { id: 'church', title: 'О Церкви', href: 'church.html', blurb: 'Маршруты для новичков, катехуменов, возвращения в Церковь.' },
     { id: 'spirit', title: 'Духовная жизнь', href: 'spiritual-life.html', blurb: 'Молитва, литургия, таинства, паломничества, реколлекции.' },
     { id: 'library', title: 'Библиотека', href: 'library.html', blurb: 'Документы Церкви и книги.' },

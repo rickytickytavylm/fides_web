@@ -11,30 +11,39 @@
     { slug: 'kultura', label: 'Культура' },
     { slug: 'history', label: 'История' },
     { slug: 'biografii', label: 'Биографии' },
+    { slug: 'saints', label: 'Святые' },
     { slug: 'bible', label: 'Библеистика' },
     { slug: 'liturgy', label: 'Литургика' },
     { slug: 'puteshestviya', label: 'Путешествия' },
   ];
   // Рубрики раздела «Новости»
+  // «Папа Римский» (pope) больше не отдельный чип — входит в «Святой Престол» (см. Vera.getArticles)
   var NEWS_CHIPS = [
     { slug: 'news', label: 'Все' },
     { slug: 'church-rus', label: 'КЦ в России' },
     { slug: 'sng', label: 'КЦ в мире' },
-    { slug: 'pope', label: 'Папа Римский' },
     { slug: 'santa-sede', label: 'Святой Престол' },
-    { slug: 'saints', label: 'Святые' },
     { slug: 'announcement', label: 'Анонсы' },
+  ];
+  var VOICES_CHIPS = [
+    { slug: 'interview', label: 'Интервью' },
+    { slug: 'svidetelstva', label: 'Свидетельства' },
+    { slug: 'propovedi', label: 'Проповеди' },
   ];
 
   var ARTICLE_SLUGS = ARTICLE_CHIPS.map(function (c) { return c.slug; });
+  var VOICES_SLUGS = VOICES_CHIPS.map(function (c) { return c.slug; });
   var LABELS = {};
-  ARTICLE_CHIPS.concat(NEWS_CHIPS).forEach(function (c) { LABELS[c.slug] = c.label; });
+  ARTICLE_CHIPS.concat(NEWS_CHIPS).concat(VOICES_CHIPS).forEach(function (c) { LABELS[c.slug] = c.label; });
   (V.ARCHIVE_CHIPS || []).forEach(function (c) { if (!LABELS[c.slug]) LABELS[c.slug] = c.label; });
   LABELS.polka = 'Книжная полка';
+  LABELS.pope = 'Святой Престол';
 
   function sectionOf(slug) {
     if (slug === 'polka') return 'library';
+    if (slug === 'pope') return 'news';
     if (ARTICLE_SLUGS.indexOf(slug) !== -1) return 'articles';
+    if (VOICES_SLUGS.indexOf(slug) !== -1) return 'voices';
     return 'news';
   }
 
@@ -66,6 +75,11 @@
     location.replace('library.html');
     return;
   }
+  // Старый слаг «Папа» → единая рубрика новостей «Святой Престол»
+  if (state.category === 'pope') {
+    location.replace('archive.html?category=santa-sede' + (state.q ? '&q=' + encodeURIComponent(state.q) : ''));
+    return;
+  }
 
   var chipsEl = document.getElementById('archive-chips');
   var feedEl = document.getElementById('feed');
@@ -77,6 +91,7 @@
 
   function sectionChips() {
     if (state.section === 'articles') return ARTICLE_CHIPS;
+    if (state.section === 'voices') return VOICES_CHIPS;
     if (state.section === 'library') return [{ slug: 'polka', label: 'Все' }];
     return NEWS_CHIPS;
   }
@@ -87,6 +102,7 @@
 
   function pageHeading() {
     if (state.section === 'articles') return 'Статьи';
+    if (state.section === 'voices') return 'Голоса';
     if (state.section === 'library') return 'Библиотека';
     return 'Новости';
   }
@@ -103,9 +119,11 @@
       desc.textContent =
         title === 'Статьи'
           ? 'Свежие статьи и колонки для спокойного чтения.'
-          : title === 'Библиотека'
-            ? 'Книжная полка и материалы для углублённого чтения.'
-            : 'Актуальные материалы: поиск по теме, рубрики и спокойное чтение.';
+          : title === 'Голоса'
+            ? 'Интервью, свидетельства и проповеди.'
+            : title === 'Библиотека'
+              ? 'Книжная полка и материалы для углублённого чтения.'
+              : 'Актуальные материалы: поиск по теме, рубрики и спокойное чтение.';
     }
   }
 

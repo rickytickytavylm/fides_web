@@ -1,0 +1,149 @@
+/**
+ * Хаб раздела «Статьи»: рубрикатор, темы, вопрос-ответ, идеи.
+ */
+(function () {
+  'use strict';
+
+  var V = window.Vera;
+  var root = document.getElementById('articles-root');
+  if (!root || !V) return;
+
+  function esc(s) {
+    return V.escapeHtml ? V.escapeHtml(s) : String(s || '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function hrefFor(item) {
+    if (item.href) return item.href;
+    if (item.q) return 'archive.html?q=' + encodeURIComponent(item.q);
+    return 'archive.html?category=' + encodeURIComponent(item.slug || 'columns');
+  }
+
+  var RUBRICS = [
+    { slug: 'spirituality', title: 'Духовность', tone: 'a' },
+    { slug: 'obraz-zhizni', title: 'Образ жизни', tone: 'b' },
+    { slug: 'kultura', title: 'Культура', tone: 'c' },
+    { slug: 'history', title: 'История', tone: 'd' },
+    { slug: 'biografii', title: 'Биографии', tone: 'a' },
+    { slug: 'saints', title: 'Святые', tone: 'b' },
+    { slug: 'bible', title: 'Библеистика', tone: 'c' },
+    { slug: 'liturgy', title: 'Литургика', tone: 'd' },
+    { slug: 'puteshestviya', title: 'Путешествия', tone: 'e', wide: true },
+  ];
+
+  // Темы: где тега ещё нет — временный поиск q (см. HANDOFF §6)
+  var TOPICS = [
+    { title: 'Искусственный интеллект', q: 'искусственный интеллект' },
+    { title: 'Теология тела', slug: 'theology-of-the-body' },
+    { title: 'Мифы и правда о Католической Церкви', slug: 'pravda' },
+    { title: 'Забота об общем доме', q: 'Laudato' },
+    { title: 'Экуменический диалог', q: 'экуменический' },
+  ];
+
+  var QA = [
+    { title: 'Вопросы священнику', slug: 'ask-priest', tone: 'a' },
+    { title: 'Вопросы психологу', slug: 'psiholog', tone: 'b' },
+  ];
+
+  var IDEAS = [
+    { title: 'Это интересно', slug: 'eto-interesno', tone: 'c' },
+    { title: 'Кино со смыслом', slug: 'kino-so-smyislom', tone: 'd' },
+    { title: 'Католическая кухня', slug: 'cook', tone: 'e' },
+  ];
+
+  var VOICES = [
+    { title: 'Интервью', slug: 'interview' },
+    { title: 'Свидетельства', slug: 'svidetelstva' },
+    { title: 'Проповеди', slug: 'propovedi' },
+  ];
+
+  function toneClass(item, i) {
+    if (item.wide) return 'route-card wide tone-' + (item.tone || 'wide');
+    return 'route-card tone-' + (item.tone || 'abcd'[i % 4]);
+  }
+
+  function cardGrid(items, kicker) {
+    var html = '<div class="route-grid">';
+    items.forEach(function (item, i) {
+      html +=
+        '<a class="' + toneClass(item, i) + '" href="' + esc(hrefFor(item)) + '">' +
+        '<span class="route-kicker">' + esc(kicker || 'Открыть') + '</span>' +
+        '<strong>' + esc(item.title) + '</strong>' +
+        (item.note ? '<span class="route-sub">' + esc(item.note) + '</span>' : '') +
+        '</a>';
+    });
+    return html + '</div>';
+  }
+
+  function linkList(items) {
+    var html = '<ul class="articles-link-list">';
+    items.forEach(function (item) {
+      html +=
+        '<li><a href="' + esc(hrefFor(item)) + '">' +
+        '<strong>' + esc(item.title) + '</strong>' +
+        (item.note ? '<span>' + esc(item.note) + '</span>' : '') +
+        '</a></li>';
+    });
+    return html + '</ul>';
+  }
+
+  function section(title, desc, inner) {
+    return (
+      '<section class="articles-block">' +
+      '<div class="block-head"><span class="kicker"></span><h2>' + esc(title) + '</h2><span class="rule"></span></div>' +
+      (desc ? '<p class="articles-block-desc">' + esc(desc) + '</p>' : '') +
+      inner +
+      '</section>'
+    );
+  }
+
+  function renderFresh(items) {
+    if (!items.length) return '<p class="archive-empty">Пока нет материалов</p>';
+    return (
+      '<div class="art-grid">' +
+      items.map(function (it, i) {
+        var rub = (it.categories && it.categories[0]) || 'Статья';
+        return (
+          '<a class="art" href="' + V.articleHref(it) + '">' +
+          '<div class="ph" ' + V.coverStyle(it.image) + '></div>' +
+          '<div class="in"><div class="rub">' + esc(rub) + '</div>' +
+          '<h4>' + esc(it.title) + '</h4></div></a>'
+        );
+      }).join('') +
+      '</div>'
+    );
+  }
+
+  document.title = 'Статьи — ЯКатолик';
+  root.innerHTML =
+    '<nav class="breadcrumbs in-shell" aria-label="Хлебные крошки">' +
+    '<a href="index.html">Главная</a><span>/</span><span>Статьи</span></nav>' +
+    '<header class="page-head in-shell"><div>' +
+    '<p class="eyebrow">Читать</p><h1>Статьи</h1></div>' +
+    '<p class="page-desc">Рубрики, темы, вопрос-ответ и подборки — не только общий поиск по каталогу.</p>' +
+    '</header>' +
+    '<div class="articles-toolbar">' +
+    '<a class="btn-primary" href="archive.html?category=columns">Все статьи</a>' +
+    '<a class="btn-ghost" href="archive.html?category=interview">Голоса</a>' +
+    '</div>' +
+    section('Рубрики', 'Основные подразделы публикаций.', cardGrid(RUBRICS, 'Рубрика')) +
+    section('Темы', 'Специальные подборки. Часть тегов Анастасия добавит на Рускатолике — до этого работает поиск.', linkList(TOPICS)) +
+    section('Вопрос — ответ', '', cardGrid(QA, 'Раздел')) +
+    section('Идеи', 'Лёгкие и прикладные материалы.', cardGrid(IDEAS, 'Подборка')) +
+    section('Голоса', 'Интервью, свидетельства и проповеди.', cardGrid(VOICES, 'Голоса')) +
+    '<section class="articles-block" id="articles-fresh-wrap">' +
+    '<div class="block-head"><span class="kicker"></span><h2>Свежее</h2><span class="rule"></span></div>' +
+    '<div id="articles-fresh"><div class="spinner" aria-label="Загрузка"></div></div>' +
+    '<p class="articles-more"><a class="wlink" href="archive.html?category=columns">Весь каталог →</a></p>' +
+    '</section>';
+
+  V.getArticles({ category: 'columns', limit: 6, page: 1 })
+    .then(function (pack) {
+      var el = document.getElementById('articles-fresh');
+      if (el) el.innerHTML = renderFresh((pack.items || []).slice(0, 6));
+    })
+    .catch(function () {
+      var el = document.getElementById('articles-fresh');
+      if (el) el.innerHTML = '<p class="archive-empty">Не удалось загрузить</p>';
+    });
+})();

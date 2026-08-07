@@ -152,7 +152,7 @@
   /* ---------- News tabs ---------- */
   var NEWS_TABS = [
     { id: 'ru', label: 'Россия', slug: 'church-rus' },
-    { id: 'vat', label: 'Святой Престол', q: 'Папа Ватикан Апостольский Престол' },
+    { id: 'vat', label: 'Святой Престол', slug: 'santa-sede' },
     { id: 'world', label: 'Мир', slug: 'news' },
   ];
   var tabsEl = document.getElementById('news-tabs');
@@ -229,6 +229,7 @@
   var VOICES_TABS = [
     { id: 'interview', label: 'Интервью', slug: 'interview' },
     { id: 'svidetelstva', label: 'Свидетельства', slug: 'svidetelstva' },
+    { id: 'propovedi', label: 'Проповеди', slug: 'propovedi' },
   ];
   var voicesTabsEl = document.getElementById('voices-tabs');
   var voicesEl = document.getElementById('voices');
