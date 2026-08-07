@@ -1332,14 +1332,18 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
   .lib-hub-tile strong { font-size: 24px; }
 }
 
-/* Library block spacing under Authors on home */
-.authors-block { margin-bottom: 0; }
-.authors-block .wrap { padding-bottom: 4px; }
-.lib-home-block { padding-top: 8px !important; padding-bottom: 28px; }
+/* Авторы → Афиша/Библиотека: без «дыры» */
+.authors-block.block { padding-bottom: 0; margin-bottom: 0; }
+.authors-block .wrap { padding-bottom: 0; padding-top: 4px; }
+.authors-block .loadmore { margin-top: 10px; margin-bottom: 0; }
+.home-cta-stack.block { padding-top: 14px; padding-bottom: 28px; }
+.home-cta-stack .block-head { margin: 18px 0 12px; }
+.home-cta-stack .block-head:first-child { margin-top: 0; }
+.home-cta-stack .lib-home-cta + .block-head { margin-top: 20px; }
 @media (max-width: 880px) {
-  .authors-block .wrap { padding-bottom: 0; }
-  .lib-home-block { padding-top: 4px !important; }
-  section.block.lib-home-block { padding-top: 4px; }
+  .authors-block.block { padding-top: 18px; padding-bottom: 0; }
+  .home-cta-stack.block { padding-top: 10px; padding-bottom: 22px; }
+  .home-cta-stack .lib-home-cta + .block-head { margin-top: 16px; }
 }
 
 /* ---------- Calendar ---------- */
