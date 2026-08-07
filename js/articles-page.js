@@ -147,8 +147,25 @@
     '</header>' +
     '<div class="articles-toolbar">' +
     '<a class="btn-primary" href="archive.html?category=columns">Все статьи</a>' +
+    '<a class="btn-ghost" href="archive.html?category=pages">Страницы</a>' +
     '<a class="btn-ghost" href="archive.html?category=interview">Голоса</a>' +
     '</div>' +
+    section(
+      'Страницы',
+      'Материалы без рубрик и тегов: хабы циклов, биографии, опорные тексты (~191).',
+      cardGrid(
+        [
+          {
+            title: 'Все страницы',
+            href: 'archive.html?category=pages',
+            tone: 'a',
+            note: 'Без категорий · из архива Рускатолик',
+            image: 'assets/cards/articles-biographies.webp',
+          },
+        ],
+        'Фильтр'
+      )
+    ) +
     section('Рубрики', 'Основные подразделы публикаций.', cardGrid(RUBRICS, 'Рубрика')) +
     section('Темы', 'Специальные подборки. Часть тегов Анастасия добавит на Рускатолике — до этого работает поиск.', linkList(TOPICS)) +
     section('Вопрос — ответ', '', cardGrid(QA, 'Раздел')) +

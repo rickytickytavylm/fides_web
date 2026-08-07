@@ -4,8 +4,10 @@
   if (!V) return;
 
   // Рубрики раздела «Статьи» (реальные слаги бэкенда)
+  // «Страницы» = WP pages без тегов/категорий (~191): циклы, биографии, хабы
   var ARTICLE_CHIPS = [
     { slug: 'columns', label: 'Все' },
+    { slug: 'pages', label: 'Страницы' },
     { slug: 'spirituality', label: 'Духовность' },
     { slug: 'obraz-zhizni', label: 'Образ жизни' },
     { slug: 'kultura', label: 'Культура' },
@@ -38,13 +40,27 @@
   (V.ARCHIVE_CHIPS || []).forEach(function (c) { if (!LABELS[c.slug]) LABELS[c.slug] = c.label; });
   LABELS.polka = 'Книжная полка';
   LABELS.pope = 'Святой Престол';
+  LABELS.pages = 'Страницы';
 
   function sectionOf(slug) {
     if (slug === 'polka') return 'library';
     if (slug === 'pope') return 'news';
+    if (slug === 'pages') return 'articles';
     if (ARTICLE_SLUGS.indexOf(slug) !== -1) return 'articles';
     if (VOICES_SLUGS.indexOf(slug) !== -1) return 'voices';
     return 'news';
+  }
+
+  function itemHref(item) {
+    if (item && (item.kind === 'page' || state.category === 'pages')) {
+      return V.pageHref ? V.pageHref(item) : 'static.html?id=' + encodeURIComponent(item.id || item.slug || '');
+    }
+    return V.articleHref(item);
+  }
+
+  function itemRubric(item) {
+    if (item && (item.kind === 'page' || state.category === 'pages')) return 'Страница';
+    return (item.categories && item.categories[0]) || 'Материал';
   }
 
   // Настоящие авторы Рускатолика зашиты в теги; поле author у большинства — служебное «ruscatholic».
@@ -117,13 +133,15 @@
     document.title = title + ' — ЯКатолик';
     if (desc) {
       desc.textContent =
-        title === 'Статьи'
-          ? 'Свежие статьи и колонки для спокойного чтения.'
-          : title === 'Голоса'
-            ? 'Интервью, свидетельства и проповеди.'
-            : title === 'Библиотека'
-              ? 'Книжная полка и материалы для углублённого чтения.'
-              : 'Актуальные материалы: поиск по теме, рубрики и спокойное чтение.';
+        state.category === 'pages'
+          ? 'Статические материалы без рубрик и тегов: хабы циклов, биографии и опорные тексты.'
+          : title === 'Статьи'
+            ? 'Свежие статьи и колонки для спокойного чтения.'
+            : title === 'Голоса'
+              ? 'Интервью, свидетельства и проповеди.'
+              : title === 'Библиотека'
+                ? 'Книжная полка и материалы для углублённого чтения.'
+                : 'Актуальные материалы: поиск по теме, рубрики и спокойное чтение.';
     }
   }
 
@@ -203,11 +221,12 @@
       if (!hero) {
         leadEl.innerHTML = '<p class="archive-empty">Ничего не найдено</p>';
       } else {
-        var cat = (hero.categories && hero.categories[0]) || 'Материал';
+        var cat = itemRubric(hero);
         var heroAuthor = authorLabel(hero);
+        var heroHref = itemHref(hero);
         leadEl.innerHTML =
           '<a class="card-image" href="' +
-          V.articleHref(hero) +
+          heroHref +
           '" ' +
           V.coverStyle(hero.image) +
           ' aria-label="Открыть"></a>' +
@@ -219,7 +238,7 @@
           (heroAuthor ? '<span class="byline-chip">' + V.escapeHtml(heroAuthor) + '</span>' : '') +
           '</p>' +
           '<h2><a href="' +
-          V.articleHref(hero) +
+          heroHref +
           '">' +
           V.escapeHtml(hero.title) +
           '</a></h2>';
@@ -230,12 +249,13 @@
       var list = hero ? rest : state.items;
       feedEl.innerHTML = list
         .map(function (item) {
-          var c = (item.categories && item.categories[0]) || 'Материал';
+          var c = itemRubric(item);
           var au = authorLabel(item);
+          var href = itemHref(item);
           return (
             '<article class="feed-item reveal visible">' +
             '<a class="feed-thumb" href="' +
-            V.articleHref(item) +
+            href +
             '" ' +
             V.coverStyle(item.image) +
             ' aria-label="Открыть"></a>' +
@@ -246,7 +266,7 @@
             V.escapeHtml(V.formatDate(item.date)) +
             '</time></p>' +
             '<h3><a href="' +
-            V.articleHref(item) +
+            href +
             '">' +
             V.escapeHtml(item.title) +
             '</a></h3>' +
@@ -276,12 +296,17 @@
       moreBtn.disabled = true;
       moreBtn.textContent = 'Загрузка…';
     }
-    V.getArticles({
-      category: state.category,
-      q: state.q,
-      page: state.page,
-      limit: state.limit,
-    })
+    var fetchPack =
+      state.category === 'pages'
+        ? V.getPages({ q: state.q, page: state.page, limit: state.limit })
+        : V.getArticles({
+            category: state.category,
+            q: state.q,
+            page: state.page,
+            limit: state.limit,
+          });
+
+    fetchPack
       .then(function (pack) {
         var batch = pack.items || [];
         state.total = Number(pack.total) || 0;
