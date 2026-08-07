@@ -124,25 +124,66 @@
     };
   }
 
-  function demoPhotoByName(name, city) {
-    var n = String(name || '').toLowerCase();
-    var c = String(city || '').toLowerCase();
-    for (var i = 0; i < DEMO_FEATURES.length; i++) {
-      var d = featureToTemple(DEMO_FEATURES[i]);
-      if (!d || !d.imageUrls.length) continue;
-      var dn = d.name.toLowerCase();
-      var dc = d.city.toLowerCase();
-      if (dn === n || (n && dn.indexOf(n.slice(0, 18)) !== -1 && (!c || dc.indexOf(c) !== -1))) {
-        return d.imageUrls;
+  /**
+   * Локальные фото — директивная подстановка по id/имени/адресу.
+   * Не зависит от API: если храм узнан, всегда ставим наш jpg.
+   */
+  var LOCAL_PHOTOS = [
+    {
+      file: 'moscow-cathedral.jpg',
+      ids: ['cathmos-immaculate'],
+      test: function (t) {
+        var n = String(t.name || '').toLowerCase();
+        var a = String(t.address || '').toLowerCase();
+        var c = String(t.city || '').toLowerCase();
+        if (c && c.indexOf('моск') === -1) return false;
+        return (
+          n.indexOf('непорочн') !== -1 ||
+          n.indexOf('immaculate') !== -1 ||
+          a.indexOf('грузинск') !== -1 ||
+          (n.indexOf('кафедральн') !== -1 && (a.indexOf('грузин') !== -1 || n.indexOf('зачат') !== -1))
+        );
+      }
+    },
+    {
+      file: 'moscow-louis.jpg',
+      ids: ['cathmos-st-louis'],
+      test: function (t) {
+        var n = String(t.name || '').toLowerCase();
+        return n.indexOf('людовик') !== -1 || n.indexOf('louis') !== -1;
+      }
+    },
+    {
+      file: 'moscow-peterpaul.jpg',
+      ids: ['cathmos-peterpaul'],
+      test: function (t) {
+        var n = String(t.name || '').toLowerCase();
+        var c = String(t.city || '').toLowerCase();
+        var a = String(t.address || '').toLowerCase();
+        if (c && c.indexOf('моск') === -1 && a.indexOf('милютин') === -1) return false;
+        return (
+          (n.indexOf('петра') !== -1 && n.indexOf('павл') !== -1) ||
+          a.indexOf('милютин') !== -1
+        );
       }
     }
-    // эвристика для собора на Грузинской
-    if (n.indexOf('непорочн') !== -1 && (c.indexOf('моск') !== -1 || n.indexOf('моск') !== -1)) {
-      return ['moscow-cathedral.jpg'];
+  ];
+
+  function localPhotoFor(t) {
+    if (!t) return '';
+    var id = String(t.id || '');
+    for (var i = 0; i < LOCAL_PHOTOS.length; i++) {
+      var rule = LOCAL_PHOTOS[i];
+      if (rule.ids.indexOf(id) !== -1) return rule.file;
+      if (rule.test(t)) return rule.file;
     }
-    if (n.indexOf('людовик') !== -1) return ['moscow-louis.jpg'];
-    if (n.indexOf('петра и павла') !== -1 && c.indexOf('моск') !== -1) return ['moscow-peterpaul.jpg'];
-    return [];
+    return '';
+  }
+
+  function attachLocalPhoto(t) {
+    var file = localPhotoFor(t);
+    if (file) t.imageUrls = [file];
+    return t;
   }
 
   function normalizePack(data) {
@@ -152,9 +193,7 @@
     for (var i = 0; i < features.length; i++) {
       var t = featureToTemple(features[i]);
       if (!t || byId[t.id]) continue;
-      if (!t.imageUrls.length) {
-        t.imageUrls = demoPhotoByName(t.name, t.city);
-      }
+      attachLocalPhoto(t);
       byId[t.id] = true;
       list.push(t);
     }

@@ -157,10 +157,14 @@
     }
 
     return (
+      '<div class="map-sheet-media">' +
       '<button type="button" class="map-sheet-close" id="map-sheet-close" aria-label="Закрыть">×</button>' +
       (photo
-        ? '<div class="map-sheet-hero" style="background-image:url(\'' + esc(photo) + '\')"></div>'
-        : '<div class="map-sheet-hero map-sheet-hero-empty"></div>') +
+        ? '<div class="map-sheet-hero has-photo"><img src="' +
+          esc(photo) +
+          '" alt="" loading="eager" decoding="async" /></div>'
+        : '<div class="map-sheet-hero map-sheet-hero-empty" aria-hidden="true"></div>') +
+      '</div>' +
       '<div class="map-sheet-content">' +
       '<p class="kind">' +
       esc(kindLabel(t.kind)) +

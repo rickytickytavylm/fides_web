@@ -290,18 +290,14 @@ aside { display: flex; flex-direction: column; gap: 18px; }
   .tab-item.active { color: var(--bronze-dark); }
   body { padding-bottom: 98px; }
 
-  /* Узкий таббар: карта и другие immersive-экраны */
-  .app-tabbar--slim {
-    padding: 7px 8px; border-radius: 20px; gap: 0;
-  }
-  .app-tabbar--slim .tab-item {
-    flex-direction: row; gap: 0; padding: 8px 4px;
-  }
-  .app-tabbar--slim .tab-item svg { display: none; }
-  .app-tabbar--slim .tab-item span {
-    font-size: 10px; min-height: 0; -webkit-line-clamp: 1; white-space: nowrap;
-  }
+  /* На карте — тот же таббар с иконками (2 строки у «Духовная жизнь», без обрезки) */
   body.map-page { padding-bottom: 0; }
+  body.map-page .app-tabbar {
+    padding: 7px 6px 6px; border-radius: 24px;
+  }
+  body.map-page .tab-item { padding: 5px 2px 3px; gap: 2px; }
+  body.map-page .tab-item svg { width: 20px; height: 20px; }
+  body.map-page .tab-item span { font-size: 8.5px; }
 }
 
 /* ---------- Responsive ---------- */
@@ -470,8 +466,9 @@ body.map-page .app-tabbar { flex: none; }
   margin: 10px auto 0; flex: none;
 }
 .map-sheet-body { overflow: auto; min-height: 0; -webkit-overflow-scrolling: touch; }
+.map-sheet-media { position: relative; flex: none; }
 .map-sheet-close {
-  position: absolute; top: 14px; right: 14px; z-index: 2;
+  position: absolute; top: 12px; right: 12px; z-index: 2;
   width: 36px; height: 36px; border: 0; border-radius: 50%;
   background: rgba(20,18,22,.55); color: #fff; font-size: 22px; line-height: 1;
   cursor: pointer; backdrop-filter: blur(8px);
@@ -479,7 +476,10 @@ body.map-page .app-tabbar { flex: none; }
   padding: 0;
 }
 .map-sheet-hero {
-  height: 180px; background: var(--surface-2) center/cover no-repeat; flex: none;
+  height: 200px; background: var(--surface-2); flex: none; overflow: hidden;
+}
+.map-sheet-hero img {
+  display: block; width: 100%; height: 100%; object-fit: cover; object-position: center;
 }
 .map-sheet-hero-empty {
   background: linear-gradient(145deg, #3a3430, #2a2522);
@@ -555,8 +555,8 @@ body.map-page .app-tabbar { flex: none; }
   body.map-page .masthead { display: none; }
   .map-shell {
     grid-template-columns: 1fr;
-    height: calc(100dvh - 72px - env(safe-area-inset-bottom));
-    height: calc(100vh - 72px);
+    height: calc(100dvh - 88px - env(safe-area-inset-bottom));
+    height: calc(100vh - 88px);
   }
   .map-side { display: none; }
   .map-stage { height: 100%; }
@@ -588,9 +588,10 @@ body.map-page .app-tabbar { flex: none; }
   .leaflet-bottom.leaflet-right { bottom: 18px; right: 10px; margin-bottom: 0 !important; }
   body.map-sheet-open .leaflet-control-zoom { opacity: .35; pointer-events: none; }
   .map-sheet-panel {
-    bottom: calc(72px + env(safe-area-inset-bottom));
-    max-height: calc(100dvh - 72px - env(safe-area-inset-bottom) - 56px);
+    bottom: calc(88px + env(safe-area-inset-bottom));
+    max-height: calc(100dvh - 88px - env(safe-area-inset-bottom) - 56px);
   }
+  .map-sheet-hero { height: 210px; }
 }
 
 /* ============================================================
