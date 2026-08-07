@@ -111,13 +111,15 @@
     var parentHref = file + '?path=' + encodeURIComponent(node.siblingsOf);
     var html = '<nav class="guide-stepnav" aria-label="Навигация по шагам">';
     html +=
-      '<div class="guide-stepnav-meta">Шаг ' +
+      '<div class="guide-stepnav-meta">' +
+      '<span class="guide-stepnav-pill"><b>' +
       (idx + 1) +
-      ' из ' +
+      '</b> / ' +
       cards.length +
-      ' · <a href="' +
+      '</span>' +
+      '<a href="' +
       esc(parentHref) +
-      '">Весь маршрут</a></div>';
+      '">Все шаги</a></div>';
     html += '<div class="guide-stepnav-actions">';
     if (prev) {
       html +=
@@ -165,25 +167,21 @@
       '<ol class="guide-steps">';
     cards.forEach(function (c, i) {
       var current = c.id === path;
+      var n = String(i + 1);
+      var sub = current ? 'Сейчас читаете' : (c.sub || '');
+      var inner =
+        '<span class="guide-step-n" aria-hidden="true">' +
+        n +
+        '</span><span class="guide-step-body"><strong>' +
+        esc(c.title) +
+        '</strong>' +
+        (sub ? '<em>' + esc(sub) + '</em>' : '') +
+        '</span>';
       html += '<li class="' + (current ? 'is-current' : '') + '">';
       if (current) {
-        html +=
-          '<span class="guide-step-n">' +
-          (i + 1) +
-          '</span><span class="guide-step-body"><strong>' +
-          esc(c.title) +
-          '</strong><em>Сейчас читаете</em></span>';
+        html += '<div class="guide-step-row">' + inner + '</div>';
       } else {
-        html +=
-          '<a href="' +
-          esc(hrefFor(c)) +
-          '"><span class="guide-step-n">' +
-          (i + 1) +
-          '</span><span class="guide-step-body"><strong>' +
-          esc(c.title) +
-          '</strong>' +
-          (c.sub ? '<em>' + esc(c.sub) + '</em>' : '') +
-          '</span></a>';
+        html += '<a class="guide-step-row" href="' + esc(hrefFor(c)) + '">' + inner + '</a>';
       }
       html += '</li>';
     });

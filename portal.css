@@ -1262,8 +1262,22 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
   border-radius: 16px; background: var(--surface); border: 1px solid var(--line);
   box-shadow: var(--shadow-card);
 }
-.guide-stepnav-meta { font-size: 13px; color: var(--stone-500); }
-.guide-stepnav-meta a { font-weight: 600; }
+.guide-stepnav-meta {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  font-size: 13px; color: var(--stone-500);
+}
+.guide-stepnav-meta a { font-weight: 700; color: var(--bronze-dark); }
+.guide-stepnav-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  min-height: 28px; padding: 0 10px; border-radius: 999px;
+  background: var(--surface-2); border: 1px solid var(--line);
+  font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink);
+}
+.guide-stepnav-pill b {
+  display: inline-grid; place-items: center;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--accent); color: #fff; font-size: 11px; line-height: 1;
+}
 .guide-stepnav-actions {
   display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
 }
@@ -1287,26 +1301,48 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
   list-style: none; margin: 0; padding: 0; display: grid; gap: 8px;
 }
 .guide-steps li {
-  border: 1px solid var(--line); border-radius: 14px; background: var(--surface); overflow: hidden;
+  border: 1px solid var(--line); border-radius: 16px; background: var(--surface); overflow: hidden;
 }
-.guide-steps a, .guide-steps li > span:first-child,
-.guide-steps li.is-current {
-  display: grid; grid-template-columns: 42px 1fr; gap: 0; align-items: stretch;
+.guide-step-row {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  align-items: center;
+  gap: 0;
+  min-height: 64px;
+  text-decoration: none;
+  color: inherit;
 }
-.guide-steps a { text-decoration: none; color: inherit; }
-.guide-steps a:hover { background: var(--surface-2); }
+a.guide-step-row:hover { background: var(--surface-2); }
 .guide-step-n {
-  display: grid; place-items: center; font-weight: 800; font-size: 14px;
-  background: var(--surface-2); color: var(--bronze-dark); border-right: 1px solid var(--line);
+  width: 28px; height: 28px; margin: 0 auto;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  font-weight: 800; font-size: 13px; line-height: 1;
+  font-variant-numeric: tabular-nums;
+  background: var(--surface-2); color: var(--bronze-dark);
+  border: 1px solid var(--line-strong);
+  flex: none;
 }
-.guide-step-body { padding: 12px 14px; display: grid; gap: 2px; }
-.guide-step-body strong { font-size: 15px; color: var(--ink); }
-.guide-step-body em { font-style: normal; font-size: 12.5px; color: var(--stone-500); }
+.guide-step-body {
+  padding: 12px 14px 12px 0;
+  display: grid; gap: 3px; align-content: center; min-width: 0;
+}
+.guide-step-body strong {
+  font-size: 15px; color: var(--ink); line-height: 1.3;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.guide-step-body em {
+  font-style: normal; font-size: 12.5px; color: var(--stone-500); line-height: 1.35;
+  display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
+}
 .guide-steps li.is-current {
-  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 42%, var(--line));
+  background: color-mix(in srgb, var(--accent-soft) 55%, var(--surface));
 }
-.guide-steps li.is-current .guide-step-n { background: var(--accent-soft); }
+.guide-steps li.is-current .guide-step-n {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
+.guide-steps li.is-current .guide-step-body em { color: var(--bronze-dark); font-weight: 600; }
 .nav-groups { display: grid; gap: 22px; margin-top: 8px; }
 .nav-group h2 { margin: 0 0 10px; font-size: 18px; }
 .nav-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
