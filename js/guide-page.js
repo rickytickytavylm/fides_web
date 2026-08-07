@@ -28,6 +28,7 @@
   function toneClass(card, i) {
     var classes;
     if (card.wide || card.tone === 'wide') classes = 'route-card wide tone-wide';
+    else if (card.tone === 'accent') classes = 'route-card tone-accent';
     else {
       var t = card.tone || ('abcd'[i % 4]);
       classes = 'route-card tone-' + t;
@@ -42,9 +43,12 @@
       var imageStyle = c.image
         ? ' style="--card-image:url(\'' + esc(c.image) + '\')"'
         : '';
+      var kicker = opts.numbered
+        ? ('Шаг ' + (i + 1))
+        : (opts.kicker || 'Открыть');
       html +=
         '<a class="' + toneClass(c, i) + '"' + imageStyle + ' href="' + esc(hrefFor(c)) + '">' +
-        '<span class="route-kicker">' + esc(opts.kicker || 'Открыть') + '</span>' +
+        '<span class="route-kicker">' + esc(kicker) + '</span>' +
         '<strong>' + esc(c.title) + '</strong>' +
         (c.sub ? '<span class="route-sub">' + esc(c.sub) + '</span>' : '') +
         '</a>';
@@ -56,8 +60,10 @@
       var extraClass = 'route-card wide tone-accent' + (opts.extra.image ? ' has-image' : '');
       html +=
         '<a class="' + extraClass + '"' + extraImg + ' href="' + esc(opts.extra.href) + '">' +
-        '<span class="route-kicker">Дальше</span>' +
-        '<strong>' + esc(opts.extra.title) + '</strong></a>';
+        '<span class="route-kicker">' + esc(opts.extra.kicker || 'Дальше') + '</span>' +
+        '<strong>' + esc(opts.extra.title) + '</strong>' +
+        (opts.extra.sub ? '<span class="route-sub">' + esc(opts.extra.sub) + '</span>' : '') +
+        '</a>';
     }
     html += '</div>';
     return html;
@@ -83,16 +89,106 @@
     );
   }
 
+  function routeCards(node) {
+    if (!node || !node.siblingsOf || !tree.nodes[node.siblingsOf]) return null;
+    return tree.nodes[node.siblingsOf].cards || [];
+  }
+
+  function cardIndex(cards) {
+    for (var i = 0; i < cards.length; i++) {
+      if (cards[i].id === path) return i;
+    }
+    return -1;
+  }
+
+  function stepNav(node) {
+    var cards = routeCards(node);
+    if (!cards || !cards.length) return '';
+    var idx = cardIndex(cards);
+    if (idx < 0) return '';
+    var prev = idx > 0 ? cards[idx - 1] : null;
+    var next = idx < cards.length - 1 ? cards[idx + 1] : null;
+    var parentHref = file + '?path=' + encodeURIComponent(node.siblingsOf);
+    var html = '<nav class="guide-stepnav" aria-label="Навигация по шагам">';
+    html +=
+      '<div class="guide-stepnav-meta">Шаг ' +
+      (idx + 1) +
+      ' из ' +
+      cards.length +
+      ' · <a href="' +
+      esc(parentHref) +
+      '">Весь маршрут</a></div>';
+    html += '<div class="guide-stepnav-actions">';
+    if (prev) {
+      html +=
+        '<a class="btn-ghost guide-stepnav-prev" href="' +
+        esc(hrefFor(prev)) +
+        '"><span>Назад</span><strong>' +
+        esc(prev.title) +
+        '</strong></a>';
+    } else {
+      html +=
+        '<a class="btn-ghost guide-stepnav-prev" href="' +
+        esc(parentHref) +
+        '"><span>Назад</span><strong>К списку шагов</strong></a>';
+    }
+    if (next) {
+      html +=
+        '<a class="btn-primary guide-stepnav-next" href="' +
+        esc(hrefFor(next)) +
+        '"><span>Следующий шаг</span><strong>' +
+        esc(next.title) +
+        '</strong></a>';
+    } else if (tree.moreCard) {
+      html +=
+        '<a class="btn-primary guide-stepnav-next" href="' +
+        esc(tree.moreCard.href) +
+        '"><span>Дальше</span><strong>' +
+        esc(tree.moreCard.title) +
+        '</strong></a>';
+    } else {
+      html +=
+        '<a class="btn-primary guide-stepnav-next" href="' +
+        esc(file) +
+        '"><span>Готово</span><strong>К разделу</strong></a>';
+    }
+    html += '</div></nav>';
+    return html;
+  }
+
   function siblingBlock(node) {
-    if (!node.siblingsOf || !tree.nodes[node.siblingsOf]) return '';
-    var parent = tree.nodes[node.siblingsOf];
-    var cards = (parent.cards || []).filter(function (c) {
-      return c.id !== path;
+    var cards = routeCards(node);
+    if (!cards || !cards.length) return '';
+    var html =
+      '<section class="guide-more">' +
+      '<h2>Все шаги маршрута</h2>' +
+      '<ol class="guide-steps">';
+    cards.forEach(function (c, i) {
+      var current = c.id === path;
+      html += '<li class="' + (current ? 'is-current' : '') + '">';
+      if (current) {
+        html +=
+          '<span class="guide-step-n">' +
+          (i + 1) +
+          '</span><span class="guide-step-body"><strong>' +
+          esc(c.title) +
+          '</strong><em>Сейчас читаете</em></span>';
+      } else {
+        html +=
+          '<a href="' +
+          esc(hrefFor(c)) +
+          '"><span class="guide-step-n">' +
+          (i + 1) +
+          '</span><span class="guide-step-body"><strong>' +
+          esc(c.title) +
+          '</strong>' +
+          (c.sub ? '<em>' + esc(c.sub) + '</em>' : '') +
+          '</span></a>';
+      }
+      html += '</li>';
     });
-    var extra = tree.moreCard || null;
-    var html = '<section class="guide-more"><h2>Ещё в этом маршруте</h2>';
-    html += renderCards(cards, { kicker: 'Маршрут', extra: extra });
-    return html + '</section>';
+    html += '</ol></section>';
+    return html;
   }
 
   function alsoBlock(node) {
@@ -158,15 +254,25 @@
     }, 0);
     return (
       '<section class="guide-feed"><h2>' + esc(node.feedLabel || 'Материалы') + '</h2>' +
-      '<div class="art-grid" id="' + boxId + '"></div></section>'
+      '<div class="art-grid" id="' + boxId + '"></div>' +
+      (node.feedCategory
+        ? '<p class="articles-more"><a class="wlink" href="archive.html?category=' +
+          encodeURIComponent(node.feedCategory) +
+          '">Все материалы →</a></p>'
+        : '') +
+      '</section>'
     );
   }
 
   function renderHub() {
     document.title = tree.title + ' — ЯКатолик';
+    var intro = tree.intro
+      ? '<p class="guide-hub-intro">' + esc(tree.intro) + '</p>'
+      : '';
     root.innerHTML =
       crumbs([{ label: 'Главная', href: 'index.html' }, { label: tree.title }]) +
       head(tree.title, tree.desc) +
+      intro +
       renderCards(tree.cards, { kicker: 'Маршрут' });
   }
 
@@ -184,9 +290,16 @@
       html += '<section class="nav-group"><h2>' + esc(g.title) + '</h2><ul class="nav-list">';
       (g.items || []).forEach(function (it) {
         if (typeof it === 'string') {
-          html += '<li><span>' + esc(it) + '</span></li>';
+          html += '<li><span class="nav-muted">' + esc(it) + '</span></li>';
         } else {
-          html += '<li><a href="' + esc(it.href) + '">' + esc(it.title) + '</a></li>';
+          html +=
+            '<li><a href="' +
+            esc(it.href) +
+            '"><strong>' +
+            esc(it.title) +
+            '</strong>' +
+            (it.note ? '<span>' + esc(it.note) + '</span>' : '') +
+            '</a></li>';
         }
       });
       html += '</ul></section>';
@@ -195,9 +308,32 @@
     root.innerHTML = html;
   }
 
+  function renderArticleLike(node) {
+    document.title = node.title + ' — ЯКатолик';
+    var parent = node.siblingsOf && tree.nodes[node.siblingsOf];
+    root.innerHTML =
+      crumbs([
+        { label: 'Главная', href: 'index.html' },
+        { label: tree.title, href: file },
+        parent
+          ? { label: parent.title, href: file + '?path=' + node.siblingsOf }
+          : null,
+        { label: node.title },
+      ].filter(Boolean)) +
+      head(node.title, node.pageDesc || '') +
+      bodyBlock(node) +
+      alsoBlock(node) +
+      stepNav(node) +
+      siblingBlock(node) +
+      feedBlock(node);
+  }
+
   function renderNode(node) {
     if (node.type === 'cards') {
       document.title = node.title + ' — ЯКатолик';
+      var tip = node.tip
+        ? '<p class="guide-route-tip">' + esc(node.tip) + '</p>'
+        : '';
       root.innerHTML =
         crumbs([
           { label: 'Главная', href: 'index.html' },
@@ -205,7 +341,12 @@
           { label: node.title },
         ]) +
         head(node.title, node.desc) +
-        renderCards(node.cards, { kicker: 'Тема' });
+        tip +
+        renderCards(node.cards, {
+          numbered: !!node.numbered,
+          kicker: node.cardKicker || 'Тема',
+          extra: node.showMore === false ? null : (tree.moreCard || null),
+        });
       return;
     }
 
@@ -215,7 +356,21 @@
     }
 
     if (node.type === 'category') {
-      location.replace('archive.html?category=' + encodeURIComponent(node.slug));
+      // Не уводим внезапно в архив: показываем введение + ленту + ссылку дальше.
+      renderArticleLike({
+        title: node.title,
+        lead: node.lead || 'Подборка материалов из архива.',
+        body: node.body || null,
+        siblingsOf: node.siblingsOf,
+        also: node.also || [
+          {
+            title: 'Открыть весь раздел в архиве',
+            href: 'archive.html?category=' + encodeURIComponent(node.slug),
+          },
+        ],
+        feedCategory: node.slug,
+        feedLabel: node.feedLabel || node.title,
+      });
       return;
     }
 
@@ -241,28 +396,12 @@
           '<summary>' + esc(p.title) + '</summary>' +
           '<p class="prayer-text">' + esc(p.text) + '</p></details>';
       });
-      html += '</div>' + siblingBlock(node) + feedBlock(node);
+      html += '</div>' + stepNav(node) + siblingBlock(node) + feedBlock(node);
       root.innerHTML = html;
       return;
     }
 
-    // page
-    document.title = node.title + ' — ЯКатолик';
-    var parent = node.siblingsOf && tree.nodes[node.siblingsOf];
-    root.innerHTML =
-      crumbs([
-        { label: 'Главная', href: 'index.html' },
-        { label: tree.title, href: file },
-        parent
-          ? { label: parent.title, href: file + '?path=' + node.siblingsOf }
-          : null,
-        { label: node.title },
-      ].filter(Boolean)) +
-      head(node.title, '') +
-      bodyBlock(node) +
-      alsoBlock(node) +
-      siblingBlock(node) +
-      feedBlock(node);
+    renderArticleLike(node);
   }
 
   if (!path) {
@@ -270,7 +409,6 @@
     return;
   }
 
-  // hub-level card may be external
   var hubCard = (tree.cards || []).filter(function (c) { return c.id === path; })[0];
   if (hubCard && hubCard.href && !tree.nodes[path]) {
     location.replace(hubCard.href);

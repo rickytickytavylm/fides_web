@@ -1167,16 +1167,17 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 .articles-toolbar {
   display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 22px;
 }
+.btn-primary, .btn-ghost,
 .articles-toolbar .btn-primary,
 .articles-toolbar .btn-ghost {
   display: inline-flex; align-items: center; justify-content: center;
   min-height: 42px; padding: 0 16px; border-radius: 12px;
-  font: 700 13px/1 var(--ff); text-decoration: none;
+  font: 700 13px/1 var(--ff); text-decoration: none; box-sizing: border-box;
 }
-.articles-toolbar .btn-primary {
+.btn-primary, .articles-toolbar .btn-primary {
   background: var(--accent); color: #fff; border: 1px solid var(--accent);
 }
-.articles-toolbar .btn-ghost {
+.btn-ghost, .articles-toolbar .btn-ghost {
   background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong);
 }
 .articles-block { margin: 0 0 28px; }
@@ -1204,6 +1205,13 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
   letter-spacing: .02em; opacity: .78;
 }
 
+.guide-hub-intro, .guide-route-tip {
+  max-width: 720px; margin: -6px 0 18px; color: var(--stone-700); line-height: 1.55; font-size: 15px;
+}
+.guide-route-tip {
+  padding: 12px 14px; border-radius: 12px; background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent); color: var(--ink);
+}
 .guide-body { max-width: 680px; font-size: 16px; line-height: 1.65; color: var(--stone-700); margin: 8px 0 28px; }
 .guide-body .guide-lead { font-size: 17px; color: var(--ink); }
 .guide-body h2 {
@@ -1221,17 +1229,72 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 .guide-also h3 { margin: 0 0 10px; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--bronze-dark); }
 .guide-also ul { margin: 0; padding-left: 18px; }
 .guide-also a { font-weight: 600; }
+.guide-stepnav {
+  display: grid; gap: 12px; margin: 8px 0 28px; padding: 16px;
+  border-radius: 16px; background: var(--surface); border: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
+}
+.guide-stepnav-meta { font-size: 13px; color: var(--stone-500); }
+.guide-stepnav-meta a { font-weight: 600; }
+.guide-stepnav-actions {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.guide-stepnav-actions a {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  text-align: left; padding: 12px 14px; border-radius: 12px; text-decoration: none;
+  min-height: 64px; justify-content: center;
+}
+.guide-stepnav-actions a span {
+  font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; opacity: .75;
+}
+.guide-stepnav-actions a strong {
+  font-size: 14px; line-height: 1.3; font-weight: 700;
+}
+.guide-stepnav-next { align-items: flex-end; text-align: right; }
 .guide-more, .guide-feed { margin: 28px 0; }
 .guide-more h2, .guide-feed h2 {
   margin: 0 0 14px; font-family: var(--serif); font-weight: 600; font-size: 28px;
 }
+.guide-steps {
+  list-style: none; margin: 0; padding: 0; display: grid; gap: 8px;
+}
+.guide-steps li {
+  border: 1px solid var(--line); border-radius: 14px; background: var(--surface); overflow: hidden;
+}
+.guide-steps a, .guide-steps li > span:first-child,
+.guide-steps li.is-current {
+  display: grid; grid-template-columns: 42px 1fr; gap: 0; align-items: stretch;
+}
+.guide-steps a { text-decoration: none; color: inherit; }
+.guide-steps a:hover { background: var(--surface-2); }
+.guide-step-n {
+  display: grid; place-items: center; font-weight: 800; font-size: 14px;
+  background: var(--surface-2); color: var(--bronze-dark); border-right: 1px solid var(--line);
+}
+.guide-step-body { padding: 12px 14px; display: grid; gap: 2px; }
+.guide-step-body strong { font-size: 15px; color: var(--ink); }
+.guide-step-body em { font-style: normal; font-size: 12.5px; color: var(--stone-500); }
+.guide-steps li.is-current {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+.guide-steps li.is-current .guide-step-n { background: var(--accent-soft); }
 .nav-groups { display: grid; gap: 22px; margin-top: 8px; }
 .nav-group h2 { margin: 0 0 10px; font-size: 18px; }
 .nav-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .nav-list li {
-  padding: 12px 14px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--line);
+  border-radius: 12px; background: var(--surface-2); border: 1px solid var(--line); overflow: hidden;
 }
-.nav-list a { font-weight: 600; }
+.nav-list a {
+  display: grid; gap: 4px; padding: 12px 14px; font-weight: 600; text-decoration: none; color: var(--ink);
+}
+.nav-list a:hover { background: color-mix(in srgb, var(--accent-soft) 70%, var(--surface-2)); }
+.nav-list a span { font-weight: 500; font-size: 12.5px; color: var(--stone-500); }
+.nav-list .nav-muted { display: block; padding: 12px 14px; color: var(--stone-500); }
+@media (max-width: 720px) {
+  .guide-stepnav-actions { grid-template-columns: 1fr; }
+  .guide-stepnav-next { align-items: flex-start; text-align: left; }
+}
 .prayer-list { display: grid; gap: 10px; margin: 8px 0 28px; }
 .prayer-item {
   border: 1px solid var(--line); border-radius: 14px; padding: 4px 14px; background: var(--surface);
