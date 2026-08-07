@@ -20,6 +20,7 @@ foreach ($f in $pages) {
   $path = (Resolve-Path $f).Path
   $c = [System.IO.File]::ReadAllText($path)
   $c = $c -replace '\?v=\d+', "?v=$id"
+  $c = $c -replace '<meta name="viewport" content="[^"]*"\s*/?>', '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />'
   $c = $c -replace '(<meta name="theme-color" content=")[^"]*(")', ('$1' + '#ede9e2' + '$2')
   $themeBoot = "<script id=`"yak_theme_boot`">try{document.documentElement.dataset.theme=localStorage.getItem('yak_theme')==='twilight'?'twilight':'light'}catch(e){document.documentElement.dataset.theme='light'}</script>"
   if ($c -match 'yak_theme_boot') {

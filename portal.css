@@ -80,6 +80,10 @@
 
 * { box-sizing: border-box; }
 html, body { margin: 0; }
+html {
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
 body {
   background: var(--ground);
   color: var(--ink);
@@ -88,6 +92,10 @@ body {
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   padding-bottom: 0;
+  touch-action: manipulation;
+}
+a, button, summary, .theme-toggle, .cal-btn, .tab-item, .theme-opt {
+  touch-action: manipulation;
 }
 .wrap {
   max-width: var(--maxw);
@@ -1147,7 +1155,18 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 .route-card.tone-wide { background: linear-gradient(145deg, #4a3b28, #c9a227); }
 .route-card.tone-accent { background: linear-gradient(145deg, #6b3a1e, #c9713f); }
 .guide-body { max-width: 680px; font-size: 16px; line-height: 1.65; color: var(--stone-700); margin: 8px 0 28px; }
+.guide-body .guide-lead { font-size: 17px; color: var(--ink); }
+.guide-body h2 {
+  margin: 22px 0 10px; font-size: 15px; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--ink); font-weight: 800;
+}
 .guide-body p { margin: 0 0 14px; }
+.guide-body ul, .guide-body ol { margin: 0 0 16px; padding-left: 1.25em; }
+.guide-body li { margin: 0 0 8px; }
+.guide-body .guide-note {
+  padding: 12px 14px; border-radius: 12px; background: var(--surface-2);
+  border-left: 3px solid var(--bronze); color: var(--ink); font-size: 14.5px;
+}
 .guide-also { margin: 0 0 28px; }
 .guide-also h3 { margin: 0 0 10px; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--bronze-dark); }
 .guide-also ul { margin: 0; padding-left: 18px; }
@@ -1171,7 +1190,10 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
   cursor: pointer; font-weight: 700; padding: 12px 0; list-style: none;
 }
 .prayer-item summary::-webkit-details-marker { display: none; }
-.prayer-item p { margin: 0 0 14px; color: var(--stone-700); line-height: 1.6; }
+.prayer-item p, .prayer-item .prayer-text {
+  margin: 0 0 14px; color: var(--stone-700); line-height: 1.65;
+  white-space: pre-wrap;
+}
 
 /* ---------- Authors ---------- */
 .authors-block {

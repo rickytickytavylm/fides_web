@@ -93,6 +93,31 @@
     return html + '</ul></div>';
   }
 
+  function bodyBlock(node) {
+    var html = '<article class="guide-body">';
+    if (node.lead) html += '<p class="guide-lead">' + esc(node.lead) + '</p>';
+    (node.body || []).forEach(function (block) {
+      if (!block) return;
+      if (block.h2) html += '<h2>' + esc(block.h2) + '</h2>';
+      if (block.p) html += '<p>' + esc(block.p) + '</p>';
+      if (block.note) html += '<p class="guide-note">' + esc(block.note) + '</p>';
+      if (block.ul && block.ul.length) {
+        html += '<ul>';
+        block.ul.forEach(function (li) { html += '<li>' + esc(li) + '</li>'; });
+        html += '</ul>';
+      }
+      if (block.ol && block.ol.length) {
+        html += '<ol>';
+        block.ol.forEach(function (li) { html += '<li>' + esc(li) + '</li>'; });
+        html += '</ol>';
+      }
+    });
+    if (!node.lead && !(node.body && node.body.length)) {
+      html += '<p>Материал готовится.</p>';
+    }
+    return html + '</article>';
+  }
+
   function feedBlock(node) {
     if (!node.feedCategory || !V) return '';
     var boxId = 'guide-feed';
@@ -203,7 +228,7 @@
         html +=
           '<details class="prayer-item"' + (i === 0 ? ' open' : '') + '>' +
           '<summary>' + esc(p.title) + '</summary>' +
-          '<p>' + esc(p.text) + '</p></details>';
+          '<p class="prayer-text">' + esc(p.text) + '</p></details>';
       });
       html += '</div>' + siblingBlock(node) + feedBlock(node);
       root.innerHTML = html;
@@ -223,7 +248,7 @@
         { label: node.title },
       ].filter(Boolean)) +
       head(node.title, '') +
-      '<article class="guide-body"><p>' + esc(node.lead || '') + '</p></article>' +
+      bodyBlock(node) +
       alsoBlock(node) +
       siblingBlock(node) +
       feedBlock(node);
