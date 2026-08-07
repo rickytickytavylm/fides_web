@@ -143,6 +143,14 @@
                 ? 'Книжная полка и материалы для углублённого чтения.'
                 : 'Актуальные материалы: поиск по теме, рубрики и спокойное чтение.';
     }
+    if (searchInput) {
+      searchInput.placeholder =
+        state.section === 'articles'
+          ? 'Поиск по статьям…'
+          : state.section === 'voices'
+            ? 'Поиск по голосам…'
+            : 'Поиск по новостям…';
+    }
   }
 
   function updateRubricLabel() {

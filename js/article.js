@@ -58,6 +58,17 @@
             '</figure>'
           );
         }
+        if (b.type === 'embed-link') {
+          return (
+            '<p class="embed-link"><a href="' +
+            V.escapeHtml(b.href) +
+            '"' +
+            (b.external ? ' target="_blank" rel="noopener noreferrer"' : '') +
+            '>' +
+            V.escapeHtml(b.text || 'Читать материал') +
+            ' <span aria-hidden="true">→</span></a></p>'
+          );
+        }
         var inner = b.html || V.escapeHtml(b.text || '');
         if (b.type === 'heading') return '<h2>' + inner + '</h2>';
         if (b.type === 'quote') return '<blockquote class="real-quote">' + inner + '</blockquote>';

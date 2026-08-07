@@ -549,6 +549,35 @@
     return cap ? stripTags(cap[1]).trim() : '';
   }
 
+  /** WP-embed / «карточка статьи» = blockquote с одной ссылкой внутри */
+  function embedLinkFromInner(inner) {
+    var s = String(inner || '');
+    var quoted = /<a\b[^>]*href\s*=\s*(["'])(.*?)\1[^>]*>([\s\S]*?)<\/a>/i.exec(s);
+    var hrefRaw = '';
+    var label = '';
+    if (quoted) {
+      hrefRaw = decodeEntities(quoted[2] || '');
+      label = stripTags(quoted[3] || '').trim();
+    } else {
+      var bare = /<a\b[^>]*href\s*=\s*([^\s>]+)[^>]*>([\s\S]*?)<\/a>/i.exec(s);
+      if (!bare) return null;
+      hrefRaw = decodeEntities(bare[1] || '');
+      label = stripTags(bare[2] || '').trim();
+    }
+    var resolved = resolveContentHref(hrefRaw);
+    if (!resolved || !label) return null;
+    // Только если почти весь текст — это ссылка (не обычная цитата с упоминанием)
+    var allText = stripTags(inner).trim();
+    if (allText && label.length < allText.length * 0.6) return null;
+    return {
+      type: 'embed-link',
+      text: label,
+      href: resolved.href,
+      external: !!resolved.external,
+      html: sanitizeInlineHtml(inner),
+    };
+  }
+
   function htmlToBlocks(html) {
     var src = String(html || '');
     if (!src.trim()) return [];
@@ -570,6 +599,13 @@
       var inner = m[3] || '';
       var text = stripTags(inner).trim();
       if (!text) continue;
+      if (tag === 'blockquote') {
+        var embed = embedLinkFromInner(inner);
+        if (embed) {
+          blocks.push(embed);
+          continue;
+        }
+      }
       var inline = sanitizeInlineHtml(inner);
       if (tag.indexOf('h') === 0) blocks.push({ type: 'heading', text: text, html: inline });
       else if (tag === 'blockquote') blocks.push({ type: 'quote', text: text, html: inline });

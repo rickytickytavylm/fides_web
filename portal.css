@@ -811,7 +811,27 @@ main.article { padding-bottom: 48px; }
 .article-body h2 { margin: 2em 0 .7em; font-family: var(--serif); font-size: clamp(24px, 2.5vw, 32px); color: var(--ink); }
 .article-body strong, .article-body b { font-weight: 700; color: var(--ink); }
 .article-body em, .article-body i { font-style: italic; }
-.article-body a { color: var(--bronze-dark); text-decoration: underline; text-underline-offset: 3px; }
+/* Ссылки в тексте — как на источнике: явно цветные и подчёркнутые */
+.article-body a {
+  color: #2f6fed;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-style: normal;
+  font-weight: 600;
+}
+.article-body a:hover { color: #1f4fc4; }
+[data-theme="twilight"] .article-body a { color: #7eb0ff; }
+[data-theme="twilight"] .article-body a:hover { color: #a8c8ff; }
+.article-body .embed-link { margin: 1.1em 0; }
+.article-body .embed-link a {
+  display: inline-flex; align-items: baseline; gap: 6px; max-width: 100%;
+  padding: 10px 14px; border-left: 3px solid #2f6fed;
+  background: var(--surface); border-radius: 0 10px 10px 0;
+  text-decoration: none; font-weight: 700; line-height: 1.35;
+}
+.article-body .embed-link a:hover { text-decoration: underline; }
+.articles-search { margin: 0 0 18px; }
+.articles-search-hint { margin: 8px 0 0; font-size: 12.5px; color: var(--stone-500); }
 .article-body .archive-figure, .article-body .inline-figure {
   margin: 1.8em 0; border-radius: 16px; overflow: hidden; background: var(--surface);
 }

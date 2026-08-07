@@ -145,9 +145,16 @@
     '<p class="eyebrow">Читать</p><h1>Статьи</h1></div>' +
     '<p class="page-desc">Рубрики, темы, вопрос-ответ и подборки — не только общий поиск по каталогу.</p>' +
     '</header>' +
+    '<form class="archive-toolbar in-shell articles-search" id="articles-search-form" role="search">' +
+    '<label class="archive-search-shell">' +
+    '<input id="articles-search" type="search" placeholder="Поиск по статьям…" autocomplete="off" />' +
+    '</label>' +
+    '<p class="articles-search-hint">Ищет по каталогу статей. Для новостей — в разделе «Новости».</p>' +
+    '</form>' +
     '<div class="articles-toolbar">' +
     '<a class="btn-primary" href="archive.html?category=columns">Все статьи</a>' +
     '<a class="btn-ghost" href="archive.html?category=pages">Страницы</a>' +
+    '<a class="btn-ghost" href="archive.html?category=news">Новости</a>' +
     '<a class="btn-ghost" href="archive.html?category=interview">Голоса</a>' +
     '</div>' +
     section(
@@ -176,6 +183,17 @@
     '<div id="articles-fresh"><div class="spinner" aria-label="Загрузка"></div></div>' +
     '<p class="articles-more"><a class="wlink" href="archive.html?category=columns">Весь каталог →</a></p>' +
     '</section>';
+
+  var searchForm = document.getElementById('articles-search-form');
+  var searchInput = document.getElementById('articles-search');
+  if (searchForm && searchInput) {
+    searchForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var q = String(searchInput.value || '').trim();
+      location.href =
+        'archive.html?category=columns' + (q ? '&q=' + encodeURIComponent(q) : '');
+    });
+  }
 
   V.getArticles({ category: 'columns', limit: 6, page: 1 })
     .then(function (pack) {
