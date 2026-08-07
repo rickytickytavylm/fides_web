@@ -26,25 +26,36 @@
   }
 
   function toneClass(card, i) {
-    if (card.wide || card.tone === 'wide') return 'route-card wide tone-wide';
-    var t = card.tone || ('abcd'[i % 4]);
-    return 'route-card tone-' + t;
+    var classes;
+    if (card.wide || card.tone === 'wide') classes = 'route-card wide tone-wide';
+    else {
+      var t = card.tone || ('abcd'[i % 4]);
+      classes = 'route-card tone-' + t;
+    }
+    return classes + (card.image ? ' has-image' : '');
   }
 
   function renderCards(cards, opts) {
     opts = opts || {};
     var html = '<div class="route-grid">';
     cards.forEach(function (c, i) {
+      var imageStyle = c.image
+        ? ' style="--card-image:url(\'' + esc(c.image) + '\')"'
+        : '';
       html +=
-        '<a class="' + toneClass(c, i) + '" href="' + esc(hrefFor(c)) + '">' +
+        '<a class="' + toneClass(c, i) + '"' + imageStyle + ' href="' + esc(hrefFor(c)) + '">' +
         '<span class="route-kicker">' + esc(opts.kicker || 'Открыть') + '</span>' +
         '<strong>' + esc(c.title) + '</strong>' +
         (c.sub ? '<span class="route-sub">' + esc(c.sub) + '</span>' : '') +
         '</a>';
     });
     if (opts.extra) {
+      var extraImg = opts.extra.image
+        ? ' style="--card-image:url(\'' + esc(opts.extra.image) + '\')"'
+        : '';
+      var extraClass = 'route-card wide tone-accent' + (opts.extra.image ? ' has-image' : '');
       html +=
-        '<a class="route-card wide tone-accent" href="' + esc(opts.extra.href) + '">' +
+        '<a class="' + extraClass + '"' + extraImg + ' href="' + esc(opts.extra.href) + '">' +
         '<span class="route-kicker">Дальше</span>' +
         '<strong>' + esc(opts.extra.title) + '</strong></a>';
     }

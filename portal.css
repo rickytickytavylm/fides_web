@@ -1270,6 +1270,10 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
   background: var(--surface-2) center/cover no-repeat; display: grid; place-items: center;
   font-weight: 800; color: var(--bronze-dark); font-size: 15px; flex: none;
 }
+.author-ava:not(.initials) {
+  border: 1px solid color-mix(in srgb, var(--line-strong) 78%, transparent);
+  box-shadow: 0 3px 12px rgba(20, 15, 12, .16);
+}
 .author-ava.initials {
   background: linear-gradient(145deg, #3a3430, #2a2522);
   color: var(--bronze-dark); border: 1px solid var(--line-strong);

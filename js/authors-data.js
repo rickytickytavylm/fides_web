@@ -9,7 +9,7 @@
     "tagId": 138,
     "count": 63,
     "bio": "Автор материалов о вере, культуре и католической жизни.",
-    "photo": "",
+    "photo": "assets/authors/sergey-sabsay.webp",
     "socials": [
       {
         "label": "Архив на Рускатолик",
@@ -99,7 +99,7 @@
     "tagId": 219,
     "count": 36,
     "bio": "Священник, автор проповедей и материалов для духовного роста.",
-    "photo": "",
+    "photo": "assets/authors/andzhelo-loreti.webp",
     "socials": [
       {
         "label": "Архив на Рускатолик",
@@ -189,7 +189,7 @@
     "tagId": 133,
     "count": 39,
     "bio": "Автор материалов архива Рускатолик.",
-    "photo": "",
+    "photo": "assets/authors/nikolai-chirkov.webp",
     "socials": [
       {
         "label": "Архив на Рускатолик",
@@ -279,7 +279,7 @@
     "tagId": 113,
     "count": 140,
     "bio": "Редактор и автор. Тег на Рускатолик: anastasiya-orlova.",
-    "photo": "",
+    "photo": "assets/authors/anastasiya-bozio.webp",
     "socials": [
       {
         "label": "Архив на Рускатолик",

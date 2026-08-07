@@ -2,7 +2,7 @@
   "name": "ЯКатолик",
   "short_name": "ЯКатолик",
   "description": "Католический портал: новости, статьи, карта храмов и чат о вере.",
-  "start_url": "./index.html?b=202608071340",
+  "start_url": "./index.html?b=202608071515",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
