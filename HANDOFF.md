@@ -172,6 +172,16 @@ def stats():
 
 ---
 
+## 6a. Статические «Страницы» (WP `pages`, ~191)
+
+Это **не** раздел «О Церкви». Отдельный тип сущностей WordPress без категорий/тегов: хабы циклов (`messori`, `iannaccone`), биографии, опорные тексты.
+
+- API: `GET /api/archive/ruscatholic/pages`, `GET /api/archive/ruscatholic/pages/:id`
+- Синк с WP: `POST /api/admin/archive/ruscatholic/sync-pages` (нужен `x-admin-token`)
+- Пока в БД пусто — smart-режим читает live с `ruscatholic.org/wp-json/wp/v2/pages`
+- Фронт: `pages.html` (каталог), `static.html` / `article.html` (просмотр; статья → fallback на page)
+- Инлайн-ссылки в HTML: `sanitizeInlineHtml` сохраняет безопасные `<a>`, внутренние URL Рускатолик → `article.html?id=slug`
+
 ## 6. Правила рубрик архива (парсинг + фронт)
 
 Нужно на стороне парсера / индекса (фронт уже делает мягкий алиас в `js/api.js`):

@@ -3,24 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-    <meta name="description" content="Материал — ЯКатолик" />
-    <title>Статья — ЯКатолик</title>
+    <meta name="description" content="Статические страницы архива — хабы циклов, биографии и материалы без рубрик." />
+    <title>Страницы — ЯКатолик</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="icon" href="yakatolik-logo.svg" />
-    <link rel="apple-touch-icon" href="yakatolik-logo.svg" />
     <link rel="manifest" href="site.webmanifest" />
     <meta name="theme-color" content="#ede9e2" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <script>window.YAK_BUILD = '202608071700';</script>
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="ЯКатолик" />
     <script id="yak_theme_boot">try{document.documentElement.dataset.theme=localStorage.getItem('yak_theme')==='twilight'?'twilight':'light'}catch(e){document.documentElement.dataset.theme='light'}</script>
     <link rel="stylesheet" href="portal.css?v=202608071700" />
   </head>
   <body>
-        <header class="masthead">
+    <header class="masthead">
       <div class="wrap">
         <a class="logo" href="index.html">
           <span class="mark"><img src="yakatolik-logo.svg" alt="ЯКатолик" width="34" height="34" /></span>
@@ -29,6 +26,7 @@
         <nav class="top" aria-label="Разделы">
           <a href="archive.html?category=news">Новости</a>
           <a href="articles.html">Статьи</a>
+          <a class="on" href="pages.html">Страницы</a>
           <a href="church.html">О Церкви</a>
           <a href="spiritual-life.html">Духовная жизнь</a>
           <a href="library.html">Библиотека</a>
@@ -42,23 +40,35 @@
       </div>
     </header>
 
+    <main class="page-shell archive-page">
+      <nav class="breadcrumbs in-shell" aria-label="Хлебные крошки">
+        <a href="index.html">Главная</a><span>/</span><span>Страницы</span>
+      </nav>
 
-    <div class="read-progress"><i></i></div>
-<main class="article">
-      <div id="article-root"></div>
-
-      <section class="related-section" hidden>
-        <div class="related-inner">
-          <div class="related-head">
-            <p class="eyebrow">Ещё по теме</p>
-            <h2>Читайте также</h2>
-          </div>
-          <div class="secondary-stories" id="related"></div>
+      <header class="page-head in-shell">
+        <div>
+          <p class="eyebrow">Архив</p>
+          <h1>Страницы</h1>
         </div>
-      </section>
+        <p class="page-desc">Статические материалы без рубрик и тегов: хабы авторских циклов, биографии и опорные тексты навигатора.</p>
+      </header>
+
+      <div class="archive-toolbar in-shell">
+        <label class="archive-search-shell">
+          <input id="pages-q" type="search" placeholder="Поиск по страницам…" autocomplete="off" />
+        </label>
+        <p class="rubric-count" id="pages-count"></p>
+      </div>
+
+      <div class="category-layout in-shell">
+        <div class="archive-feed-col">
+          <div class="feed" id="pages-grid"></div>
+          <button class="load-more" id="pages-more" type="button" hidden>Загрузить ещё</button>
+        </div>
+      </div>
     </main>
 
-    <footer class="site-footer site-footer-narrow">
+    <footer class="site-footer">
       <div class="footer-brand">
         <img class="brand-logo" src="yakatolik-logo.svg" alt="" width="40" height="40" />
         <div>
@@ -69,7 +79,7 @@
       <p class="footer-copy">© ЯКатолик</p>
     </footer>
 
-                <nav class="app-tabbar" aria-label="Основная навигация">
+    <nav class="app-tabbar" aria-label="Основная навигация">
       <a class="tab-item" href="church.html" data-tab="church">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2v2.4M10.2 4.6h3.6L14.8 7H9.2l1-2.4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M4.5 10.2 12 6.2l7.5 4V21H4.5V10.2Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 21v-5.2h4V21M8.2 12.8h2M13.8 12.8h2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>О Церкви</span>
@@ -91,12 +101,11 @@
         <span>Спросить</span>
       </a>
     </nav>
+
     <script src="js/config.js?v=202608071700"></script>
     <script src="js/api.js?v=202608071700"></script>
     <script src="js/portal-nav.js?v=202608071700"></script>
-    <script src="js/app.js?v=202608071700"></script>
-    <script src="js/cycles-data.js?v=202608071700"></script>
-    <script src="js/article.js?v=202608071700"></script>
+    <script src="js/pages-page.js?v=202608071700"></script>
     <script src="js/theme.js?v=202608071700"></script>
     <script src="js/cache-bust.js?v=202608071700"></script>
   </body>

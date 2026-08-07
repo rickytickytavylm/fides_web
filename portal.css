@@ -787,6 +787,8 @@ body:not(.map-page) { padding-bottom: 0; }
 .load-more:hover, .loadmore:hover { color: var(--bronze-dark); border-color: var(--bronze-dark); background: var(--surface); }
 .load-more:disabled { opacity: .55; cursor: wait; }
 .archive-empty, .archive-loading { color: var(--stone-500); font-size: 14px; padding: 28px 0; }
+.pages-item .pages-excerpt { margin: 8px 0 0; font-size: 13.5px; color: var(--stone-700); line-height: 1.45; }
+.pages-item { grid-template-columns: 1fr; }
 
 /* Article */
 .read-progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 50; background: transparent; pointer-events: none; }

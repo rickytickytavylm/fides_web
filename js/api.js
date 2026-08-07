@@ -130,6 +130,29 @@
     });
   }
 
+  function getPages(opts) {
+    opts = opts || {};
+    var params = new URLSearchParams({
+      page: String(opts.page || 1),
+      limit: String(opts.limit || 50),
+    });
+    if (opts.q) params.set('q', opts.q);
+    return apiGet('/api/archive/ruscatholic/pages?' + params);
+  }
+
+  function getPage(idOrSlug) {
+    return apiGet('/api/archive/ruscatholic/pages/' + encodeURIComponent(idOrSlug)).then(function (pack) {
+      return pack.page || pack.article || pack;
+    });
+  }
+
+  /** Статья или статическая page — для внутренних ссылок с Рускатолик. */
+  function getContent(idOrSlug) {
+    return getArticle(idOrSlug).catch(function () {
+      return getPage(idOrSlug);
+    });
+  }
+
   function getStats() {
     return apiGet('/api/archive/ruscatholic/stats');
   }
@@ -373,8 +396,93 @@
     );
   }
 
-  /** Оставляет только безопасный инлайн: strong/em/b/i/br */
-  function sanitizeInlineHtml(fragment) {
+  var INTERNAL_HOSTS = {
+    'ruscatholic.org': 1,
+    'www.ruscatholic.org': 1,
+    'xn--80aqecdrlilg.xn--p1ai': 1,
+    'www.xn--80aqecdrlilg.xn--p1ai': 1,
+    'fides-et-ratio.ru': 1,
+    'www.fides-et-ratio.ru': 1,
+  };
+
+  var SKIP_INTERNAL_SLUGS = {
+    category: 1,
+    tag: 1,
+    author: 1,
+    feed: 1,
+    page: 1,
+    wpadmin: 1,
+    'wp-admin': 1,
+    'wp-content': 1,
+    'wp-json': 1,
+    'wp-login.php': 1,
+  };
+
+  function pageHref(item) {
+    var id = item && (item.id != null ? item.id : item.slug);
+    if (id == null || id === '') return 'pages.html';
+    return 'static.html?id=' + encodeURIComponent(id);
+  }
+
+  /**
+   * Безопасный href для инлайна:
+   * — внутренние слаги Рускатолик → article.html?id=… (статья или page через fallback)
+   * — http(s)/mailto/tel/# — оставляем
+   * — javascript:/data: — режем
+   */
+  function resolveContentHref(href) {
+    var raw = String(href || '').trim();
+    if (!raw) return null;
+    if (/^(javascript|data|vbscript):/i.test(raw)) return null;
+    if (raw.charAt(0) === '#') return { href: raw, external: false };
+    if (/^(mailto|tel):/i.test(raw)) return { href: raw, external: false };
+
+    if (raw.indexOf('//') === 0) raw = 'https:' + raw;
+
+    var path = '';
+    var host = '';
+    if (/^https?:\/\//i.test(raw)) {
+      try {
+        var u = new URL(raw);
+        host = String(u.hostname || '').toLowerCase();
+        path = u.pathname || '/';
+        if (!INTERNAL_HOSTS[host]) {
+          return { href: u.href, external: true };
+        }
+      } catch (e) {
+        return null;
+      }
+    } else if (raw.charAt(0) === '/') {
+      path = raw.split(/[?#]/)[0];
+    } else if (/^[a-z0-9\-_%]+\/?$/i.test(raw)) {
+      path = '/' + raw;
+    } else {
+      return null;
+    }
+
+    var parts = path.replace(/\/+$/, '').split('/').filter(Boolean);
+    if (!parts.length) return { href: 'index.html', external: false };
+    var slug = parts[parts.length - 1];
+    try {
+      slug = decodeURIComponent(slug);
+    } catch (e2) {}
+    slug = String(slug || '').toLowerCase();
+    if (!slug || SKIP_INTERNAL_SLUGS[slug] || /\.(php|html?|xml|json|jpg|jpeg|png|webp|gif|pdf)$/i.test(slug)) {
+      if (/^https?:\/\//i.test(raw)) return { href: raw, external: true };
+      return null;
+    }
+    // Наши собственные URL уже вида article.html / static.html
+    if (parts.length === 1 && /\.html$/i.test(parts[0])) {
+      return { href: raw.replace(/^\//, ''), external: false };
+    }
+    return {
+      href: 'article.html?id=' + encodeURIComponent(slug),
+      external: false,
+      internal: true,
+    };
+  }
+
+  function sanitizeMarksOnly(fragment) {
     var s = String(fragment || '');
     s = s
       .replace(/<\s*b\b[^>]*>/gi, '[[B]]')
@@ -394,6 +502,36 @@
       .replace(/\[\[I\]\]/g, '<em>')
       .replace(/\[\[\/I\]\]/g, '</em>')
       .replace(/\[\[BR\]\]/g, '<br />');
+  }
+
+  /** Оставляет безопасный инлайн: strong/em/b/i/br + безопасные <a> */
+  function sanitizeInlineHtml(fragment) {
+    var s = String(fragment || '');
+    var links = [];
+    // Сначала вынимаем <a>, чтобы не скормить их strip-у тегов; inner чистится вместе с остальным текстом.
+    s = s.replace(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi, function (_full, attrs, inner) {
+      var hm = /href\s*=\s*(["'])(.*?)\1/i.exec(attrs || '');
+      if (!hm) hm = /href\s*=\s*([^\s>]+)/i.exec(attrs || '');
+      var resolved = hm ? resolveContentHref(decodeEntities(hm[2] || hm[1] || '')) : null;
+      if (!resolved) return inner || '';
+      var idx = links.length;
+      links.push(resolved);
+      return '[[A' + idx + ']]' + (inner || '') + '[[/A]]';
+    });
+    s = sanitizeMarksOnly(s);
+    return s.replace(/\[\[A(\d+)\]\]([\s\S]*?)\[\[\/A\]\]/g, function (_m, i, text) {
+      var L = links[Number(i)];
+      if (!L || !String(text || '').trim()) return text || '';
+      return (
+        '<a href="' +
+        escapeHtml(L.href) +
+        '"' +
+        (L.external ? ' target="_blank" rel="noopener noreferrer"' : '') +
+        '>' +
+        text +
+        '</a>'
+      );
+    });
   }
 
   function captionAfterImage(src, endIndex) {
@@ -461,6 +599,9 @@
     apiGet: apiGet,
     getArticles: getArticles,
     getArticle: getArticle,
+    getPages: getPages,
+    getPage: getPage,
+    getContent: getContent,
     getStats: getStats,
     getVideos: getVideos,
     sendChat: sendChat,
@@ -470,8 +611,10 @@
     escapeHtml: escapeHtml,
     stripTags: stripTags,
     sanitizeInlineHtml: sanitizeInlineHtml,
+    resolveContentHref: resolveContentHref,
     htmlToBlocks: htmlToBlocks,
     articleHref: articleHref,
+    pageHref: pageHref,
     coverStyle: coverStyle,
   };
 })(window);

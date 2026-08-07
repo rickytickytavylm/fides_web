@@ -12,13 +12,33 @@
   }
 
   function linkifyHtml(html) {
+    // Не трогаем уже собранные <a> / теги — только «голые» URL в тексте.
+    var parts = [];
+    var masked = String(html || '').replace(/<[^>]+>/g, function (tag) {
+      parts.push(tag);
+      return '\u0000' + (parts.length - 1) + '\u0000';
+    });
     var URL_RE = /(https?:\/\/[^\s<>"']+|www\.[^\s<>"']+)/gi;
-    return String(html || '').replace(URL_RE, function (raw) {
+    masked = masked.replace(URL_RE, function (raw) {
       var href = raw;
       if (href.indexOf('www.') === 0) href = 'https://' + href;
       href = href.replace(/[),.]+$/, '');
-      var label = href.replace(/^https?:\/\//, '');
-      return '<a href="' + href + '" target="_blank" rel="noopener noreferrer">' + label + '</a>';
+      var resolved = V.resolveContentHref ? V.resolveContentHref(href) : null;
+      if (resolved) {
+        return (
+          '<a href="' +
+          V.escapeHtml(resolved.href) +
+          '"' +
+          (resolved.external ? ' target="_blank" rel="noopener noreferrer"' : '') +
+          '>' +
+          V.escapeHtml(href.replace(/^https?:\/\//, '')) +
+          '</a>'
+        );
+      }
+      return V.escapeHtml(raw);
+    });
+    return masked.replace(/\u0000(\d+)\u0000/g, function (_m, i) {
+      return parts[Number(i)] || '';
     });
   }
 
@@ -69,13 +89,16 @@
       var href = m[1].trim();
       if (!href || href.indexOf('#') === 0 || href.indexOf('mailto:') === 0) continue;
       if (href.indexOf('//') === 0) href = 'https:' + href;
-      if (seen[href]) continue;
-      seen[href] = true;
-      var label = V.stripTags(m[2]).slice(0, 120) || href;
-      out.push({ href: href, label: label });
+      var resolved = V.resolveContentHref ? V.resolveContentHref(href) : null;
+      var finalHref = resolved ? resolved.href : href;
+      var external = !resolved || resolved.external;
+      if (seen[finalHref]) continue;
+      seen[finalHref] = true;
+      var label = V.stripTags(m[2]).slice(0, 120) || finalHref;
+      out.push({ href: finalHref, label: label, external: external });
     }
     if (linkOriginal && !seen[linkOriginal]) {
-      out.unshift({ href: linkOriginal, label: 'Источник' });
+      out.unshift({ href: linkOriginal, label: 'Источник', external: true });
     }
     return out.slice(0, 12);
   }
@@ -90,17 +113,26 @@
   }
 
   function renderArticle(article) {
-    var cat = (article.categories && article.categories[0]) || 'Материал';
+    var isPage = article.kind === 'page';
+    var cat = isPage
+      ? 'Страница'
+      : (article.categories && article.categories[0]) || 'Материал';
     var blocks = V.htmlToBlocks(article.contentHtml || '');
     var cover = pickCover(article, blocks);
     var bodyHtml = blocks.length ? renderBlocks(blocks) : '';
     if (!bodyHtml.trim()) bodyHtml = fallbackBody(article);
     var sources = extractSources(article.contentHtml, article.linkOriginal);
-    var listHref = 'archive.html' + (article.categorySlugs && article.categorySlugs[0]
-      ? '?category=' + encodeURIComponent(article.categorySlugs[0])
-      : '');
-    var sectionLabel =
-      article.categorySlugs && article.categorySlugs[0] === 'columns' ? 'Статьи' : 'Новости';
+    var listHref = isPage
+      ? 'pages.html'
+      : 'archive.html' +
+        (article.categorySlugs && article.categorySlugs[0]
+          ? '?category=' + encodeURIComponent(article.categorySlugs[0])
+          : '');
+    var sectionLabel = isPage
+      ? 'Страницы'
+      : article.categorySlugs && article.categorySlugs[0] === 'columns'
+        ? 'Статьи'
+        : 'Новости';
 
     var sourcesHtml = '';
     if (sources.length) {
@@ -111,7 +143,9 @@
             return (
               '<li><a href="' +
               V.escapeHtml(s.href) +
-              '" target="_blank" rel="noopener noreferrer">' +
+              '"' +
+              (s.external ? ' target="_blank" rel="noopener noreferrer"' : '') +
+              '>' +
               V.escapeHtml(s.label) +
               '</a></li>'
             );
@@ -121,7 +155,7 @@
     }
 
     var cycle =
-      window.YakCycles && window.YakCycles.byArticleSlug
+      !isPage && window.YakCycles && window.YakCycles.byArticleSlug
         ? window.YakCycles.byArticleSlug(String(article.id || article.slug || ''))
         : null;
     var cycleHtml = cycle
@@ -131,6 +165,24 @@
         V.escapeHtml(cycle.title) +
         '</a></p>'
       : '';
+
+    var byline = isPage
+      ? (article.date
+          ? '<p class="byline-meta"><time datetime="' +
+            V.escapeHtml(article.date || '') +
+            '">' +
+            V.escapeHtml(V.formatDate(article.date)) +
+            '</time></p>'
+          : '')
+      : '<div class="byline"><div class="byline-main"><div>' +
+        '<p class="byline-name">' +
+        V.escapeHtml(article.author || 'Редакция') +
+        '</p>' +
+        '<p class="byline-meta"><time datetime="' +
+        V.escapeHtml(article.date || '') +
+        '">' +
+        V.escapeHtml(V.formatDate(article.date)) +
+        '</time></p></div></div></div>';
 
     return (
       '<nav class="breadcrumbs" aria-label="Хлебные крошки">' +
@@ -147,15 +199,8 @@
       '<h1>' +
       V.escapeHtml(article.title || 'Без названия') +
       '</h1>' +
-      '<div class="byline"><div class="byline-main"><div>' +
-      '<p class="byline-name">' +
-      V.escapeHtml(article.author || 'Редакция') +
-      '</p>' +
-      '<p class="byline-meta"><time datetime="' +
-      V.escapeHtml(article.date || '') +
-      '">' +
-      V.escapeHtml(V.formatDate(article.date)) +
-      '</time></p></div></div></div></header>' +
+      byline +
+      '</header>' +
       (cover
         ? '<figure class="article-hero"><div class="hero-photo" ' +
           V.coverStyle(cover) +
@@ -166,7 +211,11 @@
       '</div>' +
       sourcesHtml +
       '<footer class="article-foot">' +
-      '<a class="text-link" href="' + listHref + '">Все материалы <span>→</span></a></footer>'
+      '<a class="text-link" href="' +
+      listHref +
+      '">' +
+      (isPage ? 'Все страницы' : 'Все материалы') +
+      ' <span>→</span></a></footer>'
     );
   }
 
@@ -174,6 +223,11 @@
     var relatedEl = document.getElementById('related');
     var relatedSection = document.querySelector('.related-section');
     if (!relatedEl) return;
+    if (article.kind === 'page') {
+      if (relatedSection) relatedSection.hidden = true;
+      relatedEl.innerHTML = '';
+      return;
+    }
     relatedEl.innerHTML = '<div class="loading-row"><span class="spinner" role="status" aria-label="Загрузка"></span></div>';
     var slug = (article.categorySlugs && article.categorySlugs[0]) || '';
     V.getArticles({ category: slug, limit: 8 })
@@ -255,18 +309,22 @@
 
   root.innerHTML = articleSkeleton();
 
+  // Сначала статья; если нет — статическая WP page (внутренние ссылки / хабы циклов).
   V.getArticle(id)
+    .catch(function () {
+      return V.getPage(id);
+    })
     .then(function (article) {
       if (!article || !article.title) throw new Error('Article empty');
       document.title = article.title + ' — ЯКатолик';
       root.innerHTML = renderArticle(article);
-      if (relatedSection) relatedSection.hidden = false;
+      if (relatedSection) relatedSection.hidden = article.kind === 'page';
       loadRelated(article);
     })
     .catch(function (e) {
       console.error(e);
       root.innerHTML =
-        '<p class="archive-empty">Не удалось загрузить статью. <a href="archive.html">К материалам</a></p>';
+        '<p class="archive-empty">Не удалось загрузить материал. <a href="archive.html">К материалам</a> · <a href="pages.html">Страницы</a></p>';
       if (relatedSection) relatedSection.hidden = true;
     });
 })();
