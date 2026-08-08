@@ -124,26 +124,20 @@
   }
 
   function renderArticle(article) {
-    var isPage = article.kind === 'page';
-    var cat = isPage
-      ? 'Страница'
-      : (article.categories && article.categories[0]) || 'Материал';
+    var isPage = false;
+    var cat = (article.categories && article.categories[0]) || 'Материал';
     var blocks = V.htmlToBlocks(article.contentHtml || '');
     var cover = pickCover(article, blocks);
     var bodyHtml = blocks.length ? renderBlocks(blocks) : '';
     if (!bodyHtml.trim()) bodyHtml = fallbackBody(article);
     var sources = extractSources(article.contentHtml, article.linkOriginal);
-    var listHref = isPage
-      ? 'pages.html'
-      : 'archive.html' +
-        (article.categorySlugs && article.categorySlugs[0]
-          ? '?category=' + encodeURIComponent(article.categorySlugs[0])
-          : '');
-    var sectionLabel = isPage
-      ? 'Страницы'
-      : article.categorySlugs && article.categorySlugs[0] === 'columns'
-        ? 'Статьи'
-        : 'Новости';
+    var listHref =
+      'archive.html' +
+      (article.categorySlugs && article.categorySlugs[0]
+        ? '?category=' + encodeURIComponent(article.categorySlugs[0])
+        : '');
+    var sectionLabel =
+      article.categorySlugs && article.categorySlugs[0] === 'columns' ? 'Статьи' : 'Новости';
 
     var sourcesHtml = '';
     if (sources.length) {
@@ -320,22 +314,18 @@
 
   root.innerHTML = articleSkeleton();
 
-  // Сначала статья; если нет — статическая WP page (внутренние ссылки / хабы циклов).
   V.getArticle(id)
-    .catch(function () {
-      return V.getPage(id);
-    })
     .then(function (article) {
       if (!article || !article.title) throw new Error('Article empty');
       document.title = article.title + ' — ЯКатолик';
       root.innerHTML = renderArticle(article);
-      if (relatedSection) relatedSection.hidden = article.kind === 'page';
+      if (relatedSection) relatedSection.hidden = false;
       loadRelated(article);
     })
     .catch(function (e) {
       console.error(e);
       root.innerHTML =
-        '<p class="archive-empty">Не удалось загрузить материал. <a href="archive.html">К материалам</a> · <a href="pages.html">Страницы</a></p>';
+        '<p class="archive-empty">Не удалось загрузить материал. <a href="archive.html">К материалам</a></p>';
       if (relatedSection) relatedSection.hidden = true;
     });
 })();

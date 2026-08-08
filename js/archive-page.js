@@ -4,10 +4,8 @@
   if (!V) return;
 
   // Рубрики раздела «Статьи» (реальные слаги бэкенда)
-  // «Страницы» = WP pages без тегов/категорий (~191): циклы, биографии, хабы
   var ARTICLE_CHIPS = [
     { slug: 'columns', label: 'Все' },
-    { slug: 'pages', label: 'Страницы' },
     { slug: 'spirituality', label: 'Духовность' },
     { slug: 'obraz-zhizni', label: 'Образ жизни' },
     { slug: 'kultura', label: 'Культура' },
@@ -40,26 +38,20 @@
   (V.ARCHIVE_CHIPS || []).forEach(function (c) { if (!LABELS[c.slug]) LABELS[c.slug] = c.label; });
   LABELS.polka = 'Книжная полка';
   LABELS.pope = 'Святой Престол';
-  LABELS.pages = 'Страницы';
 
   function sectionOf(slug) {
     if (slug === 'polka') return 'library';
     if (slug === 'pope') return 'news';
-    if (slug === 'pages') return 'articles';
     if (ARTICLE_SLUGS.indexOf(slug) !== -1) return 'articles';
     if (VOICES_SLUGS.indexOf(slug) !== -1) return 'voices';
     return 'news';
   }
 
   function itemHref(item) {
-    if (item && (item.kind === 'page' || state.category === 'pages')) {
-      return V.pageHref ? V.pageHref(item) : 'static.html?id=' + encodeURIComponent(item.id || item.slug || '');
-    }
     return V.articleHref(item);
   }
 
   function itemRubric(item) {
-    if (item && (item.kind === 'page' || state.category === 'pages')) return 'Страница';
     return (item.categories && item.categories[0]) || 'Материал';
   }
 
@@ -85,6 +77,12 @@
     limit: 12,
     lastPageCount: 0,
   };
+
+  // WP pages — только черновики админки, не портал
+  if (state.category === 'pages') {
+    location.replace('articles.html');
+    return;
+  }
 
   // Книжная полка архива → полноценный раздел «Библиотека»
   if (state.section === 'library' || state.category === 'polka') {
@@ -133,15 +131,13 @@
     document.title = title + ' — ЯКатолик';
     if (desc) {
       desc.textContent =
-        state.category === 'pages'
-          ? 'Статические материалы без рубрик и тегов: хабы циклов, биографии и опорные тексты.'
-          : title === 'Статьи'
-            ? 'Свежие статьи и колонки для спокойного чтения.'
-            : title === 'Голоса'
-              ? 'Интервью, свидетельства и проповеди.'
-              : title === 'Библиотека'
-                ? 'Книжная полка и материалы для углублённого чтения.'
-                : 'Актуальные материалы: поиск по теме, рубрики и спокойное чтение.';
+        title === 'Статьи'
+          ? 'Свежие статьи и колонки для спокойного чтения.'
+          : title === 'Голоса'
+            ? 'Интервью, свидетельства и проповеди.'
+            : title === 'Библиотека'
+              ? 'Книжная полка и материалы для углублённого чтения.'
+              : 'Актуальные материалы: поиск по теме, рубрики и спокойное чтение.';
     }
     if (searchInput) {
       searchInput.placeholder =
@@ -304,17 +300,18 @@
       moreBtn.disabled = true;
       moreBtn.textContent = 'Загрузка…';
     }
-    var fetchPack =
-      state.category === 'pages'
-        ? V.getPages({ q: state.q, page: state.page, limit: state.limit })
-        : V.getArticles({
-            category: state.category,
-            q: state.q,
-            page: state.page,
-            limit: state.limit,
-          });
+    // Статические WP pages на портал не выводим — только в черновиках админки.
+    if (state.category === 'pages') {
+      location.replace('articles.html');
+      return;
+    }
 
-    fetchPack
+    V.getArticles({
+      category: state.category,
+      q: state.q,
+      page: state.page,
+      limit: state.limit,
+    })
       .then(function (pack) {
         var batch = pack.items || [];
         state.total = Number(pack.total) || 0;

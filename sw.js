@@ -1,7 +1,7 @@
 /* ЯКатолик SW:
    - HTML/CSS/JS (same-origin) — network-only (никогда не залипает старое)
    - картинки (любой origin) — cache-first, чтобы не подвисали при переходах */
-var BUILD = '202608071740';
+var BUILD = '202608071800';
 var IMG_CACHE = 'yak-img-v1';
 
 function isImage(req, url) {
