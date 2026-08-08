@@ -198,15 +198,39 @@
     );
   }
 
+  /* Коллажи/плохой cover — не ставим в lead-пакет новостей */
+  var WEAK_NEWS_LEAD = {
+    'nadezda-francisk': 1,
+    '41900': 1,
+  };
+
+  function isWeakNewsLead(it) {
+    if (!it) return true;
+    if (WEAK_NEWS_LEAD[String(it.slug || '')] || WEAK_NEWS_LEAD[String(it.id || '')]) return true;
+    if (!it.image) return true;
+    return false;
+  }
+
+  function pickNewsPack(items) {
+    var list = (items || []).slice();
+    if (!list.length) return { lead: null, rest: [] };
+    var leadIdx = 0;
+    for (var i = 0; i < list.length; i++) {
+      if (!isWeakNewsLead(list[i])) { leadIdx = i; break; }
+    }
+    var lead = list[leadIdx];
+    var rest = list.filter(function (_it, i) { return i !== leadIdx; }).slice(0, 3);
+    return { lead: lead, rest: rest };
+  }
+
   function renderNewsPack(items) {
-    if (!items.length) return '<p class="ps-status">Пока пусто</p>';
-    var lead = items[0];
-    var rest = items.slice(1, 4);
+    var pack = pickNewsPack(items);
+    if (!pack.lead) return '<p class="ps-status">Пока пусто</p>';
     return (
       '<div class="news-pack">' +
-      newsCard(lead, 0, true) +
+      newsCard(pack.lead, 0, true) +
       '<div class="news-side">' +
-      rest.map(function (it, i) { return newsCard(it, i + 1, false); }).join('') +
+      pack.rest.map(function (it, i) { return newsCard(it, i + 1, false); }).join('') +
       '</div></div>'
     );
   }
@@ -217,12 +241,12 @@
     if (!newsEl) return;
     if (newsCache[id]) { newsEl.innerHTML = renderNewsPack(newsCache[id]); return; }
     newsEl.innerHTML = skNcards();
-    var opts = { limit: 4, page: 1 };
+    var opts = { limit: 8, page: 1 };
     if (tab.slug) opts.category = tab.slug;
     if (tab.q) opts.q = tab.q;
     V.getArticles(opts)
       .then(function (pack) {
-        var items = (pack.items || []).slice(0, 4);
+        var items = pack.items || [];
         newsCache[id] = items;
         newsEl.innerHTML = renderNewsPack(items);
       })
