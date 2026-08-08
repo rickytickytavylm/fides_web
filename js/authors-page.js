@@ -160,7 +160,7 @@
       '<section class="guide-feed"><h2>Все публикации автора</h2>' +
       '<div class="author-pubs">' + (feed || '<p class="archive-empty">Пока нет материалов</p>') + '</div></section>';
 
-    /* Подтянуть обложки из архива (десктопная сетка с картинками) */
+    /* Обложки из нашего архива */
     if (V && V.getArticle && a.recent && a.recent.length) {
       a.recent.forEach(function (p) {
         V.getArticle(p.slug).then(function (art) {
@@ -170,7 +170,7 @@
           if (!card) return;
           card.style.backgroundImage = 'url("' + String(img).replace(/"/g, '') + '")';
           card.style.backgroundSize = 'cover';
-          card.style.backgroundPosition = 'center';
+          card.style.backgroundPosition = 'center 22%';
           card.classList.add('has-photo');
         }).catch(function () {});
       });

@@ -1856,32 +1856,41 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
 .author-stats span { font-size: 13px; color: var(--stone-500); }
 .author-stats b { color: var(--ink); font-size: 18px; margin-right: 4px; }
 .author-pubs {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 32px;
 }
 .author-pub {
-  display: grid; grid-template-rows: auto 1fr; gap: 0; padding: 0; border: 1px solid var(--line);
-  border-radius: 18px; overflow: hidden; text-decoration: none; color: inherit;
-  background: var(--surface); box-shadow: var(--shadow-card);
-  transition: transform .15s ease, box-shadow .15s ease;
+  display: grid; grid-template-rows: auto 1fr; gap: 0; padding: 0; border: 0;
+  border-radius: 0; overflow: visible; text-decoration: none; color: inherit;
+  background: transparent; box-shadow: none;
+  transition: color .15s ease;
 }
-.author-pub:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+.author-pub:hover { transform: none; box-shadow: none; }
+.author-pub:hover strong { color: var(--bronze-dark); }
 .author-pub-cover {
-  display: block; height: 148px; background-color: var(--surface-2);
-  background-size: cover; background-position: center;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  height: auto;
+  max-height: 260px;
+  border-radius: 4px;
+  background-color: var(--surface-2);
+  background-size: cover;
+  background-position: center 22%;
+  background-repeat: no-repeat;
 }
-.author-pub-body { display: grid; gap: 6px; padding: 14px 16px 16px; }
+.author-pub-body { display: grid; gap: 6px; padding: 12px 0 0; }
 .author-pub time { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--stone-500); }
 .author-pub strong {
-  font-size: 16px; line-height: 1.3;
+  font-family: var(--serif); font-size: clamp(17px, 1.35vw, 20px); font-weight: 600; line-height: 1.25;
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
 }
 .author-pub-body > span {
-  font-size: 13px; color: var(--stone-700); line-height: 1.45;
+  font-size: 13.5px; color: var(--stone-700); line-height: 1.45;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 @media (max-width: 720px) {
-  .author-pubs { grid-template-columns: 1fr; gap: 12px; }
-  .author-pub-cover { height: 160px; }
+  .author-pubs { grid-template-columns: 1fr; gap: 20px; }
+  .author-pub-cover { max-height: none; aspect-ratio: 16 / 10; }
 }
 
 /* ---------- Cycles ---------- */
