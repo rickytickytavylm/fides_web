@@ -264,13 +264,44 @@
     );
   }
 
+  function renderFreshHome(items) {
+    if (!items.length) return '<p class="ps-status">Пока пусто</p>';
+    var lead = items[0];
+    var rest = items.slice(1, 4);
+    return (
+      '<div class="fresh-home">' +
+      newsCard(lead, 0, true) +
+      '<div class="fresh-home-row">' +
+      rest.map(function (it, i) {
+        return (
+          '<a class="art art--tile" href="' + V.articleHref(it) + '">' +
+          '<div class="ph" style="background-image:' + bg(it.image, i + 1) + '"></div>' +
+          '<div class="in"><div class="rub">' + esc(cat(it)) + '</div>' +
+          '<h4>' + esc(it.title) + '</h4>' +
+          '<div class="date">' + esc(V.formatDate(it.date)) + '</div></div></a>'
+        );
+      }).join('') +
+      '</div></div>'
+    );
+  }
+
+  function skFreshHome() {
+    return (
+      '<div class="fresh-home">' +
+      '<article class="ncard ncard--lead"><div class="thumb sk"></div><div class="ncard-body">' +
+      '<div class="sk sk-line" style="width:28%;height:10px;margin-bottom:12px"></div>' +
+      '<div class="sk sk-line" style="width:88%;height:22px"></div></div></article>' +
+      '<div class="fresh-home-row">' + skArts(3) + '</div></div>'
+    );
+  }
+
   var freshEl = document.getElementById('fresh');
   function loadFresh() {
     if (!freshEl) return;
-    freshEl.innerHTML = skNcards();
-    V.getArticles({ category: 'columns', limit: 8, page: 1 })
+    freshEl.innerHTML = skFreshHome();
+    V.getArticles({ category: 'columns', limit: 4, page: 1 })
       .then(function (pack) {
-        freshEl.innerHTML = renderNewsPack(pack.items || []);
+        freshEl.innerHTML = renderFreshHome((pack.items || []).slice(0, 4));
       })
       .catch(function () { freshEl.innerHTML = '<p class="ps-status">Не удалось загрузить статьи</p>'; });
   }
