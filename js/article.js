@@ -124,8 +124,10 @@
   }
 
   function renderArticle(article) {
-    var isPage = false;
-    var cat = (article.categories && article.categories[0]) || 'Материал';
+    var isPage = article.kind === 'page' || article.type === 'page';
+    var cat =
+      (article.categories && article.categories[0]) ||
+      (isPage ? 'Страница' : 'Материал');
     var blocks = V.htmlToBlocks(article.contentHtml || '');
     var cover = pickCover(article, blocks);
     var relatedEmbeds = [];
@@ -168,13 +170,17 @@
       if (!s.external && String(s.href || '').indexOf('article.html') === 0) return false;
       return true;
     });
-    var listHref =
-      'archive.html' +
-      (article.categorySlugs && article.categorySlugs[0]
-        ? '?category=' + encodeURIComponent(article.categorySlugs[0])
-        : '');
-    var sectionLabel =
-      article.categorySlugs && article.categorySlugs[0] === 'columns' ? 'Статьи' : 'Новости';
+    var listHref = isPage
+      ? 'articles.html'
+      : 'archive.html' +
+        (article.categorySlugs && article.categorySlugs[0]
+          ? '?category=' + encodeURIComponent(article.categorySlugs[0])
+          : '');
+    var sectionLabel = isPage
+      ? 'Статьи'
+      : article.categorySlugs && article.categorySlugs[0] === 'columns'
+        ? 'Статьи'
+        : 'Новости';
 
     var sourcesHtml = '';
     if (sources.length) {
@@ -352,18 +358,25 @@
 
   root.innerHTML = articleSkeleton();
 
-  V.getArticle(id)
+  // Статья (post) или WP page — внутренние ссылки Рускатолика часто ведут на pages.
+  var load = V.getContent || V.getArticle;
+  load(id)
     .then(function (article) {
       if (!article || !article.title) throw new Error('Article empty');
       document.title = article.title + ' — ЯКатолик';
       root.innerHTML = renderArticle(article);
-      if (relatedSection) relatedSection.hidden = false;
+      if (relatedSection) relatedSection.hidden = article.kind === 'page';
       loadRelated(article);
     })
     .catch(function (e) {
       console.error(e);
       root.innerHTML =
-        '<p class="archive-empty">Не удалось загрузить материал. <a href="archive.html">К материалам</a></p>';
+        '<div class="article-missing">' +
+        '<p class="eyebrow">Материал</p>' +
+        '<h1>Не удалось открыть</h1>' +
+        '<p>Ссылка могла вести на материал, которого нет в архиве, или временный сбой загрузки.</p>' +
+        '<p><a class="wlink" href="archive.html">К материалам →</a> · ' +
+        '<a class="wlink" href="articles.html">К статьям →</a></p></div>';
       if (relatedSection) relatedSection.hidden = true;
     });
 })();

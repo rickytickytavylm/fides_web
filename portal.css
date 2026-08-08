@@ -1062,6 +1062,14 @@ body:not(.map-page) { padding-bottom: 0; }
 .load-more:hover, .loadmore:hover { color: var(--bronze-dark); border-color: var(--bronze-dark); background: var(--surface); }
 .load-more:disabled { opacity: .55; cursor: wait; }
 .archive-empty, .archive-loading { color: var(--stone-500); font-size: 14px; padding: 28px 0; }
+.article-missing {
+  max-width: 640px; margin: 0 auto; padding: 48px 22px 80px;
+}
+.article-missing h1 {
+  margin: 8px 0 14px; font-family: var(--serif); font-weight: 600;
+  font-size: clamp(28px, 4vw, 40px); line-height: 1.15;
+}
+.article-missing p { margin: 0 0 12px; color: var(--stone-700); font-size: 16px; line-height: 1.55; }
 .pages-item .pages-excerpt { margin: 8px 0 0; font-size: 13.5px; color: var(--stone-700); line-height: 1.45; }
 .pages-item { grid-template-columns: 1fr; }
 
