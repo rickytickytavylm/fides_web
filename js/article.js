@@ -128,9 +128,46 @@
     var cat = (article.categories && article.categories[0]) || 'Материал';
     var blocks = V.htmlToBlocks(article.contentHtml || '');
     var cover = pickCover(article, blocks);
-    var bodyHtml = blocks.length ? renderBlocks(blocks) : '';
+    var relatedEmbeds = [];
+    var contentBlocks = [];
+    (blocks || []).forEach(function (b) {
+      if (b && b.type === 'embed-link') relatedEmbeds.push(b);
+      else contentBlocks.push(b);
+    });
+    var bodyHtml = contentBlocks.length ? renderBlocks(contentBlocks) : '';
     if (!bodyHtml.trim()) bodyHtml = fallbackBody(article);
-    var sources = extractSources(article.contentHtml, article.linkOriginal);
+
+    var relatedHtml = '';
+    if (relatedEmbeds.length) {
+      relatedHtml =
+        '<section class="article-related-links">' +
+        '<h3>Материалы по теме</h3><ul>' +
+        relatedEmbeds
+          .map(function (b) {
+            return (
+              '<li><a href="' +
+              V.escapeHtml(b.href) +
+              '"' +
+              (b.external ? ' target="_blank" rel="noopener noreferrer"' : '') +
+              '>' +
+              V.escapeHtml(b.text || 'Читать материал') +
+              '</a></li>'
+            );
+          })
+          .join('') +
+        '</ul></section>';
+    }
+
+    var relatedHrefs = {};
+    relatedEmbeds.forEach(function (b) {
+      if (b.href) relatedHrefs[b.href] = 1;
+    });
+    var sources = extractSources(article.contentHtml, article.linkOriginal).filter(function (s) {
+      // не дублируем то, что уже в «Материалы по теме»
+      if (relatedHrefs[s.href]) return false;
+      if (!s.external && String(s.href || '').indexOf('article.html') === 0) return false;
+      return true;
+    });
     var listHref =
       'archive.html' +
       (article.categorySlugs && article.categorySlugs[0]
@@ -211,16 +248,17 @@
           V.coverStyle(cover) +
           '></div></figure>'
         : '') +
+      '<div class="article-reading">' +
       '<div class="article-body">' +
       bodyHtml +
       '</div>' +
+      relatedHtml +
       sourcesHtml +
       '<footer class="article-foot">' +
       '<a class="text-link" href="' +
       listHref +
-      '">' +
-      (isPage ? 'Все страницы' : 'Все материалы') +
-      ' <span>→</span></a></footer>'
+      '">Все материалы <span>→</span></a></footer>' +
+      '</div>'
     );
   }
 

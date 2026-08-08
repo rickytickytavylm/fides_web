@@ -67,7 +67,7 @@
           avatar(a) +
           '<span class="author-card-body">' +
           '<strong>' + esc(a.name) + '</strong>' +
-          '<span class="author-role">' + esc(a.role || '') + '</span>' +
+          (a.role ? '<span class="author-role">' + esc(a.role) + '</span>' : '') +
           '<span class="author-count">' + esc(String(a.count || 0)) + ' материалов</span>' +
           '</span></a>'
         );
@@ -182,13 +182,16 @@
     if (!el) return;
     var list = authors.slice().sort(function (a, b) {
       return String(b.latestDate || '').localeCompare(String(a.latestDate || ''));
-    }).slice(0, limit || 5);
+    }).slice(0, limit || 6);
     el.innerHTML = list.map(function (a) {
       return (
         '<a class="author-row" href="author.html?slug=' + encodeURIComponent(a.slug) + '">' +
         avatar(a) +
-        '<span><strong>' + esc(a.name) + '</strong>' +
-        '<small>' + esc(String(a.count || 0)) + ' публикаций</small></span></a>'
+        '<span class="author-row-text">' +
+        '<strong>' + esc(a.name) + '</strong>' +
+        (a.role ? '<em class="author-row-role">' + esc(a.role) + '</em>' : '') +
+        '<small>' + esc(String(a.count || 0)) + ' публикаций</small>' +
+        '</span></a>'
       );
     }).join('');
   };
