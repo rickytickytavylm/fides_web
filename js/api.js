@@ -19,16 +19,17 @@
   var ARCHIVE_CHIPS = [
     { slug: '', label: 'Все' },
     { slug: 'columns', label: 'Статьи' },
+    { slug: 'news', label: 'Новости' },
+    { slug: 'church-rus', label: 'Россия' },
+    { slug: 'santa-sede', label: 'Святой Престол' },
     { slug: 'spirituality', label: 'Духовность' },
     { slug: 'saints', label: 'Святые' },
-    { slug: 'news', label: 'Новости' },
-    { slug: 'church-rus', label: 'КЦ в России' },
-    { slug: 'ask-priest', label: 'Вопрос священнику' },
-    { slug: 'pray', label: 'Молитвы' },
-    { slug: 'history', label: 'История' },
+    { slug: 'voices', label: 'Голоса' },
     { slug: 'interview', label: 'Интервью' },
-    { slug: 'propovedi', label: 'Проповеди' },
     { slug: 'svidetelstva', label: 'Свидетельства' },
+    { slug: 'propovedi', label: 'Проповеди' },
+    { slug: 'ask-priest', label: 'Вопрос священнику' },
+    { slug: 'history', label: 'История' },
     { slug: 'polka', label: 'Книжная полка' },
   ];
 
@@ -74,53 +75,14 @@
   }
 
   /**
-   * Правила портала / парсинга (фронт + ожидание бэкенда):
-   * - propovedi: API пока не фильтрует дочерний слаг → берём pastirstvo и оставляем propovedi
-   * - santa-sede: новости «Папа Римский» (pope) включаются в «Святой Престол»
-   * - pope: редирект/алиас на santa-sede на уровне UI
+   * Таксономия на сервере (ruscatholicTaxonomy):
+   * news→digest, santa-sede↔pope, propovedi по ANY(slugs), скрытие черновиков.
    */
   function getArticles(opts) {
     opts = opts || {};
-    var cat = opts.category || '';
-
-    if (cat === 'pope') {
-      return getArticles(Object.assign({}, opts, { category: 'santa-sede' }));
+    if (opts.category === 'pope') {
+      opts = Object.assign({}, opts, { category: 'santa-sede' });
     }
-
-    if (cat === 'propovedi') {
-      return fetchArticlesRaw(Object.assign({}, opts, {
-        category: 'pastirstvo',
-        limit: Math.max(Number(opts.limit) || 20, 24),
-      })).then(function (pack) {
-        var items = (pack.items || []).filter(function (it) {
-          var slugs = it.categorySlugs || [];
-          if (slugs.indexOf('propovedi') !== -1) return true;
-          return (it.categories || []).some(function (c) {
-            return /проповед/i.test(String(c || ''));
-          });
-        });
-        return {
-          items: items.slice(0, Number(opts.limit) || 20),
-          total: items.length,
-        };
-      });
-    }
-
-    if (cat === 'santa-sede') {
-      var page = opts.page || 1;
-      var limit = opts.limit || 20;
-      return Promise.all([
-        fetchArticlesRaw({ category: 'santa-sede', page: page, limit: limit, q: opts.q }),
-        fetchArticlesRaw({ category: 'pope', page: page, limit: limit, q: opts.q }),
-      ]).then(function (packs) {
-        var merged = mergeArticlePacks(packs);
-        return {
-          items: merged.items.slice(0, limit),
-          total: merged.total,
-        };
-      });
-    }
-
     return fetchArticlesRaw(opts);
   }
 

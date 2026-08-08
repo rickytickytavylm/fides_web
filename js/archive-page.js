@@ -16,14 +16,13 @@
     { slug: 'liturgy', label: 'Литургика' },
     { slug: 'puteshestviya', label: 'Путешествия' },
   ];
-  // Рубрики раздела «Новости»
-  // «Папа Римский» (pope) больше не отдельный чип — входит в «Святой Престол» (см. Vera.getArticles)
+  // Новости по ТЗ: digest→Новости, church-rus→Россия, pope+santa-sede→Святой Престол.
+  // Анонсы / пастырство и пр. не переносим на витрину.
   var NEWS_CHIPS = [
     { slug: 'news', label: 'Все' },
-    { slug: 'church-rus', label: 'КЦ в России' },
+    { slug: 'church-rus', label: 'Россия' },
     { slug: 'sng', label: 'КЦ в мире' },
     { slug: 'santa-sede', label: 'Святой Престол' },
-    { slug: 'announcement', label: 'Анонсы' },
   ];
   var VOICES_CHIPS = [
     { slug: 'interview', label: 'Интервью' },

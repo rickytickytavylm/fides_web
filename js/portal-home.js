@@ -169,7 +169,7 @@
   var NEWS_TABS = [
     { id: 'ru', label: 'Россия', slug: 'church-rus' },
     { id: 'vat', label: 'Святой Престол', slug: 'santa-sede' },
-    { id: 'world', label: 'Мир', slug: 'news' },
+    { id: 'world', label: 'Новости', slug: 'news' },
   ];
   var tabsEl = document.getElementById('news-tabs');
   var newsEl = document.getElementById('news');
