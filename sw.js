@@ -1,7 +1,7 @@
-/* ЯКатолик SW:
-   - HTML/CSS/JS (same-origin) — network-only (никогда не залипает старое)
-   - картинки (любой origin) — cache-first, чтобы не подвисали при переходах */
-var BUILD = '202608081520';
+﻿/* РЇРљР°С‚РѕР»РёРє SW:
+   - HTML/CSS/JS (same-origin) вЂ” network-only (РЅРёРєРѕРіРґР° РЅРµ Р·Р°Р»РёРїР°РµС‚ СЃС‚Р°СЂРѕРµ)
+   - РєР°СЂС‚РёРЅРєРё (Р»СЋР±РѕР№ origin) вЂ” cache-first, С‡С‚РѕР±С‹ РЅРµ РїРѕРґРІРёСЃР°Р»Рё РїСЂРё РїРµСЂРµС…РѕРґР°С… */
+var BUILD = '202608081130';
 var IMG_CACHE = 'yak-img-v1';
 
 function isImage(req, url) {
@@ -18,7 +18,7 @@ self.addEventListener('activate', function (event) {
   event.waitUntil(
     caches.keys().then(function (keys) {
       return Promise.all(keys.map(function (k) {
-        // старые версии чистим, актуальный img-кеш оставляем
+        // СЃС‚Р°СЂС‹Рµ РІРµСЂСЃРёРё С‡РёСЃС‚РёРј, Р°РєС‚СѓР°Р»СЊРЅС‹Р№ img-РєРµС€ РѕСЃС‚Р°РІР»СЏРµРј
         if (k === IMG_CACHE) return Promise.resolve();
         return caches.delete(k);
       }));
@@ -34,7 +34,7 @@ self.addEventListener('fetch', function (event) {
 
   var url = new URL(req.url);
 
-  // Картинки — cache-first (мгновенно при возврате на страницу)
+  // РљР°СЂС‚РёРЅРєРё вЂ” cache-first (РјРіРЅРѕРІРµРЅРЅРѕ РїСЂРё РІРѕР·РІСЂР°С‚Рµ РЅР° СЃС‚СЂР°РЅРёС†Сѓ)
   if (isImage(req, url)) {
     event.respondWith(
       caches.open(IMG_CACHE).then(function (cache) {
@@ -52,7 +52,7 @@ self.addEventListener('fetch', function (event) {
     return;
   }
 
-  // Всё остальное — только same-origin, без кеша
+  // Р’СЃС‘ РѕСЃС‚Р°Р»СЊРЅРѕРµ вЂ” С‚РѕР»СЊРєРѕ same-origin, Р±РµР· РєРµС€Р°
   if (url.origin !== self.location.origin) return;
 
   event.respondWith(

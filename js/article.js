@@ -91,29 +91,6 @@
       .join('');
   }
 
-  function extractSources(html, linkOriginal) {
-    var out = [];
-    var seen = {};
-    var re = /<a[^>]+href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
-    var m;
-    while ((m = re.exec(String(html || '')))) {
-      var href = m[1].trim();
-      if (!href || href.indexOf('#') === 0 || href.indexOf('mailto:') === 0) continue;
-      if (href.indexOf('//') === 0) href = 'https:' + href;
-      var resolved = V.resolveContentHref ? V.resolveContentHref(href) : null;
-      var finalHref = resolved ? resolved.href : href;
-      var external = !resolved || resolved.external;
-      if (seen[finalHref]) continue;
-      seen[finalHref] = true;
-      var label = V.stripTags(m[2]).slice(0, 120) || finalHref;
-      out.push({ href: finalHref, label: label, external: external });
-    }
-    if (linkOriginal && !seen[linkOriginal]) {
-      out.unshift({ href: linkOriginal, label: 'Источник', external: true });
-    }
-    return out.slice(0, 12);
-  }
-
   function pickCover(article, blocks) {
     var cover = article.image || article.cover || article.thumbnail || '';
     if (cover) return cover;
@@ -160,16 +137,6 @@
         '</ul></section>';
     }
 
-    var relatedHrefs = {};
-    relatedEmbeds.forEach(function (b) {
-      if (b.href) relatedHrefs[b.href] = 1;
-    });
-    var sources = extractSources(article.contentHtml, article.linkOriginal).filter(function (s) {
-      // не дублируем то, что уже в «Материалы по теме»
-      if (relatedHrefs[s.href]) return false;
-      if (!s.external && String(s.href || '').indexOf('article.html') === 0) return false;
-      return true;
-    });
     var listHref = isPage
       ? 'articles.html'
       : 'archive.html' +
@@ -181,26 +148,6 @@
       : article.categorySlugs && article.categorySlugs[0] === 'columns'
         ? 'Статьи'
         : 'Новости';
-
-    var sourcesHtml = '';
-    if (sources.length) {
-      sourcesHtml =
-        '<aside class="article-sources"><h3>Источники и ссылки</h3><ul>' +
-        sources
-          .map(function (s) {
-            return (
-              '<li><a href="' +
-              V.escapeHtml(s.href) +
-              '"' +
-              (s.external ? ' target="_blank" rel="noopener noreferrer"' : '') +
-              '>' +
-              V.escapeHtml(s.label) +
-              '</a></li>'
-            );
-          })
-          .join('') +
-        '</ul></aside>';
-    }
 
     var cycle =
       !isPage && window.YakCycles && window.YakCycles.byArticleSlug
@@ -259,7 +206,6 @@
       bodyHtml +
       '</div>' +
       relatedHtml +
-      sourcesHtml +
       '<footer class="article-foot">' +
       '<a class="text-link" href="' +
       listHref +
