@@ -637,7 +637,8 @@ aside { display: flex; flex-direction: column; gap: 0; }
   .body-grid { gap: 22px; }
   .home-aside { border-left: 0; padding-left: 0; border-top: 0; padding-top: 0; }
   .art-grid { gap: 14px; }
-  /* Новости / Голоса / Свежие: плоский компактный список, без desktop-lead */
+  /* Новости / Голоса / Свежие: ровный список без lead */
+  .news-list,
   .news-pack,
   .fresh-home {
     display: flex;
@@ -645,6 +646,9 @@ aside { display: flex; flex-direction: column; gap: 0; }
     gap: 12px;
     border-top: 0;
     padding-top: 0;
+  }
+  .news-list .ncard {
+    grid-template-columns: 108px minmax(0, 1fr);
   }
   .news-side {
     display: flex;

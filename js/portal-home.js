@@ -19,24 +19,30 @@
   function cat(item) { return (item.categories && item.categories[0]) || 'Материал'; }
   var esc = V.escapeHtml;
 
+  function isCompactHome() {
+    try { return window.matchMedia('(max-width: 880px)').matches; }
+    catch (e) { return false; }
+  }
+
+  function skNcardRow() {
+    return (
+      '<article class="ncard"><div class="thumb sk"></div><div class="ncard-body">' +
+      '<div class="sk sk-line" style="width:40%;height:10px;margin-bottom:8px"></div>' +
+      '<div class="sk sk-line" style="width:90%;height:16px"></div></div></article>'
+    );
+  }
+
   function skNcards() {
+    if (isCompactHome()) {
+      return '<div class="news-list">' + skNcardRow() + skNcardRow() + skNcardRow() + skNcardRow() + '</div>';
+    }
     return (
       '<div class="news-pack">' +
       '<article class="ncard ncard--lead"><div class="thumb sk"></div><div class="ncard-body">' +
       '<div class="sk sk-line" style="width:28%;height:10px;margin-bottom:12px"></div>' +
       '<div class="sk sk-line" style="width:92%;height:22px;margin-bottom:8px"></div>' +
       '<div class="sk sk-line" style="width:70%;height:22px"></div></div></article>' +
-      '<div class="news-side">' +
-      '<article class="ncard"><div class="thumb sk"></div><div class="ncard-body">' +
-      '<div class="sk sk-line" style="width:40%;height:10px;margin-bottom:8px"></div>' +
-      '<div class="sk sk-line" style="width:90%;height:16px"></div></div></article>' +
-      '<article class="ncard"><div class="thumb sk"></div><div class="ncard-body">' +
-      '<div class="sk sk-line" style="width:40%;height:10px;margin-bottom:8px"></div>' +
-      '<div class="sk sk-line" style="width:90%;height:16px"></div></div></article>' +
-      '<article class="ncard"><div class="thumb sk"></div><div class="ncard-body">' +
-      '<div class="sk sk-line" style="width:40%;height:10px;margin-bottom:8px"></div>' +
-      '<div class="sk sk-line" style="width:90%;height:16px"></div></div></article>' +
-      '</div></div>'
+      '<div class="news-side">' + skNcardRow() + skNcardRow() + skNcardRow() + '</div></div>'
     );
   }
   function skArts(n) {
@@ -223,7 +229,19 @@
     return { lead: lead, rest: rest };
   }
 
+  function renderNewsList(items) {
+    var list = (items || []).slice(0, 4);
+    if (!list.length) return '<p class="ps-status">Пока пусто</p>';
+    return (
+      '<div class="news-list">' +
+      list.map(function (it, i) { return newsCard(it, i, false); }).join('') +
+      '</div>'
+    );
+  }
+
   function renderNewsPack(items) {
+    /* На мобе — только ровный список, без доминантного lead */
+    if (isCompactHome()) return renderNewsList(items);
     var pack = pickNewsPack(items);
     if (!pack.lead) return '<p class="ps-status">Пока пусто</p>';
     return (
@@ -266,6 +284,7 @@
 
   function renderFreshHome(items) {
     if (!items.length) return '<p class="ps-status">Пока пусто</p>';
+    if (isCompactHome()) return renderNewsList(items);
     var lead = items[0];
     var rest = items.slice(1, 4);
     return (
@@ -286,6 +305,7 @@
   }
 
   function skFreshHome() {
+    if (isCompactHome()) return skNcards();
     return (
       '<div class="fresh-home">' +
       '<article class="ncard ncard--lead"><div class="thumb sk"></div><div class="ncard-body">' +
