@@ -36,16 +36,40 @@
     return classes + (card.image ? ' has-image' : '');
   }
 
+  function renderStepList(cards, opts) {
+    opts = opts || {};
+    var html = '<ol class="guide-steps guide-steps--route">';
+    cards.forEach(function (c, i) {
+      html +=
+        '<li><a class="guide-step-row" href="' + esc(hrefFor(c)) + '">' +
+        '<span class="guide-step-n">' + (i + 1) + '</span>' +
+        '<span class="guide-step-body"><strong>' + esc(c.title) + '</strong>' +
+        (c.sub ? '<em>' + esc(c.sub) + '</em>' : '') +
+        '</span></a></li>';
+    });
+    html += '</ol>';
+    if (opts.extra) {
+      html +=
+        '<p class="articles-more"><a class="wlink" href="' + esc(opts.extra.href) + '">' +
+        esc(opts.extra.title || 'Дальше') + ' →</a></p>';
+    }
+    return html;
+  }
+
   function renderCards(cards, opts) {
     opts = opts || {};
-    var html = '<div class="route-grid">';
+    if (opts.numbered) return renderStepList(cards, opts);
+
+    var hasWide = cards.some(function (c) {
+      return !!(c.wide || c.tone === 'wide');
+    });
+    var gridClass = opts.grid || (hasWide ? 'route-grid route-grid--hub' : 'route-grid route-grid--3');
+    var html = '<div class="' + gridClass + '">';
     cards.forEach(function (c, i) {
       var imageStyle = c.image
         ? ' style="--card-image:url(\'' + esc(c.image) + '\')"'
         : '';
-      var kicker = opts.numbered
-        ? ('Шаг ' + (i + 1))
-        : (opts.kicker || 'Открыть');
+      var kicker = opts.kicker || 'Открыть';
       html +=
         '<a class="' + toneClass(c, i) + '"' + imageStyle + ' href="' + esc(hrefFor(c)) + '">' +
         '<span class="route-kicker">' + esc(kicker) + '</span>' +

@@ -28,7 +28,7 @@
     { slug: 'saints', title: 'Святые', tone: 'b', image: 'assets/cards/articles-saints.webp' },
     { slug: 'bible', title: 'Библеистика', tone: 'c', image: 'assets/cards/articles-biblical-studies.webp' },
     { slug: 'liturgy', title: 'Литургика', tone: 'd', image: 'assets/cards/articles-liturgy.webp' },
-    { slug: 'puteshestviya', title: 'Путешествия', tone: 'e', wide: true, image: 'assets/cards/articles-travel.webp' },
+    { slug: 'puteshestviya', title: 'Путешествия', tone: 'e', image: 'assets/cards/articles-travel.webp' },
   ];
 
   // Темы: где тега ещё нет — временный поиск q (см. HANDOFF §6)
@@ -58,14 +58,13 @@
   ];
 
   function toneClass(item, i) {
-    var classes = item.wide
-      ? 'route-card wide tone-' + (item.tone || 'wide')
-      : 'route-card tone-' + (item.tone || 'abcd'[i % 4]);
+    var classes = 'route-card tone-' + (item.tone || 'abcd'[i % 4]);
     return classes + (item.image ? ' has-image' : '');
   }
 
   function cardGrid(items, kicker) {
-    var html = '<div class="route-grid">';
+    var cols = items.length <= 2 ? 'route-grid route-grid--2' : 'route-grid route-grid--3';
+    var html = '<div class="' + cols + '">';
     items.forEach(function (item, i) {
       var imageStyle = item.image
         ? ' style="--card-image:url(\'' + esc(item.image) + '\')"'
@@ -86,7 +85,7 @@
       html +=
         '<li><a href="' + esc(hrefFor(item)) + '">' +
         '<strong>' + esc(item.title) + '</strong>' +
-        (item.note ? '<span>' + esc(item.note) + '</span>' : '') +
+        (item.note ? '<span>' + esc(item.note) + '</span>' : '<span>Открыть подборку</span>') +
         '</a></li>';
     });
     return html + '</ul>';
@@ -151,10 +150,10 @@
     '</label>' +
     '<p class="articles-search-hint">Ищет по каталогу статей. Для новостей — в разделе «Новости».</p>' +
     '</form>' +
-    '<div class="articles-toolbar">' +
-    '<a class="btn-primary" href="archive.html?category=columns">Все статьи</a>' +
-    '<a class="btn-ghost" href="archive.html?category=news">Новости</a>' +
-    '<a class="btn-ghost" href="archive.html?category=interview">Голоса</a>' +
+    '<div class="tabs articles-toolbar" role="navigation" aria-label="Разделы">' +
+    '<a class="on" href="archive.html?category=columns">Все статьи</a>' +
+    '<a href="archive.html?category=news">Новости</a>' +
+    '<a href="archive.html?category=interview">Голоса</a>' +
     '</div>' +
     section('Рубрики', 'Основные подразделы публикаций.', cardGrid(RUBRICS, 'Рубрика')) +
     section('Темы', 'Специальные подборки. Часть тегов Анастасия добавит на Рускатолике — до этого работает поиск.', linkList(TOPICS)) +

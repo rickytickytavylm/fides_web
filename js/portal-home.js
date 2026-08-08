@@ -300,13 +300,13 @@
     var tab = VOICES_TABS.filter(function (t) { return t.id === id; })[0] || VOICES_TABS[0];
     renderVoicesTabs(tab.id);
     if (!voicesEl) return;
-    if (voicesCache[tab.id]) { voicesEl.innerHTML = voicesCache[tab.id].map(artCard).join(''); return; }
-    voicesEl.innerHTML = skArts(4);
-    V.getArticles({ category: tab.slug, limit: 4, page: 1 })
+    if (voicesCache[tab.id]) { voicesEl.innerHTML = renderNewsPack(voicesCache[tab.id]); return; }
+    voicesEl.innerHTML = skNcards();
+    V.getArticles({ category: tab.slug, limit: 8, page: 1 })
       .then(function (pack) {
-        var items = (pack.items || []).slice(0, 4);
+        var items = pack.items || [];
         voicesCache[tab.id] = items;
-        voicesEl.innerHTML = items.length ? items.map(artCard).join('') : '<p class="ps-status">Пока пусто</p>';
+        voicesEl.innerHTML = renderNewsPack(items);
       })
       .catch(function () { voicesEl.innerHTML = '<p class="ps-status">Не удалось загрузить</p>'; });
   }
