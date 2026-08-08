@@ -194,10 +194,11 @@
 
   function skeletonFeed(n) {
     var lead =
-      '<div class="lead-skeleton">' +
       '<div class="card-image sk"></div>' +
-      '<div class="sk sk-line" style="width:32%;height:12px;margin:14px 0 10px"></div>' +
-      '<div class="sk sk-line" style="width:80%;height:26px;margin-bottom:6px"></div></div>';
+      '<div class="lead-copy">' +
+      '<div class="sk sk-line" style="width:36%;height:12px;margin:0 0 12px"></div>' +
+      '<div class="sk sk-line" style="width:92%;height:26px;margin-bottom:8px"></div>' +
+      '<div class="sk sk-line" style="width:70%;height:26px"></div></div>';
     var rows = '';
     for (var i = 0; i < (n || 5); i++) {
       rows +=
@@ -234,6 +235,7 @@
           '" ' +
           V.coverStyle(hero.image) +
           ' aria-label="Открыть"></a>' +
+          '<div class="lead-copy">' +
           '<p class="story-meta"><span>' +
           V.escapeHtml(cat) +
           '</span><time>' +
@@ -245,7 +247,11 @@
           heroHref +
           '">' +
           V.escapeHtml(hero.title) +
-          '</a></h2>';
+          '</a></h2>' +
+          (hero.excerpt
+            ? '<p>' + V.escapeHtml(String(hero.excerpt).replace(/\s+/g, ' ').trim().slice(0, 180)) + '</p>'
+            : '') +
+          '</div>';
       }
     }
 
