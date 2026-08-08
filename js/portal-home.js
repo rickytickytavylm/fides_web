@@ -19,15 +19,25 @@
   function cat(item) { return (item.categories && item.categories[0]) || 'Материал'; }
   var esc = V.escapeHtml;
 
-  function skNcards(n) {
-    var s = '';
-    for (var i = 0; i < n; i++) {
-      s += '<div class="ncard"><div class="thumb sk"></div><div style="flex:1">' +
-        '<div class="sk sk-line" style="width:35%;height:10px;margin-bottom:9px"></div>' +
-        '<div class="sk sk-line" style="width:92%;height:15px;margin-bottom:7px"></div>' +
-        '<div class="sk sk-line" style="width:60%;height:15px"></div></div></div>';
-    }
-    return s;
+  function skNcards() {
+    return (
+      '<div class="news-pack">' +
+      '<article class="ncard ncard--lead"><div class="thumb sk"></div><div class="ncard-body">' +
+      '<div class="sk sk-line" style="width:28%;height:10px;margin-bottom:12px"></div>' +
+      '<div class="sk sk-line" style="width:92%;height:22px;margin-bottom:8px"></div>' +
+      '<div class="sk sk-line" style="width:70%;height:22px"></div></div></article>' +
+      '<div class="news-side">' +
+      '<article class="ncard"><div class="thumb sk"></div><div class="ncard-body">' +
+      '<div class="sk sk-line" style="width:40%;height:10px;margin-bottom:8px"></div>' +
+      '<div class="sk sk-line" style="width:90%;height:16px"></div></div></article>' +
+      '<article class="ncard"><div class="thumb sk"></div><div class="ncard-body">' +
+      '<div class="sk sk-line" style="width:40%;height:10px;margin-bottom:8px"></div>' +
+      '<div class="sk sk-line" style="width:90%;height:16px"></div></div></article>' +
+      '<article class="ncard"><div class="thumb sk"></div><div class="ncard-body">' +
+      '<div class="sk sk-line" style="width:40%;height:10px;margin-bottom:8px"></div>' +
+      '<div class="sk sk-line" style="width:90%;height:16px"></div></div></article>' +
+      '</div></div>'
+    );
   }
   function skArts(n) {
     var s = '';
@@ -174,13 +184,30 @@
     });
   }
 
-  function newsCard(it, i) {
+  function newsCard(it, i, lead) {
+    var excerpt = lead
+      ? '<p class="ncard-excerpt">' + esc(String(it.excerpt || '').replace(/\s+/g, ' ').trim().slice(0, 160)) + '</p>'
+      : '';
     return (
-      '<a class="ncard" href="' + V.articleHref(it) + '">' +
-      '<div class="thumb" style="background-image:' + bg(it.image, i) + '"></div>' +
-      '<div><div class="rub">' + esc(cat(it)) + '</div>' +
+      '<a class="ncard' + (lead ? ' ncard--lead' : '') + '" href="' + V.articleHref(it) + '">' +
+      '<div class="thumb" style="background-image:' + bg(it.image, i) + '" role="img" aria-label=""></div>' +
+      '<div class="ncard-body"><div class="rub">' + esc(cat(it)) + '</div>' +
       '<h4>' + esc(it.title) + '</h4>' +
+      excerpt +
       '<div class="date">' + esc(V.formatDate(it.date)) + '</div></div></a>'
+    );
+  }
+
+  function renderNewsPack(items) {
+    if (!items.length) return '<p class="ps-status">Пока пусто</p>';
+    var lead = items[0];
+    var rest = items.slice(1, 4);
+    return (
+      '<div class="news-pack">' +
+      newsCard(lead, 0, true) +
+      '<div class="news-side">' +
+      rest.map(function (it, i) { return newsCard(it, i + 1, false); }).join('') +
+      '</div></div>'
     );
   }
 
@@ -188,8 +215,8 @@
     var tab = tabById(id);
     renderTabs(id);
     if (!newsEl) return;
-    if (newsCache[id]) { newsEl.innerHTML = newsCache[id].map(newsCard).join(''); return; }
-    newsEl.innerHTML = skNcards(4);
+    if (newsCache[id]) { newsEl.innerHTML = renderNewsPack(newsCache[id]); return; }
+    newsEl.innerHTML = skNcards();
     var opts = { limit: 4, page: 1 };
     if (tab.slug) opts.category = tab.slug;
     if (tab.q) opts.q = tab.q;
@@ -197,7 +224,7 @@
       .then(function (pack) {
         var items = (pack.items || []).slice(0, 4);
         newsCache[id] = items;
-        newsEl.innerHTML = items.length ? items.map(newsCard).join('') : '<p class="ps-status">Пока пусто</p>';
+        newsEl.innerHTML = renderNewsPack(items);
       })
       .catch(function () { newsEl.innerHTML = '<p class="ps-status">Не удалось загрузить</p>'; });
   }
