@@ -119,21 +119,55 @@
     return 'style="background-image:' + FRESH_TONES[i % FRESH_TONES.length] + '"';
   }
 
+  function freshRub(it) {
+    return (it.categories && it.categories[0]) || 'Статья';
+  }
+
+  function freshCard(it, i, lead) {
+    var excerpt = lead
+      ? '<p class="ncard-excerpt">' +
+        esc(String(it.excerpt || '').replace(/\s+/g, ' ').trim().slice(0, 170)) +
+        '</p>'
+      : '';
+    return (
+      '<a class="ncard' + (lead ? ' ncard--lead' : '') + '" href="' + V.articleHref(it) + '">' +
+      '<div class="thumb" ' + freshCoverAttr(it, i) + ' role="img" aria-label=""></div>' +
+      '<div class="ncard-body"><div class="rub">' + esc(freshRub(it)) + '</div>' +
+      '<h4>' + esc(it.title) + '</h4>' +
+      excerpt +
+      '<div class="date">' + esc(V.formatDate(it.date)) + '</div></div></a>'
+    );
+  }
+
+  function freshTile(it, i) {
+    return (
+      '<a class="art art--tile" href="' + V.articleHref(it) + '">' +
+      '<div class="ph" ' + freshCoverAttr(it, i) + '></div>' +
+      '<div class="in"><div class="rub">' + esc(freshRub(it)) + '</div>' +
+      '<h4>' + esc(it.title) + '</h4>' +
+      '<div class="date">' + esc(V.formatDate(it.date)) + '</div></div></a>'
+    );
+  }
+
   function renderFresh(items) {
     if (!items.length) return '<p class="archive-empty">Пока нет материалов</p>';
-    return (
-      '<div class="art-grid">' +
-      items.map(function (it, i) {
-        var rub = (it.categories && it.categories[0]) || 'Статья';
-        return (
-          '<a class="art" href="' + V.articleHref(it) + '">' +
-          '<div class="ph" ' + freshCoverAttr(it, i) + '></div>' +
-          '<div class="in"><div class="rub">' + esc(rub) + '</div>' +
-          '<h4>' + esc(it.title) + '</h4></div></a>'
-        );
-      }).join('') +
-      '</div>'
-    );
+    var list = items.slice(0, 7);
+    var lead = list[0];
+    var side = list.slice(1, 4);
+    var rest = list.slice(4, 7);
+    var html =
+      '<div class="news-pack fresh-pack">' +
+      freshCard(lead, 0, true) +
+      '<div class="news-side">' +
+      side.map(function (it, i) { return freshCard(it, i + 1, false); }).join('') +
+      '</div></div>';
+    if (rest.length) {
+      html +=
+        '<div class="fresh-row">' +
+        rest.map(function (it, i) { return freshTile(it, i + 4); }).join('') +
+        '</div>';
+    }
+    return html;
   }
 
   document.title = 'Статьи — ЯКатолик';
@@ -177,10 +211,10 @@
     });
   }
 
-  V.getArticles({ category: 'columns', limit: 6, page: 1 })
+  V.getArticles({ category: 'columns', limit: 7, page: 1 })
     .then(function (pack) {
       var el = document.getElementById('articles-fresh');
-      if (el) el.innerHTML = renderFresh((pack.items || []).slice(0, 6));
+      if (el) el.innerHTML = renderFresh(pack.items || []);
     })
     .catch(function () {
       var el = document.getElementById('articles-fresh');

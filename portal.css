@@ -286,6 +286,7 @@ section.block { padding-top: 36px; padding-bottom: 36px; }
 .ncard:hover h4 { color: var(--bronze-dark); }
 .ncard .thumb {
   width: 168px; height: 126px; border-radius: 4px;
+  background-image: var(--img, none);
   background-size: cover; background-position: center; background-color: var(--surface-2);
 }
 .ncard-body { min-width: 0; display: grid; gap: 6px; align-content: start; }
@@ -356,7 +357,16 @@ section.block { padding-top: 36px; padding-bottom: 36px; }
 
 /* ---------- Fresh articles + aside ---------- */
 .body-grid { display: grid; grid-template-columns: 1fr 300px; gap: 40px; }
-.art-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 32px; }
+.art-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 24px; }
+.fresh-pack { margin-bottom: 0; }
+.fresh-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px 24px;
+  margin-top: 8px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
 .art {
   display: grid;
   gap: 12px;
@@ -372,20 +382,25 @@ section.block { padding-top: 36px; padding-bottom: 36px; }
 .art:hover { transform: none; box-shadow: none; }
 .art:hover h4 { color: var(--bronze-dark); }
 .art .ph {
-  height: clamp(170px, 16vw, 210px);
-  border-radius: 6px;
+  height: clamp(180px, 17vw, 220px);
+  border-radius: 4px;
   background-color: var(--surface-2);
   background-image: var(--img, none);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
+.art--tile .ph { height: clamp(160px, 14vw, 190px); }
 .art .in { padding: 0; display: grid; gap: 6px; }
 .art .rub { font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--bronze-dark); }
 .art h4 {
   margin: 0; font-family: var(--serif); font-size: clamp(18px, 1.45vw, 22px);
   line-height: 1.22; font-weight: 600; letter-spacing: -.01em; color: var(--ink);
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.art--tile h4 { font-size: clamp(17px, 1.25vw, 20px); -webkit-line-clamp: 3; }
+.art .date {
+  font-size: 12px; color: var(--stone-500); font-variant-numeric: tabular-nums; margin-top: 2px;
 }
 .art p {
   font-size: 14px; line-height: 1.45; color: var(--stone-700); margin: 0;
@@ -558,9 +573,10 @@ aside { display: flex; flex-direction: column; gap: 0; }
   .mini { grid-template-columns: 120px minmax(0, 1fr); padding: 14px 0; gap: 12px; }
   .mini .thumb { width: 120px; height: 90px; }
   .mini:first-child { padding-top: 16px; }
-  .body-grid, .art-grid, .tree, .cols2 { grid-template-columns: 1fr; gap: 14px; }
+  .body-grid, .art-grid, .tree, .cols2, .fresh-row { grid-template-columns: 1fr; gap: 14px; }
   .body-grid { gap: 22px; }
   .art-grid { gap: 22px; }
+  .fresh-row { gap: 22px; padding-top: 18px; }
   .news-pack { grid-template-columns: 1fr; gap: 0; }
   .news-side { padding-left: 0; border-left: 0; }
   nav.top { display: none; }
@@ -1839,6 +1855,8 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
   .nav.top { gap: 10px; flex-wrap: wrap; }
   .route-grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .art .ph { height: clamp(160px, 28vw, 200px); }
+  .fresh-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fresh-row .art--tile:last-child:nth-child(odd) { grid-column: 1 / -1; }
 }
 @media (max-width: 720px) {
   /* 2 колонки убирают «дыру», когда карточек 4–5; wide остаётся на всю ширину */

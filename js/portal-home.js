@@ -267,11 +267,10 @@
   var freshEl = document.getElementById('fresh');
   function loadFresh() {
     if (!freshEl) return;
-    freshEl.innerHTML = skArts(4);
-    V.getArticles({ category: 'columns', limit: 4, page: 1 })
+    freshEl.innerHTML = skNcards();
+    V.getArticles({ category: 'columns', limit: 8, page: 1 })
       .then(function (pack) {
-        var items = (pack.items || []).slice(0, 4);
-        freshEl.innerHTML = items.length ? items.map(artCard).join('') : '<p class="ps-status">Пока пусто</p>';
+        freshEl.innerHTML = renderNewsPack(pack.items || []);
       })
       .catch(function () { freshEl.innerHTML = '<p class="ps-status">Не удалось загрузить статьи</p>'; });
   }
