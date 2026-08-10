@@ -183,21 +183,32 @@
     });
   }
 
+  function authorChip(it) {
+    if (window.YakAuthorLink && YakAuthorLink.cardHtml) {
+      return YakAuthorLink.cardHtml(it, { className: 'card-author' });
+    }
+    return '';
+  }
+
   function newsCard(it, i) {
+    var au = authorChip(it);
     return (
       '<a class="ncard" href="' + V.articleHref(it) + '">' +
       '<div class="thumb" style="background-image:' + bg(it.image, i) + '" role="img" aria-label=""></div>' +
-      '<div class="ncard-body"><div class="rub">' + esc(cat(it)) + '</div>' +
+      '<div class="ncard-body">' +
+      (au || '<div class="rub">' + esc(cat(it)) + '</div>') +
       '<h4>' + esc(it.title) + '</h4>' +
       '<div class="date">' + esc(V.formatDate(it.date)) + '</div></div></a>'
     );
   }
 
   function tileCard(it, i) {
+    var au = authorChip(it);
     return (
       '<a class="art art--tile" href="' + V.articleHref(it) + '">' +
       '<div class="ph" style="background-image:' + bg(it.image, i) + '"></div>' +
-      '<div class="in"><div class="rub">' + esc(cat(it)) + '</div>' +
+      '<div class="in">' +
+      (au || '<div class="rub">' + esc(cat(it)) + '</div>') +
       '<h4>' + esc(it.title) + '</h4>' +
       '<div class="date">' + esc(V.formatDate(it.date)) + '</div></div></a>'
     );
@@ -314,11 +325,18 @@
   }
 
   /* ---------- Home: Афиша + Библиотека ---------- */
-  function shortDay(iso) {
-    if (!iso) return '';
-    var p = String(iso).slice(0, 10).split('-');
+  function eventDayParts(iso) {
+    var p = String(iso || '').slice(0, 10).split('-');
     var months = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
-    return Number(p[2]) + ' ' + (months[Number(p[1]) - 1] || '');
+    return { day: String(Number(p[2]) || ''), mon: months[Number(p[1]) - 1] || '' };
+  }
+
+  function homeEventHref(e) {
+    var href = e && e.href ? String(e.href) : '';
+    if (!href || href === '#' || href === 'map.html' || href.indexOf('map.html') === 0) {
+      return e && e.date ? 'events.html?date=' + encodeURIComponent(String(e.date).slice(0, 10)) : 'events.html';
+    }
+    return href;
   }
 
   function renderHomeEvents() {
@@ -329,12 +347,25 @@
       el.innerHTML = '<p class="home-panel-empty">Скоро появятся события</p>';
       return;
     }
+    var today = '';
+    try { today = YakCalendar.todayIso ? YakCalendar.todayIso() : ''; } catch (err) {}
     el.innerHTML = list.map(function (e) {
-      var meta = [e.city || e.place, e.time].filter(Boolean).join(' · ');
+      var parts = eventDayParts(e.date);
+      var place = [e.venue, e.city].filter(Boolean);
+      if (!place.length && e.place) place = [e.place];
+      var meta = [place[0], e.time].filter(Boolean).join(' · ');
+      var href = homeEventHref(e);
+      var external = /^https?:/i.test(href);
+      var cat = (window.YakAfisha && e.category)
+        ? '<span class="home-event-chip">' + esc(YakAfisha.categoryLabel(e.category)) + '</span>'
+        : '';
+      var isToday = today && String(e.date).slice(0, 10) === today;
       return (
-        '<a class="home-event" href="' + esc(e.href || 'events.html') + '">' +
-        '<span class="home-event-date"><b>' + esc(shortDay(e.date)) + '</b></span>' +
-        '<span class="home-event-body"><strong>' + esc(e.title) + '</strong>' +
+        '<a class="home-event' + (isToday ? ' is-today' : '') + '" href="' + esc(href) + '"' +
+        (external ? ' target="_blank" rel="noopener"' : '') + '>' +
+        '<span class="home-event-date"><b>' + esc(parts.day) + '</b><span>' + esc(parts.mon) + '</span></span>' +
+        '<span class="home-event-body">' + cat +
+        '<strong>' + esc(e.title) + '</strong>' +
         (meta ? '<small>' + esc(meta) + '</small>' : '') +
         '</span></a>'
       );

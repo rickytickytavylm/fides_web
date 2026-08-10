@@ -54,14 +54,24 @@
     return (item.categories && item.categories[0]) || 'Материал';
   }
 
-  // Настоящие авторы Рускатолика зашиты в теги; поле author у большинства — служебное «ruscatholic».
-  // Показываем только осмысленное имя.
+  // Авторы привязаны через WP-теги → YakAuthors.recent; API author почти всегда «ruscatholic».
   function authorLabel(item) {
+    if (window.YakAuthorLink && YakAuthorLink.displayName) {
+      return YakAuthorLink.displayName(item) || '';
+    }
     var a = (item && item.author ? String(item.author) : '').trim();
     if (!a) return '';
     var low = a.toLowerCase();
     if (low === 'ruscatholic' || low === 'admin' || low === 'редакция') return '';
     return a;
+  }
+
+  function authorMini(item) {
+    if (window.YakAuthorLink && YakAuthorLink.cardHtml) {
+      return YakAuthorLink.cardHtml(item, { className: 'card-author card-author--feed', link: true });
+    }
+    var name = authorLabel(item);
+    return name ? '<p class="feed-author">' + V.escapeHtml(name) + '</p>' : '';
   }
 
   var params = new URLSearchParams(location.search);
@@ -226,7 +236,7 @@
         leadEl.innerHTML = '<p class="archive-empty">Ничего не найдено</p>';
       } else {
         var cat = itemRubric(hero);
-        var heroAuthor = authorLabel(hero);
+        var heroAuthor = authorMini(hero);
         var heroHref = itemHref(hero);
         leadEl.innerHTML =
           '<a class="card-image" href="' +
@@ -235,13 +245,12 @@
           V.coverStyle(hero.image) +
           ' aria-label="Открыть"></a>' +
           '<div class="lead-copy">' +
+          (heroAuthor || '') +
           '<p class="story-meta"><span>' +
           V.escapeHtml(cat) +
           '</span><time>' +
           V.escapeHtml(V.formatDate(hero.date)) +
-          '</time>' +
-          (heroAuthor ? '<span class="byline-chip">' + V.escapeHtml(heroAuthor) + '</span>' : '') +
-          '</p>' +
+          '</time></p>' +
           '<h2><a href="' +
           heroHref +
           '">' +
@@ -259,7 +268,7 @@
       feedEl.innerHTML = list
         .map(function (item) {
           var c = itemRubric(item);
-          var au = authorLabel(item);
+          var au = authorMini(item);
           var href = itemHref(item);
           return (
             '<article class="feed-item reveal visible">' +
@@ -269,6 +278,7 @@
             V.coverStyle(item.image) +
             ' aria-label="Открыть"></a>' +
             '<div class="feed-body">' +
+            (au || '') +
             '<p class="story-meta"><span>' +
             V.escapeHtml(c) +
             '</span><time>' +
@@ -279,7 +289,6 @@
             '">' +
             V.escapeHtml(item.title) +
             '</a></h3>' +
-            (au ? '<p class="feed-author">' + V.escapeHtml(au) + '</p>' : '') +
             '</div></article>'
           );
         })

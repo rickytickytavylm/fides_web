@@ -107,13 +107,24 @@
     return list;
   }
 
+  function eventHref(e) {
+    var href = e && e.href ? String(e.href) : '';
+    if (!href || href === '#' || href === 'map.html' || href.indexOf('map.html') === 0) {
+      return e && e.date
+        ? 'events.html?date=' + encodeURIComponent(String(e.date).slice(0, 10))
+        : 'events.html';
+    }
+    return href;
+  }
+
   function cardHtml(e) {
     var org = A.organizerById(e.organizerId);
     var tone = e.coverTone || (org && org.coverTone) || '#5c5346';
-    var external = /^https?:\/\//.test(e.href || '');
+    var href = eventHref(e);
+    var external = /^https?:\/\//.test(href);
     var placeLine = [e.venue, e.city].filter(Boolean).join(' · ');
     return (
-      '<a class="af-card" href="' + esc(e.href || 'events.html') + '"' +
+      '<a class="af-card" href="' + esc(href) + '"' +
       (external ? ' target="_blank" rel="noopener"' : '') + '>' +
       '<span class="af-card-cover" style="background:linear-gradient(155deg,' + esc(tone) + ',#1a1816)">' +
       '<span class="af-card-date"><b>' + esc(fmtLong(e.date)) + '</b>' +

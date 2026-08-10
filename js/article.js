@@ -169,15 +169,46 @@
             V.escapeHtml(V.formatDate(article.date)) +
             '</time></p>'
           : '')
-      : '<div class="byline"><div class="byline-main"><div>' +
-        '<p class="byline-name">' +
-        V.escapeHtml(article.author || 'Редакция') +
-        '</p>' +
-        '<p class="byline-meta"><time datetime="' +
-        V.escapeHtml(article.date || '') +
-        '">' +
-        V.escapeHtml(V.formatDate(article.date)) +
-        '</time></p></div></div></div>';
+      : (function () {
+          var linked =
+            window.YakAuthorLink && YakAuthorLink.findByArticle
+              ? YakAuthorLink.findByArticle(article)
+              : null;
+          var name =
+            (linked && linked.name) ||
+            (window.YakAuthorLink && YakAuthorLink.displayName
+              ? YakAuthorLink.displayName(article)
+              : '') ||
+            '';
+          if (!name) {
+            var raw = String(article.author || '').trim();
+            var low = raw.toLowerCase();
+            if (raw && low !== 'ruscatholic' && low !== 'admin' && low !== 'редакция') name = raw;
+          }
+          if (!name) name = 'Редакция';
+          var nameHtml = linked
+            ? '<a class="byline-name" href="author.html?slug=' +
+              encodeURIComponent(linked.slug) +
+              '">' +
+              V.escapeHtml(name) +
+              '</a>'
+            : '<p class="byline-name">' + V.escapeHtml(name) + '</p>';
+          var ava =
+            linked && window.YakAuthorLink && YakAuthorLink.avatar
+              ? YakAuthorLink.avatar(linked)
+              : '';
+          return (
+            '<div class="byline"><div class="byline-main">' +
+            (ava ? '<a class="byline-ava" href="author.html?slug=' + encodeURIComponent(linked.slug) + '">' + ava + '</a>' : '') +
+            '<div>' +
+            nameHtml +
+            '<p class="byline-meta"><time datetime="' +
+            V.escapeHtml(article.date || '') +
+            '">' +
+            V.escapeHtml(V.formatDate(article.date)) +
+            '</time></p></div></div></div>'
+          );
+        })();
 
     return (
       '<nav class="breadcrumbs" aria-label="Хлебные крошки">' +

@@ -409,6 +409,46 @@ a.loadmore.news-more:hover {
   font-size: 12px;
   color: var(--stone-500);
 }
+
+/* Миниатюра автора на карточках (как в сайдбаре) */
+.card-author {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  max-width: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+.card-author .author-ava {
+  width: 26px;
+  height: 26px;
+  font-size: 10px;
+}
+.card-author-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--bronze-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card-author--feed { margin: 0 0 8px; }
+.art--tile .card-author,
+.ncard .card-author { margin-bottom: 4px; }
+.byline-ava {
+  display: block;
+  text-decoration: none;
+  flex: none;
+}
+.byline-ava .author-ava { width: 44px; height: 44px; font-size: 13px; }
+.byline-name {
+  margin: 0;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+}
+a.byline-name:hover { color: var(--bronze-dark); }
 .home-aside {
   padding-top: 0;
   border-top: 0;
@@ -2650,12 +2690,23 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
 }
 .home-event:hover { border-color: var(--line-strong); background: var(--surface-2); }
 .home-event-date {
-  display: grid; place-items: center; min-height: 48px; border-radius: 12px;
+  display: grid; place-items: center; align-content: center; gap: 1px;
+  min-height: 52px; border-radius: 12px;
   background: color-mix(in srgb, var(--bronze-dark) 18%, var(--surface));
-  color: var(--bronze-dark); font-size: 12px; font-weight: 800; text-align: center; line-height: 1.15;
-  padding: 6px 4px;
+  color: var(--bronze-dark); font-size: 11px; font-weight: 800; text-align: center; line-height: 1.1;
+  padding: 6px 4px; text-transform: uppercase; letter-spacing: .04em;
 }
-.home-event-date b { font-weight: 800; }
+.home-event-date b { font-weight: 800; font-size: 18px; letter-spacing: 0; text-transform: none; }
+.home-event-date span { font-size: 10px; opacity: .9; }
+.home-event.is-today {
+  border-color: color-mix(in srgb, var(--bronze-dark) 35%, transparent);
+  background: color-mix(in srgb, var(--bronze-dark) 8%, var(--surface));
+}
+.home-event-chip {
+  display: inline-flex; align-self: start;
+  font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--bronze-dark); margin-bottom: 2px;
+}
 .home-event-body { display: grid; gap: 3px; min-width: 0; }
 .home-event-body strong {
   font-size: 14px; line-height: 1.3;

@@ -31,6 +31,74 @@
     return '<span class="author-ava initials">' + esc(initials(a.name)) + '</span>';
   }
 
+  /* slug статьи → автор (из baked recent + циклов) */
+  var articleAuthorIndex = null;
+  function buildArticleAuthorIndex() {
+    if (articleAuthorIndex) return articleAuthorIndex;
+    articleAuthorIndex = Object.create(null);
+    authors.forEach(function (a) {
+      (a.recent || []).forEach(function (p) {
+        if (p && p.slug && !articleAuthorIndex[p.slug]) articleAuthorIndex[p.slug] = a;
+      });
+    });
+    try {
+      var cycles = (window.YakCycles && (YakCycles.CYCLES || YakCycles.cycles)) || [];
+      cycles.forEach(function (c) {
+        var a = authors.filter(function (x) { return x.slug === c.authorSlug; })[0];
+        if (!a) return;
+        (c.articles || c.slugs || []).forEach(function (item) {
+          var slug = typeof item === 'string' ? item : (item && item.slug);
+          if (slug && !articleAuthorIndex[slug]) articleAuthorIndex[slug] = a;
+        });
+      });
+    } catch (e) {}
+    return articleAuthorIndex;
+  }
+
+  function findAuthorByArticle(item) {
+    if (!item) return null;
+    var slug = item.slug || item.id;
+    if (!slug) return null;
+    return buildArticleAuthorIndex()[String(slug)] || null;
+  }
+
+  /** Миниатюра как в сайдбаре. Внутри карточки-<a> — span (без вложенных ссылок). */
+  function cardAuthorHtml(item, opts) {
+    opts = opts || {};
+    var a = findAuthorByArticle(item);
+    if (!a) return '';
+    var cls = opts.className || 'card-author';
+    if (opts.link) {
+      return (
+        '<a class="' + cls + '" href="author.html?slug=' + encodeURIComponent(a.slug) + '">' +
+        avatar(a) +
+        '<span class="card-author-name">' + esc(a.name) + '</span></a>'
+      );
+    }
+    return (
+      '<span class="' + cls + '">' +
+      avatar(a) +
+      '<span class="card-author-name">' + esc(a.name) + '</span></span>'
+    );
+  }
+
+  function authorDisplayName(item) {
+    var a = findAuthorByArticle(item);
+    if (a) return a.name;
+    var raw = item && item.author ? String(item.author).trim() : '';
+    if (!raw) return '';
+    var low = raw.toLowerCase();
+    if (low === 'ruscatholic' || low === 'admin' || low === 'редакция') return '';
+    return raw;
+  }
+
+  window.YakAuthorLink = {
+    findByArticle: findAuthorByArticle,
+    cardHtml: cardAuthorHtml,
+    displayName: authorDisplayName,
+    avatar: avatar,
+  };
+
   /* ---------- Catalog ---------- */
   var grid = document.getElementById('authors-grid');
   if (grid) {

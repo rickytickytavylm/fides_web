@@ -38,8 +38,7 @@
       email: 'info@pokrovskie-vorota.ru',
       website: 'https://pokrovskie-vorota.ru',
       socials: [
-        { label: 'Сайт', href: 'https://pokrovskie-vorota.ru' },
-        { label: 'VK', href: 'https://vk.com' }
+        { label: 'Сайт', href: 'https://pokrovskie-vorota.ru' }
       ],
       coverTone: '#5c5346',
       partnerTitle: 'Все мероприятия Культурного центра «Покровские ворота»'
@@ -111,7 +110,7 @@
       cost: 'donation',
       registration: 'none',
       organizerId: 'iskusstvo-dobra',
-      href: 'map.html',
+      href: 'https://artofgood.ru',
       coverTone: '#8a5a2b'
     },
     {
@@ -273,7 +272,7 @@
       cost: 'donation',
       registration: 'none',
       organizerId: 'cathedral-msk',
-      href: 'map.html',
+      href: 'events.html?date=2026-08-20',
       coverTone: '#6d8b3e'
     },
     {

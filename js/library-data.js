@@ -314,7 +314,7 @@
         { format: 'EPUB', url: '#', size: '890 КБ' },
         { format: 'FB2', url: '#', size: '760 КБ' }
       ],
-      buyUrl: 'https://example.com/buy/story-of-a-soul',
+      buyUrl: '',
       quotes: ['Я хочу проводить небо, делая добро на земле.']
     },
     {
@@ -392,7 +392,7 @@
       views: 640,
       downloadsCount: 280,
       downloads: [{ format: 'PDF', url: '#', size: '4.2 МБ' }],
-      buyUrl: 'https://example.com/buy/catholic-tales'
+      buyUrl: ''
     },
     {
       id: 'introduction-devout',
