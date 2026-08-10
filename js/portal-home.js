@@ -413,6 +413,17 @@
     }).join('');
   }
 
+  function litText(val) {
+    if (val == null || val === '') return '';
+    if (typeof val === 'string' || typeof val === 'number') return String(val);
+    if (typeof val === 'object') {
+      if (val.name) return String(val.name);
+      if (val.title) return String(val.title);
+      if (val.text) return String(val.text);
+    }
+    return '';
+  }
+
   function renderAsideDay() {
     var dateEl = document.getElementById('aside-day-date');
     var saintEl = document.getElementById('aside-day-saint');
@@ -426,13 +437,17 @@
       return;
     }
     var L = day.liturgical || {};
-    dateEl.textContent = (day.weekday || '') + (day.label ? ' · ' + day.label : '');
-    if (saintEl) saintEl.textContent = L.saint || L.title || day.title || 'День Церкви';
+    var dateLabel = [day.weekday, L.title || day.label].filter(Boolean).join(' · ');
+    dateEl.textContent = dateLabel || iso;
+    if (saintEl) {
+      saintEl.textContent =
+        litText(L.saint) || litText(L.title) || litText(day.title) || 'День Церкви';
+    }
     if (readEl) {
-      var reading = L.reading || L.gospel || L.readings || '';
+      var reading = litText(L.reading) || litText(L.gospel) || litText(L.readings);
       readEl.textContent = reading
-        ? String(reading).slice(0, 140)
-        : (L.category ? String(L.category) : '');
+        ? reading.slice(0, 140)
+        : litText(L.category);
     }
   }
 
@@ -475,6 +490,7 @@
   if (voicesEl) loadVoices('interview');
   if (typeof window.renderHomeAuthors === 'function') {
     window.renderHomeAuthors(document.getElementById('authors-home'), 6);
+    window.renderHomeAuthors(document.getElementById('authors-home-mobile'), 5);
   }
   renderAsideDay();
   renderHomeEvents();
