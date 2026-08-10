@@ -1,0 +1,116 @@
+﻿<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="description" content="Фотосток ЯКатолик — поиск изображений по свободным лицензиям (Wikimedia Commons, Openverse)." />
+    <title>Фотосток — ЯКатолик</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="icon" href="yakatolik-logo.svg" />
+    <link rel="apple-touch-icon" href="yakatolik-logo.svg" />
+    <link rel="manifest" href="site.webmanifest" />
+    <meta name="theme-color" content="#ede9e2" />
+    <script>window.YAK_BUILD = '202608101345';</script>
+    <script id="yak_theme_boot">try{document.documentElement.dataset.theme=localStorage.getItem('yak_theme')==='twilight'?'twilight':'light'}catch(e){document.documentElement.dataset.theme='light'}</script>
+    <link rel="stylesheet" href="portal.css?v=202608101345" />
+  </head>
+  <body>
+    <header class="masthead">
+      <div class="wrap">
+        <a class="logo" href="index.html">
+          <span class="mark"><img src="yakatolik-logo.svg" alt="ЯКатолик" width="34" height="34" /></span>
+          <span class="wm">ЯКатолик</span>
+        </a>
+                <nav class="top" aria-label="Разделы">
+          <a href="church.html">О Церкви</a>
+          <a href="spiritual-life.html">Духовная жизнь</a>
+          <a href="archive.html?category=news">Новости</a>
+          <a href="articles.html">Статьи</a>
+          <a href="events.html">Афиша</a>
+          <a href="library.html">Библиотека</a>
+          <a href="map.html">Карта</a>
+          <a href="chat.html">Спросить</a>
+        </nav>
+        <a class="cal-btn" href="calendar.html" aria-label="День Церкви" title="День Церкви">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 3.5v3.5M16 3.5v3.5M3.5 10h17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <section class="block wrap">
+        <div class="block-head">
+          <span class="kicker"></span><h2>Фотосток</h2><span class="chip v1">свободные лицензии</span>
+          <span class="rule"></span><span class="eyebrow inline">Wikimedia Commons · Openverse</span>
+        </div>
+
+        <div class="ps-toolbar">
+          <label class="ps-search">
+            <span aria-hidden="true">🔍</span>
+            <input id="ps-input" type="search" placeholder="Что ищем? Например: собор, икона, литургия…" value="catholic church" />
+          </label>
+        </div>
+
+        <div class="ps-sources" id="ps-sources">
+          <button data-src="wikimedia" class="on">Wikimedia Commons</button>
+          <button data-src="openverse">Openverse (CC)</button>
+        </div>
+
+        <div class="ps-quick" id="ps-quick" style="margin-bottom:22px">
+          <button data-q="catholic cathedral">Собор</button>
+          <button data-q="catholic icon">Икона</button>
+          <button data-q="catholic liturgy mass">Литургия</button>
+          <button data-q="church candle">Свеча</button>
+          <button data-q="prayer rosary">Молитва</button>
+          <button data-q="crucifix cross">Крест</button>
+          <button data-q="vatican pope">Ватикан</button>
+          <button data-q="stained glass window church">Витраж</button>
+        </div>
+
+        <div id="ps-status" class="ps-status">Введите запрос и нажмите Enter.</div>
+        <div class="ps-grid" id="ps-grid"></div>
+        <button class="loadmore" id="ps-more" style="display:none">Загрузить ещё</button>
+      </section>
+    </main>
+
+    <footer class="portal-footer"><div class="wrap">
+      <a class="logo" href="index.html">
+        <span class="mark"><img src="yakatolik-logo.svg" alt="ЯКатолик" width="30" height="30" /></span>
+        <span class="wm">ЯКатолик</span>
+      </a>
+      <div>Изображения отдаются источниками (Wikimedia, Openverse) по указанным лицензиям.<br />Проверяйте условия использования на странице автора.</div>
+    </div></footer>
+
+            <nav class="app-tabbar" aria-label="Основная навигация">
+      <a class="tab-item" href="church.html" data-tab="church">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2v2.4M10.2 4.6h3.6L14.8 7H9.2l1-2.4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M4.5 10.2 12 6.2l7.5 4V21H4.5V10.2Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 21v-5.2h4V21M8.2 12.8h2M13.8 12.8h2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>О Церкви</span>
+      </a>
+      <a class="tab-item" href="spiritual-life.html" data-tab="spirit">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21c4.2-2.4 6.8-5.4 6.8-9.1 0-3.2-2.2-5.4-4.4-5.4-1.4 0-2.5.7-3.4 1.9-.9-1.2-2-1.9-3.4-1.9-2.2 0-4.4 2.2-4.4 5.4C3.2 15.6 5.8 18.6 12 21Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        <span>Духовная жизнь</span>
+      </a>
+      <a class="tab-item" href="library.html" data-tab="library">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h10.5A2.5 2.5 0 0 1 18 7v12.2H7.2A2.2 2.2 0 0 0 5 21.4V4.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M18 7h1.2A1.8 1.8 0 0 1 21 8.8v9.2A1.8 1.8 0 0 1 19.2 19.8H18" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.5 8.5h6M8.5 12h6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span>Библиотека</span>
+      </a>
+      <a class="tab-item" href="map.html" data-tab="map">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4.5 4.5 6.2v13.3L9 17.8l6 1.7 4.5-1.7V4.5L15 6.2 9 4.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 4.5v13.3M15 6.2v13.3" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+        <span>Карта</span>
+      </a>
+      <a class="tab-item" href="chat.html" data-tab="chat">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 6.5h13a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1-1.5 1.5H10l-3.8 2.6V16.5H5.5A1.5 1.5 0 0 1 4 15V8a1.5 1.5 0 0 1 1.5-1.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        <span>Спросить</span>
+      </a>
+    </nav>
+
+    <script src="js/config.js?v=202608101345"></script>
+    <script src="js/api.js?v=202608101345"></script>
+    <script src="js/portal-nav.js?v=202608101345"></script>
+    <script src="js/photostock.js?v=202608101345"></script>
+      <script src="js/theme.js?v=202608101345"></script>
+    <script src="js/cache-bust.js?v=202608101345"></script>
+  </body>
+</html>

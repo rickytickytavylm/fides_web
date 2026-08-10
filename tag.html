@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="description" content="Тег / метка — ЯКатолик" />
+    <title>Тег — ЯКатолик</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="icon" href="yakatolik-logo.svg" />
+    <meta name="theme-color" content="#ede9e2" />
+    <script>window.YAK_BUILD = '202608101345';</script>
+    <script id="yak_theme_boot">try{document.documentElement.dataset.theme=localStorage.getItem('yak_theme')==='twilight'?'twilight':'light'}catch(e){document.documentElement.dataset.theme='light'}</script>
+    <link rel="stylesheet" href="portal.css?v=202608101345" />
+  </head>
+  <body>
+    <header class="masthead">
+      <div class="wrap">
+        <a class="logo" href="index.html">
+          <span class="mark"><img src="yakatolik-logo.svg" alt="ЯКатолик" width="34" height="34" /></span>
+          <span class="wm">ЯКатолик</span>
+        </a>
+                <nav class="top" aria-label="Разделы">
+          <a href="church.html">О Церкви</a>
+          <a href="spiritual-life.html">Духовная жизнь</a>
+          <a href="archive.html?category=news">Новости</a>
+          <a href="articles.html">Статьи</a>
+          <a href="events.html">Афиша</a>
+          <a href="library.html">Библиотека</a>
+          <a href="map.html">Карта</a>
+          <a href="chat.html">Спросить</a>
+        </nav>
+        <a class="cal-btn" href="calendar.html" aria-label="День Церкви" title="День Церкви">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 3.5v3.5M16 3.5v3.5M3.5 10h17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </a>
+      </div>
+    </header>
+
+    <main class="wrap" style="padding:28px 0 48px">
+      <nav class="breadcrumbs" aria-label="Хлебные крошки">
+        <a href="index.html">Главная</a><span>/</span><span>Тег</span>
+      </nav>
+      <header class="page-head">
+        <p class="eyebrow">Метка</p>
+        <h1 id="tag-title">Тег</h1>
+        <p id="tag-desc" style="max-width:40em;color:var(--stone-700)">Подборка по метке. Авторы, темы и города задаются тегами в редакции.</p>
+      </header>
+      <div class="news-grid" id="tag-feed"><p class="ps-status">Загрузка…</p></div>
+    </main>
+
+    <script src="js/config.js?v=202608101345"></script>
+    <script src="js/api.js?v=202608101345"></script>
+    <script src="js/portal-nav.js?v=202608101345"></script>
+    <script src="js/theme.js?v=202608101345"></script>
+    <script>
+      (function () {
+        var V = window.Vera;
+        var slug = new URLSearchParams(location.search).get('slug') || '';
+        var titleEl = document.getElementById('tag-title');
+        var feed = document.getElementById('tag-feed');
+        if (titleEl) titleEl.textContent = slug ? slug.replace(/-/g, ' ') : 'Тег';
+        document.title = (slug || 'Тег') + ' — ЯКатолик';
+        if (!V || !slug) {
+          if (feed) feed.innerHTML = '<p class="ps-status">Укажите ?slug=…</p>';
+          return;
+        }
+        V.getArticles({ q: slug.replace(/-/g, ' '), limit: 20, page: 1 })
+          .then(function (pack) {
+            var items = pack.items || [];
+            if (!items.length) {
+              feed.innerHTML = '<p class="ps-status">Пока нет публикаций с этой меткой.</p>';
+              return;
+            }
+            feed.innerHTML = '<div class="news-list">' + items.map(function (it) {
+              return (
+                '<a class="ncard" href="' + V.articleHref(it) + '">' +
+                '<div class="thumb" style="background-image:' +
+                (it.image ? "url('" + String(it.image).replace(/'/g, '%27') + "')" : 'linear-gradient(135deg,#553922,#8a6a3a)') +
+                '"></div><div class="ncard-body"><h4>' + V.escapeHtml(it.title) + '</h4>' +
+                '<div class="date">' + V.escapeHtml(V.formatDate(it.date)) + '</div></div></a>'
+              );
+            }).join('') + '</div>';
+          })
+          .catch(function () {
+            feed.innerHTML = '<p class="ps-status">Не удалось загрузить</p>';
+          });
+      })();
+    </script>
+  </body>
+</html>
