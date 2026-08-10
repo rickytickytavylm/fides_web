@@ -63,7 +63,14 @@
     var hasWide = cards.some(function (c) {
       return !!(c.wide || c.tone === 'wide');
     });
-    var gridClass = opts.grid || (hasWide ? 'route-grid route-grid--hub' : 'route-grid route-grid--3');
+    // Духовная жизнь: сетка 2 колонки (2×2 / 2×4), без «последней» на всю ширину
+    var gridClass =
+      opts.grid ||
+      (sectionKey === 'spirit'
+        ? 'route-grid route-grid--2'
+        : hasWide
+          ? 'route-grid route-grid--hub'
+          : 'route-grid route-grid--3');
     var html = '<div class="' + gridClass + '">';
     cards.forEach(function (c, i) {
       var imageStyle = c.image
@@ -295,7 +302,10 @@
       crumbs([{ label: 'Главная', href: 'index.html' }, { label: tree.title }]) +
       head(tree.title, tree.desc) +
       intro +
-      renderCards(tree.cards, { kicker: 'Маршрут' });
+      renderCards(tree.cards, {
+        kicker: 'Маршрут',
+        grid: sectionKey === 'spirit' ? 'route-grid route-grid--2' : undefined,
+      });
   }
 
   function renderNavigator(node) {

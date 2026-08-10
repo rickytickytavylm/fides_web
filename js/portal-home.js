@@ -225,7 +225,7 @@
       if (!isWeakNewsLead(list[i])) { leadIdx = i; break; }
     }
     var lead = list[leadIdx];
-    var rest = list.filter(function (_it, i) { return i !== leadIdx; }).slice(0, 3);
+    var rest = list.filter(function (_it, i) { return i !== leadIdx; }).slice(0, 5);
     return { lead: lead, rest: rest };
   }
 
@@ -259,7 +259,7 @@
     if (!newsEl) return;
     if (newsCache[id]) { newsEl.innerHTML = renderNewsPack(newsCache[id]); return; }
     newsEl.innerHTML = skNcards();
-    var opts = { limit: 8, page: 1 };
+    var opts = { limit: 12, page: 1 };
     if (tab.slug) opts.category = tab.slug;
     if (tab.q) opts.q = tab.q;
     V.getArticles(opts)
@@ -286,7 +286,7 @@
     if (!items.length) return '<p class="ps-status">Пока пусто</p>';
     if (isCompactHome()) return renderNewsList(items);
     var lead = items[0];
-    var rest = items.slice(1, 4);
+    var rest = items.slice(1, 7);
     return (
       '<div class="fresh-home">' +
       newsCard(lead, 0, true) +
@@ -319,9 +319,9 @@
   function loadFresh() {
     if (!freshEl) return;
     freshEl.innerHTML = skFreshHome();
-    V.getArticles({ category: 'columns', limit: 4, page: 1 })
+    V.getArticles({ category: 'columns', limit: 7, page: 1 })
       .then(function (pack) {
-        freshEl.innerHTML = renderFreshHome((pack.items || []).slice(0, 4));
+        freshEl.innerHTML = renderFreshHome((pack.items || []).slice(0, 7));
       })
       .catch(function () { freshEl.innerHTML = '<p class="ps-status">Не удалось загрузить статьи</p>'; });
   }
@@ -352,7 +352,7 @@
     if (!voicesEl) return;
     if (voicesCache[tab.id]) { voicesEl.innerHTML = renderNewsPack(voicesCache[tab.id]); return; }
     voicesEl.innerHTML = skNcards();
-    V.getArticles({ category: tab.slug, limit: 8, page: 1 })
+    V.getArticles({ category: tab.slug, limit: 12, page: 1 })
       .then(function (pack) {
         var items = pack.items || [];
         voicesCache[tab.id] = items;
@@ -413,6 +413,51 @@
     }).join('');
   }
 
+  function renderAsideDay() {
+    var dateEl = document.getElementById('aside-day-date');
+    var saintEl = document.getElementById('aside-day-saint');
+    var readEl = document.getElementById('aside-day-read');
+    if (!dateEl || !window.YakCalendar) return;
+    var iso = YakCalendar.todayIso();
+    var day = YakCalendar.byDate(iso) || (YakCalendar.DAYS && YakCalendar.DAYS[0]);
+    if (!day) {
+      dateEl.textContent = iso;
+      if (saintEl) saintEl.textContent = 'Откройте календарь';
+      return;
+    }
+    var L = day.liturgical || {};
+    dateEl.textContent = (day.weekday || '') + (day.label ? ' · ' + day.label : '');
+    if (saintEl) saintEl.textContent = L.saint || L.title || day.title || 'День Церкви';
+    if (readEl) {
+      var reading = L.reading || L.gospel || L.readings || '';
+      readEl.textContent = reading
+        ? String(reading).slice(0, 140)
+        : (L.category ? String(L.category) : '');
+    }
+  }
+
+  function renderHomePhotos() {
+    var el = document.getElementById('home-photos');
+    if (!el) return;
+    V.getArticles({ limit: 8, page: 1 })
+      .then(function (pack) {
+        var items = (pack.items || []).filter(function (it) { return !!it.image; }).slice(0, 4);
+        if (!items.length) {
+          el.innerHTML = '<p class="home-panel-empty">Скоро появятся фото</p>';
+          return;
+        }
+        el.innerHTML = items.map(function (it, i) {
+          return (
+            '<a class="home-photo-tile" href="photostock.html" style="background-image:' +
+            bg(it.image, i) + '" aria-label="' + esc(it.title || 'Фото') + '"></a>'
+          );
+        }).join('');
+      })
+      .catch(function () {
+        el.innerHTML = '<p class="home-panel-empty">Фотосток откроется позже</p>';
+      });
+  }
+
   /* ---------- Boot ---------- */
   V.getArticles({ limit: 12, page: 1 })
     .then(function (pack) { buildHero(pack.items || []); })
@@ -425,8 +470,10 @@
   loadFresh();
   if (voicesEl) loadVoices('interview');
   if (typeof window.renderHomeAuthors === 'function') {
-    window.renderHomeAuthors(document.getElementById('authors-home'), 5);
+    window.renderHomeAuthors(document.getElementById('authors-home'), 6);
   }
+  renderAsideDay();
   renderHomeEvents();
   renderHomeLibrary();
+  renderHomePhotos();
 })();
