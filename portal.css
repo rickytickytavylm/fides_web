@@ -2602,13 +2602,34 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
   background:
     radial-gradient(120% 90% at 50% 0%, rgba(74, 127, 201, .14), transparent 55%),
     var(--surface);
+  overflow: hidden;
 }
 .home-photo-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  /* не растягиваем по высоте трио — иначе квадраты «уезжают» и появляется скролл */
+  flex: 0 0 auto;
+  align-content: start;
+  align-items: stretch;
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
 }
 .home-photo-tile {
-  display: block; aspect-ratio: 1; border-radius: 12px;
-  background: var(--surface-2) center/cover no-repeat; text-decoration: none;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  max-height: none;
+  border-radius: 12px;
+  background-color: var(--surface-2);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  text-decoration: none;
+  overflow: hidden;
 }
 .home-panel-head { display: grid; gap: 6px; }
 .home-panel-kicker {
