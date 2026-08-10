@@ -36,14 +36,7 @@
     if (isCompactHome()) {
       return '<div class="news-list">' + skNcardRow() + skNcardRow() + skNcardRow() + skNcardRow() + '</div>';
     }
-    return (
-      '<div class="news-pack">' +
-      '<article class="ncard ncard--lead"><div class="thumb sk"></div><div class="ncard-body">' +
-      '<div class="sk sk-line" style="width:28%;height:10px;margin-bottom:12px"></div>' +
-      '<div class="sk sk-line" style="width:92%;height:22px;margin-bottom:8px"></div>' +
-      '<div class="sk sk-line" style="width:70%;height:22px"></div></div></article>' +
-      '<div class="news-side">' + skNcardRow() + skNcardRow() + skNcardRow() + '</div></div>'
-    );
+    return '<div class="home-equal">' + skArts(6) + '</div>';
   }
   function skArts(n) {
     var s = '';
@@ -190,43 +183,24 @@
     });
   }
 
-  function newsCard(it, i, lead) {
-    var excerpt = lead
-      ? '<p class="ncard-excerpt">' + esc(String(it.excerpt || '').replace(/\s+/g, ' ').trim().slice(0, 160)) + '</p>'
-      : '';
+  function newsCard(it, i) {
     return (
-      '<a class="ncard' + (lead ? ' ncard--lead' : '') + '" href="' + V.articleHref(it) + '">' +
+      '<a class="ncard" href="' + V.articleHref(it) + '">' +
       '<div class="thumb" style="background-image:' + bg(it.image, i) + '" role="img" aria-label=""></div>' +
       '<div class="ncard-body"><div class="rub">' + esc(cat(it)) + '</div>' +
       '<h4>' + esc(it.title) + '</h4>' +
-      excerpt +
       '<div class="date">' + esc(V.formatDate(it.date)) + '</div></div></a>'
     );
   }
 
-  /* Коллажи/плохой cover — не ставим в lead-пакет новостей */
-  var WEAK_NEWS_LEAD = {
-    'nadezda-francisk': 1,
-    '41900': 1,
-  };
-
-  function isWeakNewsLead(it) {
-    if (!it) return true;
-    if (WEAK_NEWS_LEAD[String(it.slug || '')] || WEAK_NEWS_LEAD[String(it.id || '')]) return true;
-    if (!it.image) return true;
-    return false;
-  }
-
-  function pickNewsPack(items) {
-    var list = (items || []).slice();
-    if (!list.length) return { lead: null, rest: [] };
-    var leadIdx = 0;
-    for (var i = 0; i < list.length; i++) {
-      if (!isWeakNewsLead(list[i])) { leadIdx = i; break; }
-    }
-    var lead = list[leadIdx];
-    var rest = list.filter(function (_it, i) { return i !== leadIdx; }).slice(0, 5);
-    return { lead: lead, rest: rest };
+  function tileCard(it, i) {
+    return (
+      '<a class="art art--tile" href="' + V.articleHref(it) + '">' +
+      '<div class="ph" style="background-image:' + bg(it.image, i) + '"></div>' +
+      '<div class="in"><div class="rub">' + esc(cat(it)) + '</div>' +
+      '<h4>' + esc(it.title) + '</h4>' +
+      '<div class="date">' + esc(V.formatDate(it.date)) + '</div></div></a>'
+    );
   }
 
   function renderNewsList(items) {
@@ -234,23 +208,25 @@
     if (!list.length) return '<p class="ps-status">Пока пусто</p>';
     return (
       '<div class="news-list">' +
-      list.map(function (it, i) { return newsCard(it, i, false); }).join('') +
+      list.map(function (it, i) { return newsCard(it, i); }).join('') +
+      '</div>'
+    );
+  }
+
+  /* Десктоп: одинаковые превью 3×2 — без крупного lead (убирает «дыру») */
+  function renderEqualGrid(items, limit) {
+    var list = (items || []).slice(0, limit || 6);
+    if (!list.length) return '<p class="ps-status">Пока пусто</p>';
+    if (isCompactHome()) return renderNewsList(list);
+    return (
+      '<div class="home-equal">' +
+      list.map(function (it, i) { return tileCard(it, i); }).join('') +
       '</div>'
     );
   }
 
   function renderNewsPack(items) {
-    /* На мобе — только ровный список, без доминантного lead */
-    if (isCompactHome()) return renderNewsList(items);
-    var pack = pickNewsPack(items);
-    if (!pack.lead) return '<p class="ps-status">Пока пусто</p>';
-    return (
-      '<div class="news-pack">' +
-      newsCard(pack.lead, 0, true) +
-      '<div class="news-side">' +
-      pack.rest.map(function (it, i) { return newsCard(it, i + 1, false); }).join('') +
-      '</div></div>'
-    );
+    return renderEqualGrid(items, 6);
   }
 
   function loadNews(id) {
@@ -283,45 +259,21 @@
   }
 
   function renderFreshHome(items) {
-    if (!items.length) return '<p class="ps-status">Пока пусто</p>';
-    if (isCompactHome()) return renderNewsList(items);
-    var lead = items[0];
-    var rest = items.slice(1, 7);
-    return (
-      '<div class="fresh-home">' +
-      newsCard(lead, 0, true) +
-      '<div class="fresh-home-row">' +
-      rest.map(function (it, i) {
-        return (
-          '<a class="art art--tile" href="' + V.articleHref(it) + '">' +
-          '<div class="ph" style="background-image:' + bg(it.image, i + 1) + '"></div>' +
-          '<div class="in"><div class="rub">' + esc(cat(it)) + '</div>' +
-          '<h4>' + esc(it.title) + '</h4>' +
-          '<div class="date">' + esc(V.formatDate(it.date)) + '</div></div></a>'
-        );
-      }).join('') +
-      '</div></div>'
-    );
+    return renderEqualGrid(items, 6);
   }
 
-  function skFreshHome() {
+  function skEqualGrid() {
     if (isCompactHome()) return skNcards();
-    return (
-      '<div class="fresh-home">' +
-      '<article class="ncard ncard--lead"><div class="thumb sk"></div><div class="ncard-body">' +
-      '<div class="sk sk-line" style="width:28%;height:10px;margin-bottom:12px"></div>' +
-      '<div class="sk sk-line" style="width:88%;height:22px"></div></div></article>' +
-      '<div class="fresh-home-row">' + skArts(3) + '</div></div>'
-    );
+    return '<div class="home-equal">' + skArts(6) + '</div>';
   }
 
   var freshEl = document.getElementById('fresh');
   function loadFresh() {
     if (!freshEl) return;
-    freshEl.innerHTML = skFreshHome();
-    V.getArticles({ category: 'columns', limit: 7, page: 1 })
+    freshEl.innerHTML = skEqualGrid();
+    V.getArticles({ category: 'columns', limit: 6, page: 1 })
       .then(function (pack) {
-        freshEl.innerHTML = renderFreshHome((pack.items || []).slice(0, 7));
+        freshEl.innerHTML = renderFreshHome((pack.items || []).slice(0, 6));
       })
       .catch(function () { freshEl.innerHTML = '<p class="ps-status">Не удалось загрузить статьи</p>'; });
   }
@@ -350,13 +302,13 @@
     var tab = VOICES_TABS.filter(function (t) { return t.id === id; })[0] || VOICES_TABS[0];
     renderVoicesTabs(tab.id);
     if (!voicesEl) return;
-    if (voicesCache[tab.id]) { voicesEl.innerHTML = renderNewsPack(voicesCache[tab.id]); return; }
+    if (voicesCache[tab.id]) { voicesEl.innerHTML = renderEqualGrid(voicesCache[tab.id], 6); return; }
     voicesEl.innerHTML = skNcards();
     V.getArticles({ category: tab.slug, limit: 12, page: 1 })
       .then(function (pack) {
         var items = pack.items || [];
         voicesCache[tab.id] = items;
-        voicesEl.innerHTML = renderNewsPack(items);
+        voicesEl.innerHTML = renderEqualGrid(items, 6);
       })
       .catch(function () { voicesEl.innerHTML = '<p class="ps-status">Не удалось загрузить</p>'; });
   }

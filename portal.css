@@ -383,8 +383,32 @@ a.loadmore.news-more:hover {
   gap: 0 40px;
   align-items: start;
 }
+.body-grid > .body-main,
 .body-grid > .news-grid,
 .body-grid > .fresh-home { min-width: 0; }
+.body-main { min-width: 0; }
+
+/* Одинаковые превью 3×2 — новости / статьи / голоса */
+.home-equal {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px 20px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  align-items: start;
+}
+.home-equal .art--tile .ph {
+  height: clamp(130px, 12vw, 168px);
+}
+.home-equal .art--tile h4 {
+  font-size: clamp(16px, 1.2vw, 19px);
+  -webkit-line-clamp: 3;
+}
+.home-equal .art--tile .date {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--stone-500);
+}
 .home-aside {
   padding-top: 0;
   border-top: 0;
@@ -1066,12 +1090,35 @@ aside { display: flex; flex-direction: column; gap: 0; }
   /* Новости / Голоса / Свежие: ровный список без lead */
   .news-list,
   .news-pack,
-  .fresh-home {
+  .fresh-home,
+  .home-equal {
     display: flex;
     flex-direction: column;
     gap: 12px;
     border-top: 0;
     padding-top: 0;
+  }
+  .home-equal .art--tile {
+    display: grid;
+    grid-template-columns: 108px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 14px;
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+  .home-equal .art--tile .ph {
+    width: 108px;
+    height: 84px;
+    border-radius: 11px;
+  }
+  .home-equal .art--tile h4 {
+    font-family: var(--ff);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0;
+    -webkit-line-clamp: 3;
   }
   .news-list .ncard {
     grid-template-columns: 108px minmax(0, 1fr);
@@ -1126,6 +1173,7 @@ aside { display: flex; flex-direction: column; gap: 0; }
   }
   .fresh-home-row .art--tile,
   .fresh-row .art--tile,
+  .home-equal .art--tile,
   .art {
     display: grid;
     grid-template-columns: 108px minmax(0, 1fr);
@@ -1138,6 +1186,7 @@ aside { display: flex; flex-direction: column; gap: 0; }
   }
   .fresh-home-row .art--tile .ph,
   .fresh-row .art--tile .ph,
+  .home-equal .art--tile .ph,
   .art .ph {
     width: 108px;
     height: 84px;
@@ -1145,6 +1194,7 @@ aside { display: flex; flex-direction: column; gap: 0; }
   }
   .fresh-home-row .art--tile h4,
   .fresh-row .art--tile h4,
+  .home-equal .art--tile h4,
   .art h4 {
     font-family: var(--ff);
     font-size: 15px;

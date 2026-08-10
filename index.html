@@ -13,11 +13,11 @@
     <link rel="manifest" href="site.webmanifest" />
     <meta name="theme-color" content="#ede9e2" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <script>window.YAK_BUILD = '202608101830';</script>
+    <script>window.YAK_BUILD = '202608101845';</script>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="ЯКатолик" />
     <script id="yak_theme_boot">try{document.documentElement.dataset.theme=localStorage.getItem('yak_theme')==='twilight'?'twilight':'light'}catch(e){document.documentElement.dataset.theme='light'}</script>
-    <link rel="stylesheet" href="portal.css?v=202608101830" />
+    <link rel="stylesheet" href="portal.css?v=202608101845" />
   </head>
   <body>
     <header class="masthead">
@@ -57,41 +57,28 @@
         </div>
       </section>
 
-      <!-- НОВОСТИ -->
-      <section class="block wrap" style="padding-top:4px">
+      <!-- НОВОСТИ + День Церкви / Приложение -->
+      <section class="block wrap block-news" style="padding-top:4px">
         <div class="block-head">
           <span class="kicker"></span>
           <h2><a href="archive.html?category=news">Новости</a></h2>
           <span class="rule"></span>
         </div>
         <div class="tabs" id="news-tabs"></div>
-        <div class="news-grid" id="news"></div>
-        <div class="news-foot">
-          <a class="loadmore news-more" href="archive.html?category=news">Все новости →</a>
-        </div>
-      </section>
-
-      <!-- СВЕЖИЕ СТАТЬИ + САЙДБАР -->
-      <section class="block wrap block-fresh" style="padding-top:4px">
-        <div class="block-head">
-          <span class="kicker"></span>
-          <h2><a href="articles.html">Свежие статьи</a></h2>
-          <span class="rule"></span>
-        </div>
         <div class="body-grid">
-          <div class="news-grid" id="fresh"></div>
-          <aside class="home-aside" aria-label="Быстрые разделы">
+          <div class="body-main">
+            <div class="news-grid" id="news"></div>
+            <div class="news-foot">
+              <a class="loadmore news-more" href="archive.html?category=news">Все новости →</a>
+            </div>
+          </div>
+          <aside class="home-aside" aria-label="День Церкви и приложение">
             <div class="widget widget--accent" id="aside-day">
               <h3><a href="calendar.html"><span class="wdot"></span>День Церкви</a></h3>
               <p class="widget-date" id="aside-day-date">—</p>
               <p class="widget-saint" id="aside-day-saint">Загрузка…</p>
               <p class="widget-read" id="aside-day-read"></p>
               <a class="wlink" href="calendar.html">Весь календарь →</a>
-            </div>
-            <div class="widget widget--accent">
-              <h3><a href="authors.html"><span class="wdot"></span>Авторы</a></h3>
-              <div class="authors-aside" id="authors-home"></div>
-              <a class="wlink" href="authors.html">Все авторы →</a>
             </div>
             <div class="widget widget--accent">
               <h3><span class="wdot"></span>Приложение</h3>
@@ -102,8 +89,29 @@
         </div>
       </section>
 
-      <!-- ГОЛОСА: Интервью / Свидетельства -->
-      <section class="block wrap" style="padding-top:4px">
+      <!-- СВЕЖИЕ СТАТЬИ + Авторы -->
+      <section class="block wrap block-fresh" style="padding-top:4px">
+        <div class="block-head">
+          <span class="kicker"></span>
+          <h2><a href="articles.html">Свежие статьи</a></h2>
+          <span class="rule"></span>
+        </div>
+        <div class="body-grid">
+          <div class="body-main">
+            <div class="news-grid" id="fresh"></div>
+          </div>
+          <aside class="home-aside" aria-label="Авторы">
+            <div class="widget widget--accent">
+              <h3><a href="authors.html"><span class="wdot"></span>Авторы</a></h3>
+              <div class="authors-aside" id="authors-home"></div>
+              <a class="wlink" href="authors.html">Все авторы →</a>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ГОЛОСА: одинаковая сетка 3×2 -->
+      <section class="block wrap block-voices" style="padding-top:4px">
         <div class="block-head">
           <span class="kicker"></span>
           <h2><a href="archive.html?category=interview">Голоса</a></h2>
@@ -199,17 +207,17 @@
       </a>
     </nav>
 
-    <script src="js/config.js?v=202608101830"></script>
-    <script src="js/api.js?v=202608101830"></script>
-    <script src="js/portal-nav.js?v=202608101830"></script>
-    <script src="js/events-data.js?v=202608101830"></script>
-    <script src="js/calendar-data.js?v=202608101830"></script>
-    <script src="js/library-data.js?v=202608101830"></script>
-    <script src="js/authors-data.js?v=202608101830"></script>
-    <script src="js/authors-page.js?v=202608101830"></script>
-    <script src="js/photostock-data.js?v=202608101830"></script>
-    <script src="js/portal-home.js?v=202608101830"></script>
-    <script src="js/theme.js?v=202608101830"></script>
-    <script src="js/cache-bust.js?v=202608101830"></script>
+    <script src="js/config.js?v=202608101845"></script>
+    <script src="js/api.js?v=202608101845"></script>
+    <script src="js/portal-nav.js?v=202608101845"></script>
+    <script src="js/events-data.js?v=202608101845"></script>
+    <script src="js/calendar-data.js?v=202608101845"></script>
+    <script src="js/library-data.js?v=202608101845"></script>
+    <script src="js/authors-data.js?v=202608101845"></script>
+    <script src="js/authors-page.js?v=202608101845"></script>
+    <script src="js/photostock-data.js?v=202608101845"></script>
+    <script src="js/portal-home.js?v=202608101845"></script>
+    <script src="js/theme.js?v=202608101845"></script>
+    <script src="js/cache-bust.js?v=202608101845"></script>
   </body>
 </html>
