@@ -439,23 +439,27 @@
   function renderHomePhotos() {
     var el = document.getElementById('home-photos');
     if (!el) return;
-    V.getArticles({ limit: 8, page: 1 })
-      .then(function (pack) {
-        var items = (pack.items || []).filter(function (it) { return !!it.image; }).slice(0, 4);
-        if (!items.length) {
-          el.innerHTML = '<p class="home-panel-empty">Скоро появятся фото</p>';
-          return;
-        }
-        el.innerHTML = items.map(function (it, i) {
-          return (
-            '<a class="home-photo-tile" href="photostock.html" style="background-image:' +
-            bg(it.image, i) + '" aria-label="' + esc(it.title || 'Фото') + '"></a>'
-          );
-        }).join('');
-      })
-      .catch(function () {
-        el.innerHTML = '<p class="home-panel-empty">Фотосток откроется позже</p>';
-      });
+    function paint(items) {
+      if (!items.length) {
+        el.innerHTML = '<p class="home-panel-empty">Скоро появятся фото</p>';
+        return;
+      }
+      el.innerHTML = items.map(function (it, i) {
+        var href = it.id ? 'photo.html?id=' + encodeURIComponent(it.id) : 'photostock.html';
+        var src = it.thumb || it.url || it.image;
+        return (
+          '<a class="home-photo-tile" href="' + href + '" style="background-image:' +
+          bg(src, i) + '" aria-label="Фото"></a>'
+        );
+      }).join('');
+    }
+    if (window.YakPhotostock) {
+      YakPhotostock.load()
+        .then(function (data) { paint((data.photos || []).slice(0, 4)); })
+        .catch(function () { paint([]); });
+      return;
+    }
+    paint([]);
   }
 
   /* ---------- Boot ---------- */
