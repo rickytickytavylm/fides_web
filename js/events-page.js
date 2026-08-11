@@ -242,7 +242,7 @@
       '<nav class="breadcrumbs in-shell"><a href="index.html">Главная</a><span>/</span><span>Афиша</span></nav>' +
       '<header class="page-head in-shell">' +
       '<div><p class="eyebrow">События</p><h1>Афиша</h1></div>' +
-      '<p class="page-desc">Концерты, встречи, лекции, паломничества и реколлекции Литургический день — в <a href="calendar.html">Дне Церкви</a>. Анонсы снимаются на следующий день после события.</p>' +
+      '<p class="page-desc">Концерты, встречи, лекции, паломничества и реколлекции · Литургический день — в <a href="calendar.html">Дне Церкви</a> · Анонсы снимаются на следующий день после события</p>' +
       '</header>' +
 
       '<section class="af-month">' +

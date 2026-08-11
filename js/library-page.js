@@ -180,7 +180,7 @@
       '<a href="index.html">Главная</a><span>/</span><span>Библиотека</span></nav>' +
       '<header class="page-head in-shell">' +
       '<div><p class="eyebrow">Читать и скачивать</p><h1>Библиотека</h1></div>' +
-      '<p class="page-desc">Документы Церкви, авторские произведения и переводы. Превью ведут на карточку произведения.</p>' +
+      '<p class="page-desc">Документы Церкви, авторские произведения и переводы · Превью ведут на карточку произведения</p>' +
       '</header>' +
       '<div class="lib-hub-sections">' +
       '<a class="lib-hub-tile" href="library.html?section=church">' +

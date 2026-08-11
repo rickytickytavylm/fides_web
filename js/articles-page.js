@@ -176,13 +176,13 @@
     '<a href="index.html">Главная</a><span>/</span><span>Статьи</span></nav>' +
     '<header class="page-head in-shell"><div>' +
     '<p class="eyebrow">Читать</p><h1>Статьи</h1></div>' +
-    '<p class="page-desc">Рубрики, темы, вопрос-ответ и подборки — не только общий поиск по каталогу.</p>' +
+    '<p class="page-desc">Рубрики, темы, вопрос-ответ и подборки — не только общий поиск по каталогу</p>' +
     '</header>' +
     '<form class="archive-toolbar in-shell articles-search" id="articles-search-form" role="search">' +
     '<label class="archive-search-shell">' +
     '<input id="articles-search" type="search" placeholder="Поиск по статьям…" autocomplete="off" />' +
     '</label>' +
-    '<p class="articles-search-hint">Ищет по каталогу статей. Для новостей — в разделе «Новости».</p>' +
+    '<p class="articles-search-hint">Ищет по каталогу статей · Для новостей — раздел «Новости»</p>' +
     '</form>' +
     '<div class="tabs articles-toolbar" role="navigation" aria-label="Разделы">' +
     '<a class="on" href="archive.html?category=columns">Все статьи</a>' +
@@ -190,7 +190,7 @@
     '<a href="archive.html?category=interview">Голоса</a>' +
     '</div>' +
     section('Рубрики', 'Основные подразделы публикаций', cardGrid(RUBRICS, 'Рубрика')) +
-    section('Темы', 'Специальные подборки. Часть тегов Анастасия добавит на Рускатолике — до этого работает поиск.', linkList(TOPICS)) +
+    section('Темы', 'Специальные подборки — часть тегов появится позже, пока помогает поиск', linkList(TOPICS)) +
     section('Вопрос — ответ', '', cardGrid(QA, 'Раздел')) +
     section('Идеи', 'Лёгкие и прикладные материалы', cardGrid(IDEAS, 'Подборка')) +
     section('Голоса', 'Интервью, свидетельства и проповеди', cardGrid(VOICES, 'Голоса')) +
