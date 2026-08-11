@@ -18,6 +18,9 @@
   }
   function cat(item) { return (item.categories && item.categories[0]) || 'Материал'; }
   var esc = V.escapeHtml;
+  function cleanTitle(value) {
+    return String(value || '').replace(/\.+\s*$/, '').trim();
+  }
 
   function isCompactHome() {
     try { return window.matchMedia('(max-width: 880px)').matches; }
@@ -75,7 +78,7 @@
         '<a class="hero-slide' + (i === 0 ? ' active' : '') + '" href="' + V.articleHref(it) + '" ' +
         'style="background-image:' + bg(it.image, i) + '">' +
         '<div class="hero-cap"><span class="rub">' + esc(cat(it)) + '</span>' +
-        '<h3>' + esc(it.title) + '</h3></div></a>'
+        '<h3>' + esc(cleanTitle(it.title)) + '</h3></div></a>'
       );
     }).join('');
     heroEl.insertAdjacentHTML('afterbegin', slidesHtml);
@@ -87,7 +90,7 @@
           '<a class="mini" href="' + V.articleHref(it) + '">' +
           '<div class="thumb" style="background-image:' + bg(it.image, i + 3) + '"></div>' +
           '<div><div class="rub">' + esc(cat(it)) + '</div>' +
-          '<h4>' + esc(it.title) + '</h4></div></a>'
+          '<h4>' + esc(cleanTitle(it.title)) + '</h4></div></a>'
         );
       }).join('');
     }
@@ -197,7 +200,7 @@
       '<div class="thumb" style="background-image:' + bg(it.image, i) + '" role="img" aria-label=""></div>' +
       '<div class="ncard-body">' +
       (au || '<div class="rub">' + esc(cat(it)) + '</div>') +
-      '<h4>' + esc(it.title) + '</h4>' +
+      '<h4>' + esc(cleanTitle(it.title)) + '</h4>' +
       '<div class="date">' + esc(V.formatDate(it.date)) + '</div></div></a>'
     );
   }
@@ -209,7 +212,7 @@
       '<div class="ph" style="background-image:' + bg(it.image, i) + '"></div>' +
       '<div class="in">' +
       (au || '<div class="rub">' + esc(cat(it)) + '</div>') +
-      '<h4>' + esc(it.title) + '</h4>' +
+      '<h4>' + esc(cleanTitle(it.title)) + '</h4>' +
       '<div class="date">' + esc(V.formatDate(it.date)) + '</div></div></a>'
     );
   }
@@ -264,7 +267,7 @@
       '<a class="art" href="' + V.articleHref(it) + '">' +
       '<div class="ph" style="background-image:' + bg(it.image, i) + '"></div>' +
       '<div class="in"><div class="rub">' + esc(cat(it)) + '</div>' +
-      '<h4>' + esc(it.title) + '</h4>' +
+      '<h4>' + esc(cleanTitle(it.title)) + '</h4>' +
       '<p>' + esc(String(it.excerpt || '').slice(0, 120)) + '</p></div></a>'
     );
   }
@@ -365,7 +368,7 @@
         (external ? ' target="_blank" rel="noopener"' : '') + '>' +
         '<span class="home-event-date"><b>' + esc(parts.day) + '</b><span>' + esc(parts.mon) + '</span></span>' +
         '<span class="home-event-body">' + cat +
-        '<strong>' + esc(e.title) + '</strong>' +
+        '<strong>' + esc(cleanTitle(e.title)) + '</strong>' +
         (meta ? '<small>' + esc(meta) + '</small>' : '') +
         '</span></a>'
       );
@@ -384,7 +387,7 @@
       return;
     }
     el.innerHTML = items.map(function (it) {
-      var title = L.displayTitle(it);
+      var title = cleanTitle(L.displayTitle(it));
       var tone = it.coverTone || '#5c5346';
       return (
         '<a class="home-lib-card" href="book.html?id=' + encodeURIComponent(it.id) + '" title="' + esc(title) + '">' +

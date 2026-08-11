@@ -884,12 +884,12 @@
     desc: 'Молитва, литургия, таинства, паломничества, реколлекции и статьи о духовности',
     type: 'hub',
     cards: [
-      { id: 'prayer', title: 'Молитва', tone: 'a' },
-      { id: 'liturgy', title: 'Литургия', tone: 'b' },
-      { id: 'sacraments', title: 'Таинства', tone: 'c' },
-      { id: 'pilgrimage', title: 'Паломничества', tone: 'd' },
-      { id: 'retreats', title: 'Реколлекции', tone: 'e' },
-      { id: 'spirit-articles', title: 'Статьи', tone: 'f', href: 'archive.html?category=spirituality' },
+      { id: 'prayer', title: 'Молитва', tone: 'a', image: 'assets/cards/spirit-prayer.webp' },
+      { id: 'liturgy', title: 'Литургия', tone: 'b', image: 'assets/cards/spirit-liturgy.webp' },
+      { id: 'sacraments', title: 'Таинства', tone: 'c', image: 'assets/cards/spirit-sacraments.webp' },
+      { id: 'pilgrimage', title: 'Паломничества', tone: 'd', image: 'assets/cards/spirit-pilgrimage.webp' },
+      { id: 'retreats', title: 'Реколлекции', tone: 'e', image: 'assets/cards/spirit-retreats.webp' },
+      { id: 'spirit-articles', title: 'Статьи', tone: 'f', image: 'assets/cards/spirit-articles.webp', href: 'archive.html?category=spirituality' },
     ],
     nodes: {
       'prayer': {
