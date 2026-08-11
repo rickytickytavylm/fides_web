@@ -170,43 +170,55 @@
             '</time></p>'
           : '')
       : (function () {
-          var linked =
-            window.YakAuthorLink && YakAuthorLink.findByArticle
-              ? YakAuthorLink.findByArticle(article)
-              : null;
-          var name =
-            (linked && linked.name) ||
-            (window.YakAuthorLink && YakAuthorLink.displayName
-              ? YakAuthorLink.displayName(article)
-              : '') ||
-            '';
-          if (!name) {
-            var raw = String(article.author || '').trim();
-            var low = raw.toLowerCase();
-            if (raw && low !== 'ruscatholic' && low !== 'admin' && low !== 'редакция') name = raw;
-          }
-          if (!name) name = 'Редакция';
-          var nameHtml = linked
-            ? '<a class="byline-name" href="author.html?slug=' +
-              encodeURIComponent(linked.slug) +
-              '">' +
-              V.escapeHtml(name) +
-              '</a>'
-            : '<p class="byline-name">' + V.escapeHtml(name) + '</p>';
-          var ava =
-            linked && window.YakAuthorLink && YakAuthorLink.avatar
-              ? YakAuthorLink.avatar(linked)
-              : '';
-          return (
-            '<div class="byline"><div class="byline-main">' +
-            (ava ? '<a class="byline-ava" href="author.html?slug=' + encodeURIComponent(linked.slug) + '">' + ava + '</a>' : '') +
-            '<div>' +
-            nameHtml +
+          var list =
+            window.YakAuthorLink && YakAuthorLink.findAllByArticle
+              ? YakAuthorLink.findAllByArticle(article)
+              : [];
+          var dateHtml =
             '<p class="byline-meta"><time datetime="' +
             V.escapeHtml(article.date || '') +
             '">' +
             V.escapeHtml(V.formatDate(article.date)) +
-            '</time></p></div></div></div>'
+            '</time></p>';
+          if (list.length) {
+            var rows = list
+              .map(function (a) {
+                var ava =
+                  window.YakAuthorLink.authorAva
+                    ? YakAuthorLink.authorAva(a, false)
+                    : YakAuthorLink.avatar(a);
+                return (
+                  '<a class="byline-author-row" href="author.html?slug=' +
+                  encodeURIComponent(a.slug) +
+                  '">' +
+                  ava +
+                  '<span class="byline-name">' +
+                  V.escapeHtml(a.name) +
+                  '</span></a>'
+                );
+              })
+              .join('');
+            return (
+              '<div class="byline byline--authors">' +
+              '<div class="byline-authors">' +
+              rows +
+              '</div>' +
+              dateHtml +
+              '</div>'
+            );
+          }
+          var name = '';
+          var raw = String(article.author || '').trim();
+          var low = raw.toLowerCase();
+          if (raw && low !== 'ruscatholic' && low !== 'admin' && low !== 'редакция') name = raw;
+          if (!name) name = 'Редакция';
+          return (
+            '<div class="byline"><div class="byline-main"><div>' +
+            '<p class="byline-name">' +
+            V.escapeHtml(name) +
+            '</p>' +
+            dateHtml +
+            '</div></div></div>'
           );
         })();
 

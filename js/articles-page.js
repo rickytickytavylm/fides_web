@@ -189,11 +189,11 @@
     '<a href="archive.html?category=news">Новости</a>' +
     '<a href="archive.html?category=interview">Голоса</a>' +
     '</div>' +
-    section('Рубрики', 'Основные подразделы публикаций.', cardGrid(RUBRICS, 'Рубрика')) +
+    section('Рубрики', 'Основные подразделы публикаций', cardGrid(RUBRICS, 'Рубрика')) +
     section('Темы', 'Специальные подборки. Часть тегов Анастасия добавит на Рускатолике — до этого работает поиск.', linkList(TOPICS)) +
     section('Вопрос — ответ', '', cardGrid(QA, 'Раздел')) +
-    section('Идеи', 'Лёгкие и прикладные материалы.', cardGrid(IDEAS, 'Подборка')) +
-    section('Голоса', 'Интервью, свидетельства и проповеди.', cardGrid(VOICES, 'Голоса')) +
+    section('Идеи', 'Лёгкие и прикладные материалы', cardGrid(IDEAS, 'Подборка')) +
+    section('Голоса', 'Интервью, свидетельства и проповеди', cardGrid(VOICES, 'Голоса')) +
     '<section class="articles-block" id="articles-fresh-wrap">' +
     '<div class="block-head"><span class="kicker"></span><h2>Свежее</h2><span class="rule"></span></div>' +
     '<div id="articles-fresh"><div class="spinner" aria-label="Загрузка"></div></div>' +

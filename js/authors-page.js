@@ -31,14 +31,22 @@
     return '<span class="author-ava initials">' + esc(initials(a.name)) + '</span>';
   }
 
-  /* slug статьи → автор (из baked recent + циклов) */
+  /* slug статьи → авторы[] (соавторство: несколько тегов на одну публикацию) */
   var articleAuthorIndex = null;
+  function pushAuthor(map, slug, a) {
+    if (!slug || !a) return;
+    var key = String(slug);
+    if (!map[key]) map[key] = [];
+    var exists = map[key].some(function (x) { return x.slug === a.slug; });
+    if (!exists) map[key].push(a);
+  }
+
   function buildArticleAuthorIndex() {
     if (articleAuthorIndex) return articleAuthorIndex;
     articleAuthorIndex = Object.create(null);
     authors.forEach(function (a) {
       (a.recent || []).forEach(function (p) {
-        if (p && p.slug && !articleAuthorIndex[p.slug]) articleAuthorIndex[p.slug] = a;
+        if (p && p.slug) pushAuthor(articleAuthorIndex, p.slug, a);
       });
     });
     try {
@@ -48,43 +56,71 @@
         if (!a) return;
         (c.articles || c.slugs || []).forEach(function (item) {
           var slug = typeof item === 'string' ? item : (item && item.slug);
-          if (slug && !articleAuthorIndex[slug]) articleAuthorIndex[slug] = a;
+          pushAuthor(articleAuthorIndex, slug, a);
         });
       });
     } catch (e) {}
     return articleAuthorIndex;
   }
 
-  function findAuthorByArticle(item) {
-    if (!item) return null;
+  function findAllAuthorsByArticle(item) {
+    if (!item) return [];
     var slug = item.slug || item.id;
-    if (!slug) return null;
-    return buildArticleAuthorIndex()[String(slug)] || null;
+    if (!slug) return [];
+    return (buildArticleAuthorIndex()[String(slug)] || []).slice();
   }
 
-  /** Миниатюра как в сайдбаре. Внутри карточки-<a> — span (без вложенных ссылок). */
-  function cardAuthorHtml(item, opts) {
+  function findAuthorByArticle(item) {
+    var list = findAllAuthorsByArticle(item);
+    return list[0] || null;
+  }
+
+  function authorAva(a, noPhoto) {
+    if (noPhoto || !a.photo) {
+      return '<span class="author-ava initials">' + esc(initials(a.name)) + '</span>';
+    }
+    return avatar(a);
+  }
+
+  function oneAuthorRow(a, opts) {
     opts = opts || {};
-    var a = findAuthorByArticle(item);
-    if (!a) return '';
     var cls = opts.className || 'card-author';
+    var ava = authorAva(a, opts.noPhoto);
     if (opts.link) {
       return (
         '<a class="' + cls + '" href="author.html?slug=' + encodeURIComponent(a.slug) + '">' +
-        avatar(a) +
+        ava +
         '<span class="card-author-name">' + esc(a.name) + '</span></a>'
       );
     }
     return (
       '<span class="' + cls + '">' +
-      avatar(a) +
+      ava +
       '<span class="card-author-name">' + esc(a.name) + '</span></span>'
     );
   }
 
+  /** Один или несколько авторов столбиком; имя справа от аватара */
+  function cardAuthorHtml(item, opts) {
+    opts = opts || {};
+    var list = findAllAuthorsByArticle(item);
+    if (!list.length) return '';
+    var rowOpts = {
+      className: opts.className || 'card-author',
+      link: !!opts.link,
+      noPhoto: opts.noPhoto !== false, /* на карточках ленты — инициалы, без фото */
+    };
+    if (list.length === 1) return oneAuthorRow(list[0], rowOpts);
+    return (
+      '<span class="card-authors">' +
+      list.map(function (a) { return oneAuthorRow(a, rowOpts); }).join('') +
+      '</span>'
+    );
+  }
+
   function authorDisplayName(item) {
-    var a = findAuthorByArticle(item);
-    if (a) return a.name;
+    var list = findAllAuthorsByArticle(item);
+    if (list.length) return list.map(function (a) { return a.name; }).join(', ');
     var raw = item && item.author ? String(item.author).trim() : '';
     if (!raw) return '';
     var low = raw.toLowerCase();
@@ -94,9 +130,11 @@
 
   window.YakAuthorLink = {
     findByArticle: findAuthorByArticle,
+    findAllByArticle: findAllAuthorsByArticle,
     cardHtml: cardAuthorHtml,
     displayName: authorDisplayName,
     avatar: avatar,
+    authorAva: authorAva,
   };
 
   /* ---------- Catalog ---------- */

@@ -9,6 +9,38 @@
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
+  function goPhotoBack(e) {
+    if (e) e.preventDefault();
+    var ref = document.referrer || '';
+    var sameOrigin = false;
+    try {
+      sameOrigin = !!(ref && new URL(ref).origin === location.origin);
+    } catch (err) {}
+    /* Android WebView / deep-link: history.back часто некуда — падаем на фотосток */
+    if (sameOrigin && window.history.length > 1) {
+      var left = false;
+      var failSafe = setTimeout(function () {
+        if (!left) location.href = 'photostock.html';
+      }, 400);
+      window.addEventListener(
+        'pagehide',
+        function () {
+          left = true;
+          clearTimeout(failSafe);
+        },
+        { once: true }
+      );
+      history.back();
+      return;
+    }
+    location.href = 'photostock.html';
+  }
+
+  function bindBack(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('click', goPhotoBack);
+  }
+
   var root = document.getElementById('photo-root');
   var id = new URLSearchParams(location.search).get('id') || '';
 
@@ -26,10 +58,15 @@
     );
   }
 
+  bindBack('ps-back-mast');
+
   PS.load().then(function (data) {
     var photo = PS.photoById(data.photos, id);
     if (!photo) {
-      root.innerHTML = '<p class="ps-status">Фото не найдено. <a href="photostock.html">К фотостоку</a></p>';
+      root.innerHTML =
+        '<p class="ps-back-row"><button type="button" class="ps-back" id="ps-back">← Назад</button></p>' +
+        '<p class="ps-status">Фото не найдено. <a href="photostock.html">К фотостоку</a></p>';
+      bindBack('ps-back');
       return;
     }
     var ph =
@@ -41,6 +78,9 @@
     document.title = name + ' — фото — ЯКатолик';
 
     root.innerHTML =
+      '<p class="ps-back-row">' +
+      '<button type="button" class="ps-back" id="ps-back">← Назад</button>' +
+      '<a class="ps-back-link" href="photostock.html">Все фото</a></p>' +
       '<nav class="breadcrumbs" aria-label="Хлебные крошки">' +
       '<a href="index.html">Главная</a><span>/</span>' +
       '<a href="photostock.html">Фотосток</a><span>/</span><span>Фото</span></nav>' +
@@ -69,8 +109,9 @@
       '. Используйте с указанием автора, если того требует лицензия.</p>' +
       shareMenu(pageUrl, name) +
       '</div>' +
-      '<p><a class="wlink" href="photostock.html">← Все фото</a></p>' +
       '</aside></div>';
+
+    bindBack('ps-back');
 
     var btn = document.getElementById('share-btn');
     var menu = document.getElementById('share-menu');
