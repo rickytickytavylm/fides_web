@@ -25,6 +25,29 @@
     }).catch(function () {});
   }
 
+  /* Видимая метка версии: помогает отличить свежую страницу от кэша */
+  function stampBuild(id) {
+    if (!id || document.getElementById('yak-build-stamp')) return;
+    var host =
+      document.querySelector('.portal-footer .wrap') ||
+      document.querySelector('.site-footer') ||
+      null;
+    if (!host) return;
+    var el = document.createElement('p');
+    el.id = 'yak-build-stamp';
+    el.className = 'build-stamp';
+    el.textContent = 'Сборка ' + id;
+    host.appendChild(el);
+  }
+
+  function stampWhenReady(id) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { stampBuild(id); }, { once: true });
+      return;
+    }
+    stampBuild(id);
+  }
+
   function checkBuild() {
     if (!EMBEDDED) return Promise.resolve();
     var url = 'build.json?b=' + Date.now();
@@ -34,6 +57,7 @@
         if (!data || !data.id) return;
         var remote = String(data.id);
         try { localStorage.setItem(KEY, remote); } catch (e) {}
+        stampWhenReady(EMBEDDED);
         if (remote !== EMBEDDED) {
           var flag = 'yak_reloaded_' + remote;
           try {

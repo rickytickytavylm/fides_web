@@ -295,7 +295,7 @@
       '</div></div>' +
 
       partnersHtml() +
-      '<p class="cal-footnote">Пилотные анонсы. Данные — в <code>js/events-data.js</code>. Уточняйте время у организаторов.</p>';
+      '<p class="cal-footnote">Время и детали уточняйте у организаторов</p>';
 
     bind();
     scrollSelectedDay();

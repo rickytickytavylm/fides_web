@@ -2218,6 +2218,14 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
   .theme-toggle-name { display: none; }
 }
 
+.build-stamp {
+  margin: 12px 0 0;
+  font-size: 11px;
+  letter-spacing: .06em;
+  color: var(--stone-500);
+  opacity: .7;
+}
+
 /* Legacy brandbar hide if leftover */
 .site-brandbar { display: none !important; }
 
