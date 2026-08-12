@@ -273,14 +273,7 @@
       '</span></div>' +
       '</div></section>' +
       cyclesHtml +
-      '<section class="guide-feed"><h2>Свежие публикации</h2>' +
-      ((a.count || 0) > (a.recent || []).length
-        ? '<p class="author-feed-note">Показаны последние ' +
-          esc(String((a.recent || []).length)) +
-          ' из ' +
-          esc(String(a.count || 0)) +
-          '</p>'
-        : '') +
+      '<section class="guide-feed"><h2>Все публикации автора</h2>' +
       '<div class="author-pubs">' + (feed || '<p class="archive-empty">Пока нет материалов</p>') + '</div></section>';
 
     /* Обложки из нашего архива */

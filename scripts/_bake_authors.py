@@ -8,6 +8,7 @@ import re
 import sys
 import io
 import urllib.request
+import urllib.error
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from urllib.parse import unquote, quote
@@ -70,13 +71,66 @@ DENY_NAME = re.compile(
     re.I,
 )
 MIN_COUNT = 3
-RECENT_PER = 12
+PAGE_SIZE = 100
 
 
 def fetch_json(url):
     req = urllib.request.Request(url, headers=UA)
-    with urllib.request.urlopen(req, timeout=60) as r:
-        return json.loads(r.read().decode('utf-8'))
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            return json.loads(r.read().decode('utf-8')), r.headers
+    except urllib.error.HTTPError as e:
+        body = e.read().decode('utf-8', errors='replace')
+        raise RuntimeError(f'HTTP {e.code}: {body[:200]}') from e
+
+
+def fetch_json_body(url):
+    data, _ = fetch_json(url)
+    return data
+
+
+def strip_excerpt(html, limit=160):
+    text = re.sub(r'<[^>]+>', ' ', html or '')
+    text = clean_html_title(text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    if len(text) > limit:
+        text = text[: limit - 1].rstrip() + '…'
+    return text
+
+
+def fetch_all_posts_for_tag(tag_id):
+    """Все посты тега, страница за страницей."""
+    posts = []
+    page = 1
+    total_pages = 1
+    while page <= total_pages and page <= 50:
+        url = (
+            'https://ruscatholic.org/wp-json/wp/v2/posts'
+            f'?tags={tag_id}&per_page={PAGE_SIZE}&page={page}'
+            '&_fields=slug,title,date,excerpt&orderby=date&order=desc'
+        )
+        data = None
+        headers = {}
+        for attempt in range(3):
+            try:
+                data, headers = fetch_json(url)
+                break
+            except Exception as e:
+                # WP отдаёт rest_post_invalid_page_number, когда страниц больше нет
+                if 'rest_post_invalid_page_number' in str(e):
+                    return posts
+                print('posts fail tag', tag_id, 'page', page, 'try', attempt + 1, e)
+        if data is None:
+            break
+        if not data:
+            break
+        posts.extend(data)
+        try:
+            total_pages = int(headers.get('X-WP-TotalPages') or total_pages)
+        except Exception:
+            pass
+        page += 1
+    return posts
 
 
 def fetch_all_tags():
@@ -88,7 +142,7 @@ def fetch_all_tags():
             f'?per_page=100&page={page}&orderby=count&order=desc'
         )
         try:
-            batch = fetch_json(url)
+            batch = fetch_json_body(url)
         except Exception as e:
             print('tags stop page', page, e)
             break
@@ -177,26 +231,14 @@ def bake_one(tag):
         else:
             slug = translit_slug(name, tid)
 
-    url = (
-        'https://ruscatholic.org/wp-json/wp/v2/posts'
-        f'?tags={tid}&per_page={RECENT_PER}'
-        '&_fields=slug,title,date,excerpt'
-    )
-    posts = []
-    for attempt in range(3):
-        try:
-            posts = fetch_json(url)
-            break
-        except Exception as e:
-            print('posts fail', name, 'try', attempt + 1, e)
-
+    posts = fetch_all_posts_for_tag(tid)
     recent = []
     for p in posts:
         recent.append({
             'slug': p.get('slug'),
             'title': clean_html_title(p.get('title', {}).get('rendered', '')),
             'date': (p.get('date') or '')[:10],
-            'excerpt': p.get('excerpt', {}).get('rendered', ''),
+            'excerpt': strip_excerpt(p.get('excerpt', {}).get('rendered', '')),
         })
 
     return {
@@ -204,7 +246,7 @@ def bake_one(tag):
         'name': name,
         'role': curated.get('role') or 'автор',
         'tagId': tid,
-        'count': tag.get('count', len(recent)),
+        'count': tag.get('count') or len(recent),
         'bio': curated.get('bio') or ('Автор материалов архива Рускатолик.'),
         'photo': curated.get('photo') or '',
         'socials': [{'label': 'Архив на Рускатолик', 'href': tag_archive_url(tag)}],
@@ -244,7 +286,7 @@ def main():
 
     print('authors chosen', len(uniq))
     out = []
-    with ThreadPoolExecutor(max_workers=6) as pool:
+    with ThreadPoolExecutor(max_workers=4) as pool:
         futures = {pool.submit(bake_one, t): t for t in uniq}
         for fut in as_completed(futures):
             row = fut.result()
