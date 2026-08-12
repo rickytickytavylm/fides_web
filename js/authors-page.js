@@ -59,13 +59,19 @@
       });
     });
     try {
-      var cycles = (window.YakCycles && (YakCycles.CYCLES || YakCycles.cycles)) || [];
+      var cycles = (window.YakCycles && (YakCycles.ALL || YakCycles.CYCLES || YakCycles.cycles)) || [];
       cycles.forEach(function (c) {
-        var a = authors.filter(function (x) { return x.slug === c.authorSlug; })[0];
-        if (!a) return;
-        (c.articles || c.slugs || []).forEach(function (item) {
-          var slug = typeof item === 'string' ? item : (item && item.slug);
-          pushAuthor(articleAuthorIndex, slug, a);
+        var slugs = (c.authorSlugs && c.authorSlugs.length)
+          ? c.authorSlugs
+          : (c.authorSlug ? [c.authorSlug] : []);
+        var pubs = c.items || c.articles || c.slugs || [];
+        slugs.forEach(function (authorSlug) {
+          var a = authors.filter(function (x) { return x.slug === authorSlug; })[0];
+          if (!a) return;
+          pubs.forEach(function (item) {
+            var slug = typeof item === 'string' ? item : (item && item.slug);
+            pushAuthor(articleAuthorIndex, slug, a);
+          });
         });
       });
     } catch (e) {}

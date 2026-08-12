@@ -1,7 +1,7 @@
 /* РЇРљР°С‚РѕР»РёРє SW:
    - HTML/CSS/JS (same-origin) вЂ” network-only (РЅРёРєРѕРіРґР° РЅРµ Р·Р°Р»РёРїР°РµС‚ СЃС‚Р°СЂРѕРµ)
    - РєР°СЂС‚РёРЅРєРё (Р»СЋР±РѕР№ origin) вЂ” cache-first, С‡С‚РѕР±С‹ РЅРµ РїРѕРґРІРёСЃР°Р»Рё РїСЂРё РїРµСЂРµС…РѕРґР°С… */
-var BUILD = '202608120904';
+var BUILD = '202608120941';
 var IMG_CACHE = 'yak-img-v1';
 
 function isImage(req, url) {
