@@ -2618,6 +2618,11 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
 .author-stats { display: flex; gap: 18px; flex-wrap: wrap; }
 .author-stats span { font-size: 13px; color: var(--stone-500); }
 .author-stats b { color: var(--ink); font-size: 18px; margin-right: 4px; }
+.author-feed-note {
+  margin: -4px 0 16px;
+  font-size: 13px;
+  color: var(--stone-500);
+}
 .author-pubs {
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 32px;
 }

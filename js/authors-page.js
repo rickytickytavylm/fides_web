@@ -24,6 +24,15 @@
       .toUpperCase();
   }
 
+  function ruMaterials(n) {
+    n = Math.abs(Number(n) || 0) % 100;
+    var n1 = n % 10;
+    if (n > 10 && n < 20) return 'материалов';
+    if (n1 === 1) return 'материал';
+    if (n1 >= 2 && n1 <= 4) return 'материала';
+    return 'материалов';
+  }
+
   function avatar(a) {
     if (a.photo) {
       return '<span class="author-ava" style="background-image:url(\'' + esc(a.photo) + '\')"></span>';
@@ -259,11 +268,19 @@
       '<h1>' + esc(a.name) + '</h1>' +
       '<p class="author-bio">' + esc(a.bio || '') + '</p>' +
       (socials ? '<div class="author-socials">' + socials + '</div>' : '') +
-      '<div class="author-stats"><span><b>' + esc(String(a.count || 0)) + '</b> статей</span>' +
-      '<span><b>' + esc(String((a.recent || []).length)) + '</b> в ленте</span></div>' +
+      '<div class="author-stats"><span><b>' + esc(String(a.count || 0)) + '</b> ' +
+      esc(ruMaterials(a.count || 0)) +
+      '</span></div>' +
       '</div></section>' +
       cyclesHtml +
-      '<section class="guide-feed"><h2>Все публикации автора</h2>' +
+      '<section class="guide-feed"><h2>Свежие публикации</h2>' +
+      ((a.count || 0) > (a.recent || []).length
+        ? '<p class="author-feed-note">Показаны последние ' +
+          esc(String((a.recent || []).length)) +
+          ' из ' +
+          esc(String(a.count || 0)) +
+          '</p>'
+        : '') +
       '<div class="author-pubs">' + (feed || '<p class="archive-empty">Пока нет материалов</p>') + '</div></section>';
 
     /* Обложки из нашего архива */
