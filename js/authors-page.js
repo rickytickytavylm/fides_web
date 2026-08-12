@@ -24,13 +24,13 @@
       .toUpperCase();
   }
 
-  function ruMaterials(n) {
+  function ruPlural(n, one, few, many) {
     n = Math.abs(Number(n) || 0) % 100;
     var n1 = n % 10;
-    if (n > 10 && n < 20) return 'материалов';
-    if (n1 === 1) return 'материал';
-    if (n1 >= 2 && n1 <= 4) return 'материала';
-    return 'материалов';
+    if (n > 10 && n < 20) return many;
+    if (n1 === 1) return one;
+    if (n1 >= 2 && n1 <= 4) return few;
+    return many;
   }
 
   function avatar(a) {
@@ -243,8 +243,10 @@
     var cycles = (window.YakCycles && window.YakCycles.forAuthor)
       ? window.YakCycles.forAuthor(a.slug)
       : [];
+    var pubCount = (a.recent && a.recent.length) ? a.recent.length : (a.count || 0);
+    var cycleCount = cycles.length;
     var cyclesHtml = cycles.length
-      ? '<section class="author-cycles"><h2>Циклы публикаций</h2>' +
+      ? '<section class="author-cycles" id="author-cycles"><h2>Циклы</h2>' +
         '<div class="cycle-cards">' +
         cycles.map(function (c) {
           return (
@@ -268,12 +270,20 @@
       '<h1>' + esc(a.name) + '</h1>' +
       '<p class="author-bio">' + esc(a.bio || '') + '</p>' +
       (socials ? '<div class="author-socials">' + socials + '</div>' : '') +
-      '<div class="author-stats"><span><b>' + esc(String(a.count || 0)) + '</b> ' +
-      esc(ruMaterials(a.count || 0)) +
+      '<div class="author-stats">' +
+      '<span><b>' + esc(String(pubCount)) + '</b> ' +
+      esc(ruPlural(pubCount, 'публикация', 'публикации', 'публикаций')) +
+      '</span>' +
+      '<span' + (cycleCount ? '' : ' class="is-zero"') + '>' +
+      (cycleCount
+        ? '<a href="#author-cycles"><b>' + esc(String(cycleCount)) + '</b> ' +
+          esc(ruPlural(cycleCount, 'цикл', 'цикла', 'циклов')) +
+          '</a>'
+        : '<b>0</b> циклов') +
       '</span></div>' +
       '</div></section>' +
       cyclesHtml +
-      '<section class="guide-feed"><h2>Все публикации автора</h2>' +
+      '<section class="guide-feed"><h2>Все публикации</h2>' +
       '<div class="author-pubs">' + (feed || '<p class="archive-empty">Пока нет материалов</p>') + '</div></section>';
 
     /* Обложки из нашего архива */
