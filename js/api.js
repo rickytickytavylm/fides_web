@@ -365,6 +365,8 @@
     'www.xn--80aqecdrlilg.xn--p1ai': 1,
     'fides-et-ratio.ru': 1,
     'www.fides-et-ratio.ru': 1,
+    'yakatolik.ru': 1,
+    'www.yakatolik.ru': 1,
   };
 
   var SKIP_INTERNAL_SLUGS = {
