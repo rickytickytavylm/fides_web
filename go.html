@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <title>Сброс кэша — ЯКатолик</title>
+    <script>
+      (function () {
+        var next = 'index.html?fresh=' + Date.now();
+        function go() { location.replace(next); }
+        var jobs = [];
+        try {
+          if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+            jobs.push(navigator.serviceWorker.getRegistrations().then(function (rs) {
+              return Promise.all(rs.map(function (r) { return r.unregister(); }));
+            }));
+          }
+        } catch (e) {}
+        try {
+          if (window.caches && caches.keys) {
+            jobs.push(caches.keys().then(function (ks) {
+              return Promise.all(ks.map(function (k) { return caches.delete(k); }));
+            }));
+          }
+        } catch (e) {}
+        Promise.all(jobs).then(go).catch(go);
+        setTimeout(go, 800);
+      })();
+    </script>
+  </head>
+  <body style="font-family:system-ui,sans-serif;padding:32px;background:#ede9e2;color:#1c1917">
+    <p>Сбрасываю кэш и открываю портал…</p>
+    <p><a href="index.html">Если не открылось — нажмите сюда</a></p>
+  </body>
+</html>

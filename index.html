@@ -13,30 +13,21 @@
     <link rel="manifest" href="site.webmanifest" />
     <meta name="theme-color" content="#ede9e2" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <script>window.YAK_BUILD = '202608131310';</script>
+    <script>window.YAK_BUILD = '202608131313';</script>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="ЯКатолик" />
     <script id="yak_theme_boot">
-window.YAK_PARKED=true;
-window.YAK_LIVE='https://rickytickytavylm.github.io/fides_web/';
 (function(){
   try{document.documentElement.dataset.theme=localStorage.getItem('yak_theme')==='twilight'?'twilight':'light'}catch(e){document.documentElement.dataset.theme='light'}
-  var h=location.hostname.replace(/^www\./,'');
-  var parked={'yakatolik.ru':1,'fides-et-ratio.ru':1};
-  if(window.YAK_PARKED&&parked[h]){
-    try{if(navigator.serviceWorker)navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})})}catch(e){}
-    try{if(window.caches)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k)})})}catch(e){}
-    var p=location.pathname.replace(/^\//,'');
-    location.replace(window.YAK_LIVE+p+location.search+location.hash);
-    return;
-  }
+  try{if(navigator.serviceWorker)navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})})}catch(e){}
+  try{if(window.caches)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k)})})}catch(e){}
   var s=document.createElement('style');
   s.id='yak-emergency-css';
   s.textContent='.cal-btn svg,.tab-item svg,.masthead svg,.logo img{width:22px!important;height:22px!important;max-width:22px!important}.cal-btn,.tab-item{width:40px;height:40px;overflow:hidden}';
   document.documentElement.appendChild(s);
 })();
 </script>
-    <link rel="stylesheet" href="portal.css?v=202608131310" />
+    <link rel="stylesheet" href="portal.css?v=202608131313" />
   </head>
   <body>
     <header class="masthead">
@@ -225,17 +216,17 @@ window.YAK_LIVE='https://rickytickytavylm.github.io/fides_web/';
       </a>
     </nav>
 
-    <script src="js/config.js?v=202608131310"></script>
-    <script src="js/api.js?v=202608131310"></script>
-    <script src="js/portal-nav.js?v=202608131310"></script>
-    <script src="js/events-data.js?v=202608131310"></script>
-    <script src="js/calendar-data.js?v=202608131310"></script>
-    <script src="js/library-data.js?v=202608131310"></script>
-    <script src="js/authors-data.js?v=202608131310"></script>
-    <script src="js/authors-page.js?v=202608131310"></script>
-    <script src="js/photostock-data.js?v=202608131310"></script>
-    <script src="js/portal-home.js?v=202608131310"></script>
-    <script src="js/theme.js?v=202608131310"></script>
-    <script src="js/cache-bust.js?v=202608131310"></script>
+    <script src="js/config.js?v=202608131313"></script>
+    <script src="js/api.js?v=202608131313"></script>
+    <script src="js/portal-nav.js?v=202608131313"></script>
+    <script src="js/events-data.js?v=202608131313"></script>
+    <script src="js/calendar-data.js?v=202608131313"></script>
+    <script src="js/library-data.js?v=202608131313"></script>
+    <script src="js/authors-data.js?v=202608131313"></script>
+    <script src="js/authors-page.js?v=202608131313"></script>
+    <script src="js/photostock-data.js?v=202608131313"></script>
+    <script src="js/portal-home.js?v=202608131313"></script>
+    <script src="js/theme.js?v=202608131313"></script>
+    <script src="js/cache-bust.js?v=202608131313"></script>
   </body>
 </html>
