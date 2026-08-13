@@ -890,6 +890,7 @@
       { id: 'pilgrimage', title: 'Паломничества', tone: 'd', image: 'assets/cards/spirit-pilgrimage.webp' },
       { id: 'retreats', title: 'Реколлекции', tone: 'e', image: 'assets/cards/spirit-retreats.webp' },
       { id: 'spirit-articles', title: 'Статьи', tone: 'f', image: 'assets/cards/spirit-articles.webp', href: 'archive.html?category=spirituality' },
+      { id: 'audio-sermons', title: 'Проповеди', tone: 'a', image: 'assets/cards/articles-sermons.webp', href: 'audio.html' },
     ],
     nodes: {
       'prayer': {
