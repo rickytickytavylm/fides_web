@@ -367,6 +367,7 @@
     'www.fides-et-ratio.ru': 1,
     'yakatolik.ru': 1,
     'www.yakatolik.ru': 1,
+    'rickytickytavylm.github.io': 1,
   };
 
   var SKIP_INTERNAL_SLUGS = {
