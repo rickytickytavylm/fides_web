@@ -71,8 +71,7 @@
       email: '',
       website: 'https://www.cathedral.ru',
       socials: [
-        { label: 'Сайт', href: 'https://www.cathedral.ru' },
-        { label: 'Карта', href: 'map.html' }
+        { label: 'Сайт', href: 'https://www.cathedral.ru' }
       ],
       coverTone: '#2f5d8c',
       partnerTitle: 'Анонсы Кафедрального собора'

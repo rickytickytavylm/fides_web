@@ -25,6 +25,18 @@
     return file + '?path=' + encodeURIComponent(card.id);
   }
 
+  function isHiddenHref(href) {
+    var h = String(href || '').split('?')[0].toLowerCase();
+    return h === 'map.html' || /(?:^|\/)map\.html$/.test(h);
+  }
+
+  function visibleList(list) {
+    return (list || []).filter(function (item) {
+      if (!item || typeof item === 'string') return true;
+      return !isHiddenHref(item.href);
+    });
+  }
+
   function toneClass(card, i) {
     var classes;
     if (card.wide || card.tone === 'wide') classes = 'route-card wide tone-wide';
@@ -39,7 +51,7 @@
   function renderStepList(cards, opts) {
     opts = opts || {};
     var html = '<ol class="guide-steps guide-steps--route">';
-    cards.forEach(function (c, i) {
+    visibleList(cards).forEach(function (c, i) {
       html +=
         '<li><a class="guide-step-row" href="' + esc(hrefFor(c)) + '">' +
         '<span class="guide-step-n">' + (i + 1) + '</span>' +
@@ -48,7 +60,7 @@
         '</span></a></li>';
     });
     html += '</ol>';
-    if (opts.extra) {
+    if (opts.extra && !isHiddenHref(opts.extra.href)) {
       html +=
         '<p class="articles-more"><a class="wlink" href="' + esc(opts.extra.href) + '">' +
         esc(opts.extra.title || 'Дальше') + ' →</a></p>';
@@ -58,6 +70,7 @@
 
   function renderCards(cards, opts) {
     opts = opts || {};
+    cards = visibleList(cards);
     if (opts.numbered) return renderStepList(cards, opts);
 
     var hasWide = cards.some(function (c) {
@@ -221,9 +234,10 @@
   }
 
   function alsoBlock(node) {
-    if (!node.also || !node.also.length) return '';
+    var links = visibleList(node.also);
+    if (!links.length) return '';
     var html = '<div class="guide-also"><h3>Полезные ссылки</h3><ul>';
-    node.also.forEach(function (a) {
+    links.forEach(function (a) {
       html += '<li><a href="' + esc(a.href) + '">' + esc(a.title) + '</a></li>';
     });
     return html + '</ul></div>';
@@ -320,7 +334,7 @@
       '<div class="nav-groups">';
     (node.groups || []).forEach(function (g) {
       html += '<section class="nav-group"><h2>' + esc(g.title) + '</h2><ul class="nav-list">';
-      (g.items || []).forEach(function (it) {
+      visibleList(g.items).forEach(function (it) {
         if (typeof it === 'string') {
           html += '<li><span class="nav-muted">' + esc(it) + '</span></li>';
         } else {
