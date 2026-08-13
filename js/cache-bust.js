@@ -74,5 +74,39 @@
       .catch(function () {});
   }
 
-  registerSw().then(checkBuild);
+  function cssAlive() {
+    var mh = document.querySelector('.masthead');
+    if (!mh) return true;
+    var pos = window.getComputedStyle(mh).position;
+    return pos === 'sticky' || pos === 'fixed';
+  }
+
+  function recoverBrokenCss() {
+    if (cssAlive()) return Promise.resolve();
+    var flag = 'yak_css_recovered';
+    try {
+      if (sessionStorage.getItem(flag)) return Promise.resolve();
+      sessionStorage.setItem(flag, '1');
+    } catch (e) {}
+    var jobs = [];
+    if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+      jobs.push(
+        navigator.serviceWorker.getRegistrations().then(function (rs) {
+          return Promise.all(rs.map(function (r) { return r.unregister(); }));
+        })
+      );
+    }
+    jobs.push(nukeCaches());
+    return Promise.all(jobs).then(function () {
+      location.reload();
+    });
+  }
+
+  registerSw().then(checkBuild).then(function () {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', recoverBrokenCss, { once: true });
+      return;
+    }
+    recoverBrokenCss();
+  });
 })();
