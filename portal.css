@@ -2523,6 +2523,28 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
   padding: 14px 0 14px 16px; border-radius: 0; background: transparent;
   border-left: 3px solid var(--bronze); color: var(--ink); font-size: 15.5px;
 }
+.guide-body .guide-quote {
+  margin: 0 0 18px;
+  padding: 2px 0 2px 16px;
+  border: 0;
+  border-left: 3px solid var(--bronze);
+  background: transparent;
+}
+.guide-body .guide-quote p {
+  margin: 0 0 8px;
+  font-family: var(--serif);
+  font-size: 18px;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.guide-body .guide-quote cite {
+  display: block;
+  font-style: normal;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--stone-500);
+}
 .guide-also { margin: 0 0 28px; max-width: 680px; }
 .guide-also h3 { margin: 0 0 10px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--bronze-dark); }
 .guide-also ul { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
@@ -2660,6 +2682,12 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
 .prayer-item summary::-webkit-details-marker { display: none; }
 .prayer-item p, .prayer-item .prayer-text {
   margin: 0 0 14px; color: var(--stone-700); line-height: 1.65;
+  white-space: pre-wrap;
+}
+.prayer-item .prayer-lead {
+  margin: 0 0 10px;
+  font-size: 14.5px;
+  color: var(--stone-500);
   white-space: pre-wrap;
 }
 

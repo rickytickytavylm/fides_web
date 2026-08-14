@@ -238,7 +238,15 @@
     if (!links.length) return '';
     var html = '<div class="guide-also"><h3>Полезные ссылки</h3><ul>';
     links.forEach(function (a) {
-      html += '<li><a href="' + esc(a.href) + '">' + esc(a.title) + '</a></li>';
+      var ext = /^https?:\/\//i.test(a.href);
+      html +=
+        '<li><a href="' +
+        esc(a.href) +
+        '"' +
+        (ext ? ' target="_blank" rel="noopener noreferrer"' : '') +
+        '>' +
+        esc(a.title) +
+        '</a></li>';
     });
     return html + '</ul></div>';
   }
@@ -251,6 +259,22 @@
       if (block.h2) html += '<h2>' + esc(block.h2) + '</h2>';
       if (block.p) html += '<p>' + esc(block.p) + '</p>';
       if (block.note) html += '<p class="guide-note">' + esc(block.note) + '</p>';
+      if (block.quote) {
+        html += '<blockquote class="guide-quote"><p>' + esc(block.quote) + '</p>';
+        if (block.cite) html += '<cite>' + esc(block.cite) + '</cite>';
+        html += '</blockquote>';
+      }
+      if (block.a && block.a.href) {
+        var ext = /^https?:\/\//i.test(block.a.href);
+        html +=
+          '<p><a class="wlink" href="' +
+          esc(block.a.href) +
+          '"' +
+          (ext ? ' target="_blank" rel="noopener noreferrer"' : '') +
+          '>' +
+          esc(block.a.title || block.a.href) +
+          '</a></p>';
+      }
       if (block.ul && block.ul.length) {
         html += '<ul>';
         block.ul.forEach(function (li) { html += '<li>' + esc(li) + '</li>'; });
@@ -440,6 +464,7 @@
         html +=
           '<details class="prayer-item"' + (i === 0 ? ' open' : '') + '>' +
           '<summary>' + esc(p.title) + '</summary>' +
+          (p.lead ? '<p class="prayer-lead">' + esc(p.lead) + '</p>' : '') +
           '<p class="prayer-text">' + esc(p.text) + '</p></details>';
       });
       html += '</div>' + stepNav(node) + siblingBlock(node) + feedBlock(node);
