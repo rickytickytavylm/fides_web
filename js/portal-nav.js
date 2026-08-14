@@ -25,7 +25,7 @@
   if (path === 'index.html' || path === '' || path === '/') active = 'home';
   else if (path === 'church.html') active = 'church';
   else if (path === 'spiritual-life.html') active = 'spirit';
-  else if (path === 'audio.html' || path === 'radio.html') active = 'audio';
+  else if (path === 'audio.html' || path === 'radio.html' || path === 'podcast.html') active = 'audio';
   else if (path === 'chat.html') active = 'chat';
 
   if (!active) return;
