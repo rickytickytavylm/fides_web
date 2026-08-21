@@ -1,5 +1,5 @@
 /**
- * Нижняя навигация: Главная · О Церкви · Духовная жизнь · Аудио · Спросить
+ * Нижняя навигация: Главная · О Церкви · Духовная жизнь · Аудио · Видео · Спросить
  * «Главная» вставляется слева, если её ещё нет в разметке страницы.
  */
 (function () {
@@ -26,7 +26,8 @@
   else if (path === 'church.html') active = 'church';
   else if (path === 'spiritual-life.html') active = 'spirit';
   else if (path === 'audio.html' || path === 'radio.html' || path === 'podcast.html') active = 'audio';
-  else if (path === 'chat.html') active = 'chat';
+    else if (path === 'video.html') active = 'video';
+    else if (path === 'chat.html') active = 'chat';
 
   if (!active) return;
   document.querySelectorAll('.app-tabbar .tab-item').forEach(function (a) {

@@ -401,8 +401,18 @@
     return days;
   }
 
+  var COVERS = {
+    concert: 'assets/cards/event-concert.webp',
+    meeting: 'assets/cards/event-meeting.webp',
+    lecture: 'assets/cards/event-lecture.webp',
+    pilgrimage: 'assets/cards/pil-places.webp',
+    retreat: 'assets/cards/retreat-what.webp',
+    charity: 'assets/cards/event-charity.webp'
+  };
+
   global.YakAfisha = {
     CATEGORIES: CATEGORIES,
+    covers: COVERS,
     COST: COST,
     REG: REG,
     ORGANIZERS: ORGANIZERS,

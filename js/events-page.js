@@ -120,13 +120,17 @@
   function cardHtml(e) {
     var org = A.organizerById(e.organizerId);
     var tone = e.coverTone || (org && org.coverTone) || '#5c5346';
+    var cover = e.cover || (A.covers && A.covers[e.category]);
     var href = eventHref(e);
     var external = /^https?:\/\//.test(href);
     var placeLine = [e.venue, e.city].filter(Boolean).join(' · ');
+    var coverStyle = cover
+      ? 'background-image:url(\'' + esc(cover) + '\')'
+      : 'background:linear-gradient(155deg,' + esc(tone) + ',#1a1816)';
     return (
       '<a class="af-card" href="' + esc(href) + '"' +
       (external ? ' target="_blank" rel="noopener"' : '') + '>' +
-      '<span class="af-card-cover" style="background:linear-gradient(155deg,' + esc(tone) + ',#1a1816)">' +
+      '<span class="af-card-cover' + (cover ? ' has-photo' : '') + '" style="' + coverStyle + '">' +
       '<span class="af-card-date"><b>' + esc(fmtLong(e.date)) + '</b>' +
       (e.time ? '<small>' + esc(e.time) + '</small>' : '') + '</span></span>' +
       '<span class="af-card-body">' +

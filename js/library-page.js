@@ -24,6 +24,10 @@
   }
 
   function coverStyle(item) {
+    var img = item.cover || (L.covers && L.covers[item.section]);
+    if (img) {
+      return 'background-image:url(\'' + esc(img) + '\');background-size:cover;background-position:center';
+    }
     var tone = item.coverTone || '#5c5346';
     return 'background:linear-gradient(145deg,' + tone + ' 0%,color-mix(in srgb,' + tone + ' 55%,#1a1814) 100%)';
   }

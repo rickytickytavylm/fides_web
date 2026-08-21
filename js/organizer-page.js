@@ -56,7 +56,11 @@
           return (
             '<a class="af-card" href="' + esc(e.href || 'events.html') + '"' +
             (external ? ' target="_blank" rel="noopener"' : '') + '>' +
-            '<span class="af-card-cover" style="background:linear-gradient(155deg,' + esc(e.coverTone || org.coverTone || '#5c5346') + ',#1a1816)">' +
+            '<span class="af-card-cover' + ((A.covers && A.covers[e.category]) ? ' has-photo' : '') + '" style="' +
+            ((A.covers && A.covers[e.category])
+              ? 'background-image:url(\'' + esc(A.covers[e.category]) + '\')'
+              : 'background:linear-gradient(155deg,' + esc(e.coverTone || org.coverTone || '#5c5346') + ',#1a1816)') +
+            '">' +
             '<span class="af-card-date"><b>' + esc(fmtLong(e.date)) + '</b>' +
             (e.time ? '<small>' + esc(e.time) + '</small>' : '') + '</span></span>' +
             '<span class="af-card-body">' +

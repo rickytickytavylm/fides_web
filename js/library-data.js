@@ -496,8 +496,14 @@
     return (item.views || 0) + (item.downloadsCount || 0) * 2;
   }
 
+  var COVERS = {
+    church: 'assets/cards/library-church.webp',
+    books: 'assets/cards/library-books.webp'
+  };
+
   global.YAK_LIBRARY = {
     SECTIONS: SECTIONS,
+    covers: COVERS,
     DOC_TYPES: DOC_TYPES,
     POPES: POPES,
     THEMES: THEMES,

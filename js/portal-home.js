@@ -389,9 +389,13 @@
     el.innerHTML = items.map(function (it) {
       var title = cleanTitle(L.displayTitle(it));
       var tone = it.coverTone || '#5c5346';
+      var cover = it.cover || (L.covers && L.covers[it.section]);
+      var coverStyle = cover
+        ? 'background-image:url(\'' + esc(cover) + '\');background-size:cover;background-position:center'
+        : 'background:linear-gradient(160deg,' + esc(tone) + ',#1a1816)';
       return (
         '<a class="home-lib-card" href="book.html?id=' + encodeURIComponent(it.id) + '" title="' + esc(title) + '">' +
-        '<span class="home-lib-cover" style="background:linear-gradient(160deg,' + esc(tone) + ',#1a1816)">' +
+        '<span class="home-lib-cover' + (cover ? ' has-photo' : '') + '" style="' + coverStyle + '">' +
         '<em>' + esc(String(title).slice(0, 28)) + '</em></span>' +
         '<span class="home-lib-meta"><strong>' + esc(title) + '</strong>' +
         '<small>' + esc(it.author || L.categoryLabel(it)) + '</small></span></a>'
