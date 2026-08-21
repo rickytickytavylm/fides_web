@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" href="yakatolik-logo.svg" />
     <link rel="manifest" href="site.webmanifest" />
     <meta name="theme-color" content="#ede9e2" />
-    <script>window.YAK_BUILD = '202608210729';</script>
+    <script>window.YAK_BUILD = '202608211134';</script>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="ЯКатолик" />
     <script id="yak_theme_boot">
@@ -26,7 +26,7 @@
   document.documentElement.appendChild(s);
 })();
 </script>
-    <link rel="stylesheet" href="portal.css?v=202608210729" />
+    <link rel="stylesheet" href="portal.css?v=202608211134" />
   </head>
   <body>
         <header class="masthead">
@@ -67,26 +67,26 @@
 
       <div class="video-tabs" id="video-tabs">
         <button type="button" class="chip active" data-type="all">Все</button>
-        <button type="button" class="chip" data-type="long">Большие</button>
-        <button type="button" class="chip" data-type="short">Короткие</button>
+        <button type="button" class="chip" data-type="long">Фильмы</button>
+        <button type="button" class="chip" data-type="short">Shorts</button>
       </div>
 
-      <p class="archive-loading" id="video-status"></p>
+      <div id="video-featured" class="yt-featured-host" hidden></div>
 
       <section class="video-band" id="video-long-band" hidden>
         <div class="block-head">
-          <h2>Большие</h2>
+          <h2>Фильмы</h2>
           <span class="rule"></span>
         </div>
-        <div class="video-grid video-grid--large" id="video-large"></div>
+        <div class="yt-film-grid" id="video-large"></div>
       </section>
 
       <section class="video-band" id="video-short-band" hidden>
         <div class="block-head">
-          <h2>Короткие</h2>
+          <h2>Shorts</h2>
           <span class="rule"></span>
         </div>
-        <div class="video-grid video-grid--small" id="video-small"></div>
+        <div class="yt-shorts-rail" id="video-small"></div>
       </section>
     </main>
 
@@ -134,14 +134,14 @@
         <span>Спросить</span>
       </a>
     </nav>
-    <script src="js/config.js?v=202608210729"></script>
-    <script src="js/api.js?v=202608210729"></script>
-    <script src="js/portal-nav.js?v=202608210729"></script>
-    <script src="js/app.js?v=202608210729"></script>
-    <script src="js/video-data.js?v=202608210729"></script>
-    <script src="js/video.js?v=202608210729"></script>
+    <script src="js/config.js?v=202608211134"></script>
+    <script src="js/api.js?v=202608211134"></script>
+    <script src="js/portal-nav.js?v=202608211134"></script>
+    <script src="js/app.js?v=202608211134"></script>
+    <script src="js/video-data.js?v=202608211134"></script>
+    <script src="js/video.js?v=202608211134"></script>
       
-      <script src="js/theme.js?v=202608210729"></script>
-    <script src="js/cache-bust.js?v=202608210729"></script>
+      <script src="js/theme.js?v=202608211134"></script>
+    <script src="js/cache-bust.js?v=202608211134"></script>
   </body>
 </html>

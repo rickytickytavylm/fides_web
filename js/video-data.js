@@ -1,6 +1,5 @@
 /**
- * Каталог видео с бакета Fides (fidesetratio).
- * Страница не зависит от API: если сервер молчит, ролики всё равно открываются.
+ * Каталог видео с бакета Fides. Превью — кадры из роликов (assets/video).
  */
 (function (global) {
   'use strict';
@@ -14,6 +13,7 @@
       description:
         'Всегда ли мы готовы к тому, о чём просим у Бога? о. Юрий Дорогин — о цели желаний, которые может открыть только Он.',
       speaker: 'о. Юрий Дорогин',
+      duration: 69,
     },
     {
       id: 2,
@@ -21,6 +21,7 @@
       description:
         'Мы каждый день читаем «Отче наш» — но каждый ли день готовы простить? с. Даша о словах, которые освобождают.',
       speaker: 'с. Даша',
+      duration: 65,
     },
     {
       id: 3,
@@ -28,6 +29,7 @@
       description:
         'о. Юрий OP — о том, на чём на самом деле стоит молитва и желание говорить с Богом чаще.',
       speaker: 'о. Юрий OP',
+      duration: 81,
     },
     {
       id: 4,
@@ -35,12 +37,14 @@
       description:
         'о. Юрий из Ордена проповедников — об общинах мирян, которые живут духовностью монашеских орденов.',
       speaker: 'о. Юрий OP',
+      duration: 49,
     },
     {
       id: 5,
       title: 'Что такое ходатайственная молитва?',
       description: 'Короткое наставление с. Даши: просить нужно даже за тех, кто тебе не рад.',
       speaker: 'с. Даша',
+      duration: 37,
     },
     {
       id: 6,
@@ -48,6 +52,7 @@
       description:
         'с. Анастасия — как теория Большого взрыва указывает на Бога и ведёт к космологическому аргументу.',
       speaker: 'с. Анастасия',
+      duration: 53,
     },
     {
       id: 7,
@@ -55,6 +60,7 @@
       description:
         'с. Иоанна Павла из Дочерей милосердия — короткое слово, если в вере появилось сомнение.',
       speaker: 'с. Иоанна Павла',
+      duration: 71,
     },
     {
       id: 8,
@@ -62,6 +68,7 @@
       description:
         'Блаженны слышащие слово Божие и соблюдающие его. Через Евангелие Христос обращается и к тебе.',
       speaker: '',
+      duration: 45,
     },
     {
       id: 9,
@@ -69,6 +76,7 @@
       description:
         'Если сомневаешься, петь ли на Мессе и важно ли это в общении с Богом — это видео для тебя.',
       speaker: '',
+      duration: 52,
     },
   ].map(function (v) {
     return {
@@ -76,10 +84,10 @@
       title: v.title,
       description: v.description,
       speaker: v.speaker,
+      duration: v.duration,
       type: 'short',
-      size: 'small',
       videoUrl: BUCKET + 'video' + v.id + '.mp4',
-      thumb: null,
+      thumb: 'assets/video/short-' + v.id + '.webp',
     };
   });
 
@@ -87,44 +95,53 @@
     {
       id: 10,
       slug: '01-svyatost',
+      thumbId: 'long-01',
       title: 'Святость',
       description: 'Фильм из цикла «Океан милосердия» — о святости как пути, а не как пьедестале.',
+      duration: 723,
     },
     {
       id: 11,
       slug: '02-bog-molchit',
+      thumbId: 'long-02',
       title: 'Бог молчит',
       description: 'Когда кажется, что небо пусто: тишина Бога и ответ веры.',
+      duration: 738,
     },
     {
       id: 12,
       slug: '03-tsarskoe-ditya',
+      thumbId: 'long-03',
       title: 'Царское дитя',
       description: 'О достоинстве человека, которое нельзя заслужить и нельзя отменить.',
+      duration: 525,
     },
     {
       id: 13,
       slug: '04-v-diapazone',
+      thumbId: 'long-04',
       title: 'В диапазоне',
       description: 'Вера не в одной ноте: как слышать Бога в разной жизни.',
+      duration: 697,
     },
     {
       id: 14,
       slug: '05-vsem-serdcem',
+      thumbId: 'long-05',
       title: 'Всем сердцем',
       description: 'Любовь к Богу, которая не делит сердце на «церковное» и остальное.',
+      duration: 649,
     },
-  ].map(function (v, i) {
+  ].map(function (v) {
     return {
       id: v.id,
       title: v.title,
       description: v.description,
       speaker: 'Океан милосердия',
+      duration: v.duration,
       type: 'long',
-      size: 'large',
-      featured: i === 0,
       videoUrl: BUCKET + 'ocean-mercy/' + v.slug + '.mp4',
-      thumb: BUCKET + 'ocean-mercy/' + v.slug + '.jpg',
+      thumb: 'assets/video/' + v.thumbId + '.webp',
     };
   });
 

@@ -5,11 +5,11 @@
   var V = window.Vera;
   var all = catalog.slice();
   var filter = 'all';
+  var featuredEl = document.getElementById('video-featured');
   var largeGrid = document.getElementById('video-large');
   var smallGrid = document.getElementById('video-small');
   var longBand = document.getElementById('video-long-band');
   var shortBand = document.getElementById('video-short-band');
-  var statusEl = document.getElementById('video-status');
   var dialog = document.getElementById('video-dialog');
   var player = document.getElementById('video-player');
   var dialogTitle = document.getElementById('video-dialog-title');
@@ -23,104 +23,150 @@
       .replace(/"/g, '&quot;');
   }
 
-  function fidesUrl(url) {
-    if (!url) return url;
-    var m = String(url).match(/video(\d+)\.mp4/i);
-    if (m && window.YakVideos && window.YakVideos.bucket) {
-      return window.YakVideos.bucket + 'video' + m[1] + '.mp4';
-    }
-    return url;
+  function pad(n) {
+    return n < 10 ? '0' + n : String(n);
   }
 
-  function cardHtml(v) {
-    var size = v.size || (v.type === 'long' ? 'large' : 'small');
-    var typeLabel = v.type === 'long' ? 'Фильм' : 'Короткое';
-    var playable = Boolean(v.videoUrl);
-    var cls = 'video-card video-card--' + size;
-    if (v.featured) cls += ' video-card--hero';
-    var media = v.thumb
-      ? '<img class="video-thumb-img" src="' + esc(v.thumb) + '" alt="" loading="lazy" />'
-      : '<span class="video-poster" aria-hidden="true"><b>' +
-        esc((v.title || '').split(' ').slice(0, 4).join(' ')) +
-        '</b></span>';
+  function fmtDur(sec) {
+    sec = Math.max(0, Math.round(Number(sec) || 0));
+    var m = Math.floor(sec / 60);
+    var s = sec % 60;
+    if (m >= 60) {
+      var h = Math.floor(m / 60);
+      return h + ':' + pad(m % 60) + ':' + pad(s);
+    }
+    return m + ':' + pad(s);
+  }
+
+  function thumbHtml(v, extraClass) {
     return (
-      '<article class="' +
-      cls +
+      '<span class="yt-thumb' +
+      (extraClass ? ' ' + extraClass : '') +
       '">' +
-      '<button type="button" class="video-open" data-id="' +
-      esc(String(v.id)) +
-      '" ' +
-      (playable ? '' : 'disabled') +
-      ' aria-label="Смотреть: ' +
-      esc(v.title || '') +
-      '">' +
-      '<span class="video-thumb">' +
-      media +
-      '<i class="play" aria-hidden="true">▶</i>' +
-      '<b class="duration">' +
-      esc(typeLabel) +
-      '</b></span></button>' +
-      '<p class="story-meta"><span>' +
-      esc(v.speaker || typeLabel) +
-      '</span></p>' +
-      '<h3>' +
-      esc(v.title || 'Без названия') +
-      '</h3>' +
-      (v.description
-        ? '<p class="video-card-desc">' + esc(String(v.description).slice(0, 140)) + '</p>'
-        : '') +
-      '</article>'
+      (v.thumb
+        ? '<img src="' + esc(v.thumb) + '" alt="" loading="lazy" />'
+        : '<span class="yt-thumb-empty"></span>') +
+      '<i class="yt-play" aria-hidden="true"></i>' +
+      (v.duration ? '<b class="yt-time">' + esc(fmtDur(v.duration)) + '</b>' : '') +
+      '</span>'
     );
   }
 
-  function bindGrid(grid) {
-    if (!grid) return;
-    grid.querySelectorAll('.video-open').forEach(function (btn) {
+  function filmCard(v) {
+    return (
+      '<article class="yt-card">' +
+      '<button type="button" class="yt-open" data-id="' +
+      esc(String(v.id)) +
+      '" aria-label="Смотреть: ' +
+      esc(v.title || '') +
+      '">' +
+      thumbHtml(v, 'yt-thumb--wide') +
+      '<span class="yt-meta">' +
+      '<strong>' +
+      esc(v.title || 'Без названия') +
+      '</strong>' +
+      '<em>' +
+      esc(v.speaker || 'Фильм') +
+      '</em></span></button></article>'
+    );
+  }
+
+  function shortCard(v) {
+    return (
+      '<article class="yt-short">' +
+      '<button type="button" class="yt-open" data-id="' +
+      esc(String(v.id)) +
+      '" aria-label="Смотреть: ' +
+      esc(v.title || '') +
+      '">' +
+      thumbHtml(v, 'yt-thumb--portrait') +
+      '<span class="yt-meta">' +
+      '<strong>' +
+      esc(v.title || 'Без названия') +
+      '</strong>' +
+      (v.speaker ? '<em>' + esc(v.speaker) + '</em>' : '') +
+      '</span></button></article>'
+    );
+  }
+
+  function featuredHtml(v) {
+    return (
+      '<article class="yt-featured">' +
+      '<button type="button" class="yt-open yt-featured-media" data-id="' +
+      esc(String(v.id)) +
+      '" aria-label="Смотреть: ' +
+      esc(v.title || '') +
+      '">' +
+      thumbHtml(v, 'yt-thumb--wide') +
+      '</button>' +
+      '<div class="yt-featured-copy">' +
+      '<p class="eyebrow">Фильм</p>' +
+      '<h2>' +
+      esc(v.title || '') +
+      '</h2>' +
+      (v.description ? '<p>' + esc(v.description) + '</p>' : '') +
+      '<p class="yt-featured-by">' +
+      esc(v.speaker || 'Фильм') +
+      (v.duration ? ' · ' + fmtDur(v.duration) : '') +
+      '</p>' +
+      '<button type="button" class="yt-watch yt-open" data-id="' +
+      esc(String(v.id)) +
+      '">Смотреть</button>' +
+      '</div></article>'
+    );
+  }
+
+  function bind(root) {
+    if (!root) return;
+    root.querySelectorAll('.yt-open').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        var item = all.filter(function (x) {
-          return String(x.id) === btn.getAttribute('data-id');
-        })[0];
-        if (!item || !item.videoUrl || !dialog || !player) return;
-        if (dialogTitle) dialogTitle.textContent = item.title || '';
-        player.poster = item.thumb || '';
-        player.src = item.videoUrl;
-        dialog.showModal();
-        if (player.play) player.play().catch(function () {});
+        openItem(btn.getAttribute('data-id'));
       });
     });
   }
 
-  function visible() {
-    return all.filter(function (v) {
-      return filter === 'all' ? true : v.type === filter;
-    });
+  function openItem(id) {
+    var item = all.filter(function (x) {
+      return String(x.id) === String(id);
+    })[0];
+    if (!item || !item.videoUrl || !dialog || !player) return;
+    if (dialogTitle) dialogTitle.textContent = item.title || '';
+    dialog.classList.toggle('is-short', item.type === 'short');
+    player.poster = item.thumb || '';
+    player.src = item.videoUrl;
+    dialog.showModal();
+    if (player.play) player.play().catch(function () {});
   }
 
   function render() {
-    var items = visible();
-    var longs = items.filter(function (v) {
+    var longs = all.filter(function (v) {
       return v.type === 'long';
     });
-    var shorts = items.filter(function (v) {
+    var shorts = all.filter(function (v) {
       return v.type !== 'long';
     });
+    var showLong = filter !== 'short';
+    var showShort = filter !== 'long';
+    var feature = showLong && longs[0] ? longs[0] : null;
+    var rest = showLong ? longs.slice(feature ? 1 : 0) : [];
+    if (filter === 'long') rest = longs.slice(1);
 
-    if (statusEl) {
-      statusEl.textContent = items.length
-        ? items.length + ' видео'
-        : 'В этой категории пока нет роликов';
+    if (featuredEl) {
+      featuredEl.hidden = !feature;
+      featuredEl.innerHTML = feature ? featuredHtml(feature) : '';
+      bind(featuredEl);
     }
-
-    if (longBand) longBand.hidden = !longs.length;
-    if (shortBand) shortBand.hidden = !shorts.length;
-
+    if (longBand) longBand.hidden = !rest.length;
     if (largeGrid) {
-      largeGrid.innerHTML = longs.map(cardHtml).join('');
-      bindGrid(largeGrid);
+      largeGrid.innerHTML = rest.map(filmCard).join('');
+      bind(largeGrid);
     }
+    if (shortBand) shortBand.hidden = !showShort || !shorts.length;
     if (smallGrid) {
-      smallGrid.innerHTML = shorts.map(cardHtml).join('');
-      bindGrid(smallGrid);
+      smallGrid.classList.toggle('yt-shorts-grid', filter === 'short');
+      smallGrid.classList.toggle('yt-shorts-rail', filter !== 'short');
+      smallGrid.innerHTML = shorts.map(shortCard).join('');
+      bind(smallGrid);
     }
   }
 
@@ -144,42 +190,9 @@
       player.removeAttribute('src');
       player.removeAttribute('poster');
       player.load();
+      dialog.classList.remove('is-short');
     });
   }
 
   render();
-
-  if (V && V.getVideos) {
-    var timed = new Promise(function (_, reject) {
-      setTimeout(function () {
-        reject(new Error('timeout'));
-      }, 4000);
-    });
-    Promise.race([V.getVideos(), timed])
-      .then(function (data) {
-        if (!Array.isArray(data)) return;
-        var have = {};
-        all.forEach(function (v) {
-          have[String(v.id)] = true;
-        });
-        data.forEach(function (raw) {
-          var id = String(raw.id);
-          if (have[id]) return;
-          var type = raw.type === 'long' ? 'long' : 'short';
-          all.push({
-            id: raw.id,
-            title: raw.title,
-            description: raw.description,
-            speaker: type === 'long' ? 'Фильм' : 'Короткое',
-            type: type,
-            size: type === 'long' ? 'large' : 'small',
-            videoUrl: fidesUrl(raw.videoUrl),
-            thumb: raw.thumbnail || null,
-          });
-          have[id] = true;
-        });
-        render();
-      })
-      .catch(function () {});
-  }
 })();
