@@ -66,8 +66,23 @@
     var lsPh = readLs(PHOTOGRAPHERS_KEY) || [];
     lsPh.forEach(function (p) {
       var n = normalizePhotographer(p);
-      if (n && n.id) photographers[n.id] = n;
+      if (n && (n.id || n.slug)) photographers[n.id || n.slug] = n;
     });
+    var deskPh = [];
+    try {
+      var desk = JSON.parse(localStorage.getItem('yak_desk') || '{}');
+      deskPh = desk.photographers || [];
+    } catch (e) {}
+    deskPh.forEach(function (p) {
+      var n = normalizePhotographer(p);
+      if (n && (n.id || n.slug)) photographers[n.id || n.slug] = n;
+    });
+    if (global.YakPhotographersExtra) {
+      (YakPhotographersExtra || []).forEach(function (p) {
+        var n = normalizePhotographer(p);
+        if (n && (n.id || n.slug)) photographers[n.id || n.slug] = n;
+      });
+    }
 
     var photosMap = {};
     (seed.photos || []).forEach(function (p) {
@@ -158,37 +173,29 @@
 
   function recentPhotographers(data, limit) {
     var counts = {};
-    var latest = {};
     (data.photos || []).forEach(function (p) {
-      var key = p.photographerId || p.photographerSlug || p.photographerName;
+      var key = p.photographerId || p.photographerSlug;
       if (!key) return;
       counts[key] = (counts[key] || 0) + 1;
-      if (!latest[key] || String(p.createdAt) > String(latest[key].createdAt)) {
-        latest[key] = p;
-      }
     });
-    var phMap = {};
-    (data.photographers || []).forEach(function (p) { phMap[p.id] = p; phMap[p.slug] = p; });
-
-    return Object.keys(latest)
-      .map(function (key) {
-        var sample = latest[key];
-        var ph =
-          phMap[sample.photographerId] ||
-          phMap[sample.photographerSlug] ||
-          null;
+    return (data.photographers || [])
+      .filter(function (p) { return p && p.slug; })
+      .map(function (ph) {
         return {
-          id: (ph && ph.id) || sample.photographerId || key,
-          name: (ph && ph.name) || sample.photographerName || 'Фотограф',
-          slug: (ph && ph.slug) || sample.photographerSlug || '',
-          photo: (ph && ph.photo) || '',
-          count: counts[key] || 0,
-          latestAt: sample.createdAt || '',
+          id: ph.id,
+          name: ph.name || 'Фотограф',
+          slug: ph.slug,
+          photo: ph.photo || '',
+          bio: ph.bio || '',
+          count: counts[ph.id] || counts[ph.slug] || 0,
+          latestAt: ph.updatedAt || ph.createdAt || '',
         };
       })
-      .filter(function (p) { return p.slug; })
-      .sort(function (a, b) { return String(b.latestAt).localeCompare(String(a.latestAt)); })
-      .slice(0, limit || 6);
+      .sort(function (a, b) {
+        if (b.count !== a.count) return b.count - a.count;
+        return String(b.latestAt).localeCompare(String(a.latestAt));
+      })
+      .slice(0, limit || 99);
   }
 
   function initials(name) {

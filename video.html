@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
@@ -62,32 +62,36 @@
           <p class="eyebrow">Смотреть</p>
           <h1>Видео</h1>
         </div>
-        <p class="page-desc">Короткие размышления и полные фильмы — для паузы, молитвы и разговора о вере</p>
+        <p class="page-desc">Шортс, каналы партнёров и новые ролики — знакомим с авторами, а не забираем их аудиторию</p>
       </header>
 
-      <div class="video-tabs" id="video-tabs">
-        <button type="button" class="chip active" data-type="all">Все</button>
-        <button type="button" class="chip" data-type="long">Фильмы</button>
-        <button type="button" class="chip" data-type="short">Shorts</button>
-      </div>
-
-      <div id="video-featured" class="yt-featured-host" hidden></div>
-
-      <section class="video-band" id="video-long-band" hidden>
-        <div class="block-head">
-          <h2>Фильмы</h2>
-          <span class="rule"></span>
-        </div>
-        <div class="yt-film-grid" id="video-large"></div>
-      </section>
-
-      <section class="video-band" id="video-short-band" hidden>
+      <section class="video-band" id="video-short-band">
         <div class="block-head">
           <h2>Shorts</h2>
           <span class="rule"></span>
         </div>
         <div class="yt-shorts-rail" id="video-small"></div>
       </section>
+
+      <section class="video-band" id="video-partners-band">
+        <div class="block-head">
+          <h2>Каналы партнёров</h2>
+          <span class="rule"></span>
+        </div>
+        <div class="vp-rail" id="video-partners"></div>
+      </section>
+
+      <section class="video-band" id="video-latest-band">
+        <div class="block-head">
+          <h2>Последние добавленные видео</h2>
+          <span class="rule"></span>
+        </div>
+        <div class="yt-film-grid" id="video-latest"></div>
+      </section>
+
+      <div id="video-featured" hidden></div>
+      <div id="video-large" hidden></div>
+      <div id="video-tabs" hidden></div>
     </main>
 
     <dialog class="video-dialog" id="video-dialog">
@@ -136,6 +140,7 @@
     </nav>
     <script src="js/config.js?v=202608211134"></script>
     <script src="js/api.js?v=202608211134"></script>
+    <script src="js/portal-desk.js?v=202608211134"></script>
     <script src="js/portal-nav.js?v=202608211134"></script>
     <script src="js/app.js?v=202608211134"></script>
     <script src="js/video-data.js?v=202608211134"></script>

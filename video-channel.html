@@ -3,23 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-    <title>Фотограф — ЯКатолик</title>
+    <meta name="description" content="Канал партнёра — ЯКатолик" />
+    <title>Канал партнёра — ЯКатолик</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="icon" href="yakatolik-logo.svg" />
+    <link rel="manifest" href="site.webmanifest" />
+    <meta name="theme-color" content="#ede9e2" />
     <script>window.YAK_BUILD = '202608211134';</script>
     <script id="yak_theme_boot">
 (function(){
   try{document.documentElement.dataset.theme=localStorage.getItem('yak_theme')==='twilight'?'twilight':'light'}catch(e){document.documentElement.dataset.theme='light'}
-  try{if(navigator.serviceWorker)navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})})}catch(e){}
-  try{if(window.caches)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k)})})}catch(e){}
-  var s=document.createElement('style');
-  s.id='yak-emergency-css';
-  s.textContent='.cal-btn svg,.tab-item svg,.masthead svg,.logo img{width:22px!important;height:22px!important;max-width:22px!important}.cal-btn{width:40px;height:40px;overflow:hidden}';
-  document.documentElement.appendChild(s);
 })();
-</script>
+    </script>
     <link rel="stylesheet" href="portal.css?v=202608211134" />
   </head>
   <body>
@@ -39,20 +36,33 @@
           <a href="video.html">Видео</a>
           <a href="chat.html">Спросить</a>
         </nav>
-        <a class="cal-btn" href="calendar.html" aria-label="День Церкви" title="День Церкви">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 3.5v3.5M16 3.5v3.5M3.5 10h17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-        </a>
       </div>
     </header>
-    <main class="wrap" style="padding:24px 0 48px" id="photographer-root">
-      <p class="ps-status">Загрузка…</p>
-    </main>
+
+    <main class="page-shell" id="video-channel-root"></main>
+
+    <dialog class="video-dialog" id="video-dialog">
+      <form method="dialog" class="video-dialog-bar">
+        <p id="video-dialog-title"></p>
+        <button type="submit" class="ghost-button" value="close">Закрыть</button>
+      </form>
+      <video id="video-player" controls playsinline></video>
+    </dialog>
+
+    <footer class="portal-footer"><div class="wrap">
+      <a class="logo" href="index.html">
+        <span class="mark"><img src="yakatolik-logo.svg" alt="ЯКатолик" width="30" height="30" /></span>
+        <span class="wm">ЯКатолик</span>
+      </a>
+      <p class="footer-tagline">Католический портал</p>
+    </div></footer>
+
     <script src="js/config.js?v=202608211134"></script>
     <script src="js/api.js?v=202608211134"></script>
+    <script src="js/video-data.js?v=202608211134"></script>
     <script src="js/portal-desk.js?v=202608211134"></script>
     <script src="js/portal-nav.js?v=202608211134"></script>
-    <script src="js/photostock-data.js?v=202608211134"></script>
-    <script src="js/photographer-page.js?v=202608211134"></script>
+    <script src="js/video.js?v=202608211134"></script>
     <script src="js/theme.js?v=202608211134"></script>
     <script src="js/cache-bust.js?v=202608211134"></script>
   </body>

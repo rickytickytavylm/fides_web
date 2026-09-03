@@ -1,8 +1,10 @@
 (function () {
   'use strict';
   var V = window.Vera;
-  var authors = window.YakAuthors || [];
-  if (!authors.length) return;
+  function authors() {
+    return window.YakAuthors || [];
+  }
+  if (!authors().length) return;
 
   function esc(s) {
     return V ? V.escapeHtml(s) : String(s || '')
@@ -53,7 +55,7 @@
   function buildArticleAuthorIndex() {
     if (articleAuthorIndex) return articleAuthorIndex;
     articleAuthorIndex = Object.create(null);
-    authors.forEach(function (a) {
+    authors().forEach(function (a) {
       (a.recent || []).forEach(function (p) {
         if (p && p.slug) pushAuthor(articleAuthorIndex, p.slug, a);
       });
@@ -66,7 +68,7 @@
           : (c.authorSlug ? [c.authorSlug] : []);
         var pubs = c.items || c.articles || c.slugs || [];
         slugs.forEach(function (authorSlug) {
-          var a = authors.filter(function (x) { return x.slug === authorSlug; })[0];
+          var a = authors().filter(function (x) { return x.slug === authorSlug; })[0];
           if (!a) return;
           pubs.forEach(function (item) {
             var slug = typeof item === 'string' ? item : (item && item.slug);
@@ -161,7 +163,7 @@
 
     function sortedFiltered() {
       var q = (qEl && qEl.value ? qEl.value : '').trim().toLowerCase();
-      var list = authors.filter(function (a) {
+      var list = authors().filter(function (a) {
         if (!q) return true;
         return (a.name || '').toLowerCase().indexOf(q) !== -1;
       });
@@ -214,7 +216,7 @@
   var root = document.getElementById('author-root');
   if (root) {
     var slug = new URLSearchParams(location.search).get('slug') || '';
-    var a = authors.filter(function (x) { return x.slug === slug; })[0];
+    var a = authors().filter(function (x) { return x.slug === slug; })[0];
     if (!a) {
       root.innerHTML =
         '<nav class="breadcrumbs in-shell"><a href="index.html">Главная</a><span>/</span><a href="authors.html">Авторы</a><span>/</span><span>Не найден</span></nav>' +
@@ -312,7 +314,7 @@
   /* ---------- Home block helper ---------- */
   window.renderHomeAuthors = function (el, limit) {
     if (!el) return;
-    var list = authors.slice().sort(function (a, b) {
+    var list = authors().slice().sort(function (a, b) {
       return String(b.latestDate || '').localeCompare(String(a.latestDate || ''));
     }).slice(0, limit || 6);
     el.innerHTML = list.map(function (a) {

@@ -88,6 +88,7 @@
       type: 'short',
       videoUrl: BUCKET + 'video' + v.id + '.mp4',
       thumb: 'assets/video/short-' + v.id + '.webp',
+      channelId: v.channelId || '',
     };
   });
 
@@ -142,11 +143,24 @@
       type: 'long',
       videoUrl: BUCKET + 'ocean-mercy/' + v.slug + '.mp4',
       thumb: 'assets/video/' + v.thumbId + '.webp',
+      channelId: 'ocean-mercy',
+      cycle: 'Океан милосердия',
     };
   });
+
+  var CHANNELS = [
+    {
+      id: 'ocean-mercy',
+      name: 'Океан милосердия',
+      logo: 'assets/video/long-01.webp',
+      bio: 'Цикл фильмов о милосердии, святости и достоинстве человека. Партнёрский канал на портале ЯКатолик.',
+      links: [{ label: 'Смотреть на портале', href: 'video-channel.html?id=ocean-mercy' }],
+    },
+  ];
 
   global.YakVideos = {
     bucket: BUCKET,
     items: LONGS.concat(SHORTS),
+    channels: CHANNELS,
   };
 })(window);

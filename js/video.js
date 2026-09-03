@@ -2,17 +2,19 @@
   'use strict';
 
   var catalog = (window.YakVideos && window.YakVideos.items) || [];
+  var channels = (window.YakVideos && window.YakVideos.channels) || [];
   var V = window.Vera;
   var all = catalog.slice();
-  var filter = 'all';
-  var featuredEl = document.getElementById('video-featured');
-  var largeGrid = document.getElementById('video-large');
   var smallGrid = document.getElementById('video-small');
-  var longBand = document.getElementById('video-long-band');
+  var partnersEl = document.getElementById('video-partners');
+  var latestEl = document.getElementById('video-latest');
   var shortBand = document.getElementById('video-short-band');
+  var partnersBand = document.getElementById('video-partners-band');
+  var latestBand = document.getElementById('video-latest-band');
   var dialog = document.getElementById('video-dialog');
   var player = document.getElementById('video-player');
   var dialogTitle = document.getElementById('video-dialog-title');
+  var channelRoot = document.getElementById('video-channel-root');
 
   function esc(s) {
     if (V && V.escapeHtml) return V.escapeHtml(s);
@@ -66,7 +68,7 @@
       esc(v.title || 'Без названия') +
       '</strong>' +
       '<em>' +
-      esc(v.speaker || 'Фильм') +
+      esc(v.speaker || channelName(v.channelId) || 'Видео') +
       '</em></span></button></article>'
     );
   }
@@ -89,30 +91,26 @@
     );
   }
 
-  function featuredHtml(v) {
+  function channelName(id) {
+    var ch = channels.filter(function (c) { return c.id === id; })[0];
+    return ch ? ch.name : '';
+  }
+
+  function channelCount(id) {
+    return all.filter(function (v) { return v.channelId === id; }).length;
+  }
+
+  function partnerCard(ch) {
+    var n = channelCount(ch.id);
     return (
-      '<article class="yt-featured">' +
-      '<button type="button" class="yt-open yt-featured-media" data-id="' +
-      esc(String(v.id)) +
-      '" aria-label="Смотреть: ' +
-      esc(v.title || '') +
-      '">' +
-      thumbHtml(v, 'yt-thumb--wide') +
-      '</button>' +
-      '<div class="yt-featured-copy">' +
-      '<p class="eyebrow">Фильм</p>' +
-      '<h2>' +
-      esc(v.title || '') +
-      '</h2>' +
-      (v.description ? '<p>' + esc(v.description) + '</p>' : '') +
-      '<p class="yt-featured-by">' +
-      esc(v.speaker || 'Фильм') +
-      (v.duration ? ' · ' + fmtDur(v.duration) : '') +
-      '</p>' +
-      '<button type="button" class="yt-watch yt-open" data-id="' +
-      esc(String(v.id)) +
-      '">Смотреть</button>' +
-      '</div></article>'
+      '<a class="vp-card" href="video-channel.html?id=' + encodeURIComponent(ch.id) + '">' +
+      (ch.logo
+        ? '<span class="vp-logo" style="background-image:url(\'' + esc(ch.logo) + '\')"></span>'
+        : '<span class="vp-logo is-empty">' + esc((ch.name || '?').charAt(0)) + '</span>') +
+      '<span class="vp-copy">' +
+      '<strong>' + esc(ch.name) + '</strong>' +
+      '<small>' + n + ' видео</small>' +
+      '</span></a>'
     );
   }
 
@@ -138,49 +136,86 @@
     if (player.play) player.play().catch(function () {});
   }
 
-  function render() {
-    var longs = all.filter(function (v) {
-      return v.type === 'long';
+  function loopRail(el) {
+    if (!el || el._looped) return;
+    el._looped = true;
+    el.addEventListener('scroll', function () {
+      if (el.scrollWidth - el.scrollLeft - el.clientWidth < 80) {
+        el.scrollLeft = 8;
+      }
     });
-    var shorts = all.filter(function (v) {
-      return v.type !== 'long';
-    });
-    var showLong = filter !== 'short';
-    var showShort = filter !== 'long';
-    var feature = showLong && longs[0] ? longs[0] : null;
-    var rest = showLong ? longs.slice(feature ? 1 : 0) : [];
-    if (filter === 'long') rest = longs.slice(1);
+  }
 
-    if (featuredEl) {
-      featuredEl.hidden = !feature;
-      featuredEl.innerHTML = feature ? featuredHtml(feature) : '';
-      bind(featuredEl);
-    }
-    if (longBand) longBand.hidden = !rest.length;
-    if (largeGrid) {
-      largeGrid.innerHTML = rest.map(filmCard).join('');
-      bind(largeGrid);
-    }
-    if (shortBand) shortBand.hidden = !showShort || !shorts.length;
+  function renderHome() {
+    var shorts = all.filter(function (v) { return v.type !== 'long'; });
+    var latest = all.slice().reverse();
+    if (shortBand) shortBand.hidden = !shorts.length;
     if (smallGrid) {
-      smallGrid.classList.toggle('yt-shorts-grid', filter === 'short');
-      smallGrid.classList.toggle('yt-shorts-rail', filter !== 'short');
-      smallGrid.innerHTML = shorts.map(shortCard).join('');
+      smallGrid.innerHTML = shorts.concat(shorts).map(shortCard).join('');
       bind(smallGrid);
+      loopRail(smallGrid);
+    }
+    if (partnersBand) partnersBand.hidden = !channels.length;
+    if (partnersEl) partnersEl.innerHTML = channels.map(partnerCard).join('');
+    if (latestBand) latestBand.hidden = !latest.length;
+    if (latestEl) {
+      latestEl.innerHTML = latest.map(filmCard).join('');
+      bind(latestEl);
     }
   }
 
-  var tabs = document.getElementById('video-tabs');
-  if (tabs) {
-    tabs.addEventListener('click', function (e) {
-      var btn = e.target.closest('.chip');
-      if (!btn) return;
-      filter = btn.getAttribute('data-type') || 'all';
-      tabs.querySelectorAll('.chip').forEach(function (c) {
-        c.classList.toggle('active', c === btn);
-      });
-      render();
+  function renderChannel() {
+    if (!channelRoot) return;
+    var id = new URLSearchParams(location.search).get('id') || '';
+    var ch = channels.filter(function (c) { return c.id === id; })[0];
+    if (!ch) {
+      channelRoot.innerHTML =
+        '<nav class="breadcrumbs in-shell"><a href="video.html">Видео</a><span>/</span><span>Не найден</span></nav>' +
+        '<header class="page-head in-shell"><div><h1>Канал не найден</h1></div></header>' +
+        '<p class="in-shell"><a class="wlink" href="video.html">К списку партнёров</a></p>';
+      return;
+    }
+    document.title = ch.name + ' — Видео — ЯКатолик';
+    var mine = all.filter(function (v) { return v.channelId === ch.id; });
+    var shorts = mine.filter(function (v) { return v.type === 'short'; });
+    var cycles = {};
+    mine.filter(function (v) { return v.cycle; }).forEach(function (v) {
+      if (!cycles[v.cycle]) cycles[v.cycle] = [];
+      cycles[v.cycle].push(v);
     });
+    var films = mine.filter(function (v) { return v.type === 'long' && !v.cycle; });
+    var links = (ch.links || []).map(function (l) {
+      return '<a class="author-social" href="' + esc(l.href) + '" target="_blank" rel="noopener">' + esc(l.label) + '</a>';
+    }).join('');
+    var cycleKeys = Object.keys(cycles);
+    var sections = '';
+    if (shorts.length) {
+      sections += '<section class="video-band"><div class="block-head"><h2>Shorts</h2><span class="rule"></span></div>' +
+        '<div class="yt-shorts-rail" id="ch-shorts">' + shorts.map(shortCard).join('') + '</div></section>';
+    }
+    cycleKeys.forEach(function (name) {
+      sections += '<section class="video-band"><div class="block-head"><h2>' + esc(name) + '</h2><span class="rule"></span></div>' +
+        '<div class="yt-film-grid">' + cycles[name].map(filmCard).join('') + '</div></section>';
+    });
+    if (films.length) {
+      sections += '<section class="video-band"><div class="block-head"><h2>Видео</h2><span class="rule"></span></div>' +
+        '<div class="yt-film-grid">' + films.map(filmCard).join('') + '</div></section>';
+    }
+    channelRoot.innerHTML =
+      '<nav class="breadcrumbs in-shell"><a href="index.html">Главная</a><span>/</span><a href="video.html">Видео</a><span>/</span><span>' + esc(ch.name) + '</span></nav>' +
+      '<section class="author-head">' +
+      (ch.logo
+        ? '<span class="author-ava" style="background-image:url(\'' + esc(ch.logo) + '\')"></span>'
+        : '<span class="author-ava initials">' + esc((ch.name || '?').charAt(0)) + '</span>') +
+      '<div class="author-head-body">' +
+      '<p class="eyebrow">Канал партнёра</p>' +
+      '<h1>' + esc(ch.name) + '</h1>' +
+      (ch.bio ? '<p class="author-bio">' + esc(ch.bio) + '</p>' : '') +
+      (links ? '<div class="author-socials">' + links + '</div>' : '') +
+      '<p><a class="wlink" href="video.html#video-partners-band">К списку партнёров</a></p>' +
+      '</div></section>' +
+      sections;
+    bind(channelRoot);
   }
 
   if (dialog) {
@@ -194,5 +229,6 @@
     });
   }
 
-  render();
+  if (channelRoot) renderChannel();
+  else renderHome();
 })();
