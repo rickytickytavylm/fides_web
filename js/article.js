@@ -222,6 +222,13 @@
           );
         })();
 
+    var leadSource = article.excerptHtml || '';
+    if (!leadSource && article.excerpt && /<[a-z][\s\S]*>/i.test(article.excerpt)) leadSource = article.excerpt;
+    var leadHtml = '';
+    if (leadSource && String(V.stripTags ? V.stripTags(leadSource) : leadSource).replace(/\s+/g, '').length) {
+      leadHtml = '<div class="article-lead">' + linkifyHtml(leadSource) + '</div>';
+    }
+
     return (
       '<nav class="breadcrumbs" aria-label="Хлебные крошки">' +
       '<a href="index.html">Главная</a><span>/</span>' +
@@ -237,6 +244,7 @@
       '<h1>' +
       V.escapeHtml(article.title || 'Без названия') +
       '</h1>' +
+      leadHtml +
       byline +
       '</header>' +
       (cover

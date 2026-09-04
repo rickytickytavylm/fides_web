@@ -32,7 +32,15 @@
       id: a.id,
       slug: a.slug || a.id,
       title: a.title,
-      excerpt: a.excerpt || '',
+      excerpt: (function () {
+        var raw = a.excerptHtml || a.excerpt || '';
+        if (!raw) return '';
+        if (typeof document === 'undefined') return String(raw).replace(/<[^>]+>/g, ' ');
+        var n = document.createElement('div');
+        n.innerHTML = raw;
+        return (n.textContent || '').replace(/\s+/g, ' ').trim();
+      })(),
+      excerptHtml: a.excerptHtml || (/<[a-z][\s\S]*>/i.test(a.excerpt || '') ? a.excerpt : ''),
       contentHtml: a.contentHtml || (a.body ? '<p>' + String(a.body).replace(/\n+/g, '</p><p>') + '</p>' : ''),
       contentText: a.body || a.excerpt || '',
       image: a.image || a.cover || '',

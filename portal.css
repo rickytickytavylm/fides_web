@@ -1828,6 +1828,15 @@ body:not(.map-page) { padding-bottom: 0; }
 main.article { padding-bottom: 48px; }
 .article-head { max-width: 720px; margin: 0 auto; padding: 28px 22px 0; }
 .article-head h1 { margin: 0 0 18px; font-family: var(--serif); font-weight: 600; font-size: clamp(32px, 4.5vw, 48px); line-height: 1.12; }
+.article-lead { margin: -6px 0 18px; font-size: 20px; line-height: 1.5; color: var(--charcoal); }
+.article-lead p { margin: 0 0 .45em; }
+.article-lead p:last-child { margin: 0; }
+.article-lead a {
+  color: #2a5bd7; text-decoration: underline; text-underline-offset: 2px;
+}
+.article-lead a:hover { color: #1f4fc4; }
+[data-theme="twilight"] .article-lead a { color: #7eb0ff; }
+[data-theme="twilight"] .article-lead a:hover { color: #a8c8ff; }
 .article-hero { width: 100%; max-width: 1100px; margin: 28px auto 0; padding: 0 22px; }
 .article-hero .hero-photo {
   height: min(52vw, 480px); min-height: 220px; border-radius: 20px;
