@@ -150,6 +150,8 @@
         thumb: v.thumb || '',
         channelId: v.channelId || '',
         cycle: v.cycle || '',
+        embedUrl: v.embedUrl || '',
+        externalUrl: v.externalUrl || '',
       };
     });
   }
@@ -295,6 +297,75 @@
     C.DAYS.sort(function (a, b) { return String(a.date).localeCompare(String(b.date)); });
   }
 
+  function applyGuides() {
+    var G = global.YakGuides;
+    if (!G || G._deskApplied) return;
+    G._deskApplied = true;
+    (read().guides || []).forEach(function (ov) {
+      if (!ov || (ov.status && ov.status !== 'published')) return;
+      var section = ov.section;
+      if (!section && ov.id) {
+        if (String(ov.id).indexOf('church') === 0) section = 'church';
+        else if (String(ov.id).indexOf('spirit') === 0) section = 'spirit';
+      }
+      var tree = G[section];
+      if (!tree) return;
+      var nodeId = ov.nodeId;
+      if (!nodeId && ov.id) {
+        var parts = String(ov.id).split(/[:/]/);
+        nodeId = parts[parts.length - 1];
+      }
+      if (!nodeId) return;
+
+      if (nodeId === 'hub' || ov.kind === 'hub') {
+        if (ov.title) tree.title = ov.title;
+        if (ov.desc != null) tree.desc = ov.desc;
+        if (ov.intro != null) tree.intro = ov.intro;
+        return;
+      }
+
+      var nodes = tree.nodes || (tree.nodes = {});
+      var node = nodes[nodeId];
+      if (!node) {
+        if (ov.kind !== 'page' && !ov.added) return;
+        node = {
+          type: 'page',
+          title: ov.title || '',
+          lead: ov.lead || '',
+          contentHtml: ov.contentHtml || '',
+          siblingsOf: ov.siblingsOf || '',
+        };
+        nodes[nodeId] = node;
+        var parent = ov.siblingsOf && nodes[ov.siblingsOf];
+        if (parent && parent.cards && !parent.cards.some(function (c) { return c.id === nodeId; })) {
+          parent.cards.push({
+            id: nodeId,
+            title: ov.title || '',
+            sub: ov.sub || '',
+            image: ov.image || '',
+          });
+        }
+      } else {
+        if (ov.title) node.title = ov.title;
+        if (ov.desc != null) node.desc = ov.desc;
+        if (ov.lead != null) node.lead = ov.lead;
+        if (ov.contentHtml) node.contentHtml = ov.contentHtml;
+        if (ov.prayers && ov.prayers.length) node.prayers = ov.prayers;
+      }
+
+      function patchCards(list) {
+        (list || []).forEach(function (c) {
+          if (!c || c.id !== nodeId) return;
+          if (ov.title) c.title = ov.title;
+          if (ov.sub != null) c.sub = ov.sub;
+          if (ov.image) c.image = ov.image;
+        });
+      }
+      patchCards(tree.cards);
+      Object.keys(nodes).forEach(function (k) { patchCards(nodes[k].cards); });
+    });
+  }
+
   function apply() {
     applyVera();
     applyEvents();
@@ -303,6 +374,7 @@
     applyCalendar();
     applyAuthors();
     applyVideoChannels();
+    applyGuides();
   }
 
   global.YakDesk = {

@@ -13,6 +13,7 @@
   var latestBand = document.getElementById('video-latest-band');
   var dialog = document.getElementById('video-dialog');
   var player = document.getElementById('video-player');
+  var embedEl = document.getElementById('video-embed');
   var dialogTitle = document.getElementById('video-dialog-title');
   var channelRoot = document.getElementById('video-channel-root');
 
@@ -91,13 +92,30 @@
     );
   }
 
+  function playlistCard(c) {
+    return (
+      '<a class="yt-card vp-cycle" href="' +
+      esc(c.href) +
+      '" target="_blank" rel="noopener">' +
+      thumbHtml({ thumb: c.thumb || '' }, 'yt-thumb--wide') +
+      '<span class="yt-meta">' +
+      '<strong>' +
+      esc(c.title || 'Цикл') +
+      '</strong>' +
+      '<em>Плейлист · на площадке партнёра</em></span></a>'
+    );
+  }
+
   function channelName(id) {
     var ch = channels.filter(function (c) { return c.id === id; })[0];
     return ch ? ch.name : '';
   }
 
   function channelCount(id) {
-    return all.filter(function (v) { return v.channelId === id; }).length;
+    var videos = all.filter(function (v) { return v.channelId === id; }).length;
+    var ch = channels.filter(function (c) { return c.id === id; })[0];
+    var playlists = (ch && ch.cycles ? ch.cycles.length : 0);
+    return videos + playlists;
   }
 
   function partnerCard(ch) {
@@ -109,7 +127,7 @@
         : '<span class="vp-logo is-empty">' + esc((ch.name || '?').charAt(0)) + '</span>') +
       '<span class="vp-copy">' +
       '<strong>' + esc(ch.name) + '</strong>' +
-      '<small>' + n + ' видео</small>' +
+      '<small>' + n + ' ' + (n === 1 ? 'материал' : n < 5 ? 'материала' : 'материалов') + '</small>' +
       '</span></a>'
     );
   }
@@ -123,17 +141,59 @@
     });
   }
 
+  function clearPlayer() {
+    if (player) {
+      player.pause();
+      player.removeAttribute('src');
+      player.removeAttribute('poster');
+      player.load();
+      player.hidden = true;
+    }
+    if (embedEl) {
+      embedEl.removeAttribute('src');
+      embedEl.hidden = true;
+    }
+  }
+
   function openItem(id) {
     var item = all.filter(function (x) {
       return String(x.id) === String(id);
     })[0];
-    if (!item || !item.videoUrl || !dialog || !player) return;
+    if (!item) return;
+
+    /* Только внешняя ссылка (VK и т.п.) — открываем у партнёра */
+    if (!item.videoUrl && !item.embedUrl && item.externalUrl) {
+      window.open(item.externalUrl, '_blank', 'noopener');
+      return;
+    }
+    if (!dialog) {
+      if (item.externalUrl) window.open(item.externalUrl, '_blank', 'noopener');
+      return;
+    }
+
     if (dialogTitle) dialogTitle.textContent = item.title || '';
     dialog.classList.toggle('is-short', item.type === 'short');
-    player.poster = item.thumb || '';
-    player.src = item.videoUrl;
-    dialog.showModal();
-    if (player.play) player.play().catch(function () {});
+    clearPlayer();
+
+    if (item.embedUrl && embedEl) {
+      embedEl.hidden = false;
+      if (player) player.hidden = true;
+      embedEl.src = item.embedUrl;
+      dialog.showModal();
+      return;
+    }
+
+    if (item.videoUrl && player) {
+      player.hidden = false;
+      if (embedEl) embedEl.hidden = true;
+      player.poster = item.thumb || '';
+      player.src = item.videoUrl;
+      dialog.showModal();
+      if (player.play) player.play().catch(function () {});
+      return;
+    }
+
+    if (item.externalUrl) window.open(item.externalUrl, '_blank', 'noopener');
   }
 
   function loopRail(el) {
@@ -147,16 +207,20 @@
   }
 
   function renderHome() {
-    var shorts = all.filter(function (v) { return v.type !== 'long'; });
+    var shorts = all.filter(function (v) { return v.type === 'short'; });
+    var partners = channels.filter(function (c) { return c.id !== 'ocean-mercy'; });
+    if (!partners.length) partners = channels.slice();
     var latest = all.slice().reverse();
+
     if (shortBand) shortBand.hidden = !shorts.length;
     if (smallGrid) {
-      smallGrid.innerHTML = shorts.concat(shorts).map(shortCard).join('');
+      var rail = shorts.length ? shorts.concat(shorts) : [];
+      smallGrid.innerHTML = rail.map(shortCard).join('');
       bind(smallGrid);
       loopRail(smallGrid);
     }
-    if (partnersBand) partnersBand.hidden = !channels.length;
-    if (partnersEl) partnersEl.innerHTML = channels.map(partnerCard).join('');
+    if (partnersBand) partnersBand.hidden = !partners.length;
+    if (partnersEl) partnersEl.innerHTML = partners.map(partnerCard).join('');
     if (latestBand) latestBand.hidden = !latest.length;
     if (latestEl) {
       latestEl.innerHTML = latest.map(filmCard).join('');
@@ -183,33 +247,60 @@
       if (!cycles[v.cycle]) cycles[v.cycle] = [];
       cycles[v.cycle].push(v);
     });
-    var films = mine.filter(function (v) { return v.type === 'long' && !v.cycle; });
+    var films = mine.filter(function (v) { return v.type !== 'short' && !v.cycle; });
+    var playlists = ch.cycles || [];
     var links = (ch.links || []).map(function (l) {
       return '<a class="author-social" href="' + esc(l.href) + '" target="_blank" rel="noopener">' + esc(l.label) + '</a>';
     }).join('');
     var cycleKeys = Object.keys(cycles);
     var sections = '';
+
     if (shorts.length) {
-      sections += '<section class="video-band"><div class="block-head"><h2>Shorts</h2><span class="rule"></span></div>' +
-        '<div class="yt-shorts-rail" id="ch-shorts">' + shorts.map(shortCard).join('') + '</div></section>';
+      sections +=
+        '<section class="video-band"><div class="block-head"><h2>Shorts</h2><span class="rule"></span></div>' +
+        '<div class="yt-shorts-rail" id="ch-shorts">' +
+        shorts.map(shortCard).join('') +
+        '</div></section>';
     }
-    cycleKeys.forEach(function (name) {
-      sections += '<section class="video-band"><div class="block-head"><h2>' + esc(name) + '</h2><span class="rule"></span></div>' +
-        '<div class="yt-film-grid">' + cycles[name].map(filmCard).join('') + '</div></section>';
-    });
+
+    if (playlists.length || cycleKeys.length) {
+      sections += '<section class="video-band"><div class="block-head"><h2>Циклы</h2><span class="rule"></span></div>';
+      if (playlists.length) {
+        sections += '<div class="yt-film-grid">' + playlists.map(playlistCard).join('') + '</div>';
+      }
+      cycleKeys.forEach(function (name) {
+        sections +=
+          '<div class="block-head" style="margin-top:18px"><h3 style="margin:0;font-size:18px">' +
+          esc(name) +
+          '</h3><span class="rule"></span></div>' +
+          '<div class="yt-film-grid">' +
+          cycles[name].map(filmCard).join('') +
+          '</div>';
+      });
+      sections += '</section>';
+    }
+
     if (films.length) {
-      sections += '<section class="video-band"><div class="block-head"><h2>Видео</h2><span class="rule"></span></div>' +
-        '<div class="yt-film-grid">' + films.map(filmCard).join('') + '</div></section>';
+      sections +=
+        '<section class="video-band"><div class="block-head"><h2>Видео</h2><span class="rule"></span></div>' +
+        '<div class="yt-film-grid">' +
+        films.map(filmCard).join('') +
+        '</div></section>';
     }
+
     channelRoot.innerHTML =
-      '<nav class="breadcrumbs in-shell"><a href="index.html">Главная</a><span>/</span><a href="video.html">Видео</a><span>/</span><span>' + esc(ch.name) + '</span></nav>' +
+      '<nav class="breadcrumbs in-shell"><a href="index.html">Главная</a><span>/</span><a href="video.html">Видео</a><span>/</span><span>' +
+      esc(ch.name) +
+      '</span></nav>' +
       '<section class="author-head">' +
       (ch.logo
         ? '<span class="author-ava" style="background-image:url(\'' + esc(ch.logo) + '\')"></span>'
         : '<span class="author-ava initials">' + esc((ch.name || '?').charAt(0)) + '</span>') +
       '<div class="author-head-body">' +
       '<p class="eyebrow">Канал партнёра</p>' +
-      '<h1>' + esc(ch.name) + '</h1>' +
+      '<h1>' +
+      esc(ch.name) +
+      '</h1>' +
       (ch.bio ? '<p class="author-bio">' + esc(ch.bio) + '</p>' : '') +
       (links ? '<div class="author-socials">' + links + '</div>' : '') +
       '<p><a class="wlink" href="video.html#video-partners-band">К списку партнёров</a></p>' +
@@ -220,11 +311,7 @@
 
   if (dialog) {
     dialog.addEventListener('close', function () {
-      if (!player) return;
-      player.pause();
-      player.removeAttribute('src');
-      player.removeAttribute('poster');
-      player.load();
+      clearPlayer();
       dialog.classList.remove('is-short');
     });
   }

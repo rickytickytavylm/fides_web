@@ -254,6 +254,10 @@
   function bodyBlock(node) {
     var html = '<article class="guide-body">';
     if (node.lead) html += '<p class="guide-lead">' + esc(node.lead) + '</p>';
+    if (node.contentHtml) {
+      html += '<div class="guide-rich">' + node.contentHtml + '</div>';
+      return html + '</article>';
+    }
     (node.body || []).forEach(function (block) {
       if (!block) return;
       if (block.h2) html += '<h2>' + esc(block.h2) + '</h2>';

@@ -2063,8 +2063,16 @@ main.article { padding-bottom: 48px; }
 .video-dialog::backdrop { background: rgba(10, 8, 12, .82); }
 .video-dialog-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 14px; }
 .video-dialog-bar p { margin: 0; font-weight: 700; font-size: 14px; }
-.video-dialog video { width: 100%; display: block; background: #000; max-height: 72vh; }
-.video-dialog.is-short video { max-height: 78vh; aspect-ratio: 9 / 16; object-fit: contain; }
+.video-dialog video,
+.video-dialog .video-embed {
+  width: 100%; display: block; background: #000; max-height: 72vh; border: 0;
+}
+.video-dialog .video-embed { aspect-ratio: 16 / 9; min-height: 240px; }
+.video-dialog.is-short video,
+.video-dialog.is-short .video-embed {
+  max-height: 78vh; aspect-ratio: 9 / 16; object-fit: contain; margin: 0 auto;
+}
+.vp-cycle .yt-thumb img { object-fit: contain; background: #2a241f; }
 .ghost-button {
   font-family: var(--ff); font-weight: 700; font-size: 12.5px; color: var(--bronze-dark);
   background: var(--accent-soft); border: 0; padding: 8px 16px; border-radius: 100px; cursor: pointer;
@@ -2846,6 +2854,16 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
   font-weight: 600;
   color: var(--stone-500);
 }
+.guide-body .guide-rich img,
+.guide-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  display: block;
+  margin: 12px 0 18px;
+}
+.guide-body .guide-rich figure { margin: 12px 0 18px; }
+.guide-body .guide-rich blockquote { margin: 0 0 18px; }
 .guide-also { margin: 0 0 28px; max-width: 680px; }
 .guide-also h3 { margin: 0 0 10px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--bronze-dark); }
 .guide-also ul { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }

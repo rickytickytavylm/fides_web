@@ -26,6 +26,7 @@
   }
 
   function resolveUrl(track) {
+    if (track.url || track.audioUrl) return Promise.resolve(track.url || track.audioUrl);
     var key = track.audio_key;
     if (urlCache[key] && urlCache[key].expires > Date.now() + 15000) {
       return Promise.resolve(urlCache[key].url);
