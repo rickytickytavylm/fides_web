@@ -83,8 +83,13 @@
   function findAllAuthorsByArticle(item) {
     if (!item) return [];
     var slug = item.slug || item.id;
-    if (!slug) return [];
-    return (buildArticleAuthorIndex()[String(slug)] || []).slice();
+    var list = slug ? (buildArticleAuthorIndex()[String(slug)] || []).slice() : [];
+    var extra = item.authorSlugs || (item.authorSlug ? [item.authorSlug] : []);
+    extra.forEach(function (s) {
+      var a = authors().filter(function (x) { return x.slug === s; })[0];
+      if (a && !list.some(function (x) { return x.slug === a.slug; })) list.push(a);
+    });
+    return list;
   }
 
   function findAuthorByArticle(item) {

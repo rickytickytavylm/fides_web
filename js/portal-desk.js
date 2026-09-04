@@ -21,9 +21,16 @@
   }
 
   function asArchiveItem(a) {
-    var cat = a.category || (a.kind === 'news' ? 'news' : 'columns');
+    var rubrics = (a.rubrics && a.rubrics.length) ? a.rubrics.slice() : [a.category || (a.kind === 'news' ? 'news' : 'columns')];
+    var titles = {
+      news: 'Новости', 'church-rus': 'Россия', sng: 'КЦ в мире', 'santa-sede': 'Святой Престол', world: 'Мир',
+      columns: 'Статьи', spirituality: 'Духовность', 'obraz-zhizni': 'Образ жизни', kultura: 'Культура',
+      history: 'История', biografii: 'Биографии', saints: 'Святые', bible: 'Библеистика', liturgy: 'Литургика',
+      interview: 'Интервью', svidetelstva: 'Свидетельства', propovedi: 'Проповеди',
+    };
     return {
       id: a.id,
+      slug: a.slug || a.id,
       title: a.title,
       excerpt: a.excerpt || '',
       contentHtml: a.contentHtml || (a.body ? '<p>' + String(a.body).replace(/\n+/g, '</p><p>') + '</p>' : ''),
@@ -31,8 +38,10 @@
       image: a.image || a.cover || '',
       date: a.date || (a.createdAt || '').slice(0, 10),
       author: a.author || '',
-      categories: [cat],
-      categorySlugs: [cat],
+      authorSlug: a.authorSlug || '',
+      authorSlugs: a.authorSlugs || (a.authorSlug ? [a.authorSlug] : []),
+      categories: rubrics.map(function (id) { return titles[id] || id; }),
+      categorySlugs: rubrics,
       kind: 'desk',
     };
   }
@@ -46,6 +55,8 @@
         if (hay.indexOf(String(opts.q).toLowerCase()) === -1) return false;
       }
       if (!cat) return true;
+      var rubs = a.rubrics || a.categorySlugs || (a.category ? [a.category] : []);
+      if (rubs.indexOf(cat) !== -1) return true;
       if (a.category === cat) return true;
       if (cat === 'news' && a.kind === 'news') return true;
       if (cat === 'columns' && a.kind === 'article') return true;
@@ -57,7 +68,7 @@
     id = String(id || '');
     var list = published(read().articles);
     for (var i = 0; i < list.length; i++) {
-      if (String(list[i].id) === id) return asArchiveItem(list[i]);
+      if (String(list[i].id) === id || String(list[i].slug || '') === id) return asArchiveItem(list[i]);
     }
     return null;
   }
