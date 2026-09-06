@@ -67,7 +67,7 @@
       if (rubs.indexOf(cat) !== -1) return true;
       if (a.category === cat) return true;
       if (cat === 'news' && a.kind === 'news') return true;
-      if (cat === 'columns' && a.kind === 'article') return true;
+      if (cat === 'columns' && a.kind !== 'news') return true;
       return false;
     }).map(asArchiveItem);
   }
@@ -83,8 +83,8 @@
 
   function applyVera() {
     var V = global.Vera;
-    if (!V || V._deskApplied) return;
-    V._deskApplied = true;
+    if (!V) return;
+    if (V.getArticles && V.getArticles._yakDesk) return;
     var origGet = V.getArticles;
     var origOne = V.getArticle;
     var origContent = V.getContent;
@@ -108,6 +108,7 @@
           return { items: extra, total: extra.length };
         });
       };
+      V.getArticles._yakDesk = true;
     }
     if (origOne) {
       V.getArticle = function (id) {

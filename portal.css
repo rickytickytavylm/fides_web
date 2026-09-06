@@ -1833,7 +1833,12 @@ main.article { padding-bottom: 48px; }
 .article-lead p:last-child { margin: 0; }
 .article-lead a {
   color: #2a5bd7; text-decoration: underline; text-underline-offset: 2px;
+  font-style: inherit;
 }
+.article-lead em a,
+.article-lead i a,
+.article-lead a em,
+.article-lead a i { font-style: italic; }
 .article-lead a:hover { color: #1f4fc4; }
 [data-theme="twilight"] .article-lead a { color: #7eb0ff; }
 [data-theme="twilight"] .article-lead a:hover { color: #a8c8ff; }
@@ -1857,9 +1862,13 @@ main.article { padding-bottom: 48px; }
   color: #2f6fed;
   text-decoration: underline;
   text-underline-offset: 3px;
-  font-style: normal;
+  font-style: inherit;
   font-weight: 600;
 }
+.article-body em a,
+.article-body i a,
+.article-body a em,
+.article-body a i { font-style: italic; }
 .article-body a:hover { color: #1f4fc4; }
 [data-theme="twilight"] .article-body a { color: #7eb0ff; }
 [data-theme="twilight"] .article-body a:hover { color: #a8c8ff; }

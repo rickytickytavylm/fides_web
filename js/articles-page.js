@@ -214,7 +214,14 @@
   V.getArticles({ category: 'columns', limit: 7, page: 1 })
     .then(function (pack) {
       var el = document.getElementById('articles-fresh');
-      if (el) el.innerHTML = renderFresh(pack.items || []);
+      var items = pack.items || [];
+      var extra = window.YakDesk && YakDesk.articles ? YakDesk.articles({ category: 'columns' }) : [];
+      if (extra.length) {
+        var seen = {};
+        extra.forEach(function (x) { seen[String(x.id)] = true; });
+        items = extra.concat(items.filter(function (it) { return !seen[String(it.id)]; }));
+      }
+      if (el) el.innerHTML = renderFresh(items);
     })
     .catch(function () {
       var el = document.getElementById('articles-fresh');

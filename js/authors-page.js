@@ -82,6 +82,12 @@
 
   function findAllAuthorsByArticle(item) {
     if (!item) return [];
+    if (item.kind === 'desk' && (item.authorSlugs || item.authorSlug != null)) {
+      var chosen = item.authorSlugs || (item.authorSlug ? [item.authorSlug] : []);
+      return chosen.map(function (s) {
+        return authors().filter(function (x) { return x.slug === s; })[0];
+      }).filter(Boolean);
+    }
     var slug = item.slug || item.id;
     var list = slug ? (buildArticleAuthorIndex()[String(slug)] || []).slice() : [];
     var extra = item.authorSlugs || (item.authorSlug ? [item.authorSlug] : []);

@@ -91,6 +91,45 @@
       .join('');
   }
 
+  function authorNamesOf(article) {
+    var names = [];
+    var raw = String((article && article.author) || '').trim();
+    if (raw && raw.toLowerCase() !== 'ruscatholic' && raw.toLowerCase() !== 'admin' && raw.toLowerCase() !== 'редакция') {
+      names.push(raw);
+    }
+    var tagged =
+      window.YakAuthorLink && YakAuthorLink.findAllByArticle
+        ? YakAuthorLink.findAllByArticle(article)
+        : [];
+    tagged.forEach(function (a) {
+      if (a && a.name) names.push(a.name);
+    });
+    return names;
+  }
+
+  function stripAuthorSignature(html, article) {
+    var names = authorNamesOf(article);
+    if (!html || !names.length) return html;
+    var box = document.createElement('div');
+    box.innerHTML = html;
+    var blocks = box.querySelectorAll('p, div');
+    if (!blocks.length) return html;
+    var last = blocks[blocks.length - 1];
+    var text = String(last.textContent || '').replace(/\s+/g, ' ').trim();
+    var hit = names.some(function (name) {
+      return text === name || text === '— ' + name || text === '—' + name || text === name + '.';
+    });
+    if (hit) last.parentNode.removeChild(last);
+    return box.innerHTML;
+  }
+
+  function renderDeskBody(html) {
+    var box = document.createElement('div');
+    box.innerHTML = html || '';
+    box.querySelectorAll('script,style,iframe,object').forEach(function (n) { n.remove(); });
+    return box.innerHTML;
+  }
+
   function pickCover(article, blocks) {
     var cover = article.image || article.cover || article.thumbnail || '';
     if (cover) return cover;
@@ -113,8 +152,14 @@
       if (b && b.type === 'embed-link') relatedEmbeds.push(b);
       else contentBlocks.push(b);
     });
-    var bodyHtml = contentBlocks.length ? renderBlocks(contentBlocks) : '';
+    var bodyHtml = '';
+    if (article.kind === 'desk' && article.contentHtml) {
+      bodyHtml = renderDeskBody(article.contentHtml);
+    } else {
+      bodyHtml = contentBlocks.length ? renderBlocks(contentBlocks) : '';
+    }
     if (!bodyHtml.trim()) bodyHtml = fallbackBody(article);
+    bodyHtml = stripAuthorSignature(bodyHtml, article);
 
     var relatedHtml = '';
     if (relatedEmbeds.length) {
@@ -226,7 +271,8 @@
     if (!leadSource && article.excerpt && /<[a-z][\s\S]*>/i.test(article.excerpt)) leadSource = article.excerpt;
     var leadHtml = '';
     if (leadSource && String(V.stripTags ? V.stripTags(leadSource) : leadSource).replace(/\s+/g, '').length) {
-      leadHtml = '<div class="article-lead">' + linkifyHtml(leadSource) + '</div>';
+      var leadSafe = V.sanitizeInlineHtml ? V.sanitizeInlineHtml(leadSource) : linkifyHtml(leadSource);
+      leadHtml = '<div class="article-lead">' + leadSafe + '</div>';
     }
 
     return (
