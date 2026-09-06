@@ -5,6 +5,10 @@
   var channels = (window.YakVideos && window.YakVideos.channels) || [];
   var V = window.Vera;
   var all = catalog.slice();
+  var filter = 'all';
+  var featuredEl = document.getElementById('video-featured');
+  var largeGrid = document.getElementById('video-large');
+  var longBand = document.getElementById('video-long-band');
   var smallGrid = document.getElementById('video-small');
   var partnersEl = document.getElementById('video-partners');
   var latestEl = document.getElementById('video-latest');
@@ -52,6 +56,33 @@
       '<i class="yt-play" aria-hidden="true"></i>' +
       (v.duration ? '<b class="yt-time">' + esc(fmtDur(v.duration)) + '</b>' : '') +
       '</span>'
+    );
+  }
+
+  function featuredHtml(v) {
+    return (
+      '<article class="yt-featured">' +
+      '<button type="button" class="yt-open yt-featured-media" data-id="' +
+      esc(String(v.id)) +
+      '" aria-label="Смотреть: ' +
+      esc(v.title || '') +
+      '">' +
+      thumbHtml(v, 'yt-thumb--wide') +
+      '</button>' +
+      '<div class="yt-featured-copy">' +
+      '<p class="eyebrow">Фильм</p>' +
+      '<h2>' +
+      esc(v.title || '') +
+      '</h2>' +
+      (v.description ? '<p>' + esc(v.description) + '</p>' : '') +
+      '<p class="yt-featured-by">' +
+      esc(v.speaker || channelName(v.channelId) || 'Фильм') +
+      (v.duration ? ' · ' + fmtDur(v.duration) : '') +
+      '</p>' +
+      '<button type="button" class="yt-watch yt-open" data-id="' +
+      esc(String(v.id)) +
+      '">Смотреть</button>' +
+      '</div></article>'
     );
   }
 
@@ -207,25 +238,36 @@
   }
 
   function renderHome() {
+    var longs = all.filter(function (v) { return v.type === 'long'; });
     var shorts = all.filter(function (v) { return v.type === 'short'; });
     var partners = channels.filter(function (c) { return c.id !== 'ocean-mercy'; });
     if (!partners.length) partners = channels.slice();
-    var latest = all.slice().reverse();
+    var showLong = filter !== 'short';
+    var showShort = filter !== 'long';
+    var feature = showLong && longs[0] ? longs[0] : null;
+    var rest = showLong ? longs.slice(feature ? 1 : 0) : [];
 
-    if (shortBand) shortBand.hidden = !shorts.length;
+    if (featuredEl) {
+      featuredEl.hidden = !feature;
+      featuredEl.innerHTML = feature ? featuredHtml(feature) : '';
+      bind(featuredEl);
+    }
+    if (longBand) longBand.hidden = !rest.length;
+    if (largeGrid) {
+      largeGrid.innerHTML = rest.map(filmCard).join('');
+      bind(largeGrid);
+    }
+    if (shortBand) shortBand.hidden = !showShort || !shorts.length;
     if (smallGrid) {
-      var rail = shorts.length ? shorts.concat(shorts) : [];
-      smallGrid.innerHTML = rail.map(shortCard).join('');
+      smallGrid.classList.toggle('yt-shorts-grid', filter === 'short');
+      smallGrid.classList.toggle('yt-shorts-rail', filter !== 'short');
+      smallGrid.innerHTML = shorts.map(shortCard).join('');
       bind(smallGrid);
-      loopRail(smallGrid);
+      if (filter !== 'short') loopRail(smallGrid);
     }
-    if (partnersBand) partnersBand.hidden = !partners.length;
+    if (partnersBand) partnersBand.hidden = filter === 'short' || !partners.length;
     if (partnersEl) partnersEl.innerHTML = partners.map(partnerCard).join('');
-    if (latestBand) latestBand.hidden = !latest.length;
-    if (latestEl) {
-      latestEl.innerHTML = latest.map(filmCard).join('');
-      bind(latestEl);
-    }
+    if (latestBand) latestBand.hidden = true;
   }
 
   function renderChannel() {
@@ -313,6 +355,19 @@
     dialog.addEventListener('close', function () {
       clearPlayer();
       dialog.classList.remove('is-short');
+    });
+  }
+
+  var tabs = document.getElementById('video-tabs');
+  if (tabs) {
+    tabs.addEventListener('click', function (e) {
+      var btn = e.target.closest('.chip');
+      if (!btn) return;
+      filter = btn.getAttribute('data-type') || 'all';
+      tabs.querySelectorAll('.chip').forEach(function (c) {
+        c.classList.toggle('active', c === btn);
+      });
+      renderHome();
     });
   }
 

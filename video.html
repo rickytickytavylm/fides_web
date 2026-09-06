@@ -62,8 +62,24 @@
           <p class="eyebrow">Смотреть</p>
           <h1>Видео</h1>
         </div>
-        <p class="page-desc">Шортс, каналы партнёров и новые ролики — знакомим с авторами, а не забираем их аудиторию</p>
+        <p class="page-desc">Короткие размышления и полные фильмы — для паузы, молитвы и разговора о вере</p>
       </header>
+
+      <div class="video-tabs in-shell" id="video-tabs">
+        <button type="button" class="chip active" data-type="all">Все</button>
+        <button type="button" class="chip" data-type="long">Фильмы</button>
+        <button type="button" class="chip" data-type="short">Shorts</button>
+      </div>
+
+      <div class="yt-featured-host in-shell" id="video-featured"></div>
+
+      <section class="video-band" id="video-long-band">
+        <div class="block-head">
+          <h2>Фильмы</h2>
+          <span class="rule"></span>
+        </div>
+        <div class="yt-film-grid" id="video-large"></div>
+      </section>
 
       <section class="video-band" id="video-short-band">
         <div class="block-head">
@@ -81,17 +97,9 @@
         <div class="vp-rail" id="video-partners"></div>
       </section>
 
-      <section class="video-band" id="video-latest-band">
-        <div class="block-head">
-          <h2>Последние добавленные видео</h2>
-          <span class="rule"></span>
-        </div>
-        <div class="yt-film-grid" id="video-latest"></div>
-      </section>
-
-      <div id="video-featured" hidden></div>
-      <div id="video-large" hidden></div>
-      <div id="video-tabs" hidden></div>
+      <div id="video-latest-band" hidden>
+        <div id="video-latest"></div>
+      </div>
     </main>
 
     <dialog class="video-dialog" id="video-dialog">
@@ -144,8 +152,8 @@
     <script src="js/portal-desk.js?v=202608211134"></script>
     <script src="js/portal-nav.js?v=202608211134"></script>
     <script src="js/app.js?v=202608211134"></script>
-    <script src="js/video-data.js?v=2026090623"></script>
-    <script src="js/video.js?v=202608211134"></script>
+    <script src="js/video-data.js?v=2026090624"></script>
+    <script src="js/video.js?v=2026090624"></script>
       
       <script src="js/theme.js?v=202608211134"></script>
     <script src="js/cache-bust.js?v=202608211134"></script>
