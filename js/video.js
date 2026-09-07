@@ -240,8 +240,9 @@
   function renderHome() {
     var longs = all.filter(function (v) { return v.type === 'long'; });
     var shorts = all.filter(function (v) { return v.type === 'short'; });
-    var partners = channels.filter(function (c) { return c.id !== 'ocean-mercy'; });
-    if (!partners.length) partners = channels.slice();
+    var partners = channels.filter(function (c) {
+      return c.id !== 'ocean-mercy' && (channelCount(c.id) > 0 || (c.links && c.links.length));
+    });
     var showLong = filter !== 'short';
     var showShort = filter !== 'long';
     var feature = showLong && longs[0] ? longs[0] : null;
