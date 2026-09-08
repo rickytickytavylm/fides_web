@@ -1,0 +1,155 @@
+{
+  "messori": {
+    "hubSlug": "messori",
+    "title": "Витторио Мессори: рыцарь веры, покоривший мир книгами",
+    "link": "https://ruscatholic.org/messori/",
+    "slugs": [
+      "messori-1",
+      "messori-2",
+      "messori-3",
+      "messori-4",
+      "krest-cirkul",
+      "messori-5"
+    ]
+  },
+  "iannaccone": {
+    "hubSlug": "iannaccone",
+    "title": "Марио Артуро Яннакконе (1963–2026): историк вне академических рамок и мейнстрима",
+    "link": "https://ruscatholic.org/iannaccone/",
+    "slugs": [
+      "serial-killer",
+      "kristiada",
+      "ispanskie-mucheniki",
+      "tri-mira",
+      "rennes-le-chateau",
+      "illuminatus"
+    ]
+  },
+  "guareski": {
+    "hubSlug": "guareski-main",
+    "title": "Джованнино Гуарески: гораздо больше, чем просто «Дон Камилло»",
+    "link": "https://ruscatholic.org/guareski-main/",
+    "slugs": [
+      "guareski-1",
+      "guareski-2",
+      "guareski-3",
+      "guareski-4",
+      "guareski-5",
+      "guareski-6",
+      "guareski-7"
+    ]
+  },
+  "sgorlon": {
+    "hubSlug": "sgorlon",
+    "title": "«Нельзя жить без надежды»: трудовая аскеза и духовный поиск в прозе Карло Сгорлона",
+    "link": "https://ruscatholic.org/sgorlon/",
+    "slugs": [
+      "sgorlon-1",
+      "sgorlon-2",
+      "sgorlon-3"
+    ]
+  },
+  "gatti": {
+    "hubSlug": "ilia-e-alberto",
+    "title": "«Любовь никогда не перестает»: история романа «Илия и Альберто» Анджело Гатти",
+    "link": "https://ruscatholic.org/ilia-e-alberto/",
+    "slugs": [
+      "gatti-1",
+      "gatti-2",
+      "gatti-3"
+    ]
+  },
+  "pisateli-dlia-detej": {
+    "hubSlug": "pisateli-dlia-detej",
+    "title": "Забытые католические писатели для детей",
+    "link": "https://ruscatholic.org/pisateli-dlia-detej/",
+    "slugs": [
+      "poma-1",
+      "poma-2",
+      "poma-3"
+    ]
+  },
+  "gastronomiya": {
+    "hubSlug": "gastronomiya",
+    "title": "«Католическая гастрономия» с Виталием Задворным",
+    "link": "https://ruscatholic.org/gastronomiya/",
+    "slugs": [
+      "vino-1",
+      "vino-2",
+      "maslo",
+      "likeri-amaro",
+      "katolicheskoe-rozhdestvo",
+      "abbatstva-i-pivo",
+      "stol-pashi",
+      "desertyi-svyatyih",
+      "proishozhdenie-syirov",
+      "nemetskoe-pivo-istok",
+      "rizotto-paelya",
+      "cheshskoe-pivo",
+      "gastronom-amerik",
+      "frantsuzskiy-obed",
+      "frantsuzskij-obed-2",
+      "franczuzskaya-syrnaya-tarelka",
+      "franzuskie-deserti",
+      "polskoe-pivo"
+    ]
+  },
+  "vatikanskiy-garazh": {
+    "hubSlug": "vatikanskiy-garazh",
+    "title": "Ватиканский гараж",
+    "link": "https://ruscatholic.org/vatikanskiy-garazh/",
+    "slugs": [
+      "avtomobilizatsia-vatikana",
+      "mersedes-vatikan",
+      "papyi-avto",
+      "vozvrashhenie-mersedesa",
+      "revolyutsiya-v-papskom-garazhe"
+    ]
+  },
+  "predateli": {
+    "hubSlug": "predateli",
+    "title": "Великий пост с библейскими предателями",
+    "link": "https://ruscatholic.org/predateli/",
+    "slugs": [
+      "adam-eva",
+      "kain-avel",
+      "iosif-bratia",
+      "samson-dalila",
+      "david-avessalom",
+      "iuda",
+      "petr"
+    ]
+  },
+  "post-s-biblejskimi-zhenshhinami": {
+    "hubSlug": "post-s-biblejskimi-zhenshhinami",
+    "title": "Великий пост с библейскими женщинами",
+    "link": "https://ruscatholic.org/post-s-biblejskimi-zhenshhinami/",
+    "slugs": [
+      "agar",
+      "liya-nelyubimaya",
+      "dina",
+      "famar",
+      "melhola",
+      "yael",
+      "ritspa"
+    ]
+  },
+  "bibleyskiy-zoopark": {
+    "hubSlug": "bibleyskiy-zoopark",
+    "title": "Библейский зоопарк",
+    "link": "https://ruscatholic.org/bibleyskiy-zoopark/",
+    "slugs": []
+  },
+  "geografiya-spaseniya": {
+    "hubSlug": "geografiya-spaseniya",
+    "title": "География Спасения",
+    "link": "https://ruscatholic.org/geografiya-spaseniya/",
+    "slugs": []
+  },
+  "dnevnik-istseleniya": {
+    "hubSlug": "dnevnik-istseleniya",
+    "title": "Дневник исцеления",
+    "link": "https://ruscatholic.org/dnevnik-istseleniya/",
+    "slugs": []
+  }
+}

@@ -20,6 +20,18 @@
     return (list || []).filter(function (x) { return !x.status || x.status === 'published'; });
   }
 
+  function dayOf(x) {
+    return String((x && (x.date || x.createdAt)) || '').slice(0, 10);
+  }
+
+  /* Лента — по дате публикации, а не по дате последней правки в редакции. */
+  function byDateDesc(list) {
+    return list.map(function (x, i) { return { x: x, i: i }; }).sort(function (a, b) {
+      var d = dayOf(b.x).localeCompare(dayOf(a.x));
+      return d !== 0 ? d : a.i - b.i;
+    }).map(function (w) { return w.x; });
+  }
+
   function asArchiveItem(a) {
     var rubrics = (a.rubrics && a.rubrics.length) ? a.rubrics.slice() : [a.category || (a.kind === 'news' ? 'news' : 'columns')];
     var titles = {
@@ -72,6 +84,18 @@
     }).map(asArchiveItem);
   }
 
+  function mergeByDate(extra, items) {
+    var seen = {};
+    (extra || []).forEach(function (x) {
+      seen[String(x.id)] = true;
+      if (x.slug) seen[String(x.slug)] = true;
+    });
+    var rest = (items || []).filter(function (it) {
+      return !seen[String(it.id)] && !seen[String(it.slug || '')];
+    });
+    return byDateDesc((extra || []).concat(rest));
+  }
+
   function article(id) {
     id = String(id || '');
     var list = published(read().articles);
@@ -110,7 +134,7 @@
             var slug = String(it.slug || '');
             return !seen[id] && !seen[slug] && !hidden[id] && !hidden[slug];
           });
-          return { items: extra.concat(rest), total: extra.length + rest.length };
+          return { items: byDateDesc(extra.concat(rest)), total: extra.length + rest.length };
         }).catch(function () {
           return { items: extra, total: extra.length };
         });
@@ -408,6 +432,8 @@
     read: read,
     articles: articles,
     article: article,
+    mergeByDate: mergeByDate,
+    byDateDesc: byDateDesc,
     apply: apply,
   };
 

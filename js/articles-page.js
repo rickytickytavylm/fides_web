@@ -217,16 +217,10 @@
       var items = pack.items || [];
       var extra = window.YakDesk && YakDesk.articles ? YakDesk.articles({ category: 'columns' }) : [];
       if (extra.length) {
-        var seen = {};
-        extra.forEach(function (x) {
-          seen[String(x.id)] = true;
-          if (x.slug) seen[String(x.slug)] = true;
-        });
-        items = extra.concat(items.filter(function (it) {
-          return !seen[String(it.id)] && !seen[String(it.slug || '')];
-        }));
+        /* Правки из редакции — в общий список, порядок только по дате публикации */
+        items = YakDesk.mergeByDate ? YakDesk.mergeByDate(extra, items) : items;
       }
-      if (el) el.innerHTML = renderFresh(items);
+      if (el) el.innerHTML = renderFresh(items.slice(0, 7));
     })
     .catch(function () {
       var el = document.getElementById('articles-fresh');
