@@ -90,7 +90,10 @@
     var origContent = V.getContent;
     var hidden = {};
     (read().articles || []).forEach(function (a) {
-      if (a.status && a.status !== 'published') hidden[String(a.id)] = true;
+      if (a.status && a.status !== 'published') {
+        hidden[String(a.id)] = true;
+        if (a.slug) hidden[String(a.slug)] = true;
+      }
     });
     if (origGet) {
       V.getArticles = function (opts) {
@@ -98,10 +101,14 @@
         return origGet(opts).then(function (pack) {
           pack = pack || { items: [], total: 0 };
           var seen = {};
-          extra.forEach(function (ex) { seen[String(ex.id)] = true; });
+          extra.forEach(function (ex) {
+            seen[String(ex.id)] = true;
+            if (ex.slug) seen[String(ex.slug)] = true;
+          });
           var rest = (pack.items || []).filter(function (it) {
             var id = String(it.id || '');
-            return !seen[id] && !hidden[id];
+            var slug = String(it.slug || '');
+            return !seen[id] && !seen[slug] && !hidden[id] && !hidden[slug];
           });
           return { items: extra.concat(rest), total: extra.length + rest.length };
         }).catch(function () {

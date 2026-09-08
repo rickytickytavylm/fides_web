@@ -218,8 +218,13 @@
       var extra = window.YakDesk && YakDesk.articles ? YakDesk.articles({ category: 'columns' }) : [];
       if (extra.length) {
         var seen = {};
-        extra.forEach(function (x) { seen[String(x.id)] = true; });
-        items = extra.concat(items.filter(function (it) { return !seen[String(it.id)]; }));
+        extra.forEach(function (x) {
+          seen[String(x.id)] = true;
+          if (x.slug) seen[String(x.slug)] = true;
+        });
+        items = extra.concat(items.filter(function (it) {
+          return !seen[String(it.id)] && !seen[String(it.slug || '')];
+        }));
       }
       if (el) el.innerHTML = renderFresh(items);
     })
