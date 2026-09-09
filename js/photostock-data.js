@@ -110,14 +110,61 @@
     };
   }
 
+  function applyPack(data, pack) {
+    if (!pack || typeof pack !== 'object') return data;
+    var photographers = {};
+    (data.photographers || []).forEach(function (p) {
+      if (p && (p.id || p.slug)) photographers[p.id || p.slug] = p;
+    });
+    (pack.photographers || []).forEach(function (p) {
+      var n = normalizePhotographer(p);
+      if (n && (n.id || n.slug)) {
+        photographers[n.id || n.slug] = Object.assign({}, photographers[n.id || n.slug] || {}, n);
+      }
+    });
+    var photosMap = {};
+    (data.photos || []).forEach(function (p) {
+      if (p && p.id) photosMap[p.id] = p;
+    });
+    (pack.photos || []).forEach(function (p) {
+      var n = normalizePhoto(p);
+      if (!n || !n.id || !n.url) return;
+      if (n.status && n.status !== 'approved') return;
+      photosMap[n.id] = Object.assign({}, photosMap[n.id] || {}, n);
+    });
+    var photos = Object.keys(photosMap).map(function (k) { return photosMap[k]; });
+    photos.sort(function (a, b) {
+      return String(b.createdAt || '').localeCompare(String(a.createdAt || ''));
+    });
+    return {
+      photographers: Object.keys(photographers).map(function (k) { return photographers[k]; }),
+      photos: photos,
+    };
+  }
+
+  function loadRemotePack() {
+    var V = global.Vera;
+    if (!V || !V.getArticle) return Promise.resolve(null);
+    return V.getArticle('yak-photostock-data')
+      .then(function (a) {
+        var raw = (a && (a.contentText || a.content || '')) || '';
+        var pack = JSON.parse(raw);
+        return pack && typeof pack === 'object' ? pack : null;
+      })
+      .catch(function () { return null; });
+  }
+
   function load() {
     if (cache) return Promise.resolve(cache);
     return fetch('assets/photostock/seed.json?v=' + (global.YAK_BUILD || '1'))
       .then(function (r) { return r.ok ? r.json() : { photographers: [], photos: [] }; })
       .catch(function () { return { photographers: [], photos: [] }; })
       .then(function (seed) {
-        cache = mergeData(seed || { photographers: [], photos: [] });
-        return cache;
+        var local = mergeData(seed || { photographers: [], photos: [] });
+        return loadRemotePack().then(function (pack) {
+          cache = pack ? applyPack(local, pack) : local;
+          return cache;
+        });
       });
   }
 

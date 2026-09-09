@@ -1,6 +1,6 @@
 /**
- * Только снос кэша. Service Worker больше не регистрируем —
- * он оставлял старый HTML/CSS после смены домена.
+ * Снос SW/Cache API + сверка с build.json.
+ * Старый HTML на телефоне иначе месяцами тянет прошлые ?v= скрипты.
  */
 (function () {
   'use strict';
@@ -28,6 +28,7 @@
     var host =
       document.querySelector('.portal-footer .wrap') ||
       document.querySelector('.site-footer') ||
+      document.querySelector('.side-user') ||
       null;
     if (!host) return;
     var el = document.createElement('p');
@@ -45,8 +46,43 @@
     stampBuild(id);
   }
 
+  function buildUrl() {
+    try {
+      return new URL('build.json', document.baseURI || location.href).href;
+    } catch (e) {
+      return 'build.json';
+    }
+  }
+
+  function checkRemote() {
+    return fetch(buildUrl() + (buildUrl().indexOf('?') === -1 ? '?' : '&') + 't=' + Date.now(), {
+      cache: 'no-store',
+      headers: { 'Cache-Control': 'no-cache' },
+    })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        var remote = j && j.id ? String(j.id) : '';
+        if (!remote || remote === EMBEDDED) return;
+        var flag = 'yak_reloaded_' + remote;
+        try {
+          if (sessionStorage.getItem(flag)) return;
+          sessionStorage.setItem(flag, '1');
+        } catch (e) {}
+        var u;
+        try {
+          u = new URL(location.href);
+          u.searchParams.set('v', remote);
+          location.replace(u.toString());
+        } catch (err) {
+          location.replace(location.pathname + '?v=' + encodeURIComponent(remote) + location.hash);
+        }
+      })
+      .catch(function () {});
+  }
+
   Promise.all([nukeSw(), nukeCaches()]).then(function () {
     stampWhenReady(EMBEDDED);
     try { if (EMBEDDED) localStorage.setItem(KEY, EMBEDDED); } catch (e) {}
+    return checkRemote();
   });
 })();

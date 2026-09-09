@@ -1,3 +1,4 @@
 {
-  "id": "202608211134"
+  "id": "202609091852",
+  "note": "Clients reload when this id differs from window.YAK_BUILD"
 }

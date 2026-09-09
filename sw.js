@@ -1,5 +1,5 @@
 /* Kill-switch: unregister leftover SW and wipe caches. Do not serve pages. */
-var BUILD = '202608211134';
+var BUILD = '202609091852';
 
 self.addEventListener('install', function (event) {
   self.skipWaiting();
@@ -20,7 +20,12 @@ self.addEventListener('activate', function (event) {
       })
       .then(function (clients) {
         clients.forEach(function (client) {
-          if (client.url) client.navigate(client.url);
+          if (!client.url) return;
+          var u = client.url;
+          if (u.indexOf('v=') === -1) {
+            u += (u.indexOf('?') === -1 ? '?' : '&') + 'v=' + BUILD;
+          }
+          client.navigate(u);
         });
       })
   );

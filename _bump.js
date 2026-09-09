@@ -33,5 +33,22 @@ if (fs.existsSync(sw)) {
   }
 }
 
-fs.writeFileSync(path.join(dir, 'build.json'), JSON.stringify({ id: build }, null, 2) + '\n');
+fs.writeFileSync(path.join(dir, 'build.json'), JSON.stringify({
+  id: build,
+  note: 'Clients reload when this id differs from window.YAK_BUILD',
+}, null, 2) + '\n');
+
+const manifest = path.join(dir, 'site.webmanifest');
+if (fs.existsSync(manifest)) {
+  const src = fs.readFileSync(manifest, 'utf8');
+  let out = src.replace(/index\.html\?b=[^"]+/g, 'index.html?b=' + build);
+  if (!/index\.html\?b=/.test(out)) {
+    out = out.replace(/"start_url"\s*:\s*"[^"]*"/, '"start_url": "./index.html?b=' + build + '"');
+  }
+  if (out !== src) {
+    fs.writeFileSync(manifest, out);
+    touched++;
+  }
+}
+
 console.log('BUILD', build, 'files', touched + 1);
