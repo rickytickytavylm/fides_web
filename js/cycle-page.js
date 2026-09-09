@@ -54,10 +54,11 @@
 
     var cover = cycle.cover || cycle.image || '';
     var intro = cycle.introHtml
-      ? '<div class="page-desc cycle-intro">' + cycle.introHtml + '</div>'
-      : (cycle.intro ? '<p class="page-desc">' + esc(cycle.intro) + '</p>' : '');
+      ? '<div class="cycle-intro">' + cycle.introHtml + '</div>'
+      : (cycle.intro ? '<div class="cycle-intro"><p>' + esc(cycle.intro) + '</p></div>' : '');
 
     root.innerHTML =
+      '<div class="cycle-page">' +
       '<nav class="breadcrumbs in-shell">' +
       '<a href="index.html">Главная</a><span>/</span>' +
       '<a href="authors.html">Авторы</a><span>/</span>' +
@@ -69,29 +70,28 @@
           '</a><span>/</span>'
         : '') +
       '<span>Цикл</span></nav>' +
-      '<header class="page-head in-shell">' +
-      '<div>' +
+      '<header class="cycle-head">' +
       '<p class="eyebrow">' +
       esc(cycle.subtitle || 'Цикл публикаций') +
       '</p>' +
       '<h1>' +
       esc(cycle.title) +
-      '</h1></div>' +
-      intro +
+      '</h1>' +
+      (author
+        ? '<p class="cycle-byline"><a href="author.html?slug=' +
+          encodeURIComponent(author.slug) +
+          '">' +
+          esc(author.name) +
+          '</a></p>'
+        : '') +
       '</header>' +
+      intro +
       (cover
         ? '<figure class="article-hero cycle-hero"><div class="hero-photo" style="--img:url(\'' +
           esc(cover).replace(/'/g, '%27') +
           '\')"></div></figure>'
         : '') +
       '<div class="cycle-meta">' +
-      (author
-        ? '<a class="author-social" href="author.html?slug=' +
-          encodeURIComponent(author.slug) +
-          '">' +
-          esc(author.name) +
-          '</a>'
-        : '') +
       (cycle.hubUrl
         ? '<a class="author-social" href="' +
           esc(cycle.hubUrl) +
@@ -103,7 +103,7 @@
       '<section class="cycle-list"><h2>Содержание цикла</h2>' +
       '<div class="cycle-items">' +
       (items || '<p class="archive-empty">Пока нет материалов</p>') +
-      '</div></section>';
+      '</div></section></div>';
   }
 
   paint();

@@ -131,6 +131,11 @@
           extra.forEach(function (ex) {
             seen[String(ex.id)] = true;
             if (ex.slug) seen[String(ex.slug)] = true;
+            (pack.items || []).forEach(function (it) {
+              if (String(it.id) === String(ex.id) || (ex.slug && String(it.slug) === String(ex.slug))) {
+                if (!ex.image && it.image) ex.image = it.image;
+              }
+            });
           });
           var rest = (pack.items || []).filter(function (it) {
             var id = String(it.id || '');
@@ -148,7 +153,13 @@
       V.getArticle = function (id) {
         if (hidden[String(id)]) return Promise.reject(new Error('hidden'));
         var local = article(id);
-        if (local) return Promise.resolve(local);
+        if (local) {
+          if (local.image) return Promise.resolve(local);
+          return origOne(id).then(function (remote) {
+            if (remote && remote.image) local.image = remote.image;
+            return local;
+          }).catch(function () { return local; });
+        }
         return origOne(id);
       };
     }
@@ -254,39 +265,44 @@
     }
   }
 
+  function patchAuthor(A, ov) {
+    if (!ov || (ov.status && ov.status !== 'published')) return;
+    var i = findAuthor(A, ov.slug || ov.id);
+    var patch = Object.assign({}, ov);
+    if (!patch.photo) delete patch.photo;
+    if (i !== -1) {
+      var recent = (A[i].recent || []).slice();
+      A[i] = Object.assign({}, A[i], patch);
+      if (ov.recent && ov.recent.length) {
+        ov.recent.forEach(function (p) { pushRecent({ recent: recent }, p); });
+        A[i].recent = recent;
+        A[i].count = recent.length;
+      } else {
+        A[i].recent = recent;
+      }
+    } else if (ov.slug || ov.name) {
+      A.push(Object.assign({
+        slug: ov.slug || ov.id,
+        name: ov.name || '',
+        role: ov.role || '',
+        bio: ov.bio || '',
+        photo: ov.photo || '',
+        socials: ov.socials || [],
+        recent: ov.recent || [],
+        count: (ov.recent || []).length,
+      }, patch));
+    }
+  }
+
   function applyAuthors() {
     var A = global.YakAuthors;
-    if (!A || A._deskApplied) return;
+    if (!A) return;
     if (!A.length && !(read().authors || []).length) return;
-    A._deskApplied = true;
     var data = read();
-    (data.authors || []).forEach(function (ov) {
-      if (ov.status && ov.status !== 'published') return;
-      var i = findAuthor(A, ov.slug || ov.id);
-      if (i !== -1) {
-        var recent = (A[i].recent || []).slice();
-        A[i] = Object.assign({}, A[i], ov);
-        if (ov.recent && ov.recent.length) {
-          ov.recent.forEach(function (p) { pushRecent({ recent: recent }, p); });
-          A[i].recent = recent;
-          A[i].count = recent.length;
-        } else {
-          A[i].recent = recent;
-        }
-      } else if (ov.slug || ov.name) {
-        A.push(Object.assign({
-          slug: ov.slug || ov.id,
-          name: ov.name || '',
-          role: ov.role || '',
-          bio: ov.bio || '',
-          photo: ov.photo || '',
-          socials: ov.socials || [],
-          recent: ov.recent || [],
-          count: (ov.recent || []).length,
-        }, ov));
-      }
-    });
-    (data.authorLinks || []).forEach(function (link) {
+    if (!A._deskApplied) {
+      A._deskApplied = true;
+      (data.authors || []).forEach(function (ov) { patchAuthor(A, ov); });
+      (data.authorLinks || []).forEach(function (link) {
       if (!link || !link.authorSlug || !link.slug) return;
       var i = findAuthor(A, link.authorSlug);
       if (i === -1) return;
@@ -313,6 +329,19 @@
         });
       });
     } catch (e) {}
+    }
+
+    var V = global.Vera;
+    if (!V || !V.getArticle || applyAuthors._remote) return;
+    applyAuthors._remote = true;
+    V.getArticle('yak-authors-data')
+      .then(function (a) {
+        var list = [];
+        try { list = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { list = []; }
+        if (Array.isArray(list)) list.forEach(function (ov) { patchAuthor(A, ov); });
+        (read().authors || []).forEach(function (ov) { patchAuthor(A, ov); });
+      })
+      .catch(function () {});
   }
 
   function applyVideoChannels() {

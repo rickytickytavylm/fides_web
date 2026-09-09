@@ -445,7 +445,7 @@
   load(id)
     .then(function (article) {
       if (!article || !article.title) throw new Error('Article empty');
-      if (String(article.slug || id) === 'yak-cycles-data') throw new Error('Article empty');
+      if (String(article.slug || id) === 'yak-cycles-data' || String(article.slug || id) === 'yak-authors-data') throw new Error('Article empty');
       document.title = article.title + ' — ЯКатолик';
       function paint() {
         root.innerHTML = renderArticle(article);
