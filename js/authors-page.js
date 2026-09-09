@@ -11,6 +11,13 @@
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
+  function formatBio(bio) {
+    if (!bio) return '';
+    if (V && V.sanitizeRichHtml) return V.sanitizeRichHtml(bio);
+    if (/<[a-z][\s\S]*>/i.test(bio)) return String(bio);
+    return '<p>' + esc(bio).replace(/\n\n+/g, '</p><p>').replace(/\n/g, '<br>') + '</p>';
+  }
+
   function strip(html) {
     if (V && V.stripTags) return V.stripTags(html).slice(0, 160);
     return String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
@@ -287,7 +294,7 @@
       '<div class="author-head-body">' +
       '<p class="eyebrow">' + esc(a.role || 'Автор') + '</p>' +
       '<h1>' + esc(a.name) + '</h1>' +
-      '<p class="author-bio">' + esc(a.bio || '') + '</p>' +
+      (a.bio ? '<div class="author-bio">' + formatBio(a.bio) + '</div>' : '') +
       (socials ? '<div class="author-socials">' + socials + '</div>' : '') +
       '<div class="author-stats">' +
       '<span><b>' + esc(String(pubCount)) + '</b> ' +

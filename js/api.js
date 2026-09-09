@@ -521,6 +521,37 @@
       .replace(/\[\[BR\]\]/g, '<br />');
   }
 
+  /** Абзацы + безопасный инлайн (описание автора и похожие поля). */
+  function sanitizeRichHtml(fragment) {
+    var s = String(fragment || '');
+    if (!s.trim()) return '';
+    if (!/<[a-z][\s\S]*>/i.test(s)) {
+      var chunks = /\n\s*\n/.test(s) ? s.split(/\n\s*\n/) : s.split(/\n/);
+      return chunks.map(function (p) {
+        var t = p.trim();
+        if (!t) return '';
+        return '<p>' + sanitizeInlineHtml(t.replace(/\n/g, '<br>')) + '</p>';
+      }).filter(Boolean).join('');
+    }
+    s = s.replace(/<div\b[^>]*>/gi, '<p>').replace(/<\/div>/gi, '</p>');
+    var parts = [];
+    var re = /<p\b[^>]*>([\s\S]*?)<\/p>/gi;
+    var m;
+    var last = 0;
+    while ((m = re.exec(s))) {
+      if (m.index > last) {
+        var mid = s.slice(last, m.index).trim();
+        if (mid) parts.push('<p>' + sanitizeInlineHtml(mid) + '</p>');
+      }
+      var inner = sanitizeInlineHtml(m[1]);
+      if (String(inner).replace(/<br\s*\/?>/gi, '').trim()) parts.push('<p>' + inner + '</p>');
+      last = m.index + m[0].length;
+    }
+    var tail = s.slice(last).trim();
+    if (tail) parts.push('<p>' + sanitizeInlineHtml(tail) + '</p>');
+    return parts.join('');
+  }
+
   /** Оставляет безопасный инлайн: strong/em/b/i/br + безопасные <a> */
   function sanitizeInlineHtml(fragment) {
     var s = String(fragment || '');
@@ -664,6 +695,7 @@
     escapeHtml: escapeHtml,
     stripTags: stripTags,
     sanitizeInlineHtml: sanitizeInlineHtml,
+    sanitizeRichHtml: sanitizeRichHtml,
     resolveContentHref: resolveContentHref,
     htmlToBlocks: htmlToBlocks,
     articleHref: articleHref,

@@ -3123,6 +3123,9 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
 }
 .author-head .author-ava { width: 120px; height: 120px; font-size: 32px; }
 .author-bio { margin: 10px 0 14px; color: var(--stone-700); line-height: 1.6; max-width: 560px; }
+.author-bio p { margin: 0 0 .7em; }
+.author-bio p:last-child { margin-bottom: 0; }
+.author-bio a { color: #2a5bd7; text-decoration: underline; }
 .author-socials { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
 .author-social {
   display: inline-block; padding: 6px 10px; border-radius: 999px; background: var(--accent-soft);
