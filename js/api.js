@@ -30,8 +30,60 @@
     { slug: 'propovedi', label: 'Проповеди' },
     { slug: 'ask-priest', label: 'Вопрос священнику' },
     { slug: 'history', label: 'История' },
+    { slug: 'kultura', label: 'Культура' },
+    { slug: 'music', label: 'Музыка' },
     { slug: 'polka', label: 'Книжная полка' },
   ];
+
+  var CATEGORY_TITLES = {
+    news: 'Новости', digest: 'Новости',
+    'church-rus': 'Россия', russia: 'Россия',
+    sng: 'КЦ в мире', 'santa-sede': 'Святой Престол', pope: 'Святой Престол',
+    columns: 'Статьи', spirituality: 'Духовность', 'obraz-zhizni': 'Образ жизни',
+    kultura: 'Культура', puteshestviya: 'Путешествия', history: 'История',
+    biografii: 'Биографии', saints: 'Святые', bible: 'Библеистика', liturgy: 'Литургика',
+    interview: 'Интервью', svidetelstva: 'Свидетельства', propovedi: 'Проповеди',
+    music: 'Музыка', cook: 'Католическая кухня', 'ask-priest': 'Вопросы священнику',
+    psiholog: 'Вопросы психологу', 'eto-interesno': 'Это интересно',
+    'kino-so-smyislom': 'Кино со смыслом', pray: 'Молитвы', polka: 'Книжная полка',
+  };
+  var UMBRELLA_SLUGS = { columns: 1, news: 1, digest: 1 };
+
+  /* Все рубрики, но узкие (Культура, Музыка) — перед зонтичной «Статьи». */
+  function displayCategories(item) {
+    var slugs = (item && (item.categorySlugs || item.rubrics)) || [];
+    var labels = (item && item.categories) || [];
+    var out = [];
+    var seen = {};
+    function push(label) {
+      label = String(label || '').trim();
+      if (!label || seen[label]) return;
+      seen[label] = 1;
+      out.push(label);
+    }
+    if (slugs.length) {
+      var narrow = slugs.filter(function (s) { return !UMBRELLA_SLUGS[s]; });
+      var use = narrow.length ? narrow.concat(slugs.filter(function (s) { return UMBRELLA_SLUGS[s]; })) : slugs;
+      use.forEach(function (s) { push(CATEGORY_TITLES[s] || s); });
+    } else {
+      labels.forEach(push);
+    }
+    return out;
+  }
+
+  function categoryLine(item, fallback) {
+    var list = displayCategories(item);
+    return list.length ? list.join(' · ') : (fallback || 'Материал');
+  }
+
+  function primaryCategorySlug(item) {
+    var slugs = (item && (item.categorySlugs || item.rubrics)) || [];
+    var i;
+    for (i = 0; i < slugs.length; i++) {
+      if (!UMBRELLA_SLUGS[slugs[i]]) return slugs[i];
+    }
+    return slugs[0] || '';
+  }
 
   function apiGet(path) {
     return fetch(API_BASE + path).then(function (res) {
@@ -617,5 +669,8 @@
     articleHref: articleHref,
     pageHref: pageHref,
     coverStyle: coverStyle,
+    displayCategories: displayCategories,
+    categoryLine: categoryLine,
+    primaryCategorySlug: primaryCategorySlug,
   };
 })(window);

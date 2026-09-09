@@ -10,7 +10,7 @@
   function read() {
     try {
       var raw = localStorage.getItem(KEY);
-      return raw ? JSON.parse(raw) : { articles: [], events: [], audio: [], video: [], churchDays: [], authors: [], authorLinks: [], photographers: [], videoChannels: [] };
+      return raw ? JSON.parse(raw) : { articles: [], events: [], audio: [], video: [], churchDays: [], authors: [], authorLinks: [], photographers: [], videoChannels: [], cycles: [] };
     } catch (e) {
       return { articles: [], events: [], audio: [], video: [], churchDays: [], authors: [], authorLinks: [], photographers: [], videoChannels: [] };
     }
@@ -39,6 +39,7 @@
       columns: 'Статьи', spirituality: 'Духовность', 'obraz-zhizni': 'Образ жизни', kultura: 'Культура',
       history: 'История', biografii: 'Биографии', saints: 'Святые', bible: 'Библеистика', liturgy: 'Литургика',
       interview: 'Интервью', svidetelstva: 'Свидетельства', propovedi: 'Проповеди',
+      music: 'Музыка', puteshestviya: 'Путешествия',
     };
     return {
       id: a.id,
@@ -63,6 +64,8 @@
       categories: rubrics.map(function (id) { return titles[id] || id; }),
       categorySlugs: rubrics,
       kind: 'desk',
+      cycleSlug: a.cycleSlug || a.cycleId || '',
+      cycleOrder: a.cycleOrder || 0,
     };
   }
 
@@ -417,6 +420,37 @@
     });
   }
 
+  var CYCLES_PAGE_SLUG = 'yak-cycles-data';
+
+  function applyCycles() {
+    var C = global.YakCycles;
+    if (!C) return;
+    var desk = published(read().cycles || []);
+    if (C.merge && desk.length) C.merge(desk);
+
+    var V = global.Vera;
+    if (!V || !V.getArticle) {
+      if (C._resolveReady) C._resolveReady();
+      return;
+    }
+    if (applyCycles._once) return;
+    applyCycles._once = true;
+    var timer = setTimeout(function () { if (C._resolveReady) C._resolveReady(); }, 6000);
+    V.getArticle(CYCLES_PAGE_SLUG)
+      .then(function (a) {
+        var raw = (a && (a.contentText || a.content || '')) || '';
+        var list = [];
+        try { list = JSON.parse(raw); } catch (e) { list = []; }
+        if (Array.isArray(list) && C.merge) C.merge(list);
+      })
+      .catch(function () {})
+      .then(function () {
+        clearTimeout(timer);
+        if (desk.length && C.merge) C.merge(desk);
+        if (C._resolveReady) C._resolveReady();
+      });
+  }
+
   function apply() {
     applyVera();
     applyEvents();
@@ -426,6 +460,7 @@
     applyAuthors();
     applyVideoChannels();
     applyGuides();
+    applyCycles();
   }
 
   global.YakDesk = {

@@ -314,7 +314,7 @@
             return (
               '<a class="art" href="' + V.articleHref(it) + '">' +
               '<div class="ph" ' + V.coverStyle(it.image) + '></div>' +
-              '<div class="in"><div class="rub">' + esc((it.categories && it.categories[0]) || '') + '</div>' +
+              '<div class="in"><div class="rub">' + esc((window.Vera && Vera.categoryLine && Vera.categoryLine(it, '')) || (it.categories && it.categories[0]) || '') + '</div>' +
               '<h4>' + esc(it.title) + '</h4></div></a>'
             );
           }).join('');

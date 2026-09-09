@@ -16,7 +16,7 @@
     if (img) return "url('" + String(img).replace(/'/g, '%27') + "')";
     return grad(i);
   }
-  function cat(item) { return (item.categories && item.categories[0]) || 'Материал'; }
+  function cat(item) { return (V.categoryLine && V.categoryLine(item, 'Материал')) || (item.categories && item.categories[0]) || 'Материал'; }
   var esc = V.escapeHtml;
   function cleanTitle(value) {
     return String(value || '').replace(/\.+\s*$/, '').trim();

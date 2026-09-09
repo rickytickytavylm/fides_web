@@ -120,7 +120,7 @@
   }
 
   function freshRub(it) {
-    return (it.categories && it.categories[0]) || 'Статья';
+    return (V.categoryLine && V.categoryLine(it, 'Статья')) || (it.categories && it.categories[0]) || 'Статья';
   }
 
   function freshCard(it, i, lead) {

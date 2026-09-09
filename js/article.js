@@ -127,7 +127,46 @@
     var box = document.createElement('div');
     box.innerHTML = html || '';
     box.querySelectorAll('script,style,iframe,object').forEach(function (n) { n.remove(); });
+    box.querySelectorAll('figcaption').forEach(function (n) {
+      if (!String(n.textContent || '').trim()) n.parentNode.removeChild(n);
+    });
     return box.innerHTML;
+  }
+
+  function cycleOf(article) {
+    if (!window.YakCycles || !YakCycles.byArticleSlug) return null;
+    return YakCycles.byArticleSlug(String((article && (article.slug || article.cycleSlug || article.id)) || ''));
+  }
+
+  function renderCycleMore(article, cycle) {
+    if (!cycle) return '';
+    var self = String((article && article.slug) || '');
+    var items = (cycle.items || []).filter(function (it) {
+      return it && it.slug && String(it.slug) !== self;
+    });
+    if (!items.length) return '';
+    return (
+      '<section class="article-cycle-more">' +
+      '<h2>К другим статьям цикла</h2>' +
+      '<p class="article-cycle-more-lead"><a href="cycle.html?id=' +
+      encodeURIComponent(cycle.id) +
+      '">' +
+      V.escapeHtml(cycle.title) +
+      '</a></p>' +
+      '<ol>' +
+      items
+        .map(function (it) {
+          return (
+            '<li><a href="article.html?id=' +
+            encodeURIComponent(it.slug) +
+            '">' +
+            V.escapeHtml(it.title || it.slug) +
+            '</a></li>'
+          );
+        })
+        .join('') +
+      '</ol></section>'
+    );
   }
 
   function pickCover(article, blocks) {
@@ -142,6 +181,7 @@
   function renderArticle(article) {
     var isPage = article.kind === 'page' || article.type === 'page';
     var cat =
+      (V.categoryLine && V.categoryLine(article, isPage ? 'Страница' : 'Материал')) ||
       (article.categories && article.categories[0]) ||
       (isPage ? 'Страница' : 'Материал');
     var blocks = V.htmlToBlocks(article.contentHtml || '');
@@ -182,22 +222,20 @@
         '</ul></section>';
     }
 
+    var crumbSlug =
+      (V.primaryCategorySlug && V.primaryCategorySlug(article)) ||
+      (article.categorySlugs && article.categorySlugs[0]) ||
+      '';
     var listHref = isPage
       ? 'articles.html'
-      : 'archive.html' +
-        (article.categorySlugs && article.categorySlugs[0]
-          ? '?category=' + encodeURIComponent(article.categorySlugs[0])
-          : '');
+      : 'archive.html' + (crumbSlug ? '?category=' + encodeURIComponent(crumbSlug) : '');
     var sectionLabel = isPage
       ? 'Статьи'
-      : article.categorySlugs && article.categorySlugs[0] === 'columns'
+      : article.categorySlugs && (article.categorySlugs[0] === 'columns' || article.categorySlugs.indexOf('columns') !== -1)
         ? 'Статьи'
         : 'Новости';
 
-    var cycle =
-      !isPage && window.YakCycles && window.YakCycles.byArticleSlug
-        ? window.YakCycles.byArticleSlug(String(article.id || article.slug || ''))
-        : null;
+    var cycle = !isPage ? cycleOf(article) : null;
     var cycleHtml = cycle
       ? '<p class="article-cycle"><a href="cycle.html?id=' +
         encodeURIComponent(cycle.id) +
@@ -303,6 +341,7 @@
       bodyHtml +
       '</div>' +
       relatedHtml +
+      renderCycleMore(article, cycle) +
       '<footer class="article-foot">' +
       '<a class="text-link" href="' +
       listHref +
@@ -321,7 +360,7 @@
       return;
     }
     relatedEl.innerHTML = '<div class="loading-row"><span class="spinner" role="status" aria-label="Загрузка"></span></div>';
-    var slug = (article.categorySlugs && article.categorySlugs[0]) || '';
+    var slug = (V.primaryCategorySlug && V.primaryCategorySlug(article)) || (article.categorySlugs && article.categorySlugs[0]) || '';
     V.getArticles({ category: slug, limit: 8 })
       .then(function (pack) {
         var selfId = String(article.id);
@@ -335,7 +374,7 @@
         }
         relatedEl.innerHTML = items
           .map(function (item) {
-            var cat = (item.categories && item.categories[0]) || 'Материал';
+            var cat = (V.categoryLine && V.categoryLine(item, 'Материал')) || (item.categories && item.categories[0]) || 'Материал';
             var thumb = item.image
               ? '<a class="story-thumb" href="' +
                 V.articleHref(item) +
@@ -406,10 +445,15 @@
   load(id)
     .then(function (article) {
       if (!article || !article.title) throw new Error('Article empty');
+      if (String(article.slug || id) === 'yak-cycles-data') throw new Error('Article empty');
       document.title = article.title + ' — ЯКатолик';
-      root.innerHTML = renderArticle(article);
-      if (relatedSection) relatedSection.hidden = article.kind === 'page';
+      function paint() {
+        root.innerHTML = renderArticle(article);
+        if (relatedSection) relatedSection.hidden = article.kind === 'page';
+      }
+      paint();
       loadRelated(article);
+      if (window.YakCycles && YakCycles.ready) YakCycles.ready.then(paint);
     })
     .catch(function (e) {
       console.error(e);

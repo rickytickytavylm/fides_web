@@ -50,7 +50,7 @@
       if (!hero) {
         heroEl.innerHTML = '<p class="archive-empty">Ничего не найдено</p>';
       } else {
-        var cat = (hero.categories && hero.categories[0]) || 'Рускатолик';
+        var cat = (V.categoryLine && V.categoryLine(hero, 'Рускатолик')) || (hero.categories && hero.categories[0]) || 'Рускатолик';
         var img = hero.image || placeholderCover();
         heroEl.innerHTML =
           '<a class="lead-story reveal visible" href="' +
@@ -76,7 +76,7 @@
     if (listEl) {
       listEl.innerHTML = rest
         .map(function (item) {
-          var c = (item.categories && item.categories[0]) || 'Материал';
+          var c = (V.categoryLine && V.categoryLine(item, 'Материал')) || (item.categories && item.categories[0]) || 'Материал';
           var i = item.image || placeholderCover();
           return (
             '<article class="compact-story reveal visible"><div>' +

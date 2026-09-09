@@ -1,9 +1,7 @@
 (function () {
   'use strict';
   var root = document.getElementById('cycle-root');
-  var C = window.YakCycles;
-  var authors = window.YakAuthors || [];
-  if (!root || !C) return;
+  if (!root) return;
 
   function esc(s) {
     return String(s == null ? '' : s)
@@ -13,79 +11,101 @@
       .replace(/"/g, '&quot;');
   }
 
-  var id = new URLSearchParams(location.search).get('id') || '';
-  var cycle = C.byId(id);
-  if (!cycle) {
+  function paint() {
+    var C = window.YakCycles;
+    var authors = window.YakAuthors || [];
+    if (!C) {
+      root.innerHTML = '<p class="archive-empty">Циклы не загрузились.</p>';
+      return;
+    }
+    var id = new URLSearchParams(location.search).get('id') || '';
+    var cycle = C.byId(id);
+    if (!cycle || (cycle.status && cycle.status !== 'published')) {
+      root.innerHTML =
+        '<nav class="breadcrumbs in-shell"><a href="index.html">Главная</a><span>/</span><a href="authors.html">Авторы</a><span>/</span><span>Цикл</span></nav>' +
+        '<header class="page-head in-shell"><div><h1>Цикл не найден</h1></div></header>' +
+        '<p><a class="wlink" href="authors.html">← К авторам</a></p>';
+      return;
+    }
+
+    var author = authors.filter(function (a) {
+      return a.slug === cycle.authorSlug;
+    })[0];
+    document.title = cycle.title + ' — ЯКатолик';
+
+    var items = (cycle.items || [])
+      .slice()
+      .sort(function (a, b) { return (Number(a.order) || 0) - (Number(b.order) || 0); })
+      .map(function (it, idx) {
+        var href = it.href || 'article.html?id=' + encodeURIComponent(it.slug);
+        return (
+          '<a class="cycle-item" href="' +
+          esc(href) +
+          '">' +
+          '<span class="cycle-num">' +
+          (it.order || idx + 1) +
+          '</span>' +
+          '<span class="cycle-item-body"><strong>' +
+          esc(it.title) +
+          '</strong></span></a>'
+        );
+      })
+      .join('');
+
+    var cover = cycle.cover || cycle.image || '';
+    var intro = cycle.introHtml
+      ? '<div class="page-desc cycle-intro">' + cycle.introHtml + '</div>'
+      : (cycle.intro ? '<p class="page-desc">' + esc(cycle.intro) + '</p>' : '');
+
     root.innerHTML =
-      '<nav class="breadcrumbs in-shell"><a href="index.html">Главная</a><span>/</span><a href="authors.html">Авторы</a><span>/</span><span>Цикл</span></nav>' +
-      '<header class="page-head in-shell"><div><h1>Цикл не найден</h1></div></header>' +
-      '<p><a class="wlink" href="authors.html">← К авторам</a></p>';
-    return;
+      '<nav class="breadcrumbs in-shell">' +
+      '<a href="index.html">Главная</a><span>/</span>' +
+      '<a href="authors.html">Авторы</a><span>/</span>' +
+      (author
+        ? '<a href="author.html?slug=' +
+          encodeURIComponent(author.slug) +
+          '">' +
+          esc(author.name) +
+          '</a><span>/</span>'
+        : '') +
+      '<span>Цикл</span></nav>' +
+      '<header class="page-head in-shell">' +
+      '<div>' +
+      '<p class="eyebrow">' +
+      esc(cycle.subtitle || 'Цикл публикаций') +
+      '</p>' +
+      '<h1>' +
+      esc(cycle.title) +
+      '</h1></div>' +
+      intro +
+      '</header>' +
+      (cover
+        ? '<figure class="article-hero cycle-hero"><div class="hero-photo" style="--img:url(\'' +
+          esc(cover).replace(/'/g, '%27') +
+          '\')"></div></figure>'
+        : '') +
+      '<div class="cycle-meta">' +
+      (author
+        ? '<a class="author-social" href="author.html?slug=' +
+          encodeURIComponent(author.slug) +
+          '">' +
+          esc(author.name) +
+          '</a>'
+        : '') +
+      (cycle.hubUrl
+        ? '<a class="author-social" href="' +
+          esc(cycle.hubUrl) +
+          '" target="_blank" rel="noopener">Страница цикла на Рускатолик</a>'
+        : '') +
+      '<span class="author-count">' +
+      (cycle.items || []).length +
+      ' материалов</span></div>' +
+      '<section class="cycle-list"><h2>Содержание цикла</h2>' +
+      '<div class="cycle-items">' +
+      (items || '<p class="archive-empty">Пока нет материалов</p>') +
+      '</div></section>';
   }
 
-  var author = authors.filter(function (a) {
-    return a.slug === cycle.authorSlug;
-  })[0];
-  document.title = cycle.title + ' — ЯКатолик';
-
-  var items = (cycle.items || [])
-    .map(function (it, idx) {
-      var href = it.href || 'article.html?id=' + encodeURIComponent(it.slug);
-      return (
-        '<a class="cycle-item" href="' +
-        esc(href) +
-        '">' +
-        '<span class="cycle-num">' +
-        (idx + 1) +
-        '</span>' +
-        '<span class="cycle-item-body"><strong>' +
-        esc(it.title) +
-        '</strong></span></a>'
-      );
-    })
-    .join('');
-
-  root.innerHTML =
-    '<nav class="breadcrumbs in-shell">' +
-    '<a href="index.html">Главная</a><span>/</span>' +
-    '<a href="authors.html">Авторы</a><span>/</span>' +
-    (author
-      ? '<a href="author.html?slug=' +
-        encodeURIComponent(author.slug) +
-        '">' +
-        esc(author.name) +
-        '</a><span>/</span>'
-      : '') +
-    '<span>Цикл</span></nav>' +
-    '<header class="page-head in-shell">' +
-    '<div>' +
-    '<p class="eyebrow">' +
-    esc(cycle.subtitle || 'Цикл публикаций') +
-    '</p>' +
-    '<h1>' +
-    esc(cycle.title) +
-    '</h1></div>' +
-    '<p class="page-desc">' +
-    esc(cycle.intro || '') +
-    '</p></header>' +
-    '<div class="cycle-meta">' +
-    (author
-      ? '<a class="author-social" href="author.html?slug=' +
-        encodeURIComponent(author.slug) +
-        '">' +
-        esc(author.name) +
-        '</a>'
-      : '') +
-    (cycle.hubUrl
-      ? '<a class="author-social" href="' +
-        esc(cycle.hubUrl) +
-        '" target="_blank" rel="noopener">Страница цикла на Рускатолик</a>'
-      : '') +
-    '<span class="author-count">' +
-    (cycle.items || []).length +
-    ' материалов</span></div>' +
-    '<section class="cycle-list"><h2>Содержание цикла</h2>' +
-    '<div class="cycle-items">' +
-    (items || '<p class="archive-empty">Пока нет материалов</p>') +
-    '</div></section>';
+  paint();
+  if (window.YakCycles && YakCycles.ready) YakCycles.ready.then(paint);
 })();

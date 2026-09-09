@@ -630,6 +630,7 @@
     if (!slug) return null;
     for (var i = 0; i < CYCLES.length; i++) {
       var c = CYCLES[i];
+      if (c.status && c.status !== 'published') continue;
       var items = c.items || [];
       for (var j = 0; j < items.length; j++) {
         if (items[j].slug === slug) return c;
@@ -638,10 +639,34 @@
     return null;
   }
 
+  function mergeCycles(list) {
+    if (!list || !list.length) return;
+    var byId = {};
+    CYCLES.forEach(function (c) { if (c && c.id) byId[c.id] = c; });
+    list.forEach(function (c) {
+      if (!c || !c.id) return;
+      if (c.status && c.status !== 'published') {
+        delete byId[c.id];
+        return;
+      }
+      byId[c.id] = Object.assign({}, byId[c.id] || {}, c);
+    });
+    CYCLES.length = 0;
+    Object.keys(byId).forEach(function (k) { CYCLES.push(byId[k]); });
+  }
+
+  var readyResolve;
+  var ready = new Promise(function (resolve) { readyResolve = resolve; });
+
   global.YakCycles = {
     ALL: CYCLES,
     byId: byId,
     forAuthor: forAuthor,
-    byArticleSlug: byArticleSlug
+    byArticleSlug: byArticleSlug,
+    merge: mergeCycles,
+    ready: ready,
+    _resolveReady: readyResolve
   };
+
+  if (global.YakDesk && YakDesk.apply) YakDesk.apply();
 })(typeof window !== 'undefined' ? window : this);

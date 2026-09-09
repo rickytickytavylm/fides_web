@@ -51,7 +51,7 @@
   }
 
   function itemRubric(item) {
-    return (item.categories && item.categories[0]) || 'Материал';
+    return (V.categoryLine && V.categoryLine(item, 'Материал')) || (item.categories && item.categories[0]) || 'Материал';
   }
 
   // Авторы привязаны через WP-теги → YakAuthors.recent; API author почти всегда «ruscatholic».
