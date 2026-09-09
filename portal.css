@@ -148,6 +148,32 @@ nav.top a:hover { background: var(--accent-soft); color: var(--bronze-dark); }
 .cal-btn:hover, .cal-btn.on {
   border-color: var(--bronze); background: var(--accent-soft); color: var(--ink);
 }
+.masthead-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+.app-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 42px;
+  padding: 0 14px 0 12px;
+  border-radius: 14px;
+  border: 1px solid var(--line-strong);
+  background: var(--ground);
+  color: var(--bronze-dark);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color .15s, background .15s, color .15s;
+}
+.app-btn svg { width: 18px; height: 18px; display: block; flex: none; }
+.app-btn:hover {
+  border-color: var(--bronze); background: var(--accent-soft); color: var(--ink);
+}
 
 /* ---------- Blocks ---------- */
 /* Only vertical — shorthand padding: N 0 would wipe .wrap side gutters on <section class="block wrap"> */
@@ -594,6 +620,23 @@ a.byline-name:hover { color: var(--bronze-dark); }
 }
 .authors-aside .author-row small { font-size: 11px; color: var(--stone-500); }
 .authors-aside .author-row-role { display: none; }
+.audio-aside { display: grid; gap: 10px; margin: 0 0 12px; }
+.audio-aside .audio-row {
+  display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 10px; align-items: center;
+  text-decoration: none; color: inherit; min-width: 0;
+}
+.audio-aside .audio-ava {
+  width: 36px; height: 36px; border-radius: 8px; flex: none;
+  background: var(--accent-soft) center / cover no-repeat;
+}
+.audio-aside .audio-row-text {
+  min-width: 0; display: grid; gap: 1px;
+}
+.audio-aside .audio-row strong {
+  font-size: 13px; display: block; line-height: 1.25;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.audio-aside .audio-row small { font-size: 11px; color: var(--stone-500); }
 .home-aside .widget h3 {
   display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
 }
@@ -604,6 +647,33 @@ a.byline-name:hover { color: var(--bronze-dark); }
 .authors-block--mobile-only { display: none; }
 @media (max-width: 880px) {
   .authors-block--mobile-only { display: block; }
+}
+
+.app-download {
+  scroll-margin-top: 88px;
+  margin: 8px 0 36px;
+  padding: 28px 26px 26px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(172, 86, 51, .14), transparent 55%),
+    var(--surface);
+  box-shadow: var(--shadow-card);
+  max-width: 42rem;
+}
+.app-download .eyebrow { margin: 0 0 10px; color: var(--bronze-dark); }
+.app-download h2 {
+  margin: 0 0 10px;
+  font-family: var(--serif);
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 600;
+  line-height: 1.15;
+}
+.app-download p {
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--stone-700);
 }
 
 /* Статическая страница «О проекте / приложение» */
@@ -1342,6 +1412,8 @@ aside { display: flex; flex-direction: column; gap: 0; }
   nav.top { display: none; }
   .search { padding: 8px 12px; font-size: 12px; }
   .cal-btn { width: 40px; height: 40px; border-radius: 12px; }
+  .app-btn { width: 40px; height: 40px; padding: 0; justify-content: center; border-radius: 12px; }
+  .app-btn span { display: none; }
   .panel { padding: 18px; border-radius: 16px; }
   .widget { padding: 16px 0; }
   .portal-footer .wrap { padding-top: 22px; padding-bottom: 22px; }
@@ -2534,7 +2606,9 @@ body.chat-page .masthead .wrap {
 }
 body.chat-page .masthead .top,
 body.chat-page .masthead .search,
-body.chat-page .masthead .cal-btn { display: none !important; }
+body.chat-page .masthead .cal-btn,
+body.chat-page .masthead .app-btn,
+body.chat-page .masthead .masthead-tools { display: none !important; }
 body.chat-page .masthead .logo { justify-self: center; grid-column: 2; }
 body.chat-page .chat-back {
   grid-column: 1; justify-self: start; width: 40px; height: 40px; border: 0; border-radius: 50%;

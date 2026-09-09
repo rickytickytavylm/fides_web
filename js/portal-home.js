@@ -442,6 +442,29 @@
     }
   }
 
+  function renderHomeAudio() {
+    var el = document.getElementById('home-audio');
+    if (!el) return;
+    var tracks = (window.YakAudio && YakAudio.tracks) || [];
+    var list = tracks.slice(0, 6);
+    if (!list.length) {
+      el.innerHTML = '<p class="widget-copy">Проповеди и подкасты — в разделе Аудио</p>';
+      return;
+    }
+    el.innerHTML = list.map(function (t) {
+      var cover = t.cover || (window.YakAudio && YakAudio.cover) || '';
+      var meta = [t.artist || 'ЯКатолик', t.duration].filter(Boolean).join(' · ');
+      return (
+        '<a class="audio-row" href="audio.html">' +
+        '<span class="audio-ava"' + (cover ? ' style="background-image:url(\'' + esc(cover) + '\')"' : '') + '></span>' +
+        '<span class="audio-row-text">' +
+        '<strong>' + esc(cleanTitle(t.title)) + '</strong>' +
+        (meta ? '<small>' + esc(meta) + '</small>' : '') +
+        '</span></a>'
+      );
+    }).join('');
+  }
+
   function renderHomePhotos() {
     var el = document.getElementById('home-photos');
     if (!el) return;
@@ -484,6 +507,7 @@
     window.renderHomeAuthors(document.getElementById('authors-home-mobile'), 5);
   }
   renderAsideDay();
+  renderHomeAudio();
   renderHomeEvents();
   renderHomeLibrary();
   renderHomePhotos();

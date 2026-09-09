@@ -20,14 +20,45 @@
     tabbar.insertBefore(home, tabbar.firstChild);
   }
 
+  var APP_SVG =
+    '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+    '<rect x="7" y="2.8" width="10" height="18.4" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.7"/>' +
+    '<path d="M10 18.6h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>' +
+    '</svg>';
+
+  function ensureAppBtn() {
+    var wrap = document.querySelector('.masthead .wrap');
+    if (!wrap || wrap.querySelector('.app-btn')) return;
+    var cal = wrap.querySelector('.cal-btn');
+    var tools = wrap.querySelector('.masthead-tools');
+    if (!tools) {
+      tools = document.createElement('div');
+      tools.className = 'masthead-tools';
+      if (cal) {
+        cal.parentNode.insertBefore(tools, cal);
+        tools.appendChild(cal);
+      } else {
+        wrap.appendChild(tools);
+      }
+    }
+    var btn = document.createElement('a');
+    btn.className = 'app-btn';
+    btn.href = 'page.html#app';
+    btn.setAttribute('aria-label', 'Приложение');
+    btn.title = 'Приложение';
+    btn.innerHTML = APP_SVG + '<span>Приложение</span>';
+    tools.insertBefore(btn, tools.firstChild);
+  }
+  ensureAppBtn();
+
   var path = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
   var active = null;
   if (path === 'index.html' || path === '' || path === '/') active = 'home';
   else if (path === 'church.html') active = 'church';
   else if (path === 'spiritual-life.html') active = 'spirit';
   else if (path === 'audio.html' || path === 'radio.html' || path === 'podcast.html') active = 'audio';
-    else if (path === 'video.html') active = 'video';
-    else if (path === 'chat.html') active = 'chat';
+  else if (path === 'video.html') active = 'video';
+  else if (path === 'chat.html') active = 'chat';
 
   if (!active) return;
   document.querySelectorAll('.app-tabbar .tab-item').forEach(function (a) {
