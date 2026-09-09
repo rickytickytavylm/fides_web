@@ -249,12 +249,12 @@
     if (!newsEl) return;
     if (newsCache[id]) { newsEl.innerHTML = renderNewsPack(newsCache[id]); return; }
     newsEl.innerHTML = skNcards();
-    var opts = { limit: 12, page: 1 };
+    var opts = { limit: 40, page: 1 };
     if (tab.slug) opts.category = tab.slug;
     if (tab.q) opts.q = tab.q;
     V.getArticles(opts)
       .then(function (pack) {
-        var items = pack.items || [];
+        var items = V.freshItems ? V.freshItems(pack.items || [], 6, 18) : (pack.items || []).slice(0, 6);
         newsCache[id] = items;
         newsEl.innerHTML = renderNewsPack(items);
       })
@@ -285,9 +285,10 @@
   function loadFresh() {
     if (!freshEl) return;
     freshEl.innerHTML = skEqualGrid();
-    V.getArticles({ category: 'columns', limit: 6, page: 1 })
+    V.getArticles({ category: 'columns', limit: 40, page: 1 })
       .then(function (pack) {
-        freshEl.innerHTML = renderFreshHome((pack.items || []).slice(0, 6));
+        var items = V.freshItems ? V.freshItems(pack.items || [], 6, 18) : (pack.items || []).slice(0, 6);
+        freshEl.innerHTML = renderFreshHome(items);
       })
       .catch(function () { freshEl.innerHTML = '<p class="ps-status">Не удалось загрузить статьи</p>'; });
   }
@@ -318,9 +319,9 @@
     if (!voicesEl) return;
     if (voicesCache[tab.id]) { voicesEl.innerHTML = renderEqualGrid(voicesCache[tab.id], 6); return; }
     voicesEl.innerHTML = skNcards();
-    V.getArticles({ category: tab.slug, limit: 12, page: 1 })
+    V.getArticles({ category: tab.slug, limit: 40, page: 1 })
       .then(function (pack) {
-        var items = pack.items || [];
+        var items = V.freshItems ? V.freshItems(pack.items || [], 6, 36) : (pack.items || []).slice(0, 6);
         voicesCache[tab.id] = items;
         voicesEl.innerHTML = renderEqualGrid(items, 6);
       })

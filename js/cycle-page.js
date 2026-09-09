@@ -11,6 +11,42 @@
       .replace(/"/g, '&quot;');
   }
 
+  function genitiveFirst(w) {
+    if (/ий$/i.test(w)) return w.replace(/ий$/i, 'ия');
+    if (/[аео]й$/i.test(w)) return w.replace(/й$/i, 'я');
+    if (/а$/i.test(w)) return /[гкхжшщч]$/i.test(w.slice(0, -1)) ? w.slice(0, -1) + 'и' : w.slice(0, -1) + 'ы';
+    if (/я$/i.test(w)) return w.slice(0, -1) + 'и';
+    if (/ь$/i.test(w)) return w.slice(0, -1) + 'я';
+    if (/[бвгджзклмнпрстфхцчшщ]$/i.test(w)) return w + 'а';
+    return w;
+  }
+
+  function genitiveLast(w) {
+    if (/ский$|цкий$/i.test(w)) return w.replace(/ий$/i, 'ого');
+    if (/ой$|ый$|ий$/i.test(w)) return w.replace(/(ой|ый|ий)$/i, 'ого');
+    if (/ова$|ева$|ина$|ына$/i.test(w)) return w.slice(0, -1) + 'ой';
+    if (/ая$/i.test(w)) return w.replace(/ая$/i, 'ой');
+    if (/[ое]в$|[иы]н$/i.test(w)) return w + 'а';
+    return w;
+  }
+
+  function genitiveName(name) {
+    var parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return '';
+    if (parts.length === 1) return genitiveLast(parts[0]);
+    return parts.map(function (w, i) {
+      return i === parts.length - 1 ? genitiveLast(w) : genitiveFirst(w);
+    }).join(' ');
+  }
+
+  function cycleKicker(cycle, author) {
+    var sub = String(cycle.subtitle || '');
+    if (author && author.name && (!sub || /^Авторский цикл /i.test(sub))) {
+      return 'Авторский цикл ' + genitiveName(author.name);
+    }
+    return sub || 'Цикл публикаций';
+  }
+
   function paint() {
     var C = window.YakCycles;
     var authors = window.YakAuthors || [];
@@ -72,7 +108,7 @@
       '<span>Цикл</span></nav>' +
       '<header class="cycle-head">' +
       '<p class="eyebrow">' +
-      esc(cycle.subtitle || 'Цикл публикаций') +
+      esc(cycleKicker(cycle, author)) +
       '</p>' +
       '<h1>' +
       esc(cycle.title) +

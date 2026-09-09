@@ -115,6 +115,23 @@
     return { items: items, total: total };
   }
 
+  function isPackItem(it) {
+    return /^yak-.*-data$/.test(String((it && (it.slug || it.id)) || ''));
+  }
+
+  /** «Свежее» — по дате выхода, не по дате последней правки в редакции. */
+  function freshItems(items, limit, months) {
+    months = months || 18;
+    var from = new Date();
+    from.setMonth(from.getMonth() - months);
+    var min = from.toISOString().slice(0, 10);
+    return (items || []).filter(function (it) {
+      if (!it || isPackItem(it)) return false;
+      var d = String(it.date || '').slice(0, 10);
+      return d && d >= min;
+    }).slice(0, limit || 6);
+  }
+
   function fetchArticlesRaw(opts) {
     opts = opts || {};
     var params = new URLSearchParams({
@@ -696,6 +713,8 @@
     stripTags: stripTags,
     sanitizeInlineHtml: sanitizeInlineHtml,
     sanitizeRichHtml: sanitizeRichHtml,
+    isPackItem: isPackItem,
+    freshItems: freshItems,
     resolveContentHref: resolveContentHref,
     htmlToBlocks: htmlToBlocks,
     articleHref: articleHref,

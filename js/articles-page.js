@@ -91,9 +91,9 @@
     return html + '</ul>';
   }
 
-  function section(title, desc, inner) {
+  function section(title, desc, inner, sid) {
     return (
-      '<section class="articles-block">' +
+      '<section class="articles-block"' + (sid ? ' id="' + esc(sid) + '"' : '') + '>' +
       '<div class="block-head"><span class="kicker"></span><h2>' + esc(title) + '</h2><span class="rule"></span></div>' +
       (desc ? '<p class="articles-block-desc">' + esc(desc) + '</p>' : '') +
       inner +
@@ -190,7 +190,7 @@
     '<a href="archive.html?category=interview">Голоса</a>' +
     '</div>' +
     section('Рубрики', 'Основные подразделы публикаций', cardGrid(RUBRICS, 'Рубрика')) +
-    section('Темы', 'Специальные подборки — часть тегов появится позже, пока помогает поиск', linkList(TOPICS)) +
+    section('Темы', 'Специальные подборки. Редакция задаёт их в «Рубрики и темы».', linkList(TOPICS), 'articles-topics') +
     section('Вопрос — ответ', '', cardGrid(QA, 'Раздел')) +
     section('Идеи', 'Лёгкие и прикладные материалы', cardGrid(IDEAS, 'Подборка')) +
     section('Голоса', 'Интервью, свидетельства и проповеди', cardGrid(VOICES, 'Голоса')) +
@@ -211,16 +211,27 @@
     });
   }
 
-  V.getArticles({ category: 'columns', limit: 7, page: 1 })
+  if (V.getArticle) {
+    V.getArticle('yak-topics-data')
+      .then(function (a) {
+        var list = [];
+        try { list = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { list = []; }
+        if (!Array.isArray(list) || !list.length) return;
+        TOPICS = list.filter(function (t) { return t && t.title; });
+        var host = document.getElementById('articles-topics');
+        if (host) {
+          var inner = host.querySelector('.articles-link-list');
+          if (inner) inner.outerHTML = linkList(TOPICS);
+        }
+      })
+      .catch(function () {});
+  }
+
+  V.getArticles({ category: 'columns', limit: 40, page: 1 })
     .then(function (pack) {
       var el = document.getElementById('articles-fresh');
       var items = pack.items || [];
-      var extra = window.YakDesk && YakDesk.articles ? YakDesk.articles({ category: 'columns' }) : [];
-      if (extra.length) {
-        /* Правки из редакции — в общий список, порядок только по дате публикации */
-        items = YakDesk.mergeByDate ? YakDesk.mergeByDate(extra, items) : items;
-      }
-      if (el) el.innerHTML = renderFresh(items.slice(0, 7));
+      if (el) el.innerHTML = renderFresh(V.freshItems ? V.freshItems(items, 7, 18) : items.slice(0, 7));
     })
     .catch(function () {
       var el = document.getElementById('articles-fresh');

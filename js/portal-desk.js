@@ -134,13 +134,20 @@
             (pack.items || []).forEach(function (it) {
               if (String(it.id) === String(ex.id) || (ex.slug && String(it.slug) === String(ex.slug))) {
                 if (!ex.image && it.image) ex.image = it.image;
+                var remoteD = String(it.date || '').slice(0, 10);
+                var localD = String(ex.date || '').slice(0, 10);
+                if (remoteD && (!localD || localD > remoteD)) ex.date = remoteD;
               }
             });
           });
           var rest = (pack.items || []).filter(function (it) {
             var id = String(it.id || '');
             var slug = String(it.slug || '');
+            if (/^yak-.*-data$/.test(slug) || /^yak-.*-data$/.test(id)) return false;
             return !seen[id] && !seen[slug] && !hidden[id] && !hidden[slug];
+          });
+          extra = extra.filter(function (ex) {
+            return !/^yak-.*-data$/.test(String(ex.slug || ex.id || ''));
           });
           return { items: byDateDesc(extra.concat(rest)), total: extra.length + rest.length };
         }).catch(function () {
