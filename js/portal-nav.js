@@ -30,10 +30,10 @@
     var wrap = document.querySelector('.masthead .wrap');
     if (!wrap || wrap.querySelector('.app-btn')) return;
     var cal = wrap.querySelector('.cal-btn');
-    var tools = wrap.querySelector('.masthead-tools');
+    var tools = wrap.querySelector('.header-tools') || wrap.querySelector('.masthead-tools');
     if (!tools) {
       tools = document.createElement('div');
-      tools.className = 'masthead-tools';
+      tools.className = 'header-tools';
       if (cal) {
         cal.parentNode.insertBefore(tools, cal);
         tools.appendChild(cal);
@@ -41,6 +41,7 @@
         wrap.appendChild(tools);
       }
     }
+    tools.classList.add('header-tools');
     var btn = document.createElement('a');
     btn.className = 'app-btn';
     btn.href = 'page.html#app';

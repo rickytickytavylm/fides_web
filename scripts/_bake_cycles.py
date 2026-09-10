@@ -97,6 +97,12 @@ HUBS = [
         'authorSlugs': ['veronika-bikbulatova'],
         'subtitle': 'Авторский цикл Вероники Бикбулатовой',
     },
+    {
+        'id': 'tserkov-s-chelovecheskim-litsom',
+        'hub': 'tserkov-s-chelovecheskim-litsom',
+        'authorSlugs': [],
+        'subtitle': 'Авторский проект Ольги Хруль',
+    },
 ]
 
 
@@ -211,8 +217,8 @@ def main():
             items.append({'slug': slug, 'title': title})
         cycle = {
             'id': hub['id'],
-            'authorSlug': hub['authorSlugs'][0],
-            'authorSlugs': hub['authorSlugs'],
+            'authorSlug': (hub['authorSlugs'][0] if hub.get('authorSlugs') else ''),
+            'authorSlugs': hub.get('authorSlugs') or [],
             'title': clean_text(page.get('title', {}).get('rendered', '')),
             'subtitle': hub['subtitle'],
             'hubUrl': page.get('link') or ('https://ruscatholic.org/' + hub['hub'] + '/'),

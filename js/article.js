@@ -141,13 +141,25 @@
   function renderCycleMore(article, cycle) {
     if (!cycle) return '';
     var self = String((article && article.slug) || '');
+    if (self && (self === cycle.id || self === cycle.hubSlug)) {
+      /* Это сама страница-хаб: список уже в тексте, даём только карточку цикла */
+      return (
+        '<section class="article-cycle-more">' +
+        '<h2>Цикл</h2>' +
+        '<p class="article-cycle-more-lead"><a href="cycle.html?id=' +
+        encodeURIComponent(cycle.id) +
+        '">' +
+        V.escapeHtml(cycle.title) +
+        '</a></p></section>'
+      );
+    }
     var items = (cycle.items || []).filter(function (it) {
       return it && it.slug && String(it.slug) !== self;
     });
     if (!items.length) return '';
     return (
       '<section class="article-cycle-more">' +
-      '<h2>К другим статьям цикла</h2>' +
+      '<h2>К другим материалам цикла</h2>' +
       '<p class="article-cycle-more-lead"><a href="cycle.html?id=' +
       encodeURIComponent(cycle.id) +
       '">' +
@@ -453,7 +465,18 @@
       }
       paint();
       loadRelated(article);
-      if (window.YakCycles && YakCycles.ready) YakCycles.ready.then(paint);
+      if (window.YakCycles && YakCycles.ready) {
+        YakCycles.ready.then(function () {
+          paint();
+          /* Циклы-хабы: состав берём из страницы цикла в нашей базе */
+          if (YakCycles.hydrateAll && !cycleOf(article)) {
+            YakCycles.hydrateAll().then(function () { if (cycleOf(article)) paint(); });
+          } else if (YakCycles.hydrate) {
+            var c = cycleOf(article);
+            if (c && c.hubSlug && !(c.items || []).length) YakCycles.hydrate(c).then(paint);
+          }
+        });
+      }
     })
     .catch(function (e) {
       console.error(e);

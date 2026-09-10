@@ -123,16 +123,19 @@ img { max-width: 100%; display: block; }
   border-bottom: 1px solid var(--line); }
 .masthead .wrap {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  flex-wrap: nowrap;
   padding-top: 13px;
   padding-bottom: 13px;
   padding-left: max(var(--gutter), env(safe-area-inset-left));
   padding-right: max(var(--gutter), env(safe-area-inset-right));
 }
-.logo { display: inline-flex; align-items: center; gap: 11px; }
-.logo .mark { width: 34px; height: 34px; border-radius: 9px; overflow: hidden; flex: none; display: block; box-shadow: var(--shadow-card); }
-.logo .mark img, .logo .mark svg { display: block; width: 100%; height: 100%; object-fit: cover; }
+.logo { display: inline-flex; align-items: center; gap: 11px; flex: none; }
+.logo .mark { width: 34px !important; height: 34px !important; border-radius: 9px; overflow: hidden; flex: none; display: block; box-shadow: var(--shadow-card); }
+.logo .mark img, .logo .mark svg, .logo img {
+  display: block; width: 34px !important; height: 34px !important; max-width: none !important; object-fit: cover;
+}
 .logo .wm { font-family: var(--serif); font-weight: 600; font-size: 22px; letter-spacing: .01em; color: var(--ink); white-space: nowrap; }
-nav.top { display: flex; gap: 2px; flex-wrap: wrap; }
+nav.top { display: flex; gap: 2px; flex-wrap: nowrap; flex: 1; justify-content: center; min-width: 0; }
 nav.top a { font-size: 13.5px; font-weight: 600; padding: 8px 12px; border-radius: 100px; color: var(--stone-700); transition: .16s; }
 nav.top a:hover { background: var(--accent-soft); color: var(--bronze-dark); }
 .search { border: 1px solid var(--line-strong); background: var(--ground); border-radius: 100px; padding: 8px 15px;
@@ -173,6 +176,10 @@ nav.top a:hover { background: var(--accent-soft); color: var(--bronze-dark); }
 .app-btn svg { width: 18px; height: 18px; display: block; flex: none; }
 .app-btn:hover {
   border-color: var(--bronze); background: var(--accent-soft); color: var(--ink);
+}
+@media (max-width: 1180px) {
+  .app-btn { width: 42px; padding: 0; justify-content: center; }
+  .app-btn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
 }
 
 /* ---------- Blocks ---------- */
@@ -2709,13 +2716,14 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 .footer-links a { color: var(--stone-700); font-weight: 600; }
 .footer-links a:hover { color: var(--bronze-dark); }
 
-/* Оформление рядом с календарём: Свет / Сумерки */
-.header-tools {
+/* Оформление рядом с календарём: только переключатель */
+.header-tools,
+.masthead-tools {
   display: inline-flex; align-items: center; gap: 8px; flex: none;
 }
 .theme-toggle {
-  height: 42px; display: inline-flex; align-items: center; gap: 8px;
-  padding: 0 11px 0 8px; border-radius: 14px;
+  width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center;
+  padding: 0; border-radius: 14px;
   border: 1px solid var(--line-strong); background: var(--ground); color: var(--ink);
   font: 700 11.5px/1 var(--ff); cursor: pointer; white-space: nowrap;
   transition: border-color .15s, background .15s;
@@ -2736,7 +2744,7 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 .theme-toggle.is-twilight .theme-toggle-track i { transform: translateX(20px); }
 .theme-toggle:not(.is-twilight) .theme-sun { color: var(--bronze-dark); }
 .theme-toggle.is-twilight .theme-moon { color: var(--bronze-dark); }
-.theme-toggle-name { min-width: 64px; text-align: left; }
+.theme-toggle-name { display: none; }
 
 :root:not([data-theme="twilight"]) .app-tabbar {
   border-color: rgba(68, 45, 27, .12);
@@ -2750,9 +2758,10 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
 }
 
 @media (max-width: 880px) {
-  .header-tools { gap: 6px; }
+  .header-tools,
+  .masthead-tools { gap: 6px; }
   .theme-toggle {
-    width: 54px; height: 40px; justify-content: center;
+    width: 40px; height: 40px; justify-content: center;
     padding: 0; border-radius: 12px;
   }
   .theme-toggle-name { display: none; }

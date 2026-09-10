@@ -64,6 +64,10 @@
       return;
     }
 
+    if (C.hydrate && cycle.hubSlug && !(cycle.items || []).length && !cycle._hydrated) {
+      C.hydrate(cycle).then(paint);
+    }
+
     var author = authors.filter(function (a) {
       return a.slug === cycle.authorSlug;
     })[0];
@@ -138,7 +142,13 @@
       ' материалов</span></div>' +
       '<section class="cycle-list"><h2>Содержание цикла</h2>' +
       '<div class="cycle-items">' +
-      (items || '<p class="archive-empty">Пока нет материалов</p>') +
+      (items || (cycle.hubSlug && !cycle._hydratedDone
+        ? '<p class="archive-empty">Загружаем содержание цикла…</p>'
+        : '<p class="archive-empty">Пока нет материалов в карточке цикла.' +
+        (cycle.id
+          ? ' Полный список — на <a href="article.html?id=' + esc(cycle.id) + '">странице цикла</a>.'
+          : '') +
+        '</p>')) +
       '</div></section></div>';
   }
 

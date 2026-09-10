@@ -607,6 +607,17 @@
         "title": "Дневник исцеления. Тени, маски, лица, лики"
       }
     ]
+  },
+  {
+    "id": "tserkov-s-chelovecheskim-litsom",
+    "authorSlug": "",
+    "authorSlugs": [],
+    "title": "Церковь с человеческим лицом",
+    "subtitle": "Авторский проект Ольги Хруль",
+    "hubUrl": "https://ruscatholic.org/tserkov-s-chelovecheskim-litsom/",
+    "hubSlug": "tserkov-s-chelovecheskim-litsom",
+    "intro": "Авторский проект Ольги Хруль. Церковь — это община верующих, новый народ, призванный Богом. В этом цикле — биографии и свидетельства самых пожилых прихожан: живая история Церкви с человеческим лицом.",
+    "items": []
   }
 ];
 
@@ -631,6 +642,7 @@
     for (var i = 0; i < CYCLES.length; i++) {
       var c = CYCLES[i];
       if (c.status && c.status !== 'published') continue;
+      if (c.id === slug || c.hubSlug === slug) return c;
       var items = c.items || [];
       for (var j = 0; j < items.length; j++) {
         if (items[j].slug === slug) return c;
@@ -658,11 +670,70 @@
   var readyResolve;
   var ready = new Promise(function (resolve) { readyResolve = resolve; });
 
+  /* Состав цикла из его страницы-хаба в нашей базе (ссылки в тексте страницы).
+     Работает и на портале (Vera.getContent), и в админке (AdminApi.getPage). */
+  function slugFromHref(href) {
+    var m = String(href || '').match(/^(?:https?:\/\/[^\/]+)?\/?([a-z0-9][a-z0-9\-]*[a-z0-9])\/?(?:[?#].*)?$/i);
+    if (!m) {
+      m = String(href || '').match(/article\.html\?id=([a-z0-9\-]+)/i);
+    }
+    return m ? m[1].toLowerCase() : '';
+  }
+
+  function itemsFromHubHtml(html, hubSlug) {
+    if (!html || typeof document === 'undefined') return [];
+    var box = document.createElement('div');
+    box.innerHTML = html;
+    var skip = { tag: 1, category: 1, author: 1, feed: 1, page: 1, about: 1, contacts: 1, donate: 1, uploads: 1 };
+    var seen = {};
+    var out = [];
+    box.querySelectorAll('a[href]').forEach(function (a) {
+      var slug = slugFromHref(a.getAttribute('href'));
+      var title = String(a.textContent || '').replace(/\s+/g, ' ').trim();
+      if (!slug || slug === hubSlug || skip[slug] || seen[slug] || slug.indexOf('wp-') === 0 || slug.length < 3) return;
+      if (/\.(jpg|jpeg|png|gif|webp|pdf)$/i.test(slug)) return;
+      if (!title || title.length < 4) return;
+      seen[slug] = 1;
+      out.push({ slug: slug, title: title, order: out.length + 1 });
+    });
+    return out;
+  }
+
+  function loadHub(slug) {
+    if (global.Vera && Vera.getContent) return Vera.getContent(slug);
+    if (global.AdminApi && AdminApi.getPage) {
+      return AdminApi.getPage(slug).catch(function () { return AdminApi.getArticle(slug); });
+    }
+    return Promise.reject(new Error('no loader'));
+  }
+
+  /* Хаб заполняет только пустой цикл: сохранённый в админке состав — главнее. */
+  function hydrate(cycle) {
+    if (!cycle || !cycle.hubSlug || (cycle.items && cycle.items.length)) return Promise.resolve(cycle);
+    if (cycle._hydrated) return cycle._hydrated;
+    cycle._hydrated = loadHub(cycle.hubSlug)
+      .then(function (page) {
+        var html = (page && (page.contentHtml || page.content || '')) || '';
+        var fromHub = itemsFromHubHtml(html, cycle.hubSlug);
+        if (fromHub.length) cycle.items = fromHub;
+        cycle._hydratedDone = true;
+        return cycle;
+      })
+      .catch(function () { cycle._hydratedDone = true; return cycle; });
+    return cycle._hydrated;
+  }
+
+  function hydrateAll() {
+    return Promise.all(CYCLES.filter(function (c) { return c.hubSlug; }).map(hydrate));
+  }
+
   global.YakCycles = {
     ALL: CYCLES,
     byId: byId,
     forAuthor: forAuthor,
     byArticleSlug: byArticleSlug,
+    hydrate: hydrate,
+    hydrateAll: hydrateAll,
     merge: mergeCycles,
     ready: ready,
     _resolveReady: readyResolve
