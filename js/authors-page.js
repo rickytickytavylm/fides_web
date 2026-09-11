@@ -13,6 +13,10 @@
 
   function formatBio(bio) {
     if (!bio) return '';
+    bio = String(bio)
+      .replace(/архива\s+Рускатолик/gi, 'ЯКатолик')
+      .replace(/\s*Тег на Рускатолик:[^.]*\.?/gi, '')
+      .replace(/портал[а]?\s+«?Рускатолик»?/gi, 'портал ЯКатолик');
     if (V && V.sanitizeRichHtml) return V.sanitizeRichHtml(bio);
     if (/<[a-z][\s\S]*>/i.test(bio)) return String(bio);
     return '<p>' + esc(bio).replace(/\n\n+/g, '</p><p>').replace(/\n/g, '<br>') + '</p>';
@@ -243,7 +247,11 @@
       return;
     }
     document.title = a.name + ' — ЯКатолик';
-    var socials = (a.socials || []).map(function (s) {
+    var socials = (a.socials || []).filter(function (s) {
+      var href = String((s && s.href) || '').toLowerCase();
+      if (!href) return false;
+      return !/ruscatholic\.org|xn--80aqecdrlilg/.test(href);
+    }).map(function (s) {
       return '<a class="author-social" href="' + esc(s.href) + '" target="_blank" rel="noopener">' + esc(s.label) + '</a>';
     }).join('');
     function pubCoverTone(slug) {

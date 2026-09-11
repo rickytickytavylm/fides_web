@@ -43,14 +43,14 @@
 
     if (statusEl) {
       var total = pack.total ? pack.total.toLocaleString('ru-RU') : '—';
-      statusEl.textContent = total + ' материалов · архив Рускатолик';
+      statusEl.textContent = total + ' материалов · архив ЯКатолик';
     }
 
     if (heroEl) {
       if (!hero) {
         heroEl.innerHTML = '<p class="archive-empty">Ничего не найдено</p>';
       } else {
-        var cat = (V.categoryLine && V.categoryLine(hero, 'Рускатолик')) || (hero.categories && hero.categories[0]) || 'Рускатолик';
+        var cat = (V.categoryLine && V.categoryLine(hero, 'ЯКатолик')) || (hero.categories && hero.categories[0]) || 'ЯКатолик';
         var img = hero.image || placeholderCover();
         heroEl.innerHTML =
           '<a class="lead-story reveal visible" href="' +

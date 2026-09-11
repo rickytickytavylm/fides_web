@@ -254,7 +254,8 @@
     if (tab.q) opts.q = tab.q;
     V.getArticles(opts)
       .then(function (pack) {
-        var items = V.freshItems ? V.freshItems(pack.items || [], 6, 18) : (pack.items || []).slice(0, 6);
+        var raw = (pack.items || []).filter(function (it) { return !V.isVoiceItem || !V.isVoiceItem(it); });
+        var items = V.freshItems ? V.freshItems(raw, 6, 18) : raw.slice(0, 6);
         newsCache[id] = items;
         newsEl.innerHTML = renderNewsPack(items);
       })

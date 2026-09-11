@@ -132,10 +132,10 @@
           '\')"></div></figure>'
         : '') +
       '<div class="cycle-meta">' +
-      (cycle.hubUrl
-        ? '<a class="author-social" href="' +
-          esc(cycle.hubUrl) +
-          '" target="_blank" rel="noopener">Страница цикла на Рускатолик</a>'
+      (cycle.hubSlug
+        ? '<a class="author-social" href="article.html?id=' +
+          encodeURIComponent(cycle.hubSlug) +
+          '">Страница цикла</a>'
         : '') +
       '<span class="author-count">' +
       (cycle.items || []).length +

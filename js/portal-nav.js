@@ -52,6 +52,17 @@
   }
   ensureAppBtn();
 
+  document.querySelectorAll('nav.top').forEach(function (nav) {
+    if (nav.querySelector('a[href*="category=interview"]')) return;
+    var voices = document.createElement('a');
+    voices.href = 'archive.html?category=interview';
+    voices.textContent = 'Голоса';
+    var after = nav.querySelector('a[href="articles.html"]');
+    if (after && after.nextSibling) nav.insertBefore(voices, after.nextSibling);
+    else if (after) nav.appendChild(voices);
+    else nav.appendChild(voices);
+  });
+
   var path = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
   var active = null;
   if (path === 'index.html' || path === '' || path === '/') active = 'home';

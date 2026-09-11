@@ -47,7 +47,9 @@
     psiholog: 'Вопросы психологу', 'eto-interesno': 'Это интересно',
     'kino-so-smyislom': 'Кино со смыслом', pray: 'Молитвы', polka: 'Книжная полка',
   };
-  var UMBRELLA_SLUGS = { columns: 1, news: 1, digest: 1 };
+  var UMBRELLA_SLUGS = { columns: 1, news: 1, digest: 1, voices: 1 };
+  var VOICE_SLUGS = { interview: 1, svidetelstva: 1, propovedi: 1 };
+  var NEWS_SLUGS = { news: 1, digest: 1, 'church-rus': 1, sng: 1, 'santa-sede': 1, pope: 1 };
 
   /* Все рубрики, но узкие (Культура, Музыка) — перед зонтичной «Статьи». */
   function displayCategories(item) {
@@ -62,9 +64,17 @@
       out.push(label);
     }
     if (slugs.length) {
-      var narrow = slugs.filter(function (s) { return !UMBRELLA_SLUGS[s]; });
-      var use = narrow.length ? narrow.concat(slugs.filter(function (s) { return UMBRELLA_SLUGS[s]; })) : slugs;
-      use.forEach(function (s) { push(CATEGORY_TITLES[s] || s); });
+      var hasVoice = slugs.some(function (s) { return VOICE_SLUGS[s]; });
+      var hide = hasVoice ? Object.assign({}, UMBRELLA_SLUGS, NEWS_SLUGS) : UMBRELLA_SLUGS;
+      var narrow = slugs.filter(function (s) { return !hide[s]; });
+      if (narrow.length) {
+        var use = hasVoice ? narrow : narrow.concat(slugs.filter(function (s) { return UMBRELLA_SLUGS[s]; }));
+        use.forEach(function (s) { push(CATEGORY_TITLES[s] || s); });
+      } else if (hasVoice) {
+        push('Голоса');
+      } else {
+        slugs.forEach(function (s) { push(CATEGORY_TITLES[s] || s); });
+      }
     } else {
       labels.forEach(push);
     }
@@ -80,9 +90,37 @@
     var slugs = (item && (item.categorySlugs || item.rubrics)) || [];
     var i;
     for (i = 0; i < slugs.length; i++) {
+      if (VOICE_SLUGS[slugs[i]]) return slugs[i];
+    }
+    for (i = 0; i < slugs.length; i++) {
       if (!UMBRELLA_SLUGS[slugs[i]]) return slugs[i];
     }
     return slugs[0] || '';
+  }
+
+  /* Раздел витрины: Голоса важнее Новостей, если стоят обе рубрики. */
+  function sectionOf(item) {
+    var slugs = (item && (item.categorySlugs || item.rubrics)) || [];
+    var i;
+    for (i = 0; i < slugs.length; i++) {
+      if (VOICE_SLUGS[slugs[i]]) {
+        return { id: 'voices', label: 'Голоса', href: 'archive.html?category=' + slugs[i] };
+      }
+    }
+    var primary = primaryCategorySlug(item);
+    if (primary === 'polka') return { id: 'library', label: 'Библиотека', href: 'library.html' };
+    if (NEWS_SLUGS[primary] || primary === 'news' || primary === 'digest') {
+      return { id: 'news', label: 'Новости', href: 'archive.html?category=' + (primary === 'digest' ? 'news' : primary) };
+    }
+    if (slugs.some(function (s) { return NEWS_SLUGS[s]; }) && !slugs.some(function (s) { return s === 'columns' || s === 'spirituality' || s === 'kultura' || s === 'history'; })) {
+      return { id: 'news', label: 'Новости', href: 'archive.html?category=news' };
+    }
+    return { id: 'articles', label: 'Статьи', href: 'articles.html' };
+  }
+
+  function isVoiceItem(item) {
+    var slugs = (item && (item.categorySlugs || item.rubrics)) || [];
+    return slugs.some(function (s) { return VOICE_SLUGS[s]; });
   }
 
   function apiGet(path) {
@@ -723,5 +761,7 @@
     displayCategories: displayCategories,
     categoryLine: categoryLine,
     primaryCategorySlug: primaryCategorySlug,
+    sectionOf: sectionOf,
+    isVoiceItem: isVoiceItem,
   };
 })(window);

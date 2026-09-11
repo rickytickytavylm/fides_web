@@ -84,7 +84,7 @@
       if (!s || !s.id) return;
       var a = document.createElement('a');
       a.className = 'chat-source';
-      a.href = 'article.html?id=' + encodeURIComponent(s.id);
+      a.href = 'article.html?id=' + encodeURIComponent(s.slug || s.id);
       var title = document.createElement('span');
       title.className = 'chat-source-title';
       title.textContent = s.title || ('Статья #' + s.id);

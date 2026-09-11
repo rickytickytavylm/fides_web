@@ -234,18 +234,9 @@
         '</ul></section>';
     }
 
-    var crumbSlug =
-      (V.primaryCategorySlug && V.primaryCategorySlug(article)) ||
-      (article.categorySlugs && article.categorySlugs[0]) ||
-      '';
-    var listHref = isPage
-      ? 'articles.html'
-      : 'archive.html' + (crumbSlug ? '?category=' + encodeURIComponent(crumbSlug) : '');
-    var sectionLabel = isPage
-      ? 'Статьи'
-      : article.categorySlugs && (article.categorySlugs[0] === 'columns' || article.categorySlugs.indexOf('columns') !== -1)
-        ? 'Статьи'
-        : 'Новости';
+    var section = !isPage && V.sectionOf ? V.sectionOf(article) : { label: 'Статьи', href: 'articles.html' };
+    var listHref = isPage ? 'articles.html' : (section.href || 'articles.html');
+    var sectionLabel = isPage ? 'Статьи' : (section.label || 'Статьи');
 
     var cycle = !isPage ? cycleOf(article) : null;
     var cycleHtml = cycle

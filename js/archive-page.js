@@ -331,6 +331,9 @@
     })
       .then(function (pack) {
         var batch = pack.items || [];
+        if (state.section === 'news') {
+          batch = batch.filter(function (it) { return !V.isVoiceItem || !V.isVoiceItem(it); });
+        }
         state.total = Number(pack.total) || 0;
         state.lastPageCount = batch.length;
         state.items = replace ? batch : state.items.concat(batch);
