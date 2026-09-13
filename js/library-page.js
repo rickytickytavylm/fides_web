@@ -54,9 +54,11 @@
     var sub = L.subtitleTitle(item);
     var year = L.yearOf(item.firstPublished);
     var cat = L.categoryLabel(item);
+    var href = 'book.html?id=' + encodeURIComponent(item.id);
     return (
-      '<a class="lib-card" href="book.html?id=' +
-      encodeURIComponent(item.id) +
+      '<article class="lib-card">' +
+      '<a class="lib-card-hit" href="' +
+      href +
       '">' +
       '<div class="lib-cover" style="' +
       coverStyle(item) +
@@ -77,10 +79,28 @@
       esc(main) +
       '</h3>' +
       (sub ? '<p class="lib-card-sub">' + esc(sub) + '</p>' : '') +
-      '<p class="lib-card-author">' +
-      esc(item.author || '—') +
-      '</p>' +
-      '</div></a>'
+      '</div></a>' +
+      authorLine(item, 'lib-card-author') +
+      '</article>'
+    );
+  }
+
+  function authorHref(item) {
+    if (!item || !item.author) return '';
+    return 'library.html?author=' + encodeURIComponent(item.author);
+  }
+
+  function authorLine(item, cls) {
+    var name = item && item.author;
+    if (!name) return '<p class="' + cls + '">—</p>';
+    return (
+      '<p class="' +
+      cls +
+      '"><a class="lib-author-link" href="' +
+      esc(authorHref(item)) +
+      '">' +
+      esc(name) +
+      '</a></p>'
     );
   }
 
@@ -110,13 +130,18 @@
         if (opts.sections.indexOf(item.section) === -1) return false;
       }
       if (opts.section && item.section !== opts.section) return false;
-      if (opts.category && item.category !== opts.category) return false;
+      if (opts.category) {
+        if (item.category !== opts.category) {
+          var rub = L.rubricOf && L.rubricOf(item.category);
+          if (!rub || rub.parentId !== opts.category) return false;
+        }
+      }
       if (opts.docType && item.docType !== opts.docType) return false;
       if (opts.pope && item.pope !== opts.pope) return false;
       if (opts.theme && (item.themes || []).indexOf(opts.theme) === -1) return false;
       if (opts.genre && (item.genre || '') !== opts.genre) return false;
       if (opts.publisher && (item.publisher || '') !== opts.publisher) return false;
-      if (opts.author && (item.author || '') !== opts.author) return false;
+      if (opts.author && String(item.author || '').trim().toLowerCase() !== String(opts.author).trim().toLowerCase()) return false;
       if (opts.year) {
         var y = String(item.firstPublished || '').slice(0, 4);
         if (y !== opts.year) return false;
@@ -177,7 +202,8 @@
     if (scopeChurch) sections.push('church');
     if (scopeBooks) sections.push('books');
 
-    var list = sortItems(filterItems({ q: q, sections: sections }), sort);
+    var author = p.author || '';
+    var list = sortItems(filterItems({ q: q, sections: sections, author: author }), sort);
 
     root.innerHTML =
       '<nav class="breadcrumbs in-shell" aria-label="Хлебные крошки">' +
@@ -194,6 +220,11 @@
       '<span class="lib-hub-kicker">Подраздел</span><strong>Книги</strong>' +
       '<span>Жития, духовность, детская литература и другие издания</span></a>' +
       '</div>' +
+      (author
+        ? '<p class="lib-author-head in-shell">Все издания автора: <strong>' +
+          esc(author) +
+          '</strong> · <a class="lib-author-link" href="library.html">Сбросить</a></p>'
+        : '') +
       '<form class="lib-toolbar" id="lib-hub-form">' +
       '<input type="search" name="q" value="' +
       esc(q) +
@@ -246,6 +277,7 @@
     if (scopes.length === 1) url.searchParams.set('scope', scopes[0]);
     if (scopes.length === 0) url.searchParams.set('scope', 'none');
     url.searchParams.set('sort', sortVal || 'new');
+    if (params().author) url.searchParams.set('author', params().author);
     location.href = url.pathname.split('/').pop() + url.search;
   }
 
@@ -306,6 +338,15 @@
         ? churchFilters(state, sec)
         : booksFilters(state, sec);
 
+    var currentRub = L.rubricOf ? L.rubricOf(state.category) : null;
+    var topCats = L.childRubrics
+      ? L.childRubrics(sectionId, '')
+      : (sec.categories || []).map(function (c) { return { id: c.id, label: c.label }; });
+    var subParent = state.category
+      ? (currentRub && currentRub.parentId ? currentRub.parentId : state.category)
+      : '';
+    var subCats = subParent && L.childRubrics ? L.childRubrics(sectionId, subParent) : [];
+
     root.innerHTML =
       '<nav class="breadcrumbs in-shell" aria-label="Хлебные крошки">' +
       '<a href="index.html">Главная</a><span>/</span>' +
@@ -325,11 +366,12 @@
       '" href="library.html?section=' +
       sectionId +
       '">Все</a>' +
-      sec.categories
+      topCats
         .map(function (c) {
+          var on = state.category === c.id || (currentRub && currentRub.parentId === c.id);
           return (
             '<a class="' +
-            (state.category === c.id ? 'on' : '') +
+            (on ? 'on' : '') +
             '" href="library.html?section=' +
             sectionId +
             '&category=' +
@@ -341,6 +383,32 @@
         })
         .join('') +
       '</div>' +
+      (subCats.length
+        ? '<div class="lib-cats lib-subcats">' +
+          subCats
+            .map(function (c) {
+              return (
+                '<a class="' +
+                (state.category === c.id ? 'on' : '') +
+                '" href="library.html?section=' +
+                sectionId +
+                '&category=' +
+                encodeURIComponent(c.id) +
+                '">' +
+                esc(c.label) +
+                '</a>'
+              );
+            })
+            .join('') +
+          '</div>'
+        : '') +
+      (state.author
+        ? '<p class="lib-author-head">Издания автора: <strong>' +
+          esc(state.author) +
+          '</strong> · <a class="lib-author-link" href="library.html?author=' +
+          encodeURIComponent(state.author) +
+          '">во всей библиотеке</a></p>'
+        : '') +
       '<form class="lib-filters" id="lib-filters">' +
       filtersHtml +
       '<div class="lib-filters-actions">' +
@@ -489,6 +557,15 @@
     );
   }
 
+  function pageTextHtml(item) {
+    var html = (item && (item.contentHtml || item.pageText)) || '';
+    if (!html || !String(html).replace(/<[^>]+>/g, '').trim()) return '';
+    var V = window.Vera;
+    if (V && V.sanitizeRichHtml) html = V.sanitizeRichHtml(html);
+    else html = String(html);
+    return '<div class="lib-page-text"><h2>Текст</h2><div class="lib-page-body">' + html + '</div></div>';
+  }
+
   /* ---------- Book card ---------- */
   function renderBook(root) {
     var id = params().id || '';
@@ -502,7 +579,7 @@
     var main = L.displayTitle(item);
     var sub = L.subtitleTitle(item);
     var metaRows = [
-      ['Автор', item.author],
+      ['Автор', item.author, item.author ? authorHref(item) : ''],
       ['Первая публикация', L.formatDate(item.firstPublished)],
       ['Дата издания', L.formatDate(item.editionDate)],
       ['Раздел', sec ? sec.title : ''],
@@ -584,26 +661,28 @@
       esc(main) +
       '</h1>' +
       (sub ? '<p class="lib-book-alt">' + esc(sub) + '</p>' : '') +
-      '<p class="lib-book-author">' +
-      esc(item.author || '') +
-      '</p>' +
+      authorLine(item, 'lib-book-author') +
       '<div class="lib-flag-row">' +
       flagBadges(item) +
       '</div>' +
       '<p class="lib-annotation">' +
       esc(item.annotation || '') +
       '</p>' +
+      pageTextHtml(item) +
       '<div class="lib-meta">' +
       metaRows
         .filter(function (r) {
           return r[1];
         })
         .map(function (r) {
+          var val = r[2]
+            ? '<a class="lib-author-link" href="' + esc(r[2]) + '">' + esc(r[1]) + '</a>'
+            : esc(r[1]);
           return (
             '<div><span>' +
             esc(r[0]) +
             '</span><strong>' +
-            esc(r[1]) +
+            val +
             '</strong></div>'
           );
         })
@@ -677,14 +756,30 @@
   function boot() {
     var libRoot = document.getElementById('library-root');
     var bookRoot = document.getElementById('book-root');
-    if (bookRoot) {
-      renderBook(bookRoot);
+    function paint() {
+      if (bookRoot) {
+        renderBook(bookRoot);
+        return;
+      }
+      if (!libRoot) return;
+      var section = params().section;
+      if (section === 'church' || section === 'books') renderSection(libRoot, section);
+      else renderHub(libRoot);
+    }
+    var V = window.Vera;
+    if (V && V.getArticle) {
+      V.getArticle('yak-library-data')
+        .then(function (a) {
+          var raw = (a && (a.contentText || a.content || '')) || '';
+          var pack = null;
+          try { pack = JSON.parse(raw); } catch (e) { pack = null; }
+          if (pack && L.mergePack) L.mergePack(pack);
+        })
+        .catch(function () {})
+        .then(paint);
       return;
     }
-    if (!libRoot) return;
-    var section = params().section;
-    if (section === 'church' || section === 'books') renderSection(libRoot, section);
-    else renderHub(libRoot);
+    paint();
   }
 
   if (document.readyState === 'loading') {

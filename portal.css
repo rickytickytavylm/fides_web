@@ -3561,11 +3561,13 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
 }
 .lib-card {
-  display: grid; grid-template-rows: auto 1fr; border-radius: 16px; overflow: hidden;
+  display: grid; grid-template-rows: auto 1fr auto; border-radius: 16px; overflow: hidden;
   background: var(--surface); box-shadow: var(--shadow-card); text-decoration: none; color: inherit;
   transition: transform .2s, box-shadow .2s;
 }
 .lib-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+.lib-card-hit { display: grid; text-decoration: none; color: inherit; min-width: 0; }
+.lib-card > .lib-card-author { padding: 0 14px 14px; }
 .lib-cover {
   position: relative; aspect-ratio: 3 / 4; display: grid; place-items: center;
   color: #fff;
@@ -3651,6 +3653,17 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
 }
 .lib-book-alt { margin: 8px 0 0; font-size: 16px; color: var(--stone-700); }
 .lib-book-author { margin: 12px 0 0; font-size: 15px; font-weight: 600; }
+.lib-author-link { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.lib-author-link:hover { color: var(--bronze-dark); }
+.lib-author-head { margin: 0 0 16px; font-size: 15px; color: var(--stone-700); }
+.lib-subcats { margin-top: -6px; }
+.lib-page-text { margin: 22px 0 0; max-width: 66ch; }
+.lib-page-text h2 {
+  margin: 0 0 10px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 800;
+}
+.lib-page-body { font-size: 16px; line-height: 1.7; color: var(--ink); }
+.lib-page-body p { margin: 0 0 .9em; }
+.lib-page-body p:last-child { margin-bottom: 0; }
 .lib-flag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .lib-annotation { margin: 18px 0 0; font-size: 15px; line-height: 1.65; color: var(--stone-700); max-width: 62ch; }
 .lib-meta {

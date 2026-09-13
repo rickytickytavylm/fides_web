@@ -16,7 +16,7 @@
     { id: 'propovedi', title: 'Проповеди', href: 'archive.html?category=propovedi', blurb: 'Проповеди.' },
     { id: 'church', title: 'О Церкви', href: 'church.html', blurb: 'Маршруты для новичков, катехуменов, возвращения в Церковь.' },
     { id: 'spirit', title: 'Духовная жизнь', href: 'spiritual-life.html', blurb: 'Молитва, литургия, таинства, паломничества, реколлекции.' },
-    { id: 'library', title: 'Библиотека', href: 'library.html', blurb: 'Документы Церкви и книги.' },
+    { id: 'library', title: 'Библиотека', href: 'library.html', blurb: 'Документы Церкви и книги. Автор на карточке ведёт ко всем его изданиям.' },
     { id: 'authors', title: 'Авторы', href: 'authors.html', blurb: 'Каталог авторов, циклы и публикации.' },
     { id: 'audio', title: 'Аудио', href: 'audio.html', blurb: 'Проповеди и аудиозаписи.' },
     { id: 'video', title: 'Видео', href: 'video.html', blurb: 'Видеоматериалы.' },

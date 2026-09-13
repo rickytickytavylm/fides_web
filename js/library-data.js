@@ -445,6 +445,99 @@
     }
   ];
 
+  function seedRubrics() {
+    var out = [];
+    Object.keys(SECTIONS).forEach(function (sid) {
+      (SECTIONS[sid].categories || []).forEach(function (c) {
+        out.push({ id: c.id, section: sid, label: c.label, parentId: '' });
+      });
+    });
+    return out;
+  }
+
+  var RUBRICS = seedRubrics();
+
+  function rubricKey(r) {
+    return String((r && r.section) || '') + ':' + String((r && r.id) || '');
+  }
+
+  function rebuildSectionCats() {
+    Object.keys(SECTIONS).forEach(function (sid) {
+      SECTIONS[sid].categories = RUBRICS.filter(function (r) {
+        return r.section === sid && !r.parentId;
+      }).map(function (r) {
+        return { id: r.id, label: r.label };
+      });
+    });
+  }
+
+  function applyRubrics(list) {
+    if (!Array.isArray(list) || !list.length) return;
+    var byId = {};
+    RUBRICS.forEach(function (r) { byId[rubricKey(r)] = r; });
+    list.forEach(function (r) {
+      if (!r || !r.id) return;
+      byId[rubricKey(r)] = {
+        id: r.id,
+        section: r.section || 'books',
+        label: r.label || r.title || r.id,
+        parentId: r.parentId || '',
+      };
+    });
+    RUBRICS = Object.keys(byId).map(function (k) { return byId[k]; });
+    rebuildSectionCats();
+  }
+
+  function childRubrics(section, parentId) {
+    parentId = parentId || '';
+    return RUBRICS.filter(function (r) {
+      return r.section === section && String(r.parentId || '') === String(parentId);
+    });
+  }
+
+  function rubricOf(id) {
+    for (var i = 0; i < RUBRICS.length; i++) if (RUBRICS[i].id === id) return RUBRICS[i];
+    return null;
+  }
+
+  function mergeItems(list) {
+    if (!Array.isArray(list)) return;
+    list.forEach(function (it) {
+      if (!it || !it.id) return;
+      if (it.status && it.status !== 'published') {
+        ITEMS = ITEMS.filter(function (x) { return x.id !== it.id; });
+        return;
+      }
+      var i;
+      for (i = 0; i < ITEMS.length; i++) if (ITEMS[i].id === it.id) break;
+      if (i === ITEMS.length) ITEMS.push(it);
+      else ITEMS[i] = Object.assign({}, ITEMS[i], it);
+    });
+  }
+
+  function mergePack(pack) {
+    if (!pack) return;
+    if (Array.isArray(pack)) {
+      mergeItems(pack);
+      return;
+    }
+    if (pack.rubrics) applyRubrics(pack.rubrics);
+    if (pack.items) mergeItems(pack.items);
+    if (Array.isArray(pack.docTypes) && pack.docTypes.length) DOC_TYPES = pack.docTypes;
+    if (Array.isArray(pack.popes) && pack.popes.length) POPES = pack.popes;
+    if (Array.isArray(pack.themes) && pack.themes.length) THEMES = pack.themes;
+  }
+
+  function applyDesk() {
+    try {
+      var raw = localStorage.getItem('yak_desk');
+      var data = raw ? JSON.parse(raw) : null;
+      if (!data) return;
+      if (data.libraryRubrics) applyRubrics(data.libraryRubrics);
+      if (data.libraryItems) mergeItems(data.libraryItems);
+    } catch (e) {}
+  }
+
   function byId(id) {
     for (var i = 0; i < ITEMS.length; i++) if (ITEMS[i].id === id) return ITEMS[i];
     return null;
@@ -487,6 +580,8 @@
 
   function categoryLabel(item) {
     if (!item) return '';
+    var rub = rubricOf(item.category);
+    if (rub) return rub.label;
     var sec = SECTIONS[item.section];
     if (!sec) return item.genre || '';
     return labelOf(sec.categories, item.category) || item.genre || '';
@@ -501,13 +596,16 @@
     books: 'assets/cards/library-books.webp'
   };
 
+  applyDesk();
+
   global.YAK_LIBRARY = {
     SECTIONS: SECTIONS,
     covers: COVERS,
-    DOC_TYPES: DOC_TYPES,
-    POPES: POPES,
-    THEMES: THEMES,
-    ITEMS: ITEMS,
+    get ITEMS() { return ITEMS; },
+    get RUBRICS() { return RUBRICS; },
+    get DOC_TYPES() { return DOC_TYPES; },
+    get POPES() { return POPES; },
+    get THEMES() { return THEMES; },
     byId: byId,
     labelOf: labelOf,
     displayTitle: displayTitle,
@@ -515,6 +613,10 @@
     yearOf: yearOf,
     formatDate: formatDate,
     categoryLabel: categoryLabel,
-    popularityScore: popularityScore
+    popularityScore: popularityScore,
+    childRubrics: childRubrics,
+    rubricOf: rubricOf,
+    mergePack: mergePack,
+    applyDesk: applyDesk
   };
 })(typeof window !== 'undefined' ? window : globalThis);

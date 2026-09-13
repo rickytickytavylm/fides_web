@@ -487,6 +487,16 @@
       });
   }
 
+  function applyLibrary() {
+    var L = global.YAK_LIBRARY;
+    if (!L || !L.mergePack) return;
+    try {
+      var desk = read();
+      if (desk.libraryRubrics) L.mergePack({ rubrics: desk.libraryRubrics });
+      if (desk.libraryItems) L.mergePack({ items: published(desk.libraryItems) });
+    } catch (e) {}
+  }
+
   function apply() {
     applyVera();
     applyEvents();
@@ -497,6 +507,7 @@
     applyVideoChannels();
     applyGuides();
     applyCycles();
+    applyLibrary();
   }
 
   global.YakDesk = {
