@@ -14,7 +14,7 @@
     { id: 'interview', title: 'Интервью', href: 'archive.html?category=interview', blurb: 'Интервью.' },
     { id: 'svidetelstva', title: 'Свидетельства', href: 'archive.html?category=svidetelstva', blurb: 'Свидетельства веры.' },
     { id: 'propovedi', title: 'Проповеди', href: 'archive.html?category=propovedi', blurb: 'Проповеди.' },
-    { id: 'church', title: 'О Церкви', href: 'church.html', blurb: 'Маршруты для новичков, катехуменов, возвращения в Церковь.' },
+    { id: 'church', title: 'О Церкви', href: 'church.html', blurb: 'Маршруты: впервые, стать католиком, вернуться, углубить веру; как устроена Церковь; навигатор тем.' },
     { id: 'spirit', title: 'Духовная жизнь', href: 'spiritual-life.html', blurb: 'Молитва, литургия, таинства, паломничества, реколлекции.' },
     { id: 'library', title: 'Библиотека', href: 'library.html', blurb: 'Документы Церкви и книги. Автор на карточке ведёт ко всем его изданиям.' },
     { id: 'authors', title: 'Авторы', href: 'authors.html', blurb: 'Каталог авторов, циклы и публикации.' },

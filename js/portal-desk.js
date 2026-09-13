@@ -435,6 +435,16 @@
             image: ov.image || '',
           });
         }
+        if (parent && parent.type === 'navigator' && parent.groups && parent.groups.length) {
+          var href = (section === 'spirit' ? 'spiritual-life.html' : 'church.html') + '?path=' + nodeId;
+          var last = parent.groups[parent.groups.length - 1];
+          if (!last.items) last.items = [];
+          if (!last.items.some(function (it) {
+            return it && String(it.href || '').indexOf('path=' + nodeId) !== -1;
+          })) {
+            last.items.push({ title: ov.title || nodeId, href: href });
+          }
+        }
       } else {
         if (ov.title) node.title = ov.title;
         if (ov.desc != null) node.desc = ov.desc;
