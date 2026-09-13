@@ -557,13 +557,59 @@
     );
   }
 
+  function sanitizeLibHtml(html) {
+    var box = document.createElement('div');
+    box.innerHTML = String(html || '');
+    var allow = {
+      P: 1, DIV: 1, H2: 1, H3: 1, H4: 1, UL: 1, OL: 1, LI: 1, BLOCKQUOTE: 1,
+      STRONG: 1, EM: 1, B: 1, I: 1, U: 1, BR: 1, A: 1, FIGURE: 1, FIGCAPTION: 1,
+      IMG: 1, CITE: 1, SPAN: 1,
+    };
+    box.querySelectorAll('script,style,iframe,object,embed').forEach(function (n) { n.remove(); });
+    box.querySelectorAll('*').forEach(function (n) {
+      var st = String(n.getAttribute('style') || '').toLowerCase();
+      if (/font-weight\s*:\s*(bold|[7-9]00)/.test(st) && n.tagName !== 'STRONG' && n.tagName !== 'B') {
+        var bold = document.createElement('strong');
+        bold.innerHTML = n.innerHTML;
+        n.innerHTML = '';
+        n.appendChild(bold);
+      }
+      if (/font-style\s*:\s*italic/.test(st) && n.tagName !== 'EM' && n.tagName !== 'I') {
+        var em = document.createElement('em');
+        em.innerHTML = n.innerHTML;
+        n.innerHTML = '';
+        n.appendChild(em);
+      }
+      if (/text-decoration[^;]*underline/.test(st) && n.tagName !== 'U') {
+        var u = document.createElement('u');
+        u.innerHTML = n.innerHTML;
+        n.innerHTML = '';
+        n.appendChild(u);
+      }
+      if (!allow[n.tagName]) {
+        var wrap = document.createElement('span');
+        wrap.innerHTML = n.innerHTML;
+        n.parentNode.replaceChild(wrap, n);
+        return;
+      }
+      [].slice.call(n.attributes).forEach(function (a) {
+        var keepClass = a.name === 'class' && /guide-quote|guide-note|rte-figure|rte-caption/.test(n.className);
+        if (n.tagName === 'A' && a.name === 'href') return;
+        if (n.tagName === 'IMG' && (a.name === 'src' || a.name === 'alt')) return;
+        if (keepClass) return;
+        n.removeAttribute(a.name);
+      });
+      if (n.tagName === 'A' && /^\s*javascript:/i.test(n.getAttribute('href') || '')) n.removeAttribute('href');
+      if (n.tagName === 'IMG' && !/^(https?:|data:image\/|\/|\.\/|\.\.\/)/i.test(n.getAttribute('src') || '')) n.remove();
+    });
+    return box.innerHTML;
+  }
+
   function pageTextHtml(item) {
     var html = (item && (item.contentHtml || item.pageText)) || '';
     if (!html || !String(html).replace(/<[^>]+>/g, '').trim()) return '';
-    var V = window.Vera;
-    if (V && V.sanitizeRichHtml) html = V.sanitizeRichHtml(html);
-    else html = String(html);
-    return '<div class="lib-page-text"><h2>Текст</h2><div class="lib-page-body">' + html + '</div></div>';
+    html = sanitizeLibHtml(html);
+    return '<div class="lib-page-text"><div class="lib-page-body">' + html + '</div></div>';
   }
 
   /* ---------- Book card ---------- */
@@ -644,6 +690,7 @@
       esc(main) +
       '</span></nav>' +
       '<article class="lib-book">' +
+      '<div class="lib-book-top">' +
       '<div class="lib-book-cover" style="' +
       coverStyle(item) +
       '">' +
@@ -668,7 +715,6 @@
       '<p class="lib-annotation">' +
       esc(item.annotation || '') +
       '</p>' +
-      pageTextHtml(item) +
       '<div class="lib-meta">' +
       metaRows
         .filter(function (r) {
@@ -700,9 +746,11 @@
           '" target="_blank" rel="noopener">Купить бумажную / электронную версию →</a>'
         : '') +
       '</div>' +
+      '</div></div>' +
+      pageTextHtml(item) +
       (quotes ? '<div class="lib-quotes"><h2>Цитаты</h2>' + quotes + '</div>' : '') +
       '<p class="lib-future-note">Читалка на сайте, избранное и связанные статьи — в следующих итерациях.</p>' +
-      '</div></article>' +
+      '</article>' +
       '<div class="lib-donate" id="lib-donate" hidden>' +
       '<div class="lib-donate-card">' +
       '<button type="button" class="lib-donate-close" id="lib-donate-close" aria-label="Закрыть">×</button>' +

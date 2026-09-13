@@ -3637,8 +3637,9 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
   border: 1px solid transparent;
 }
 .tabs .tab-link.on, .tabs .tab-link:hover { color: var(--ink); border-color: var(--line); background: var(--surface); }
-.lib-book {
-  display: grid; grid-template-columns: 240px 1fr; gap: 28px; align-items: start; padding-top: 8px;
+.lib-book { display: block; padding-top: 8px; }
+.lib-book-top {
+  display: grid; grid-template-columns: 240px 1fr; gap: 28px; align-items: start;
 }
 .lib-book-cover {
   position: relative; aspect-ratio: 3 / 4; border-radius: 18px; display: grid; place-items: center;
@@ -3657,13 +3658,29 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
 .lib-author-link:hover { color: var(--bronze-dark); }
 .lib-author-head { margin: 0 0 16px; font-size: 15px; color: var(--stone-700); }
 .lib-subcats { margin-top: -6px; }
-.lib-page-text { margin: 22px 0 0; max-width: 66ch; }
-.lib-page-text h2 {
-  margin: 0 0 10px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 800;
-}
+.lib-page-text { margin: 32px 0 0; max-width: 72ch; }
 .lib-page-body { font-size: 16px; line-height: 1.7; color: var(--ink); }
 .lib-page-body p { margin: 0 0 .9em; }
 .lib-page-body p:last-child { margin-bottom: 0; }
+.lib-page-body h2 {
+  margin: 1.4em 0 .45em; font-family: var(--serif); font-size: 28px; font-weight: 600; letter-spacing: -.02em;
+}
+.lib-page-body h3 { margin: 1.2em 0 .35em; font-family: var(--serif); font-size: 22px; font-weight: 600; }
+.lib-page-body ul, .lib-page-body ol { margin: 0 0 1em; padding-left: 1.3em; }
+.lib-page-body li { margin: 0 0 .35em; }
+.lib-page-body blockquote, .lib-page-body .guide-quote {
+  margin: 0 0 1em; padding: 12px 16px; border-left: 3px solid var(--bronze);
+  background: var(--surface-2); font-family: var(--serif); font-size: 18px;
+}
+.lib-page-body .guide-note {
+  margin: 0 0 1em; padding: 10px 14px; border-radius: 10px;
+  background: var(--surface-2); font-size: 14px; color: var(--stone-700);
+}
+.lib-page-body figure, .lib-page-body .rte-figure { margin: 14px 0 18px; }
+.lib-page-body img { max-width: 100%; height: auto; border-radius: 12px; }
+.lib-page-body figcaption, .lib-page-body .rte-caption {
+  margin: 6px 0 0; font-size: 13px; color: var(--stone-500);
+}
 .lib-flag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .lib-annotation { margin: 18px 0 0; font-size: 15px; line-height: 1.65; color: var(--stone-700); max-width: 62ch; }
 .lib-meta {
@@ -3682,7 +3699,9 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
   font-size: 12px; font-weight: 700; color: var(--stone-700); text-decoration: none;
 }
 .lib-tag:hover { border-color: var(--bronze); color: var(--ink); }
+.lib-book-top .lib-meta { margin-top: 16px; }
 .lib-download-block { margin-top: 28px; }
+.lib-book-top .lib-download-block { margin-top: 18px; }
 .lib-download-block h2, .lib-quotes h2 {
   margin: 0 0 12px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 800;
 }
@@ -3721,13 +3740,13 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
 }
 @media (max-width: 980px) {
   .lib-grid { grid-template-columns: repeat(3, 1fr); }
-  .lib-book { grid-template-columns: 200px 1fr; gap: 20px; }
+  .lib-book-top { grid-template-columns: 200px 1fr; gap: 20px; }
 }
 @media (max-width: 880px) {
   .lib-hub-sections { grid-template-columns: 1fr; }
   .lib-filters { grid-template-columns: 1fr 1fr; }
   .lib-grid { grid-template-columns: repeat(2, 1fr); }
-  .lib-book { grid-template-columns: 1fr; }
+  .lib-book-top { grid-template-columns: 1fr; }
   .lib-book-cover { max-width: 220px; }
   .lib-meta { grid-template-columns: 1fr; }
 }
