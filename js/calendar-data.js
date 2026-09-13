@@ -212,15 +212,98 @@
     'Воскресенье': 'вскр'
   };
 
+  var WEEKDAYS_RU = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+  var serverDate = '';
+  var packListeners = [];
+
   function todayIso() {
-    var d = new Date();
-    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    if (serverDate) return serverDate;
+    try {
+      return new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Moscow' });
+    } catch (e) {
+      var d = new Date();
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+  }
+
+  function weekdayName(iso) {
+    var p = String(iso || '').split('-');
+    if (p.length < 3) return '';
+    var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+    return WEEKDAYS_RU[d.getDay()] || '';
+  }
+
+  function stubDay(iso) {
+    var wd = weekdayName(iso);
+    return {
+      date: iso,
+      weekday: wd,
+      liturgical: {
+        title: '',
+        category: wd === 'Воскресенье' ? 'воскресный' : 'будний',
+        color: '',
+        saint: { name: '', html: '' },
+        reading: '',
+        prayer: '',
+        quote: ''
+      }
+    };
   }
 
   function byDate(iso) {
     for (var i = 0; i < DAYS.length; i++) if (DAYS[i].date === iso) return DAYS[i];
     return null;
   }
+
+  function dayFor(iso) {
+    return byDate(iso) || stubDay(iso);
+  }
+
+  function mergePack(pack) {
+    var incoming = (pack && pack.days) || (Array.isArray(pack) ? pack : []);
+    incoming.forEach(function (day) {
+      if (!day || !day.date) return;
+      var i = -1;
+      for (var n = 0; n < DAYS.length; n++) {
+        if (DAYS[n].date === day.date) { i = n; break; }
+      }
+      if (day.status && day.status !== 'published') {
+        if (i !== -1) DAYS.splice(i, 1);
+        return;
+      }
+      var next = Object.assign({}, i !== -1 ? DAYS[i] : stubDay(day.date), day);
+      if (next.liturgical && next.liturgical.saint && next.liturgical.saint.html) {
+        next.liturgical.saintHtml = next.liturgical.saint.html;
+      }
+      if (i === -1) DAYS.push(next);
+      else DAYS[i] = next;
+    });
+    DAYS.sort(function (a, b) { return String(a.date).localeCompare(String(b.date)); });
+  }
+
+  function onPack(fn) {
+    if (typeof fn === 'function') packListeners.push(fn);
+  }
+
+  function notifyPack() {
+    packListeners.forEach(function (fn) {
+      try { fn(); } catch (e) {}
+    });
+  }
+
+  function pullServerDate() {
+    var base = (global.VeraConfig && VeraConfig.ARCHIVE_API_BASE) || 'https://fides.186-246-11-81.sslip.io';
+    fetch(String(base).replace(/\/$/, '') + '/health')
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (h) {
+        if (h && h.date && /^\d{4}-\d{2}-\d{2}$/.test(h.date)) {
+          serverDate = h.date;
+          notifyPack();
+        }
+      })
+      .catch(function () {});
+  }
+  pullServerDate();
 
   /** Ровно 7 дней одним окном, начиная с iso (или с ближайшего доступного). */
   function weekFrom(iso) {
@@ -253,7 +336,12 @@
     get EVENTS() { return global.YakAfisha ? global.YakAfisha.EVENTS : []; },
     WEEKDAY_SHORT: WEEKDAY_SHORT,
     todayIso: todayIso,
+    weekdayName: weekdayName,
     byDate: byDate,
+    dayFor: dayFor,
+    mergePack: mergePack,
+    onPack: onPack,
+    notifyPack: notifyPack,
     weekFrom: weekFrom,
     weekdayShort: weekdayShort,
     upcomingEvents: upcomingEvents,

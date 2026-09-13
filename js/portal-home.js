@@ -165,7 +165,7 @@
   var NEWS_TABS = [
     { id: 'ru', label: 'Россия', slug: 'church-rus' },
     { id: 'vat', label: 'Святой Престол', slug: 'santa-sede' },
-    { id: 'world', label: 'Новости', slug: 'news' },
+    { id: 'world', label: 'В мире', slug: 'sng' },
   ];
   var tabsEl = document.getElementById('news-tabs');
   var newsEl = document.getElementById('news');
@@ -186,32 +186,23 @@
     });
   }
 
-  function authorChip(it) {
-    if (window.YakAuthorLink && YakAuthorLink.cardHtml) {
-      return YakAuthorLink.cardHtml(it, { className: 'card-author' });
-    }
-    return '';
-  }
-
   function newsCard(it, i) {
-    var au = authorChip(it);
     return (
       '<a class="ncard" href="' + V.articleHref(it) + '">' +
       '<div class="thumb" style="background-image:' + bg(it.image, i) + '" role="img" aria-label=""></div>' +
       '<div class="ncard-body">' +
-      (au || '<div class="rub">' + esc(cat(it)) + '</div>') +
+      '<div class="rub">' + esc(cat(it)) + '</div>' +
       '<h4>' + esc(cleanTitle(it.title)) + '</h4>' +
       '<div class="date">' + esc(V.formatDate(it.date)) + '</div></div></a>'
     );
   }
 
   function tileCard(it, i) {
-    var au = authorChip(it);
     return (
       '<a class="art art--tile" href="' + V.articleHref(it) + '">' +
       '<div class="ph" style="background-image:' + bg(it.image, i) + '"></div>' +
       '<div class="in">' +
-      (au || '<div class="rub">' + esc(cat(it)) + '</div>') +
+      '<div class="rub">' + esc(cat(it)) + '</div>' +
       '<h4>' + esc(cleanTitle(it.title)) + '</h4>' +
       '<div class="date">' + esc(V.formatDate(it.date)) + '</div></div></a>'
     );
@@ -419,7 +410,7 @@
     var readEl = document.getElementById('aside-day-read');
     if (!dateEl || !window.YakCalendar) return;
     var iso = YakCalendar.todayIso();
-    var day = YakCalendar.byDate(iso) || (YakCalendar.DAYS && YakCalendar.DAYS[0]);
+    var day = (YakCalendar.dayFor && YakCalendar.dayFor(iso)) || YakCalendar.byDate(iso);
     if (!day) {
       dateEl.textContent = iso;
       if (saintEl) saintEl.textContent = 'Откройте календарь';
@@ -429,8 +420,12 @@
     var dateLabel = [day.weekday, L.title || day.label].filter(Boolean).join(' · ');
     dateEl.textContent = dateLabel || iso;
     if (saintEl) {
-      saintEl.textContent =
-        litText(L.saint) || litText(L.title) || litText(day.title) || 'День Церкви';
+      var saintHtml = L.saint && (L.saint.html || L.saintHtml);
+      if (saintHtml) saintEl.innerHTML = saintHtml;
+      else {
+        saintEl.textContent =
+          litText(L.saint) || litText(L.title) || litText(day.title) || 'День Церкви';
+      }
     }
     if (readEl) {
       var reading = litText(L.reading) || litText(L.gospel) || litText(L.readings);
@@ -489,13 +484,45 @@
     paint([]);
   }
 
+  function slugsOfHomePack(pack) {
+    var slides = (pack && pack.slides) || [];
+    var side = (pack && pack.side) || [];
+    return slides.concat(side).map(function (x) {
+      if (!x) return '';
+      if (typeof x === 'string') return x;
+      return x.slug || x.id || '';
+    }).filter(Boolean);
+  }
+
+  function loadHero() {
+    function fallback() {
+      V.getArticles({ limit: 12, page: 1 })
+        .then(function (pack) { buildHero(pack.items || []); })
+        .catch(function () {
+          if (heroEl) heroEl.insertAdjacentHTML('afterbegin',
+            '<div class="hero-cap"><h3 style="color:#fff">Не удалось загрузить архив</h3></div>');
+        });
+    }
+    if (!V.getArticle) { fallback(); return; }
+    V.getArticle('yak-home-data')
+      .then(function (a) {
+        var pack = null;
+        try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
+        var slugs = slugsOfHomePack(pack);
+        if (!slugs.length) { fallback(); return; }
+        return Promise.all(slugs.map(function (s) {
+          return V.getArticle(s).catch(function () { return null; });
+        })).then(function (items) {
+          var found = (items || []).filter(Boolean);
+          if (found.length) buildHero(found);
+          else fallback();
+        });
+      })
+      .catch(fallback);
+  }
+
   /* ---------- Boot ---------- */
-  V.getArticles({ limit: 12, page: 1 })
-    .then(function (pack) { buildHero(pack.items || []); })
-    .catch(function () {
-      if (heroEl) heroEl.insertAdjacentHTML('afterbegin',
-        '<div class="hero-cap"><h3 style="color:#fff">Не удалось загрузить архив</h3></div>');
-    });
+  loadHero();
 
   loadNews('ru');
   loadFresh();
@@ -505,6 +532,7 @@
     window.renderHomeAuthors(document.getElementById('authors-home-mobile'), 5);
   }
   renderAsideDay();
+  if (window.YakCalendar && YakCalendar.onPack) YakCalendar.onPack(renderAsideDay);
   renderHomeAudio();
   renderHomeEvents();
   if (window.YakAfisha && YakAfisha.onPack) YakAfisha.onPack(renderHomeEvents);

@@ -35,7 +35,7 @@
   function asArchiveItem(a) {
     var rubrics = (a.rubrics && a.rubrics.length) ? a.rubrics.slice() : [a.category || (a.kind === 'news' ? 'news' : 'columns')];
     var titles = {
-      news: 'Новости', 'church-rus': 'Россия', sng: 'КЦ в мире', 'santa-sede': 'Святой Престол', world: 'Мир',
+      news: 'Новости', 'church-rus': 'Россия', sng: 'В мире', 'santa-sede': 'Святой Престол', world: 'В мире',
       columns: 'Статьи', spirituality: 'Духовность', 'obraz-zhizni': 'Образ жизни', kultura: 'Культура',
       history: 'История', biografii: 'Биографии', saints: 'Святые', bible: 'Библеистика', liturgy: 'Литургика',
       interview: 'Интервью', svidetelstva: 'Свидетельства', propovedi: 'Проповеди',
@@ -384,20 +384,50 @@
 
   function applyCalendar() {
     var C = global.YakCalendar;
-    if (!C || !C.DAYS || C._deskApplied) return;
-    C._deskApplied = true;
-    published(read().churchDays).forEach(function (day) {
-      var found = false;
-      for (var i = 0; i < C.DAYS.length; i++) {
-        if (C.DAYS[i].date === day.date) {
-          C.DAYS[i] = Object.assign({}, C.DAYS[i], day);
-          found = true;
-          break;
-        }
-      }
-      if (!found) C.DAYS.push(day);
-    });
-    C.DAYS.sort(function (a, b) { return String(a.date).localeCompare(String(b.date)); });
+    if (!C || !C.mergePack) return;
+    var desk = published(read().churchDays);
+    if (desk.length) C.mergePack({ days: desk });
+    var V = global.Vera;
+    if (!V || !V.getArticle || applyCalendar._remote) {
+      if (C.notifyPack) C.notifyPack();
+      return;
+    }
+    applyCalendar._remote = true;
+    V.getArticle('yak-calendar-data')
+      .then(function (a) {
+        var pack = null;
+        try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
+        if (pack && C.mergePack) C.mergePack(pack);
+        if (desk.length) C.mergePack({ days: desk });
+        if (C.notifyPack) C.notifyPack();
+      })
+      .catch(function () {
+        if (C.notifyPack) C.notifyPack();
+      });
+  }
+
+  function applyAbout() {
+    var A = global.YakAbout;
+    if (!A || !A.mergePack) return;
+    var desk = read().about;
+    if (desk) A.mergePack(desk);
+    var V = global.Vera;
+    if (!V || !V.getArticle || applyAbout._remote) {
+      if (A.notifyPack) A.notifyPack();
+      return;
+    }
+    applyAbout._remote = true;
+    V.getArticle('yak-about-data')
+      .then(function (a) {
+        var pack = null;
+        try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
+        if (pack) A.mergePack(pack);
+        if (read().about) A.mergePack(read().about);
+        if (A.notifyPack) A.notifyPack();
+      })
+      .catch(function () {
+        if (A.notifyPack) A.notifyPack();
+      });
   }
 
   function applyGuides() {
@@ -526,6 +556,7 @@
     applyVideos();
     applyAudio();
     applyCalendar();
+    applyAbout();
     applyAuthors();
     applyVideoChannels();
     applyGuides();

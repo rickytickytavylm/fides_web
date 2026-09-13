@@ -38,7 +38,7 @@
   var CATEGORY_TITLES = {
     news: 'Новости', digest: 'Новости',
     'church-rus': 'Россия', russia: 'Россия',
-    sng: 'КЦ в мире', 'santa-sede': 'Святой Престол', pope: 'Святой Престол',
+    sng: 'В мире', world: 'В мире', 'santa-sede': 'Святой Престол', pope: 'Святой Престол',
     columns: 'Статьи', spirituality: 'Духовность', 'obraz-zhizni': 'Образ жизни',
     kultura: 'Культура', puteshestviya: 'Путешествия', history: 'История',
     biografii: 'Биографии', saints: 'Святые', bible: 'Библеистика', liturgy: 'Литургика',
@@ -49,7 +49,7 @@
   };
   var UMBRELLA_SLUGS = { columns: 1, news: 1, digest: 1, voices: 1 };
   var VOICE_SLUGS = { interview: 1, svidetelstva: 1, propovedi: 1 };
-  var NEWS_SLUGS = { news: 1, digest: 1, 'church-rus': 1, sng: 1, 'santa-sede': 1, pope: 1 };
+  var NEWS_SLUGS = { news: 1, digest: 1, 'church-rus': 1, sng: 1, world: 1, 'santa-sede': 1, pope: 1 };
 
   /* Все рубрики, но узкие (Культура, Музыка) — перед зонтичной «Статьи». */
   function displayCategories(item) {
