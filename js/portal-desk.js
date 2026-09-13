@@ -201,9 +201,22 @@
 
   function applyEvents() {
     var A = global.YakAfisha;
-    if (!A || !A.EVENTS || A._deskApplied) return;
-    A._deskApplied = true;
-    patchList(A.EVENTS, read().events);
+    if (!A || !A.EVENTS) return;
+    if (!A._deskApplied) {
+      A._deskApplied = true;
+      patchList(A.EVENTS, published(read().events));
+    }
+    var V = global.Vera;
+    if (!V || !V.getArticle || applyEvents._remote) return;
+    applyEvents._remote = true;
+    V.getArticle('yak-events-data')
+      .then(function (a) {
+        var pack = null;
+        try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
+        if (pack && A.mergePack) A.mergePack(pack);
+        patchList(A.EVENTS, published(read().events));
+      })
+      .catch(function () {});
   }
 
   function applyVideos() {

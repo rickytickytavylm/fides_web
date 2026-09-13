@@ -52,13 +52,13 @@
     '<h2 class="af-section-title">Ближайшие мероприятия</h2>' +
     (events.length
       ? '<div class="af-grid">' + events.map(function (e) {
-          var external = /^https?:\/\//.test(e.href || '');
+          var cover = A.eventCover ? A.eventCover(e) : (e.cover || (A.covers && A.covers[e.category]));
+          var href = A.eventPageHref ? A.eventPageHref(e) : ('event.html?id=' + encodeURIComponent(e.slug || e.id));
           return (
-            '<a class="af-card" href="' + esc(e.href || 'events.html') + '"' +
-            (external ? ' target="_blank" rel="noopener"' : '') + '>' +
-            '<span class="af-card-cover' + ((A.covers && A.covers[e.category]) ? ' has-photo' : '') + '" style="' +
-            ((A.covers && A.covers[e.category])
-              ? 'background-image:url(\'' + esc(A.covers[e.category]) + '\')'
+            '<a class="af-card" href="' + esc(href) + '">' +
+            '<span class="af-card-cover' + (cover ? ' has-photo' : '') + '" style="' +
+            (cover
+              ? 'background-image:url(\'' + esc(cover) + '\')'
               : 'background:linear-gradient(155deg,' + esc(e.coverTone || org.coverTone || '#5c5346') + ',#1a1816)') +
             '">' +
             '<span class="af-card-date"><b>' + esc(fmtLong(e.date)) + '</b>' +
@@ -66,7 +66,7 @@
             '<span class="af-card-body">' +
             '<span class="af-card-chips"><span class="cal-chip">' + esc(A.categoryLabel(e.category)) + '</span></span>' +
             '<strong>' + esc(e.title) + '</strong>' +
-            '<span class="cal-place">' + esc([e.venue, e.city].filter(Boolean).join(' · ')) + '</span>' +
+            '<span class="cal-place">' + esc([A.organizerName(e), e.city].filter(Boolean).join(' · ')) + '</span>' +
             '</span></a>'
           );
         }).join('') + '</div>'

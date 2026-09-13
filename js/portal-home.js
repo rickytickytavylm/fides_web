@@ -337,11 +337,9 @@
   }
 
   function homeEventHref(e) {
-    var href = e && e.href ? String(e.href) : '';
-    if (!href || href === '#' || href === 'map.html' || href.indexOf('map.html') === 0) {
-      return e && e.date ? 'events.html?date=' + encodeURIComponent(String(e.date).slice(0, 10)) : 'events.html';
-    }
-    return href;
+    if (window.YakAfisha && YakAfisha.eventPageHref) return YakAfisha.eventPageHref(e);
+    var id = e && (e.slug || e.id);
+    return id ? 'event.html?id=' + encodeURIComponent(id) : 'events.html';
   }
 
   function renderHomeEvents() {
@@ -356,18 +354,17 @@
     try { today = YakCalendar.todayIso ? YakCalendar.todayIso() : ''; } catch (err) {}
     el.innerHTML = list.map(function (e) {
       var parts = eventDayParts(e.date);
-      var place = [e.venue, e.city].filter(Boolean);
+      var orgName = window.YakAfisha && YakAfisha.organizerName ? YakAfisha.organizerName(e) : (e.organizer || e.venue || '');
+      var place = [orgName, e.city].filter(Boolean);
       if (!place.length && e.place) place = [e.place];
       var meta = [place[0], e.time].filter(Boolean).join(' · ');
       var href = homeEventHref(e);
-      var external = /^https?:/i.test(href);
       var cat = (window.YakAfisha && e.category)
         ? '<span class="home-event-chip">' + esc(YakAfisha.categoryLabel(e.category)) + '</span>'
         : '';
       var isToday = today && String(e.date).slice(0, 10) === today;
       return (
-        '<a class="home-event' + (isToday ? ' is-today' : '') + '" href="' + esc(href) + '"' +
-        (external ? ' target="_blank" rel="noopener"' : '') + '>' +
+        '<a class="home-event' + (isToday ? ' is-today' : '') + '" href="' + esc(href) + '">' +
         '<span class="home-event-date"><b>' + esc(parts.day) + '</b><span>' + esc(parts.mon) + '</span></span>' +
         '<span class="home-event-body">' + cat +
         '<strong>' + esc(cleanTitle(e.title)) + '</strong>' +
@@ -510,6 +507,7 @@
   renderAsideDay();
   renderHomeAudio();
   renderHomeEvents();
+  if (window.YakAfisha && YakAfisha.onPack) YakAfisha.onPack(renderHomeEvents);
   renderHomeLibrary();
   renderHomePhotos();
 })();

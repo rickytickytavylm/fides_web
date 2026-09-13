@@ -101,35 +101,27 @@
     if (state.where.trim()) {
       var q = state.where.trim().toLowerCase();
       list = list.filter(function (e) {
-        return [e.city, e.venue, e.place, e.title].join(' ').toLowerCase().indexOf(q) !== -1;
+        return [e.city, e.organizer, e.venue, e.place, e.title, A.organizerName(e)].join(' ').toLowerCase().indexOf(q) !== -1;
       });
     }
     return list;
   }
 
   function eventHref(e) {
-    var href = e && e.href ? String(e.href) : '';
-    if (!href || href === '#' || href === 'map.html' || href.indexOf('map.html') === 0) {
-      return e && e.date
-        ? 'events.html?date=' + encodeURIComponent(String(e.date).slice(0, 10))
-        : 'events.html';
-    }
-    return href;
+    return A.eventPageHref ? A.eventPageHref(e) : ('event.html?id=' + encodeURIComponent((e && (e.slug || e.id)) || ''));
   }
 
   function cardHtml(e) {
-    var org = A.organizerById(e.organizerId);
-    var tone = e.coverTone || (org && org.coverTone) || '#5c5346';
-    var cover = e.cover || (A.covers && A.covers[e.category]);
+    var orgName = A.organizerName(e);
+    var tone = e.coverTone || '#5c5346';
+    var cover = A.eventCover ? A.eventCover(e) : (e.cover || (A.covers && A.covers[e.category]));
     var href = eventHref(e);
-    var external = /^https?:\/\//.test(href);
-    var placeLine = [e.venue, e.city].filter(Boolean).join(' · ');
+    var placeLine = [orgName, e.city].filter(Boolean).join(' · ');
     var coverStyle = cover
       ? 'background-image:url(\'' + esc(cover) + '\')'
       : 'background:linear-gradient(155deg,' + esc(tone) + ',#1a1816)';
     return (
-      '<a class="af-card" href="' + esc(href) + '"' +
-      (external ? ' target="_blank" rel="noopener"' : '') + '>' +
+      '<a class="af-card" href="' + esc(href) + '">' +
       '<span class="af-card-cover' + (cover ? ' has-photo' : '') + '" style="' + coverStyle + '">' +
       '<span class="af-card-date"><b>' + esc(fmtLong(e.date)) + '</b>' +
       (e.time ? '<small>' + esc(e.time) + '</small>' : '') + '</span></span>' +
@@ -140,7 +132,7 @@
       '</span>' +
       '<strong>' + esc(e.title) + '</strong>' +
       (placeLine ? '<span class="cal-place">' + esc(placeLine) + '</span>' : '') +
-      (org ? '<span class="af-card-org">' + esc(org.short || org.name) + '</span>' : '') +
+      (orgName ? '<span class="af-card-org">' + esc(orgName) + '</span>' : '') +
       '</span></a>'
     );
   }
@@ -165,7 +157,7 @@
 
       '<fieldset class="af-field">' +
       '<legend>Где</legend>' +
-      '<input type="search" id="af-where" placeholder="Город или площадка" value="' + esc(state.where) + '">' +
+      '<input type="search" id="af-where" placeholder="Город или организатор" value="' + esc(state.where) + '">' +
       '</fieldset>' +
 
       '<fieldset class="af-field">' +
@@ -433,4 +425,5 @@
   }
 
   render();
+  if (A.onPack) A.onPack(render);
 })();

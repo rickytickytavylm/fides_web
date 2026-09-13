@@ -3,18 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-    <meta name="description" content="Видео — ЯКатолик" />
-    <title>Видео — ЯКатолик</title>
+    <meta name="description" content="Событие — Афиша ЯКатолик." />
+    <title>Событие — ЯКатолик</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="icon" href="yakatolik-logo.svg" />
-    <link rel="apple-touch-icon" href="yakatolik-logo.svg" />
     <link rel="manifest" href="site.webmanifest" />
     <meta name="theme-color" content="#ede9e2" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <script>window.YAK_BUILD = '202609131420';</script>
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="ЯКатолик" />
     <script id="yak_theme_boot">
 (function(){
   try{document.documentElement.dataset.theme=localStorage.getItem('yak_theme')==='twilight'?'twilight':'light'}catch(e){document.documentElement.dataset.theme='light'}
@@ -29,7 +27,7 @@
     <link rel="stylesheet" href="portal.css?v=202609131420" />
   </head>
   <body>
-        <header class="masthead">
+    <header class="masthead">
       <div class="wrap">
         <a class="logo" href="index.html">
           <span class="mark"><img src="yakatolik-logo.svg" alt="ЯКатолик" width="34" height="34" /></span>
@@ -51,65 +49,7 @@
       </div>
     </header>
 
-
-<main class="page-shell">
-      <nav class="breadcrumbs in-shell" aria-label="Хлебные крошки">
-        <a href="index.html">Главная</a><span>/</span><span>Видео</span>
-      </nav>
-
-      <header class="page-head in-shell">
-        <div>
-          <p class="eyebrow">Смотреть</p>
-          <h1>Видео</h1>
-        </div>
-        <p class="page-desc">Короткие размышления и полные фильмы — для паузы, молитвы и разговора о вере</p>
-      </header>
-
-      <div class="video-tabs in-shell" id="video-tabs">
-        <button type="button" class="chip active" data-type="all">Все</button>
-        <button type="button" class="chip" data-type="long">Фильмы</button>
-        <button type="button" class="chip" data-type="short">Shorts</button>
-      </div>
-
-      <div class="yt-featured-host in-shell" id="video-featured"></div>
-
-      <section class="video-band" id="video-long-band">
-        <div class="block-head">
-          <h2>Фильмы</h2>
-          <span class="rule"></span>
-        </div>
-        <div class="yt-film-grid" id="video-large"></div>
-      </section>
-
-      <section class="video-band" id="video-short-band">
-        <div class="block-head">
-          <h2>Shorts</h2>
-          <span class="rule"></span>
-        </div>
-        <div class="yt-shorts-rail" id="video-small"></div>
-      </section>
-
-      <section class="video-band" id="video-partners-band">
-        <div class="block-head">
-          <h2>Каналы партнёров</h2>
-          <span class="rule"></span>
-        </div>
-        <div class="vp-rail" id="video-partners"></div>
-      </section>
-
-      <div id="video-latest-band" hidden>
-        <div id="video-latest"></div>
-      </div>
-    </main>
-
-    <dialog class="video-dialog" id="video-dialog">
-      <form method="dialog" class="video-dialog-bar">
-        <p id="video-dialog-title"></p>
-        <button type="submit" class="ghost-button" value="close">Закрыть</button>
-      </form>
-      <video id="video-player" controls playsinline></video>
-      <iframe id="video-embed" class="video-embed" title="Видео" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen hidden></iframe>
-    </dialog>
+    <main class="page-shell" id="event-root"></main>
 
     <footer class="portal-footer"><div class="wrap">
       <a class="logo" href="index.html">
@@ -119,13 +59,11 @@
       <p class="footer-tagline">Католический портал</p>
       <nav class="footer-links" aria-label="Ещё">
         <a href="events.html">Афиша</a>
-        <a href="audio.html">Аудио</a>
-        <a href="video.html">Видео</a>
-        <a href="page.html">О проекте</a>
+        <a href="library.html">Библиотека</a>
       </nav>
     </div></footer>
 
-                <nav class="app-tabbar" aria-label="Основная навигация">
+    <nav class="app-tabbar" aria-label="Основная навигация">
       <a class="tab-item" href="church.html" data-tab="church">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2v2.4M10.2 4.6h3.6L14.8 7H9.2l1-2.4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M4.5 10.2 12 6.2l7.5 4V21H4.5V10.2Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 21v-5.2h4V21M8.2 12.8h2M13.8 12.8h2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>О Церкви</span>
@@ -147,15 +85,14 @@
         <span>Спросить</span>
       </a>
     </nav>
+
     <script src="js/config.js?v=202609131420"></script>
     <script src="js/api.js?v=202609131420"></script>
-    <script src="js/portal-desk.js?v=202609131420"></script>
     <script src="js/portal-nav.js?v=202609131420"></script>
-    <script src="js/app.js?v=202609131420"></script>
-    <script src="js/video-data.js?v=202609131420"></script>
-    <script src="js/video.js?v=202609131420"></script>
-      
-      <script src="js/theme.js?v=202609131420"></script>
+    <script src="js/events-data.js?v=202609131420"></script>
+    <script src="js/portal-desk.js?v=202609131420"></script>
+    <script src="js/event-page.js?v=202609131420"></script>
+    <script src="js/theme.js?v=202609131420"></script>
     <script src="js/cache-bust.js?v=202609131420"></script>
   </body>
 </html>
