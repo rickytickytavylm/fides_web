@@ -279,6 +279,25 @@
       : [];
     var pubCount = (a.recent && a.recent.length) ? a.recent.length : (a.count || 0);
     var cycleCount = cycles.length;
+    function castsHtmlOf() {
+      var casts = (window.YakPodcasts && YakPodcasts.forAuthor)
+        ? YakPodcasts.forAuthor(a.slug)
+        : [];
+      if (!casts.length) return '';
+      return '<h2>Подкасты</h2><div class="cycle-cards">' +
+        casts.map(function (show) {
+          var n = window.YakPodcasts.countOf ? YakPodcasts.countOf(show) : (show.episodes || []).length;
+          return (
+            '<a class="cycle-card" href="podcast.html?id=' + encodeURIComponent(show.id) + '">' +
+            '<span class="cycle-card-kicker">Подкаст</span>' +
+            '<strong>' + esc(show.title) + '</strong>' +
+            '<span class="cycle-card-meta">' + esc(window.YakPodcasts.epLabel(n)) + '</span>' +
+            '<span class="cycle-card-intro">' + esc(show.blurb || '') + '</span></a>'
+          );
+        }).join('') +
+        '</div>';
+    }
+    var castsHtml = '<section class="author-cycles" id="author-casts">' + castsHtmlOf() + '</section>';
     var cyclesHtml = cycles.length
       ? '<section class="author-cycles" id="author-cycles"><h2>Циклы</h2>' +
         '<div class="cycle-cards">' +
@@ -316,9 +335,20 @@
         : '<b>0</b> циклов') +
       '</span></div>' +
       '</div></section>' +
+      castsHtml +
       cyclesHtml +
       '<section class="guide-feed"><h2>Все публикации</h2>' +
       '<div class="author-pubs">' + (feed || '<p class="archive-empty">Пока нет материалов</p>') + '</div></section>';
+
+    function paintCasts() {
+      var box = document.getElementById('author-casts');
+      if (!box) return;
+      var html = castsHtmlOf();
+      box.innerHTML = html;
+      box.hidden = !html;
+    }
+    paintCasts();
+    if (window.YakPodcasts && YakPodcasts.onPack) YakPodcasts.onPack(paintCasts);
 
     /* Обложки из нашего архива */
     if (V && V.getArticle && a.recent && a.recent.length) {

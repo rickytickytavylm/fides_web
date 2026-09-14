@@ -10,7 +10,6 @@
   var stackEl = document.getElementById('audio-stack');
   var player = null;
   var index = 0;
-  var urlCache = Object.create(null);
 
   function esc(s) {
     return V ? V.escapeHtml(s) : String(s || '')
@@ -21,32 +20,9 @@
     return CAT.publicBase + String(key || '').split('/').map(encodeURIComponent).join('/');
   }
 
-  function apiBase() {
-    return (window.VeraConfig && VeraConfig.ARCHIVE_API_BASE) || '';
-  }
-
   function resolveUrl(track) {
     if (track.url || track.audioUrl) return Promise.resolve(track.url || track.audioUrl);
-    var key = track.audio_key;
-    if (urlCache[key] && urlCache[key].expires > Date.now() + 15000) {
-      return Promise.resolve(urlCache[key].url);
-    }
-    var base = apiBase();
-    if (!base) return Promise.resolve(publicUrl(key));
-    var url = base.replace(/\/$/, '') + '/api/content/sermons-audio-url?key=' + encodeURIComponent(key);
-    return fetch(url, { cache: 'no-store' })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (data) {
-        if (data && data.url) {
-          urlCache[key] = {
-            url: data.url,
-            expires: Date.now() + ((Number(data.expires_in) || 3600) * 1000)
-          };
-          return data.url;
-        }
-        return publicUrl(key);
-      })
-      .catch(function () { return publicUrl(key); });
+    return Promise.resolve(publicUrl(track.audio_key));
   }
 
   function fmt(sec) {
@@ -56,37 +32,44 @@
     return m + ':' + String(s).padStart(2, '0');
   }
 
-  if (countEl) countEl.textContent = tracks.length + ' треков';
-
-  if (stackEl) {
-    var seen = {};
-    var previews = [];
-    tracks.forEach(function (t) {
-      if (seen[t.cover] || previews.length >= 4) return;
-      seen[t.cover] = 1;
-      previews.push(t.cover);
-    });
-    stackEl.innerHTML = previews.map(function (src) {
-      return '<span style="background-image:url(\'' + esc(src) + '\')"></span>';
-    }).join('');
+  function paintList() {
+    tracks = CAT.tracks || tracks;
+    if (countEl) countEl.textContent = tracks.length + ' треков';
+    if (stackEl) {
+      var seen = {};
+      var previews = [];
+      tracks.forEach(function (t) {
+        if (seen[t.cover] || previews.length >= 4) return;
+        seen[t.cover] = 1;
+        previews.push(t.cover);
+      });
+      stackEl.innerHTML = previews.map(function (src) {
+        return '<span style="background-image:url(\'' + esc(src) + '\')"></span>';
+      }).join('');
+    }
+    if (listEl) {
+      listEl.innerHTML = tracks.map(function (t, i) {
+        return (
+          '<button type="button" class="ytm-row" data-i="' + i + '">' +
+          '<span class="ytm-row-art" style="background-image:url(\'' + esc(t.cover) + '\')"></span>' +
+          '<span class="ytm-row-meta"><strong>' + esc(t.title) + '</strong>' +
+          '<em>' + esc(t.artist) + ' · ' + esc(t.duration) + '</em></span>' +
+          '<span class="ytm-row-go" aria-hidden="true">›</span></button>'
+        );
+      }).join('');
+    }
   }
 
-  if (listEl) {
-    listEl.innerHTML = tracks.map(function (t, i) {
-      return (
-        '<button type="button" class="ytm-row" data-i="' + i + '">' +
-        '<span class="ytm-row-art" style="background-image:url(\'' + esc(t.cover) + '\')"></span>' +
-        '<span class="ytm-row-meta"><strong>' + esc(t.title) + '</strong>' +
-        '<em>' + esc(t.artist) + ' · ' + esc(t.duration) + '</em></span>' +
-        '<span class="ytm-row-go" aria-hidden="true">›</span></button>'
-      );
-    }).join('');
+  paintList();
+  if (listEl && !listEl._bound) {
+    listEl._bound = true;
     listEl.addEventListener('click', function (e) {
       var btn = e.target.closest('.ytm-row');
       if (!btn) return;
       openTrack(Number(btn.getAttribute('data-i')));
     });
   }
+  if (CAT.onPack) CAT.onPack(paintList);
 
   function markActive() {
     if (!listEl) return;

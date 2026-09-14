@@ -372,6 +372,13 @@
     });
   }
 
-  if (channelRoot) renderChannel();
-  else renderHome();
+  function refresh() {
+    all = ((window.YakVideos && YakVideos.items) || []).slice();
+    channels = (window.YakVideos && YakVideos.channels) || channels;
+    if (channelRoot) renderChannel();
+    else renderHome();
+  }
+
+  if (window.YakVideos && YakVideos.onPack) YakVideos.onPack(refresh);
+  refresh();
 })();

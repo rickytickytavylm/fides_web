@@ -220,10 +220,9 @@
   }
 
   function applyVideos() {
-    var V = global.YakVideos;
-    if (!V || !V.items || V._deskApplied) return;
-    V._deskApplied = true;
-    patchList(V.items, read().video, function (v) {
+    var Vd = global.YakVideos;
+    if (!Vd || !Vd.items) return;
+    function asVideo(v) {
       return {
         id: v.id,
         title: v.title,
@@ -238,25 +237,91 @@
         embedUrl: v.embedUrl || '',
         externalUrl: v.externalUrl || '',
       };
-    });
+    }
+    if (!Vd._deskApplied) {
+      Vd._deskApplied = true;
+      patchList(Vd.items, published(read().video), asVideo);
+    }
+    var Api = global.Vera;
+    if (!Api || !Api.getArticle || applyVideos._remote) {
+      if (Vd.notifyPack) Vd.notifyPack();
+      return;
+    }
+    applyVideos._remote = true;
+    Api.getArticle('yak-video-data')
+      .then(function (a) {
+        var pack = null;
+        try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
+        if (pack && Vd.mergePack) Vd.mergePack(pack);
+        patchList(Vd.items, published(read().video), asVideo);
+        if (Vd.notifyPack) Vd.notifyPack();
+      })
+      .catch(function () {
+        if (Vd.notifyPack) Vd.notifyPack();
+      });
   }
 
   function applyAudio() {
     var A = global.YakAudio;
-    if (!A || !A.tracks || A._deskApplied) return;
-    A._deskApplied = true;
-    patchList(A.tracks, read().audio, function (t) {
+    if (!A || !A.tracks) return;
+    function asTrack(t) {
       return {
         id: t.id,
         title: t.title,
         artist: t.artist || '',
         audio_key: t.audio_key || '',
         url: t.audioUrl || t.url,
+        audioUrl: t.audioUrl || t.url,
         duration: t.duration || '',
         date: t.date || '',
         cover: t.cover || A.cover,
       };
-    });
+    }
+    if (!A._deskApplied) {
+      A._deskApplied = true;
+      patchList(A.tracks, published(read().audio), asTrack);
+    }
+    var Api = global.Vera;
+    if (!Api || !Api.getArticle || applyAudio._remote) {
+      if (A.notifyPack) A.notifyPack();
+      return;
+    }
+    applyAudio._remote = true;
+    Api.getArticle('yak-audio-data')
+      .then(function (a) {
+        var pack = null;
+        try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
+        if (pack && A.mergePack) A.mergePack(pack);
+        patchList(A.tracks, published(read().audio), asTrack);
+        if (A.notifyPack) A.notifyPack();
+      })
+      .catch(function () {
+        if (A.notifyPack) A.notifyPack();
+      });
+  }
+
+  function applyPodcasts() {
+    var P = global.YakPodcasts;
+    if (!P || !P.mergePack) return;
+    var desk = published(read().podcasts || []);
+    if (desk.length) P.mergePack({ shows: desk });
+    var Api = global.Vera;
+    if (!Api || !Api.getArticle || applyPodcasts._remote) {
+      if (P.notifyPack) P.notifyPack();
+      return;
+    }
+    applyPodcasts._remote = true;
+    Api.getArticle('yak-podcasts-data')
+      .then(function (a) {
+        var pack = null;
+        try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
+        if (pack) P.mergePack(pack);
+        if (desk.length) P.mergePack({ shows: desk });
+        if (P.notifyPack) P.notifyPack();
+      })
+      .catch(function () {
+        if (P.notifyPack) P.notifyPack();
+      });
   }
 
   function findAuthor(list, slug) {
@@ -555,6 +620,7 @@
     applyEvents();
     applyVideos();
     applyAudio();
+    applyPodcasts();
     applyCalendar();
     applyAbout();
     applyAuthors();

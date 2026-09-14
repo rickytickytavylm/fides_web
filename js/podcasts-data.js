@@ -1,102 +1,38 @@
-/** Каталог подкастов. Плеер проповедей сюда не подключаем. */
+/** Подкасты портала. Выпуски подмешиваются из пака yak-podcasts-data. */
 (function (global) {
   'use strict';
 
   var SHOWS = [
     {
-      id: 'slovo-na-voskresenie',
-      title: 'Слово на воскресенье',
-      host: 'о. Андрей Дударев',
-      blurb: 'Евангелие недели — коротко, по делу, чтобы взять с собой на Мессу и в будни.',
-      cover: 'assets/cards/articles-biblical-studies.webp',
-      episodes: 48,
-      updated: '2026-08-10',
-      latest: { title: 'Не бойтесь малого стада', date: '10 августа' }
-    },
-    {
-      id: 'den-cerkvi',
-      title: 'День Церкви',
-      host: 'Редакция ЯКатолик',
-      blurb: 'Святой дня, цвет облачений и одна мысль, которую можно пронести через сутки.',
-      cover: 'assets/cards/articles-saints.webp',
-      episodes: 120,
-      updated: '2026-08-13',
-      latest: { title: 'Св. Максимилиан Кольбе', date: '13 августа' }
-    },
-    {
-      id: 'voprosy-very',
-      title: 'Вопросы веры',
-      host: 'о. Кирилл Горбунов',
-      blurb: 'Короткие ответы на то, что обычно спрашивают после Мессы и в исповедальне.',
-      cover: 'assets/cards/articles-ask-priest.webp',
-      episodes: 36,
-      updated: '2026-08-08',
-      latest: { title: 'Можно ли молиться своими словами?', date: '8 августа' }
-    },
-    {
-      id: 'zhitiya',
-      title: 'Жития',
-      host: 'Мария Леонова',
-      blurb: 'Святые без открытки: характер, выбор, слабость и то, что осталось после них.',
-      cover: 'assets/cards/articles-biographies.webp',
-      episodes: 22,
-      updated: '2026-07-28',
-      latest: { title: 'Эдит Штайн: мысль, которая стала жертвой', date: '28 июля' }
-    },
-    {
-      id: 'na-poroge',
-      title: 'На пороге',
-      host: 'Анастасия Бозио',
-      blurb: 'Для тех, кто заходит в храм впервые и не знает, куда поставить свечу и куда сесть.',
-      cover: 'assets/cards/church-first-time.webp',
-      episodes: 14,
-      updated: '2026-08-02',
-      latest: { title: 'Что делать, если все крестятся, а вы нет', date: '2 августа' }
-    },
-    {
-      id: 'semejnyj-krug',
-      title: 'Семейный круг',
-      host: 'Елена и Павел Воронины',
-      blurb: 'Дом, дети, воскресенье и то, как вера не превращается в расписание.',
-      cover: 'assets/cards/articles-lifestyle.webp',
-      episodes: 18,
-      updated: '2026-07-20',
-      latest: { title: 'Когда ребёнок не хочет в храм', date: '20 июля' }
-    },
-    {
-      id: 'palomnik',
-      title: 'Паломник',
-      host: 'Игорь Зуев',
-      blurb: 'Дороги, святыни и люди, которых встречаешь по пути — от Ченстоховы до Соловков.',
-      cover: 'assets/cards/spirit-pilgrimage.webp',
-      episodes: 11,
-      updated: '2026-07-12',
-      latest: { title: 'Лурд без открытки', date: '12 июля' }
-    },
-    {
-      id: 'lectio-vsluh',
-      title: 'Lectio вслух',
-      host: 'с. Тереза Крылова',
-      blurb: 'Молитвенное чтение Писания: один отрывок, четыре шага, тишина в конце.',
-      cover: 'assets/cards/prayer-lectio.webp',
-      episodes: 27,
-      updated: '2026-08-11',
-      latest: { title: 'Псалом 22', date: '11 августа' }
+      id: 'ruscatholic-podcast',
+      title: 'Рускатолик Podcast',
+      host: 'Николай Сыров',
+      authorSlug: 'nikolay-syirov',
+      blurb: 'Авторский подкаст Николая Сырова выходил с октября 2017 по март 2019 года на портале Рускатолик под девизом «обо всем на свете, сквозь призму пристального христианского взгляда». Актуальные новости, волнующие темы, интересные гости — всё это Рускатолик Podcast.',
+      cover: 'assets/cards/articles-spirituality.webp',
+      updated: '2019-03-26',
+      episodes: []
     }
   ];
 
-  function byId(id) {
-    id = String(id || '');
-    for (var i = 0; i < SHOWS.length; i++) {
-      if (SHOWS[i].id === id) return SHOWS[i];
-    }
-    return null;
+  var listeners = [];
+
+  function cloneShow(show) {
+    var next = Object.assign({}, show);
+    next.episodes = (show.episodes || []).map(function (ep) { return Object.assign({}, ep); });
+    return next;
   }
 
-  function latestShows(limit) {
-    return SHOWS.slice().sort(function (a, b) {
-      return String(b.updated || '').localeCompare(String(a.updated || ''));
-    }).slice(0, limit || 4);
+  function sortEpisodes(list) {
+    return (list || []).slice().sort(function (a, b) {
+      var sa = Number(a.season) || 0;
+      var sb = Number(b.season) || 0;
+      if (sa !== sb) return sb - sa;
+      var ea = Number(a.episode) || 0;
+      var eb = Number(b.episode) || 0;
+      if (ea !== eb) return eb - ea;
+      return String(b.date || '').localeCompare(String(a.date || ''));
+    });
   }
 
   function epLabel(n) {
@@ -108,10 +44,89 @@
     return n + ' эпизодов';
   }
 
+  function latestDate(show) {
+    var best = String(show.updated || '');
+    (show.episodes || []).forEach(function (ep) {
+      if (ep && ep.date && String(ep.date) > best) best = String(ep.date);
+    });
+    return best;
+  }
+
+  function latestEpisode(show) {
+    return sortEpisodes(show.episodes || [])[0] || show.latest || null;
+  }
+
+  function upsertShow(incoming) {
+    if (!incoming || !incoming.id) return;
+    var i = -1;
+    for (var n = 0; n < SHOWS.length; n++) {
+      if (SHOWS[n].id === incoming.id) { i = n; break; }
+    }
+    var next = i === -1 ? cloneShow(incoming) : Object.assign(cloneShow(SHOWS[i]), incoming);
+    if (incoming.episodes) next.episodes = incoming.episodes.map(function (ep) { return Object.assign({}, ep); });
+    next.episodes = sortEpisodes(next.episodes);
+    next.updated = latestDate(next);
+    var last = latestEpisode(next);
+    if (last) next.latest = { title: last.title, date: last.date };
+    if (i === -1) SHOWS.push(next);
+    else SHOWS[i] = next;
+  }
+
+  function mergePack(pack) {
+    if (!pack) return SHOWS;
+    var list = Array.isArray(pack) ? pack : pack.shows;
+    if (Array.isArray(list)) list.forEach(upsertShow);
+    return SHOWS;
+  }
+
+  function byId(id) {
+    id = String(id || '');
+    for (var i = 0; i < SHOWS.length; i++) {
+      if (SHOWS[i].id === id) return SHOWS[i];
+    }
+    return null;
+  }
+
+  function forAuthor(slug) {
+    slug = String(slug || '').toLowerCase();
+    if (!slug) return [];
+    return SHOWS.filter(function (s) {
+      return String(s.authorSlug || '').toLowerCase() === slug;
+    });
+  }
+
+  function latestShows(limit) {
+    return SHOWS.slice().sort(function (a, b) {
+      return latestDate(b).localeCompare(latestDate(a));
+    }).slice(0, limit || 4);
+  }
+
+  function onPack(fn) {
+    if (typeof fn === 'function') listeners.push(fn);
+  }
+
+  function notifyPack() {
+    listeners.forEach(function (fn) {
+      try { fn(SHOWS); } catch (e) {}
+    });
+  }
+
+  function countOf(show) {
+    if (show && show.episodes && show.episodes.length) return show.episodes.length;
+    return Number(show && show.episodeCount) || 0;
+  }
+
   global.YakPodcasts = {
     shows: SHOWS,
     byId: byId,
+    forAuthor: forAuthor,
     latestShows: latestShows,
-    epLabel: epLabel
+    latestEpisode: latestEpisode,
+    sortEpisodes: sortEpisodes,
+    epLabel: epLabel,
+    countOf: countOf,
+    mergePack: mergePack,
+    onPack: onPack,
+    notifyPack: notifyPack
   };
 })(typeof window !== 'undefined' ? window : this);
