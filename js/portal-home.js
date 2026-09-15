@@ -16,8 +16,32 @@
     if (img) return "url('" + String(img).replace(/'/g, '%27') + "')";
     return grad(i);
   }
-  function cat(item) { return (V.categoryLine && V.categoryLine(item, 'Материал')) || (item.categories && item.categories[0]) || 'Материал'; }
+  function cat(item) { return (V.categoryLine && V.categoryLine(item, 'Материал')) || (item.categories && item.categories[0]) || item.kicker || 'Материал'; }
   var esc = V.escapeHtml;
+
+  var HOME_PAGES = [
+    { slug: 'guide:navigator', title: 'Навигатор по католической жизни', href: 'church.html?path=navigator', image: 'assets/cards/church-navigator.webp', kicker: 'О Церкви' },
+    { slug: 'guide:structure', title: 'Как устроена Католическая Церковь', href: 'church.html?path=structure', image: 'assets/cards/church-become-parish.webp', kicker: 'О Церкви' },
+    { slug: 'guide:spirit', title: 'Духовная жизнь', href: 'spiritual-life.html', image: 'assets/cards/spirit-prayer.webp', kicker: 'Духовный путь' },
+    { slug: 'guide:mass', title: 'Путеводитель по Мессе', href: 'spiritual-life.html?path=mass-guide', image: 'assets/cards/liturgy-mass-guide.webp', kicker: 'Духовный путь' },
+    { slug: 'guide:prayer', title: 'Молитва', href: 'spiritual-life.html?path=prayer', image: 'assets/cards/spirit-prayer.webp', kicker: 'Духовный путь' },
+    { slug: 'guide:church', title: 'О Церкви', href: 'church.html', image: 'assets/cards/church-first-time.webp', kicker: 'О Церкви' },
+  ];
+  window.YakHomePages = HOME_PAGES;
+
+  function lookupHomePage(slug) {
+    slug = String(slug || '');
+    for (var i = 0; i < HOME_PAGES.length; i++) {
+      if (HOME_PAGES[i].slug === slug || HOME_PAGES[i].href === slug) return HOME_PAGES[i];
+    }
+    return null;
+  }
+
+  function homeHref(it) {
+    if (it && it.href) return it.href;
+    if (it && (it.kind === 'page' || it.type === 'page') && V.pageHref) return V.pageHref(it);
+    return V.articleHref(it);
+  }
   function cleanTitle(value) {
     return String(value || '').replace(/\.+\s*$/, '').trim();
   }
@@ -75,7 +99,7 @@
 
     var slidesHtml = slides.map(function (it, i) {
       return (
-        '<a class="hero-slide' + (i === 0 ? ' active' : '') + '" href="' + V.articleHref(it) + '" ' +
+        '<a class="hero-slide' + (i === 0 ? ' active' : '') + '" href="' + homeHref(it) + '" ' +
         'style="background-image:' + bg(it.image, i) + '">' +
         '<div class="hero-cap"><span class="rub">' + esc(cat(it)) + '</span>' +
         '<h3>' + esc(cleanTitle(it.title)) + '</h3></div></a>'
@@ -87,7 +111,7 @@
       sideEl.innerHTML = minis.map(function (it, i) {
         preload(it.image);
         return (
-          '<a class="mini" href="' + V.articleHref(it) + '">' +
+          '<a class="mini" href="' + homeHref(it) + '">' +
           '<div class="thumb" style="background-image:' + bg(it.image, i + 3) + '"></div>' +
           '<div><div class="rub">' + esc(cat(it)) + '</div>' +
           '<h4>' + esc(cleanTitle(it.title)) + '</h4></div></a>'
@@ -484,37 +508,81 @@
     paint([]);
   }
 
-  function slugsOfHomePack(pack) {
-    var slides = (pack && pack.slides) || [];
-    var side = (pack && pack.side) || [];
-    return slides.concat(side).map(function (x) {
-      if (!x) return '';
-      if (typeof x === 'string') return x;
-      return x.slug || x.id || '';
-    }).filter(Boolean);
+  function slotsOfHomePack(pack) {
+    var slides = ((pack && pack.slides) || []).slice();
+    var side = ((pack && pack.side) || []).slice();
+    if (!slides.length) {
+      slides = [lookupHomePage('guide:navigator'), lookupHomePage('guide:structure'), lookupHomePage('guide:mass')];
+    }
+    return slides.concat(side).filter(Boolean);
+  }
+
+  function resolveHomeSlot(x) {
+    if (!x) return Promise.resolve(null);
+    var slug = typeof x === 'string' ? x : (x.slug || x.id || x.href || '');
+    var page = lookupHomePage(slug);
+    if (!page && x.href) page = lookupHomePage(x.href);
+    if (page || (x.href && /\.html/.test(String(x.href)))) {
+      var src = page || x;
+      return Promise.resolve({
+        id: src.slug || slug,
+        title: x.title || src.title,
+        image: x.image || src.image,
+        href: src.href,
+        kicker: src.kicker || 'Страница',
+        categories: [src.kicker || 'Страница'],
+      });
+    }
+    var getArt = V.getArticle ? V.getArticle(slug).catch(function () { return null; }) : Promise.resolve(null);
+    return getArt.then(function (art) {
+      if (art) return art;
+      if (!V.getPage) return null;
+      return V.getPage(slug).then(function (pg) {
+        if (!pg) return null;
+        pg.href = V.pageHref ? V.pageHref(pg) : ('static.html?id=' + encodeURIComponent(pg.slug || pg.id));
+        pg.kicker = 'Страница';
+        pg.categories = pg.categories || ['Страница'];
+        return pg;
+      }).catch(function () { return null; });
+    });
   }
 
   function loadHero() {
+    function fillSide(found) {
+      found = (found || []).filter(Boolean);
+      if (!found.length) {
+        if (heroEl) heroEl.insertAdjacentHTML('afterbegin',
+          '<div class="hero-cap"><h3 style="color:#fff">Не удалось загрузить архив</h3></div>');
+        return;
+      }
+      var need = 7 - found.length;
+      if (need <= 0 || !V.getArticles) { buildHero(found); return; }
+      V.getArticles({ limit: 12, page: 1 }).then(function (pack) {
+        var extra = (pack.items || []).filter(function (it) {
+          var id = String(it.id || it.slug || '');
+          return !found.some(function (f) {
+            return String(f.id || '') === id || String(f.slug || '') === id;
+          });
+        }).slice(0, need);
+        buildHero(found.concat(extra));
+      }).catch(function () { buildHero(found); });
+    }
     function fallback() {
-      V.getArticles({ limit: 12, page: 1 })
-        .then(function (pack) { buildHero(pack.items || []); })
-        .catch(function () {
-          if (heroEl) heroEl.insertAdjacentHTML('afterbegin',
-            '<div class="hero-cap"><h3 style="color:#fff">Не удалось загрузить архив</h3></div>');
-        });
+      var defaults = slotsOfHomePack(null);
+      Promise.all(defaults.map(resolveHomeSlot)).then(function (fixed) {
+        fillSide(fixed);
+      });
     }
     if (!V.getArticle) { fallback(); return; }
     V.getArticle('yak-home-data')
       .then(function (a) {
         var pack = null;
         try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
-        var slugs = slugsOfHomePack(pack);
-        if (!slugs.length) { fallback(); return; }
-        return Promise.all(slugs.map(function (s) {
-          return V.getArticle(s).catch(function () { return null; });
-        })).then(function (items) {
+        var slots = slotsOfHomePack(pack);
+        if (!slots.length) { fallback(); return; }
+        return Promise.all(slots.map(resolveHomeSlot)).then(function (items) {
           var found = (items || []).filter(Boolean);
-          if (found.length) buildHero(found);
+          if (found.length) fillSide(found);
           else fallback();
         });
       })

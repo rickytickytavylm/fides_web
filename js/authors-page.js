@@ -232,152 +232,183 @@
       });
     }
     render();
+    if (window.YakAuthorsOnPack) window.YakAuthorsOnPack(render);
   }
 
   /* ---------- Author profile ---------- */
   var root = document.getElementById('author-root');
+  var coverCache = window.YakPubCovers || (window.YakPubCovers = {});
+
+  function hydratePubCovers(box) {
+    if (!box || !V || !V.getArticle) return;
+    var pending = [].slice.call(box.querySelectorAll('.author-pub[data-slug]')).filter(function (el) {
+      var cover = el.querySelector('.author-pub-cover');
+      return cover && !cover.style.backgroundImage;
+    });
+    var i = 0;
+    function worker() {
+      if (i >= pending.length) return;
+      var el = pending[i++];
+      var slug = el.getAttribute('data-slug');
+      var cover = el.querySelector('.author-pub-cover');
+      if (coverCache[slug]) {
+        if (cover) cover.style.backgroundImage = "url('" + String(coverCache[slug]).replace(/'/g, '%27') + "')";
+        worker();
+        return;
+      }
+      V.getArticle(slug).then(function (art) {
+        var img = art && (art.image || art.cover);
+        if (img && cover) {
+          coverCache[slug] = img;
+          cover.style.backgroundImage = "url('" + String(img).replace(/'/g, '%27') + "')";
+        }
+      }).catch(function () {}).then(worker);
+    }
+    worker();
+    worker();
+    worker();
+    worker();
+  }
+
   if (root) {
     var slug = new URLSearchParams(location.search).get('slug') || '';
-    var a = authors().filter(function (x) { return x.slug === slug; })[0];
-    if (!a) {
-      root.innerHTML =
-        '<nav class="breadcrumbs in-shell"><a href="index.html">Главная</a><span>/</span><a href="authors.html">Авторы</a><span>/</span><span>Не найден</span></nav>' +
-        '<header class="page-head in-shell"><div><h1>Автор не найден</h1></div></header>' +
-        '<p><a class="wlink" href="authors.html">← К каталогу</a></p>';
-      return;
-    }
-    document.title = a.name + ' — ЯКатолик';
-    root.classList.add('author-page');
-    var tones = [
-      ['#5c5346', '#efe8dc'],
-      ['#6b2d3c', '#f4e6e8'],
-      ['#2f5d8c', '#e4edf6'],
-      ['#3d6b4f', '#e6f0e8'],
-      ['#8a5a2b', '#f3eadf'],
-      ['#4a3f6b', '#ece7f4']
-    ];
-    var hue = 0;
-    String(a.slug || a.name || '').split('').forEach(function (ch) { hue = (hue + ch.charCodeAt(0)) % tones.length; });
-    root.style.setProperty('--author-ink', tones[hue][0]);
-    root.style.setProperty('--author-wash', tones[hue][1]);
-    var hiddenPubs = window.YakHiddenPubs || [];
-    function isPodcastLeftover(p) {
-      return /^Рускатолик\s+Podcast/i.test((p && p.title) || '');
-    }
-    function hasOwnPodcast() {
-      return !!(window.YakPodcasts && YakPodcasts.forAuthor && YakPodcasts.forAuthor(a.slug).length);
-    }
-    function visibleRecent() {
-      return (a.recent || []).filter(function (p) {
+    var castsBound = false;
+
+    function paintAuthorProfile() {
+      var a = authors().filter(function (x) { return x.slug === slug; })[0];
+      if (!a) {
+        root.innerHTML =
+          '<nav class="breadcrumbs in-shell"><a href="index.html">Главная</a><span>/</span><a href="authors.html">Авторы</a><span>/</span><span>Не найден</span></nav>' +
+          '<header class="page-head in-shell"><div><h1>Автор не найден</h1></div></header>' +
+          '<p><a class="wlink" href="authors.html">← К каталогу</a></p>';
+        return;
+      }
+      document.title = a.name + ' — ЯКатолик';
+      root.classList.add('author-page');
+      root.style.removeProperty('--author-ink');
+      root.style.removeProperty('--author-wash');
+      var hiddenPubs = window.YakHiddenPubs || [];
+      function isPodcastLeftover(p) {
+        return /^Рускатолик\s+Podcast/i.test((p && p.title) || '');
+      }
+      function hasOwnPodcast() {
+        return !!(window.YakPodcasts && YakPodcasts.forAuthor && YakPodcasts.forAuthor(a.slug).length);
+      }
+      var pubs = (a.recent || []).filter(function (p) {
         if (!p || !p.slug) return false;
         if (hiddenPubs.indexOf(String(p.slug)) !== -1) return false;
         if (hasOwnPodcast() && isPodcastLeftover(p)) return false;
         return true;
       });
-    }
-    var socials = (a.socials || []).filter(function (s) {
-      var href = String((s && s.href) || '').toLowerCase();
-      if (!href) return false;
-      return !/ruscatholic\.org|xn--80aqecdrlilg/.test(href);
-    }).map(function (s) {
-      return '<a class="author-social" href="' + esc(s.href) + '" target="_blank" rel="noopener">' + esc(s.label) + '</a>';
-    }).join('');
-    function pubCoverTone(slug) {
-      var tones = ['#5c5346', '#6b2d3c', '#2f5d8c', '#3d6b4f', '#8a5a2b', '#4a3f6b'];
-      var h = 0;
-      String(slug || '').split('').forEach(function (ch) { h = (h + ch.charCodeAt(0)) % tones.length; });
-      return tones[h];
-    }
+      var socials = (a.socials || []).filter(function (s) {
+        var href = String((s && s.href) || '').toLowerCase();
+        if (!href) return false;
+        return !/ruscatholic\.org|xn--80aqecdrlilg/.test(href);
+      }).map(function (s) {
+        return '<a class="author-social" href="' + esc(s.href) + '" target="_blank" rel="noopener">' + esc(s.label) + '</a>';
+      }).join('');
 
-    var pubs = visibleRecent();
-    var feed = pubs.map(function (p) {
-      var href = 'article.html?id=' + encodeURIComponent(p.slug);
-      return (
-        '<a class="author-biblio-item" href="' + href + '" data-slug="' + esc(p.slug) + '">' +
-        '<time>' + esc(V ? V.formatDate(p.date) : p.date) + '</time>' +
-        '<span><strong>' + esc(strip(p.title)) + '</strong>' +
-        (p.excerpt ? '<span>' + esc(strip(p.excerpt)) + '</span>' : '') +
-        '</span></a>'
-      );
-    }).join('');
+      var feed = pubs.map(function (p) {
+        var href = 'article.html?id=' + encodeURIComponent(p.slug);
+        var img = p.image || p.cover || coverCache[p.slug] || '';
+        var coverStyle = img
+          ? ' style="background-image:url(\'' + String(img).replace(/'/g, '%27') + '\')"'
+          : '';
+        return (
+          '<a class="author-pub" href="' + href + '" data-slug="' + esc(p.slug) + '">' +
+          '<span class="author-pub-cover"' + coverStyle + '></span>' +
+          '<span class="author-pub-body">' +
+          '<time>' + esc(V ? V.formatDate(p.date) : p.date) + '</time>' +
+          '<strong>' + esc(strip(p.title)) + '</strong>' +
+          (p.excerpt ? '<span>' + esc(strip(p.excerpt)) + '</span>' : '') +
+          '</span></a>'
+        );
+      }).join('');
 
-    var cycles = (window.YakCycles && window.YakCycles.forAuthor)
-      ? window.YakCycles.forAuthor(a.slug)
-      : [];
-    var pubCount = pubs.length || a.count || 0;
-    var cycleCount = cycles.length;
-    function castsHtmlOf() {
-      var casts = (window.YakPodcasts && YakPodcasts.forAuthor)
-        ? YakPodcasts.forAuthor(a.slug)
+      var cycles = (window.YakCycles && window.YakCycles.forAuthor)
+        ? window.YakCycles.forAuthor(a.slug)
         : [];
-      if (!casts.length) return '';
-      return '<h2>Подкасты</h2><div class="cycle-cards">' +
-        casts.map(function (show) {
-          var n = window.YakPodcasts.countOf ? YakPodcasts.countOf(show) : (show.episodes || []).length;
-          return (
-            '<a class="cycle-card" href="podcast.html?id=' + encodeURIComponent(show.id) + '">' +
-            '<span class="cycle-card-kicker">Подкаст</span>' +
-            '<strong>' + esc(show.title) + '</strong>' +
-            '<span class="cycle-card-meta">' + esc(window.YakPodcasts.epLabel(n)) + '</span>' +
-            '<span class="cycle-card-intro">' + esc(show.blurb || '') + '</span></a>'
-          );
-        }).join('') +
-        '</div>';
+      var pubCount = pubs.length || a.count || 0;
+      var cycleCount = cycles.length;
+      function castsHtmlOf() {
+        var casts = (window.YakPodcasts && YakPodcasts.forAuthor)
+          ? YakPodcasts.forAuthor(a.slug)
+          : [];
+        if (!casts.length) return '';
+        return '<h2>Подкасты</h2><div class="cycle-cards">' +
+          casts.map(function (show) {
+            var n = window.YakPodcasts.countOf ? YakPodcasts.countOf(show) : (show.episodes || []).length;
+            return (
+              '<a class="cycle-card" href="podcast.html?id=' + encodeURIComponent(show.id) + '">' +
+              '<span class="cycle-card-kicker">Подкаст</span>' +
+              '<strong>' + esc(show.title) + '</strong>' +
+              '<span class="cycle-card-meta">' + esc(window.YakPodcasts.epLabel(n)) + '</span>' +
+              '<span class="cycle-card-intro">' + esc(show.blurb || '') + '</span></a>'
+            );
+          }).join('') +
+          '</div>';
+      }
+      var castsHtml = '<section class="author-cycles" id="author-casts">' + castsHtmlOf() + '</section>';
+      var cyclesHtml = cycles.length
+        ? '<section class="author-cycles" id="author-cycles"><h2>Циклы</h2>' +
+          '<div class="cycle-cards">' +
+          cycles.map(function (c) {
+            return (
+              '<a class="cycle-card" href="cycle.html?id=' + encodeURIComponent(c.id) + '">' +
+              '<span class="cycle-card-kicker">' + esc(c.subtitle || 'Цикл') + '</span>' +
+              '<strong>' + esc(c.title) + '</strong>' +
+              '<span class="cycle-card-meta">' + esc(String((c.items || []).length)) + ' материалов</span>' +
+              '<span class="cycle-card-intro">' + esc(c.intro || '') + '</span></a>'
+            );
+          }).join('') +
+          '</div></section>'
+        : '';
+
+      root.innerHTML =
+        '<nav class="breadcrumbs in-shell">' +
+        '<a href="index.html">Главная</a><span>/</span><a href="authors.html">Авторы</a><span>/</span><span>' + esc(a.name) + '</span></nav>' +
+        '<section class="author-hero">' +
+        '<div class="author-hero-card">' +
+        avatar(a) +
+        '<div class="author-head-body">' +
+        '<p class="eyebrow">' + esc(a.role || 'Автор') + '</p>' +
+        '<h1>' + esc(a.name) + '</h1>' +
+        (a.bio ? '<div class="author-bio">' + formatBio(a.bio) + '</div>' : '') +
+        (socials ? '<div class="author-socials">' + socials + '</div>' : '') +
+        '<div class="author-stats">' +
+        '<span><b>' + esc(String(pubCount)) + '</b> ' +
+        esc(ruPlural(pubCount, 'публикация', 'публикации', 'публикаций')) +
+        '</span>' +
+        '<span' + (cycleCount ? '' : ' class="is-zero"') + '>' +
+        (cycleCount
+          ? '<a href="#author-cycles"><b>' + esc(String(cycleCount)) + '</b> ' +
+            esc(ruPlural(cycleCount, 'цикл', 'цикла', 'циклов')) +
+            '</a>'
+          : '<b>0</b> циклов') +
+        '</span></div>' +
+        '</div></div></section>' +
+        castsHtml +
+        cyclesHtml +
+        '<section class="guide-feed"><h2>Публикации</h2>' +
+        '<div class="author-pubs">' + (feed || '<p class="archive-empty">Пока нет материалов</p>') + '</div></section>';
+
+      function paintCasts() {
+        var box = document.getElementById('author-casts');
+        if (!box) return;
+        var html = castsHtmlOf();
+        box.innerHTML = html;
+        box.hidden = !html;
+      }
+      paintCasts();
+      if (!castsBound && window.YakPodcasts && YakPodcasts.onPack) {
+        castsBound = true;
+        YakPodcasts.onPack(paintCasts);
+      }
+      hydratePubCovers(root.querySelector('.author-pubs'));
     }
-    var castsHtml = '<section class="author-cycles" id="author-casts">' + castsHtmlOf() + '</section>';
-    var cyclesHtml = cycles.length
-      ? '<section class="author-cycles" id="author-cycles"><h2>Циклы</h2>' +
-        '<div class="cycle-cards">' +
-        cycles.map(function (c) {
-          return (
-            '<a class="cycle-card" href="cycle.html?id=' + encodeURIComponent(c.id) + '">' +
-            '<span class="cycle-card-kicker">' + esc(c.subtitle || 'Цикл') + '</span>' +
-            '<strong>' + esc(c.title) + '</strong>' +
-            '<span class="cycle-card-meta">' + esc(String((c.items || []).length)) + ' материалов</span>' +
-            '<span class="cycle-card-intro">' + esc(c.intro || '') + '</span></a>'
-          );
-        }).join('') +
-        '</div></section>'
-      : '';
 
-    root.innerHTML =
-      '<nav class="breadcrumbs in-shell">' +
-      '<a href="index.html">Главная</a><span>/</span><a href="authors.html">Авторы</a><span>/</span><span>' + esc(a.name) + '</span></nav>' +
-      '<section class="author-hero">' +
-      '<div class="author-hero-card">' +
-      avatar(a) +
-      '<div class="author-head-body">' +
-      '<p class="eyebrow">' + esc(a.role || 'Автор') + '</p>' +
-      '<h1>' + esc(a.name) + '</h1>' +
-      (a.bio ? '<div class="author-bio">' + formatBio(a.bio) + '</div>' : '') +
-      (socials ? '<div class="author-socials">' + socials + '</div>' : '') +
-      '<div class="author-stats">' +
-      '<span><b>' + esc(String(pubCount)) + '</b> ' +
-      esc(ruPlural(pubCount, 'публикация', 'публикации', 'публикаций')) +
-      '</span>' +
-      '<span' + (cycleCount ? '' : ' class="is-zero"') + '>' +
-      (cycleCount
-        ? '<a href="#author-cycles"><b>' + esc(String(cycleCount)) + '</b> ' +
-          esc(ruPlural(cycleCount, 'цикл', 'цикла', 'циклов')) +
-          '</a>'
-        : '<b>0</b> циклов') +
-      '</span></div>' +
-      '</div></div></section>' +
-      castsHtml +
-      cyclesHtml +
-      '<section class="guide-feed"><h2>Публикации</h2>' +
-      '<div class="author-biblio">' + (feed || '<p class="archive-empty">Пока нет материалов</p>') + '</div></section>';
-
-    function paintCasts() {
-      var box = document.getElementById('author-casts');
-      if (!box) return;
-      var html = castsHtmlOf();
-      box.innerHTML = html;
-      box.hidden = !html;
-    }
-    paintCasts();
-    if (window.YakPodcasts && YakPodcasts.onPack) YakPodcasts.onPack(paintCasts);
-
+    paintAuthorProfile();
+    if (window.YakAuthorsOnPack) window.YakAuthorsOnPack(paintAuthorProfile);
   }
 
   /* ---------- Home block helper ---------- */
@@ -398,4 +429,10 @@
       );
     }).join('');
   };
+  if (window.YakAuthorsOnPack) {
+    window.YakAuthorsOnPack(function () {
+      window.renderHomeAuthors(document.getElementById('authors-home'), 6);
+      window.renderHomeAuthors(document.getElementById('authors-home-mobile'), 5);
+    });
+  }
 })();

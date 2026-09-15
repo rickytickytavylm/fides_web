@@ -343,6 +343,7 @@
       title: pub.title || pub.slug,
       date: pub.date || '',
       excerpt: pub.excerpt || '',
+      image: pub.image || pub.cover || '',
     });
     author.count = author.recent.length;
     if (pub.date && (!author.latestDate || String(pub.date) > String(author.latestDate))) {
@@ -379,6 +380,14 @@
     }
   }
 
+  var authorPackFns = [];
+  function notifyAuthors() {
+    authorPackFns.forEach(function (fn) { try { fn(); } catch (e) {} });
+  }
+  global.YakAuthorsOnPack = function (fn) {
+    if (typeof fn === 'function') authorPackFns.push(fn);
+  };
+
   function applyAuthors() {
     var A = global.YakAuthors;
     if (!A) return;
@@ -411,9 +420,11 @@
           title: m.title,
           date: (m.date || m.updatedAt || '').slice(0, 10),
           excerpt: m.excerpt || '',
+          image: m.image || m.cover || '',
         });
       });
     } catch (e) {}
+      notifyAuthors();
     }
 
     var V = global.Vera;
@@ -435,7 +446,8 @@
           });
         } catch (e) {}
       })
-      .catch(function () {});
+      .catch(function () {})
+      .then(function () { notifyAuthors(); });
   }
 
   function applyVideoChannels() {
