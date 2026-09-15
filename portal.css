@@ -2091,7 +2091,11 @@ main.article { padding-bottom: 48px; }
   font-size: clamp(26px, 3vw, 36px); letter-spacing: -.02em; line-height: 1.12;
 }
 .yt-featured-copy p { margin: 0 0 12px; color: var(--stone-700); font-size: 15px; line-height: 1.5; max-width: 42ch; }
-.yt-featured-by { font-size: 13px !important; font-weight: 600; color: var(--stone-500) !important; }
+.yt-featured-by {
+  display: flex !important; align-items: center; gap: 10px;
+  font-size: 13px !important; font-weight: 600; color: var(--stone-500) !important;
+}
+.yt-featured-by .yt-ava { width: 36px; height: 36px; }
 .yt-watch {
   display: inline-flex; align-items: center; justify-content: center;
   min-height: 42px; padding: 0 18px; border: 0; border-radius: 100px;
@@ -2132,6 +2136,14 @@ main.article { padding-bottom: 48px; }
   background: rgba(10, 8, 8, .78); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .02em;
 }
 .yt-meta { display: grid; gap: 3px; min-width: 0; }
+.yt-meta--ch { grid-template-columns: 36px minmax(0, 1fr); gap: 10px; align-items: start; }
+.yt-ava {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #111 center/cover no-repeat;
+  flex: none; display: grid; place-items: center;
+}
+.yt-ava.is-empty { font-weight: 800; font-size: 13px; color: #c4b8a8; background: #2a241f; }
+.yt-meta-text { display: grid; gap: 3px; min-width: 0; }
 .yt-meta strong {
   font-size: 14.5px; font-weight: 700; line-height: 1.3;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;

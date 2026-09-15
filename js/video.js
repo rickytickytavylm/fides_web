@@ -76,9 +76,11 @@
       '</h2>' +
       (v.description ? '<p>' + esc(v.description) + '</p>' : '') +
       '<p class="yt-featured-by">' +
+      (v.channelId ? channelAvaHtml(v.channelId) : '') +
+      '<span>' +
       esc(v.speaker || channelName(v.channelId) || 'Фильм') +
       (v.duration ? ' · ' + fmtDur(v.duration) : '') +
-      '</p>' +
+      '</span></p>' +
       '<button type="button" class="yt-watch yt-open" data-id="' +
       esc(String(v.id)) +
       '">Смотреть</button>' +
@@ -95,13 +97,8 @@
       esc(v.title || '') +
       '">' +
       thumbHtml(v, 'yt-thumb--wide') +
-      '<span class="yt-meta">' +
-      '<strong>' +
-      esc(v.title || 'Без названия') +
-      '</strong>' +
-      '<em>' +
-      esc(v.speaker || channelName(v.channelId) || 'Видео') +
-      '</em></span></button></article>'
+      metaHtml(v) +
+      '</button></article>'
     );
   }
 
@@ -137,9 +134,37 @@
     );
   }
 
+  function channelOf(id) {
+    return channels.filter(function (c) { return c.id === id; })[0] || null;
+  }
+
   function channelName(id) {
-    var ch = channels.filter(function (c) { return c.id === id; })[0];
+    var ch = channelOf(id);
     return ch ? ch.name : '';
+  }
+
+  function channelAvaHtml(id) {
+    var ch = channelOf(id);
+    if (!ch) return '';
+    if (ch.logo) {
+      return '<span class="yt-ava" style="background-image:url(\'' + esc(ch.logo) + '\')" aria-hidden="true"></span>';
+    }
+    return '<span class="yt-ava is-empty" aria-hidden="true">' + esc((ch.name || '?').charAt(0)) + '</span>';
+  }
+
+  function metaHtml(v) {
+    var ava = v.channelId ? channelAvaHtml(v.channelId) : '';
+    return (
+      '<span class="yt-meta' + (ava ? ' yt-meta--ch' : '') + '">' +
+      ava +
+      '<span class="yt-meta-text">' +
+      '<strong>' +
+      esc(v.title || 'Без названия') +
+      '</strong>' +
+      '<em>' +
+      esc(v.speaker || channelName(v.channelId) || 'Видео') +
+      '</em></span></span>'
+    );
   }
 
   function channelCount(id) {
