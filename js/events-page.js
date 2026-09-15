@@ -215,7 +215,7 @@
       A.ORGANIZERS.map(function (o) {
         return (
           '<a class="af-org-card" href="organizer.html?id=' + encodeURIComponent(o.id) + '">' +
-          '<span class="af-org-mark" style="background:linear-gradient(145deg,' + esc(o.coverTone || '#5c5346') + ',#1a1816)"></span>' +
+          '<span class="af-org-mark" style="' + (A.orgMarkStyle ? A.orgMarkStyle(o) : ('background:linear-gradient(145deg,' + esc(o.coverTone || '#5c5346') + ',#1a1816)')) + '"></span>' +
           '<strong>' + esc(o.name) + '</strong>' +
           '<span>' + esc(o.blurb) + '</span>' +
           '<em>Карточка и контакты →</em></a>'

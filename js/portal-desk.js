@@ -421,10 +421,19 @@
     applyAuthors._remote = true;
     V.getArticle('yak-authors-data')
       .then(function (a) {
-        var list = [];
-        try { list = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { list = []; }
+        var parsed = [];
+        try { parsed = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { parsed = []; }
+        var list = Array.isArray(parsed) ? parsed : ((parsed && parsed.authors) || []);
+        var hidden = Array.isArray(parsed) ? [] : ((parsed && parsed.hiddenSlugs) || []);
+        global.YakHiddenPubs = hidden;
         if (Array.isArray(list)) list.forEach(function (ov) { patchAuthor(A, ov); });
         (read().authors || []).forEach(function (ov) { patchAuthor(A, ov); });
+        try {
+          var localHidden = (read().hiddenSlugs || []);
+          localHidden.forEach(function (s) {
+            if (s && global.YakHiddenPubs.indexOf(s) === -1) global.YakHiddenPubs.push(s);
+          });
+        } catch (e) {}
       })
       .catch(function () {});
   }

@@ -32,7 +32,7 @@
     '<nav class="breadcrumbs in-shell">' +
     '<a href="index.html">Главная</a><span>/</span><a href="events.html">Афиша</a><span>/</span><span>' + esc(org.short || org.name) + '</span></nav>' +
     '<section class="af-org-profile">' +
-    '<span class="af-org-hero" style="background:linear-gradient(145deg,' + esc(org.coverTone || '#5c5346') + ',#1a1816)"></span>' +
+    '<span class="af-org-hero" style="' + (A.orgMarkStyle ? A.orgMarkStyle(org) : ('background:linear-gradient(145deg,' + esc(org.coverTone || '#5c5346') + ',#1a1816)')) + '"></span>' +
     '<div class="af-org-profile-body">' +
     '<p class="eyebrow">Организатор</p>' +
     '<h1>' + esc(org.name) + '</h1>' +

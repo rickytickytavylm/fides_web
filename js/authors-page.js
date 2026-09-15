@@ -247,6 +247,34 @@
       return;
     }
     document.title = a.name + ' — ЯКатолик';
+    root.classList.add('author-page');
+    var tones = [
+      ['#5c5346', '#efe8dc'],
+      ['#6b2d3c', '#f4e6e8'],
+      ['#2f5d8c', '#e4edf6'],
+      ['#3d6b4f', '#e6f0e8'],
+      ['#8a5a2b', '#f3eadf'],
+      ['#4a3f6b', '#ece7f4']
+    ];
+    var hue = 0;
+    String(a.slug || a.name || '').split('').forEach(function (ch) { hue = (hue + ch.charCodeAt(0)) % tones.length; });
+    root.style.setProperty('--author-ink', tones[hue][0]);
+    root.style.setProperty('--author-wash', tones[hue][1]);
+    var hiddenPubs = window.YakHiddenPubs || [];
+    function isPodcastLeftover(p) {
+      return /^Рускатолик\s+Podcast/i.test((p && p.title) || '');
+    }
+    function hasOwnPodcast() {
+      return !!(window.YakPodcasts && YakPodcasts.forAuthor && YakPodcasts.forAuthor(a.slug).length);
+    }
+    function visibleRecent() {
+      return (a.recent || []).filter(function (p) {
+        if (!p || !p.slug) return false;
+        if (hiddenPubs.indexOf(String(p.slug)) !== -1) return false;
+        if (hasOwnPodcast() && isPodcastLeftover(p)) return false;
+        return true;
+      });
+    }
     var socials = (a.socials || []).filter(function (s) {
       var href = String((s && s.href) || '').toLowerCase();
       if (!href) return false;
@@ -261,23 +289,22 @@
       return tones[h];
     }
 
-    var feed = (a.recent || []).map(function (p) {
+    var pubs = visibleRecent();
+    var feed = pubs.map(function (p) {
       var href = 'article.html?id=' + encodeURIComponent(p.slug);
-      var tone = pubCoverTone(p.slug);
       return (
-        '<a class="author-pub" href="' + href + '" data-slug="' + esc(p.slug) + '">' +
-        '<span class="author-pub-cover" style="background:linear-gradient(155deg,' + tone + ',#1c1a18)" aria-hidden="true"></span>' +
-        '<span class="author-pub-body">' +
+        '<a class="author-biblio-item" href="' + href + '" data-slug="' + esc(p.slug) + '">' +
         '<time>' + esc(V ? V.formatDate(p.date) : p.date) + '</time>' +
-        '<strong>' + esc(strip(p.title)) + '</strong>' +
-        '<span>' + esc(strip(p.excerpt)) + '</span></span></a>'
+        '<span><strong>' + esc(strip(p.title)) + '</strong>' +
+        (p.excerpt ? '<span>' + esc(strip(p.excerpt)) + '</span>' : '') +
+        '</span></a>'
       );
     }).join('');
 
     var cycles = (window.YakCycles && window.YakCycles.forAuthor)
       ? window.YakCycles.forAuthor(a.slug)
       : [];
-    var pubCount = (a.recent && a.recent.length) ? a.recent.length : (a.count || 0);
+    var pubCount = pubs.length || a.count || 0;
     var cycleCount = cycles.length;
     function castsHtmlOf() {
       var casts = (window.YakPodcasts && YakPodcasts.forAuthor)
@@ -316,7 +343,8 @@
     root.innerHTML =
       '<nav class="breadcrumbs in-shell">' +
       '<a href="index.html">Главная</a><span>/</span><a href="authors.html">Авторы</a><span>/</span><span>' + esc(a.name) + '</span></nav>' +
-      '<section class="author-head">' +
+      '<section class="author-hero">' +
+      '<div class="author-hero-card">' +
       avatar(a) +
       '<div class="author-head-body">' +
       '<p class="eyebrow">' + esc(a.role || 'Автор') + '</p>' +
@@ -334,11 +362,11 @@
           '</a>'
         : '<b>0</b> циклов') +
       '</span></div>' +
-      '</div></section>' +
+      '</div></div></section>' +
       castsHtml +
       cyclesHtml +
-      '<section class="guide-feed"><h2>Все публикации</h2>' +
-      '<div class="author-pubs">' + (feed || '<p class="archive-empty">Пока нет материалов</p>') + '</div></section>';
+      '<section class="guide-feed"><h2>Публикации</h2>' +
+      '<div class="author-biblio">' + (feed || '<p class="archive-empty">Пока нет материалов</p>') + '</div></section>';
 
     function paintCasts() {
       var box = document.getElementById('author-casts');
@@ -350,21 +378,6 @@
     paintCasts();
     if (window.YakPodcasts && YakPodcasts.onPack) YakPodcasts.onPack(paintCasts);
 
-    /* Обложки из нашего архива */
-    if (V && V.getArticle && a.recent && a.recent.length) {
-      a.recent.forEach(function (p) {
-        V.getArticle(p.slug).then(function (art) {
-          var img = (art && (art.image || art.cover || art.thumbnail)) || '';
-          if (!img) return;
-          var card = root.querySelector('.author-pub[data-slug="' + p.slug + '"] .author-pub-cover');
-          if (!card) return;
-          card.style.backgroundImage = 'url("' + String(img).replace(/"/g, '') + '")';
-          card.style.backgroundSize = 'cover';
-          card.style.backgroundPosition = 'center 22%';
-          card.classList.add('has-photo');
-        }).catch(function () {});
-      });
-    }
   }
 
   /* ---------- Home block helper ---------- */

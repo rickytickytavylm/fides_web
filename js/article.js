@@ -449,6 +449,11 @@
     .then(function (article) {
       if (!article || !article.title) throw new Error('Article empty');
       if (/^yak-.*-data$/.test(String(article.slug || id))) throw new Error('Article empty');
+      var hidden = window.YakHiddenPubs || [];
+      var slugs = article.categorySlugs || article.rubrics || [];
+      if (hidden.indexOf(String(article.slug || id)) !== -1 || (slugs.length === 1 && slugs[0] === 'hidden')) {
+        throw new Error('Article empty');
+      }
       document.title = article.title + ' — ЯКатолик';
       function paint() {
         root.innerHTML = renderArticle(article);
