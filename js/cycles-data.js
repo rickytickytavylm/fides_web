@@ -610,8 +610,8 @@
   },
   {
     "id": "tserkov-s-chelovecheskim-litsom",
-    "authorSlug": "",
-    "authorSlugs": [],
+    "authorSlug": "olga-hrul",
+    "authorSlugs": ["olga-hrul"],
     "title": "Церковь с человеческим лицом",
     "subtitle": "Авторский проект Ольги Хруль",
     "hubUrl": "https://ruscatholic.org/tserkov-s-chelovecheskim-litsom/",
@@ -1187,7 +1187,13 @@
         delete byId[c.id];
         return;
       }
-      byId[c.id] = Object.assign({}, byId[c.id] || {}, c);
+      var prev = byId[c.id] || {};
+      var next = Object.assign({}, prev, c);
+      if (!next.authorSlug && prev.authorSlug) next.authorSlug = prev.authorSlug;
+      if ((!next.authorSlugs || !next.authorSlugs.length) && prev.authorSlugs && prev.authorSlugs.length) {
+        next.authorSlugs = prev.authorSlugs;
+      }
+      byId[c.id] = next;
     });
     CYCLES.length = 0;
     Object.keys(byId).forEach(function (k) { CYCLES.push(byId[k]); });

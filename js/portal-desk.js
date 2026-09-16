@@ -351,6 +351,18 @@
     }
   }
 
+  function stripHiddenFromAuthors(A) {
+    var hidden = global.YakHiddenPubs || [];
+    if (!A || !hidden.length) return;
+    A.forEach(function (a) {
+      if (!a || !a.recent) return;
+      a.recent = a.recent.filter(function (p) {
+        return p && p.slug && hidden.indexOf(String(p.slug)) === -1;
+      });
+      a.count = a.recent.length;
+    });
+  }
+
   function patchAuthor(A, ov) {
     if (!ov || (ov.status && ov.status !== 'published')) return;
     var i = findAuthor(A, ov.slug || ov.id);
@@ -424,6 +436,13 @@
         });
       });
     } catch (e) {}
+      try {
+        global.YakHiddenPubs = global.YakHiddenPubs || [];
+        (data.hiddenSlugs || []).forEach(function (s) {
+          if (s && global.YakHiddenPubs.indexOf(s) === -1) global.YakHiddenPubs.push(s);
+        });
+        stripHiddenFromAuthors(A);
+      } catch (e2) {}
       notifyAuthors();
     }
 
@@ -445,6 +464,7 @@
             if (s && global.YakHiddenPubs.indexOf(s) === -1) global.YakHiddenPubs.push(s);
           });
         } catch (e) {}
+        stripHiddenFromAuthors(A);
       })
       .catch(function () {})
       .then(function () { notifyAuthors(); });
@@ -633,7 +653,24 @@
       var desk = read();
       if (desk.libraryRubrics) L.mergePack({ rubrics: desk.libraryRubrics });
       if (desk.libraryItems) L.mergePack({ items: published(desk.libraryItems) });
+      if (desk.libraryThemes) L.mergePack({ themes: desk.libraryThemes });
     } catch (e) {}
+    var V = global.Vera;
+    if (!V || !V.getArticle || applyLibrary._remote) return;
+    applyLibrary._remote = true;
+    V.getArticle('yak-library-data')
+      .then(function (a) {
+        var pack = null;
+        try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
+        if (pack && L.mergePack) L.mergePack(pack);
+        try {
+          var again = read();
+          if (again.libraryRubrics) L.mergePack({ rubrics: again.libraryRubrics });
+          if (again.libraryItems) L.mergePack({ items: published(again.libraryItems) });
+          if (again.libraryThemes) L.mergePack({ themes: again.libraryThemes });
+        } catch (e2) {}
+      })
+      .catch(function () {});
   }
 
   function apply() {

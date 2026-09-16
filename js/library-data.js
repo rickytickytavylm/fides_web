@@ -1,6 +1,6 @@
 /**
  * Библиотека ЯКатолик — пилотные данные по ТЗ.
- * section: church | books
+ * section: church | books | periodicals
  * Читалка / избранное / просмотры — зарезервированы в схеме.
  */
 (function (global) {
@@ -28,6 +28,16 @@
         { id: 'spirituality', label: 'Духовность' },
         { id: 'theology', label: 'Богословие' },
         { id: 'history', label: 'История' }
+      ]
+    },
+    periodicals: {
+      id: 'periodicals',
+      title: 'Периодика',
+      desc: 'Журналы, газеты и бюллетени. Подрубрики задаются в редакции.',
+      categories: [
+        { id: 'magazines', label: 'Журналы' },
+        { id: 'newspapers', label: 'Газеты' },
+        { id: 'bulletins', label: 'Бюллетени' }
       ]
     }
   };
@@ -593,7 +603,8 @@
 
   var COVERS = {
     church: 'assets/cards/library-church.webp',
-    books: 'assets/cards/library-books.webp'
+    books: 'assets/cards/library-books.webp',
+    periodicals: 'assets/cards/library-books.webp'
   };
 
   applyDesk();

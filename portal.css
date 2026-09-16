@@ -3634,7 +3634,7 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
 }
 .lib-home-cta span:last-child { font-size: 13.5px; color: var(--stone-700); line-height: 1.45; }
 .lib-hub-sections {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 0 0 22px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 0 0 22px;
 }
 .lib-hub-tile {
   display: grid; gap: 8px; padding: 20px 18px; border-radius: 18px;
@@ -3679,7 +3679,7 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
   color: #fff;
 }
 .lib-cover-mark {
-  font-family: var(--serif); font-size: 56px; font-weight: 600; opacity: .88; line-height: 1;
+  display: none;
 }
 .lib-cover-badges {
   position: absolute; top: 10px; left: 10px; display: flex; flex-wrap: wrap; gap: 6px;
@@ -3849,12 +3849,15 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
   .lib-book-top { grid-template-columns: 200px 1fr; gap: 20px; }
 }
 @media (max-width: 880px) {
-  .lib-hub-sections { grid-template-columns: 1fr; }
+  .lib-hub-sections { grid-template-columns: 1fr 1fr; }
   .lib-filters { grid-template-columns: 1fr 1fr; }
   .lib-grid { grid-template-columns: repeat(2, 1fr); }
   .lib-book-top { grid-template-columns: 1fr; }
   .lib-book-cover { max-width: 220px; }
   .lib-meta { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .lib-hub-sections { grid-template-columns: 1fr; }
 }
 @media (max-width: 520px) {
   .lib-filters { grid-template-columns: 1fr; }

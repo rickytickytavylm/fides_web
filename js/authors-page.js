@@ -239,30 +239,38 @@
   var root = document.getElementById('author-root');
   var coverCache = window.YakPubCovers || (window.YakPubCovers = {});
 
+  function dropMissingPub(el, slug) {
+    if (el && el.parentNode) el.parentNode.removeChild(el);
+    if (slug && window.YakHiddenPubs && window.YakHiddenPubs.indexOf(String(slug)) === -1) {
+      window.YakHiddenPubs.push(String(slug));
+    }
+  }
+
   function hydratePubCovers(box) {
     if (!box || !V || !V.getArticle) return;
-    var pending = [].slice.call(box.querySelectorAll('.author-pub[data-slug]')).filter(function (el) {
-      var cover = el.querySelector('.author-pub-cover');
-      return cover && !cover.style.backgroundImage;
-    });
+    var pending = [].slice.call(box.querySelectorAll('.author-pub[data-slug]'));
     var i = 0;
     function worker() {
       if (i >= pending.length) return;
       var el = pending[i++];
       var slug = el.getAttribute('data-slug');
       var cover = el.querySelector('.author-pub-cover');
-      if (coverCache[slug]) {
-        if (cover) cover.style.backgroundImage = "url('" + String(coverCache[slug]).replace(/'/g, '%27') + "')";
-        worker();
-        return;
-      }
       V.getArticle(slug).then(function (art) {
+        var hidden = !art || (!art.slug && !art.id && !art.title);
+        var cats = (art && (art.categorySlugs || art.rubrics)) || [];
+        if (hidden || cats.indexOf('hidden') !== -1) {
+          dropMissingPub(el, slug);
+          return;
+        }
         var img = art && (art.image || art.cover);
         if (img && cover) {
           coverCache[slug] = img;
           cover.style.backgroundImage = "url('" + String(img).replace(/'/g, '%27') + "')";
         }
-      }).catch(function () {}).then(worker);
+      }).catch(function (err) {
+        var msg = String((err && err.message) || err || '').toLowerCase();
+        if (/404|not found|не найден/.test(msg)) dropMissingPub(el, slug);
+      }).then(worker);
     }
     worker();
     worker();

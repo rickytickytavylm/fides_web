@@ -63,9 +63,6 @@
       '<div class="lib-cover" style="' +
       coverStyle(item) +
       '">' +
-      '<span class="lib-cover-mark">' +
-      esc((main || '?').slice(0, 1)) +
-      '</span>' +
       '<div class="lib-cover-badges">' +
       flagBadges(item) +
       '</div>' +
@@ -191,16 +188,20 @@
     var q = p.q || '';
     var scopeChurch = true;
     var scopeBooks = true;
-    if (p.scope === 'church') scopeBooks = false;
-    else if (p.scope === 'books') scopeChurch = false;
+    var scopePeriodicals = true;
+    if (p.scope === 'church') { scopeBooks = false; scopePeriodicals = false; }
+    else if (p.scope === 'books') { scopeChurch = false; scopePeriodicals = false; }
+    else if (p.scope === 'periodicals') { scopeChurch = false; scopeBooks = false; }
     else if (p.scope === 'none') {
       scopeChurch = false;
       scopeBooks = false;
+      scopePeriodicals = false;
     }
 
     var sections = [];
     if (scopeChurch) sections.push('church');
     if (scopeBooks) sections.push('books');
+    if (scopePeriodicals) sections.push('periodicals');
 
     var author = p.author || '';
     var list = sortItems(filterItems({ q: q, sections: sections, author: author }), sort);
@@ -219,6 +220,9 @@
       '<a class="lib-hub-tile" href="library.html?section=books">' +
       '<span class="lib-hub-kicker">Подраздел</span><strong>Книги</strong>' +
       '<span>Жития, духовность, детская литература и другие издания</span></a>' +
+      '<a class="lib-hub-tile" href="library.html?section=periodicals">' +
+      '<span class="lib-hub-kicker">Подраздел</span><strong>Периодика</strong>' +
+      '<span>Журналы, газеты и бюллетени</span></a>' +
       '</div>' +
       (author
         ? '<p class="lib-author-head in-shell">Все издания автора: <strong>' +
@@ -236,6 +240,9 @@
       '<label><input type="checkbox" name="sc" value="books"' +
       (scopeBooks ? ' checked' : '') +
       ' /> Книги</label>' +
+      '<label><input type="checkbox" name="sc" value="periodicals"' +
+      (scopePeriodicals ? ' checked' : '') +
+      ' /> Периодика</label>' +
       '</div>' +
       '<div class="tabs" role="tablist">' +
       '<button type="submit" name="sort" value="new" class="' +
@@ -811,7 +818,7 @@
       }
       if (!libRoot) return;
       var section = params().section;
-      if (section === 'church' || section === 'books') renderSection(libRoot, section);
+      if (section && L.SECTIONS[section]) renderSection(libRoot, section);
       else renderHub(libRoot);
     }
     var V = window.Vera;
