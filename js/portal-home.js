@@ -605,5 +605,6 @@
   renderHomeEvents();
   if (window.YakAfisha && YakAfisha.onPack) YakAfisha.onPack(renderHomeEvents);
   renderHomeLibrary();
+  if (window.YAK_LIBRARY && YAK_LIBRARY.onPack) YAK_LIBRARY.onPack(renderHomeLibrary);
   renderHomePhotos();
 })();

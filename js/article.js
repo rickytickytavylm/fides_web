@@ -190,6 +190,36 @@
     return '';
   }
 
+  function articleTags(article) {
+    var out = [];
+    var seen = {};
+    function add(t) {
+      if (!t) return;
+      var slug = String(t.slug || t).replace(/^tag:/, '');
+      var title = t.title || t.name || slug.replace(/-/g, ' ');
+      if (!slug || seen[slug]) return;
+      seen[slug] = 1;
+      out.push({ slug: slug, title: title });
+    }
+    (article.tags || []).forEach(add);
+    (article.categorySlugs || article.rubrics || []).forEach(function (s) {
+      if (String(s).indexOf('tag:') === 0) add({ slug: String(s).slice(4) });
+    });
+    return out;
+  }
+
+  function renderArticleTags(article) {
+    var tags = articleTags(article);
+    if (!tags.length) return '';
+    return (
+      '<p class="article-tags">' +
+      tags.map(function (t) {
+        return '<a class="article-tag" href="tag.html?slug=' + encodeURIComponent(t.slug) + '">' + V.escapeHtml(t.title) + '</a>';
+      }).join('') +
+      '</p>'
+    );
+  }
+
   function renderArticle(article) {
     var isPage = article.kind === 'page' || article.type === 'page';
     var cat =
@@ -345,6 +375,7 @@
       '</div>' +
       relatedHtml +
       renderCycleMore(article, cycle) +
+      renderArticleTags(article) +
       '<footer class="article-foot">' +
       '<a class="text-link" href="' +
       listHref +
@@ -460,6 +491,7 @@
         if (relatedSection) relatedSection.hidden = article.kind === 'page';
       }
       paint();
+      if (window.YakAuthorsOnPack) YakAuthorsOnPack(paint);
       loadRelated(article);
       if (window.YakCycles && YakCycles.ready) {
         YakCycles.ready.then(function () {

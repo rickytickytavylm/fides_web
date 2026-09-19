@@ -364,7 +364,12 @@
   }
 
   function patchAuthor(A, ov) {
-    if (!ov || (ov.status && ov.status !== 'published')) return;
+    if (!ov) return;
+    if (ov.status && ov.status !== 'published') {
+      var drop = findAuthor(A, ov.slug || ov.id);
+      if (drop !== -1) A.splice(drop, 1);
+      return;
+    }
     var i = findAuthor(A, ov.slug || ov.id);
     var patch = Object.assign({}, ov);
     if (!patch.photo) delete patch.photo;
@@ -536,83 +541,130 @@
       });
   }
 
-  function applyGuides() {
-    var G = global.YakGuides;
-    if (!G || G._deskApplied) return;
-    G._deskApplied = true;
-    (read().guides || []).forEach(function (ov) {
-      if (!ov || (ov.status && ov.status !== 'published')) return;
-      var section = ov.section;
-      if (!section && ov.id) {
-        if (String(ov.id).indexOf('church') === 0) section = 'church';
-        else if (String(ov.id).indexOf('spirit') === 0) section = 'spirit';
-      }
-      var tree = G[section];
-      if (!tree) return;
-      var nodeId = ov.nodeId;
-      if (!nodeId && ov.id) {
-        var parts = String(ov.id).split(/[:/]/);
-        nodeId = parts[parts.length - 1];
-      }
-      if (!nodeId) return;
+  var guidePackFns = [];
+  function notifyGuides() {
+    guidePackFns.forEach(function (fn) { try { fn(); } catch (e) {} });
+  }
+  global.YakGuidesOnPack = function (fn) {
+    if (typeof fn === 'function') guidePackFns.push(fn);
+  };
 
-      if (nodeId === 'hub' || ov.kind === 'hub') {
-        if (ov.title) tree.title = ov.title;
-        if (ov.desc != null) tree.desc = ov.desc;
-        if (ov.intro != null) tree.intro = ov.intro;
-        return;
-      }
+  function applyGuideOverride(G, ov) {
+    if (!ov || (ov.status && ov.status !== 'published')) return;
+    var section = ov.section;
+    if (!section && ov.id) {
+      if (String(ov.id).indexOf('church') === 0) section = 'church';
+      else if (String(ov.id).indexOf('spirit') === 0) section = 'spirit';
+    }
+    var tree = G[section];
+    if (!tree) return;
+    var nodeId = ov.nodeId;
+    if (!nodeId && ov.id) {
+      var parts = String(ov.id).split(/[:/]/);
+      nodeId = parts[parts.length - 1];
+    }
+    if (!nodeId) return;
 
-      var nodes = tree.nodes || (tree.nodes = {});
-      var node = nodes[nodeId];
-      if (!node) {
-        if (ov.kind !== 'page' && !ov.added) return;
-        node = {
-          type: 'page',
+    if (nodeId === 'hub' || ov.kind === 'hub') {
+      if (ov.title) tree.title = ov.title;
+      if (ov.desc != null) tree.desc = ov.desc;
+      if (ov.intro != null) tree.intro = ov.intro;
+      return;
+    }
+
+    var nodes = tree.nodes || (tree.nodes = {});
+    var node = nodes[nodeId];
+    if (!node) {
+      if (ov.kind !== 'page' && !ov.added) return;
+      node = {
+        type: 'page',
+        title: ov.title || '',
+        lead: ov.lead || '',
+        contentHtml: ov.contentHtml || '',
+        siblingsOf: ov.siblingsOf || '',
+      };
+      nodes[nodeId] = node;
+      var parent = ov.siblingsOf && nodes[ov.siblingsOf];
+      if (parent && parent.cards && !parent.cards.some(function (c) { return c.id === nodeId; })) {
+        parent.cards.push({
+          id: nodeId,
           title: ov.title || '',
-          lead: ov.lead || '',
-          contentHtml: ov.contentHtml || '',
-          siblingsOf: ov.siblingsOf || '',
-        };
-        nodes[nodeId] = node;
-        var parent = ov.siblingsOf && nodes[ov.siblingsOf];
-        if (parent && parent.cards && !parent.cards.some(function (c) { return c.id === nodeId; })) {
-          parent.cards.push({
-            id: nodeId,
-            title: ov.title || '',
-            sub: ov.sub || '',
-            image: ov.image || '',
-          });
-        }
-        if (parent && parent.type === 'navigator' && parent.groups && parent.groups.length) {
-          var href = (section === 'spirit' ? 'spiritual-life.html' : 'church.html') + '?path=' + nodeId;
-          var last = parent.groups[parent.groups.length - 1];
-          if (!last.items) last.items = [];
-          if (!last.items.some(function (it) {
-            return it && String(it.href || '').indexOf('path=' + nodeId) !== -1;
-          })) {
-            last.items.push({ title: ov.title || nodeId, href: href });
-          }
-        }
-      } else {
-        if (ov.title) node.title = ov.title;
-        if (ov.desc != null) node.desc = ov.desc;
-        if (ov.lead != null) node.lead = ov.lead;
-        if (ov.contentHtml) node.contentHtml = ov.contentHtml;
-        if (ov.prayers && ov.prayers.length) node.prayers = ov.prayers;
-      }
-
-      function patchCards(list) {
-        (list || []).forEach(function (c) {
-          if (!c || c.id !== nodeId) return;
-          if (ov.title) c.title = ov.title;
-          if (ov.sub != null) c.sub = ov.sub;
-          if (ov.image) c.image = ov.image;
+          sub: ov.sub || '',
+          image: ov.image || '',
         });
       }
-      patchCards(tree.cards);
-      Object.keys(nodes).forEach(function (k) { patchCards(nodes[k].cards); });
+    } else {
+      if (ov.title) node.title = ov.title;
+      if (ov.desc != null) node.desc = ov.desc;
+      if (ov.lead != null) node.lead = ov.lead;
+      if (ov.contentHtml) node.contentHtml = ov.contentHtml;
+      if (ov.sub != null) node.sub = ov.sub;
+      if (ov.image != null && ov.image !== '') node.image = ov.image;
+      if (ov.prayers && ov.prayers.length) node.prayers = ov.prayers;
+    }
+
+    function patchCards(list) {
+      (list || []).forEach(function (c) {
+        if (!c || c.id !== nodeId) return;
+        if (ov.title) c.title = ov.title;
+        if (ov.sub != null) c.sub = ov.sub;
+        if (ov.image != null && ov.image !== '') c.image = ov.image;
+      });
+    }
+    patchCards(tree.cards);
+    Object.keys(nodes).forEach(function (k) { patchCards(nodes[k].cards); });
+
+    var file = section === 'spirit' ? 'spiritual-life.html' : 'church.html';
+    Object.keys(nodes).forEach(function (k) {
+      var n = nodes[k];
+      if (!n || n.type !== 'navigator' || !n.groups) return;
+      n.groups.forEach(function (g) {
+        (g.items || []).forEach(function (it) {
+          if (!it || typeof it === 'string') return;
+          if (String(it.href || '').indexOf('path=' + nodeId) !== -1 && ov.title) {
+            it.title = ov.title;
+          }
+        });
+      });
     });
+    if (ov.added && ov.siblingsOf && nodes[ov.siblingsOf] && nodes[ov.siblingsOf].type === 'navigator') {
+      var href = file + '?path=' + nodeId;
+      var groups = nodes[ov.siblingsOf].groups || [];
+      var last = groups[groups.length - 1];
+      if (last) {
+        last.items = last.items || [];
+        if (!last.items.some(function (it) {
+          return it && String(it.href || '').indexOf('path=' + nodeId) !== -1;
+        })) {
+          last.items.push({ title: ov.title || nodeId, href: href });
+        }
+      }
+    }
+  }
+
+  function applyGuides() {
+    var G = global.YakGuides;
+    if (!G) return;
+    function applyList(list) {
+      (list || []).forEach(function (ov) { applyGuideOverride(G, ov); });
+    }
+    applyList(read().guides || []);
+    var V = global.Vera;
+    if (!V || !V.getArticle || applyGuides._remote) {
+      notifyGuides();
+      return;
+    }
+    applyGuides._remote = true;
+    V.getArticle('yak-guides-data')
+      .then(function (a) {
+        var pack = null;
+        try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
+        var list = !pack ? [] : (Array.isArray(pack) ? pack : (pack.guides || []));
+        applyList(list);
+        applyList(read().guides || []);
+      })
+      .catch(function () {})
+      .then(function () { notifyGuides(); });
   }
 
   var CYCLES_PAGE_SLUG = 'yak-cycles-data';
@@ -656,7 +708,10 @@
       if (desk.libraryThemes) L.mergePack({ themes: desk.libraryThemes });
     } catch (e) {}
     var V = global.Vera;
-    if (!V || !V.getArticle || applyLibrary._remote) return;
+    if (!V || !V.getArticle || applyLibrary._remote) {
+      if (L.notifyPack) L.notifyPack();
+      return;
+    }
     applyLibrary._remote = true;
     V.getArticle('yak-library-data')
       .then(function (a) {
@@ -669,8 +724,11 @@
           if (again.libraryItems) L.mergePack({ items: published(again.libraryItems) });
           if (again.libraryThemes) L.mergePack({ themes: again.libraryThemes });
         } catch (e2) {}
+        if (L.notifyPack) L.notifyPack();
       })
-      .catch(function () {});
+      .catch(function () {
+        if (L.notifyPack) L.notifyPack();
+      });
   }
 
   function apply() {

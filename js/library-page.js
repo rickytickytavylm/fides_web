@@ -698,12 +698,10 @@
       '</span></nav>' +
       '<article class="lib-book">' +
       '<div class="lib-book-top">' +
-      '<div class="lib-book-cover" style="' +
+      '<div class="lib-book-cover' + (item.cover ? ' has-photo' : '') + '" style="' +
       coverStyle(item) +
       '">' +
-      '<span>' +
-      esc((main || '?').slice(0, 1)) +
-      '</span>' +
+      (item.cover ? '' : '<span>' + esc((main || '?').slice(0, 1)) + '</span>') +
       '<div class="lib-cover-badges">' +
       flagBadges(item) +
       '</div></div>' +
@@ -719,9 +717,9 @@
       '<div class="lib-flag-row">' +
       flagBadges(item) +
       '</div>' +
-      '<p class="lib-annotation">' +
-      esc(item.annotation || '') +
-      '</p>' +
+      (item.annotation
+        ? '<div class="lib-annotation">' + (hasMarkup(item.annotation) ? item.annotation : annotationPlain(item.annotation)) + '</div>'
+        : '') +
       '<div class="lib-meta">' +
       metaRows
         .filter(function (r) {
@@ -742,17 +740,14 @@
         .join('') +
       '</div>' +
       (themes ? '<div class="lib-tags">' + themes + '</div>' : '') +
-      '<div class="lib-download-block">' +
-      '<h2>Скачать</h2>' +
-      '<div class="lib-dl-row">' +
-      (downloads || '<p class="archive-empty">Файлы скоро появятся.</p>') +
-      '</div>' +
-      (item.buyUrl
-        ? '<a class="lib-buy" href="' +
-          esc(item.buyUrl) +
-          '" target="_blank" rel="noopener">Купить бумажную / электронную версию →</a>'
+      (downloads || item.buyUrl
+        ? '<div class="lib-download-block">' +
+          (downloads ? '<h2>Скачать</h2><div class="lib-dl-row">' + downloads + '</div>' : '') +
+          (item.buyUrl
+            ? '<a class="lib-buy" href="' + esc(item.buyUrl) + '" target="_blank" rel="noopener">Купить бумажную / электронную версию →</a>'
+            : '') +
+          '</div>'
         : '') +
-      '</div>' +
       '</div></div>' +
       pageTextHtml(item) +
       (quotes ? '<div class="lib-quotes"><h2>Цитаты</h2>' + quotes + '</div>' : '') +
@@ -802,9 +797,25 @@
     if (el) el.hidden = true;
   }
 
+  function hasMarkup(s) {
+    return /<[a-z][\s\S]*>/i.test(String(s || ''));
+  }
+
+  function annotationPlain(text) {
+    return String(text || '')
+      .split(/\n\n+/)
+      .map(function (p) { return '<p>' + esc(p).replace(/\n/g, '<br>') + '</p>'; })
+      .join('');
+  }
+
   function langLabel(code) {
-    var map = { la: 'латынь', it: 'итальянский', es: 'испанский', fr: 'французский', ru: 'русский', en: 'английский' };
-    return map[code] || code || '—';
+    var map = {
+      la: 'латынь', it: 'итальянский', es: 'испанский', fr: 'французский',
+      ru: 'русский', en: 'английский', de: 'немецкий', pl: 'польский',
+      deu: 'немецкий', german: 'немецкий'
+    };
+    var key = String(code || '').toLowerCase();
+    return map[key] || code || '—';
   }
 
   /* ---------- Boot ---------- */

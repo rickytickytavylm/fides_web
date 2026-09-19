@@ -35,11 +35,9 @@
         'Католический культурный центр: лекции, встречи, кино, выставки и разговоры о вере и культуре.',
       address: 'Москва',
       phone: '',
-      email: 'info@pokrovskie-vorota.ru',
-      website: 'https://pokrovskie-vorota.ru',
-      socials: [
-        { label: 'Сайт', href: 'https://pokrovskie-vorota.ru' }
-      ],
+      email: '',
+      website: '',
+      socials: [],
       coverTone: '#5c5346',
       partnerTitle: 'Все мероприятия Культурного центра «Покровские ворота»'
     },
@@ -53,10 +51,8 @@
       address: 'Москва',
       phone: '',
       email: '',
-      website: 'https://artofgood.ru',
-      socials: [
-        { label: 'Сайт', href: 'https://artofgood.ru' }
-      ],
+      website: '',
+      socials: [],
       coverTone: '#6b2d3c',
       partnerTitle: 'Все концерты Благотворительного фонда «Искусство добра»'
     },
@@ -69,10 +65,8 @@
       address: 'ул. Малая Грузинская, 27/13',
       phone: '',
       email: '',
-      website: 'https://www.cathedral.ru',
-      socials: [
-        { label: 'Сайт', href: 'https://www.cathedral.ru' }
-      ],
+      website: '',
+      socials: [],
       coverTone: '#2f5d8c',
       partnerTitle: 'Анонсы Кафедрального собора'
     },
@@ -85,10 +79,8 @@
       address: '',
       phone: '',
       email: '',
-      website: 'https://cathmos.ru',
-      socials: [
-        { label: 'Сайт', href: 'https://cathmos.ru' }
-      ],
+      website: '',
+      socials: [],
       coverTone: '#3d6b4f',
       partnerTitle: 'Анонсы Архиепархии Божией Матери'
     }
@@ -431,7 +423,18 @@
       return;
     }
     if (i === ORGANIZERS.length) ORGANIZERS.push(it);
-    else ORGANIZERS[i] = Object.assign({}, ORGANIZERS[i], it);
+    else {
+      ORGANIZERS[i] = Object.assign({}, ORGANIZERS[i], it);
+    }
+    if (it.contactsFromDesk || it.website != null || it.email != null || it.socials != null) {
+      var cur = ORGANIZERS[ORGANIZERS.length === i ? ORGANIZERS.length - 1 : i];
+      if (cur) {
+        cur.email = it.email || '';
+        cur.website = it.website || '';
+        cur.phone = it.phone || '';
+        cur.socials = Array.isArray(it.socials) ? it.socials : [];
+      }
+    }
   }
 
   function orgMarkStyle(o) {

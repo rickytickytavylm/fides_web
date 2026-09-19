@@ -538,6 +538,14 @@
     if (Array.isArray(pack.themes) && pack.themes.length) THEMES = pack.themes;
   }
 
+  var packListeners = [];
+  function onPack(fn) {
+    if (typeof fn === 'function') packListeners.push(fn);
+  }
+  function notifyPack() {
+    packListeners.forEach(function (fn) { try { fn(); } catch (e) {} });
+  }
+
   function applyDesk() {
     try {
       var raw = localStorage.getItem('yak_desk');
@@ -628,6 +636,8 @@
     childRubrics: childRubrics,
     rubricOf: rubricOf,
     mergePack: mergePack,
-    applyDesk: applyDesk
+    applyDesk: applyDesk,
+    onPack: onPack,
+    notifyPack: notifyPack
   };
 })(typeof window !== 'undefined' ? window : globalThis);

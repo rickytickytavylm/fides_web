@@ -667,10 +667,15 @@
     if (!incoming || !incoming.id) return;
     for (var i = 0; i < CHANNELS.length; i++) {
       if (CHANNELS[i].id === incoming.id) {
+        if (incoming.status && incoming.status !== 'published') {
+          CHANNELS.splice(i, 1);
+          return;
+        }
         CHANNELS[i] = Object.assign({}, CHANNELS[i], incoming);
         return;
       }
     }
+    if (incoming.status && incoming.status !== 'published') return;
     CHANNELS.push(incoming);
   }
 

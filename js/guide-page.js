@@ -479,24 +479,30 @@
     renderArticleLike(node);
   }
 
-  if (!path) {
-    renderHub();
-    return;
+  function paint() {
+    tree = G[sectionKey];
+    if (!tree) return;
+    path = new URLSearchParams(location.search).get('path') || '';
+    if (!path) {
+      renderHub();
+      return;
+    }
+    var hubCard = (tree.cards || []).filter(function (c) { return c.id === path; })[0];
+    if (hubCard && hubCard.href && !tree.nodes[path]) {
+      location.replace(hubCard.href);
+      return;
+    }
+    var node = tree.nodes[path];
+    if (!node) {
+      root.innerHTML =
+        crumbs([{ label: 'Главная', href: 'index.html' }, { label: tree.title, href: file }]) +
+        head('Страница не найдена', 'Проверьте ссылку или вернитесь в раздел.') +
+        '<p><a class="wlink" href="' + file + '">← Назад к разделу</a></p>';
+      return;
+    }
+    renderNode(node);
   }
 
-  var hubCard = (tree.cards || []).filter(function (c) { return c.id === path; })[0];
-  if (hubCard && hubCard.href && !tree.nodes[path]) {
-    location.replace(hubCard.href);
-    return;
-  }
-
-  var node = tree.nodes[path];
-  if (!node) {
-    root.innerHTML =
-      crumbs([{ label: 'Главная', href: 'index.html' }, { label: tree.title, href: file }]) +
-      head('Страница не найдена', 'Проверьте ссылку или вернитесь в раздел.') +
-      '<p><a class="wlink" href="' + file + '">← Назад к разделу</a></p>';
-    return;
-  }
-  renderNode(node);
+  paint();
+  if (window.YakGuidesOnPack) YakGuidesOnPack(paint);
 })();

@@ -48,6 +48,15 @@
     btn.setAttribute('aria-label', 'Приложение');
     btn.title = 'Приложение';
     btn.innerHTML = APP_SVG + '<span>Приложение</span>';
+    btn.addEventListener('click', function (e) {
+      var onAbout = /(^|\/)page\.html$/i.test(location.pathname);
+      var app = document.getElementById('app');
+      if (onAbout) {
+        e.preventDefault();
+        history.replaceState(null, '', 'page.html#app');
+        if (app) app.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
     tools.insertBefore(btn, tools.firstChild);
   }
   ensureAppBtn();

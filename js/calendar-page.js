@@ -17,6 +17,7 @@
   function categoryClass(cat) {
     if (cat === 'торжество') return 'solemn';
     if (cat === 'праздник') return 'feast';
+    if (cat === 'память') return 'mem';
     if (cat === 'воскресный' || cat === 'воскресенье') return 'sun';
     return 'feria';
   }

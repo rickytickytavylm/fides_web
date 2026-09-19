@@ -247,6 +247,8 @@
       '<h2>' + esc(monthName) + ' ' + viewYear + '</h2>' +
       '<button type="button" class="af-month-nav" id="af-next" aria-label="Следующий месяц">›</button>' +
       '</div>' +
+      '<div class="af-month-rail">' +
+      '<button type="button" class="rail-arrow" id="af-days-prev" aria-label="Дни влево">‹</button>' +
       '<div class="af-month-strip" role="listbox" aria-label="Дни месяца">' +
       days.map(function (d) {
         return (
@@ -261,6 +263,7 @@
         );
       }).join('') +
       '</div>' +
+      '<button type="button" class="rail-arrow" id="af-days-next" aria-label="Дни вправо">›</button></div>' +
       (state.selectedDate
         ? '<p class="af-day-caption">События на <b>' + esc(fmtLong(state.selectedDate)) + '</b> · <button type="button" id="af-clear-day" class="af-text-btn">Все дни</button></p>'
         : '') +
@@ -422,6 +425,15 @@
       backdrop.addEventListener('click', function () { setFiltersOpen(false); });
     }
     bindFilters();
+    bindRail('af-days-prev', 'af-days-next', root.querySelector('.af-month-strip'));
+  }
+
+  function bindRail(prevId, nextId, scroller) {
+    var prev = document.getElementById(prevId);
+    var next = document.getElementById(nextId);
+    if (!scroller || !prev || !next) return;
+    prev.addEventListener('click', function () { scroller.scrollBy({ left: -240, behavior: 'smooth' }); });
+    next.addEventListener('click', function () { scroller.scrollBy({ left: 240, behavior: 'smooth' }); });
   }
 
   render();

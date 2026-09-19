@@ -80,12 +80,89 @@
       .catch(function () {});
   }
 
+  var LEGAL =
+    'Информационный проект Централизованной религиозной организации Римско-католическая Архиепархия Божией Матери в Москве. ОГРН 1027739747705, ИНН 7708015053. Адрес: 123557, город Москва, ул. Малая Грузинская, д. 27/13, стр.2';
+
+  var FOOTER_LINKS = [
+    ['page.html', 'О проекте'],
+    ['archive.html?category=news', 'Новости'],
+    ['articles.html', 'Статьи'],
+    ['events.html', 'Афиша'],
+    ['library.html', 'Библиотека'],
+    ['photostock.html', 'Фото'],
+    ['audio.html', 'Аудио'],
+    ['video.html', 'Видео'],
+  ];
+
+  function paintFooter() {
+    var hosts = document.querySelectorAll('.portal-footer, .site-footer');
+    if (!hosts.length) return;
+    var links = FOOTER_LINKS.map(function (l) {
+      return '<a href="' + l[0] + '">' + l[1] + '</a>';
+    }).join('');
+    var html =
+      '<div class="wrap footer-row">' +
+      '<a class="logo" href="index.html">' +
+      '<span class="mark"><img src="yakatolik-logo.svg" alt="ЯКатолик" width="30" height="30" /></span>' +
+      '<span class="wm">ЯКатолик</span></a>' +
+      '<nav class="footer-links footer-links--row" aria-label="Разделы">' + links + '</nav></div>' +
+      '<p class="footer-tagline footer-legal">' + LEGAL + '</p>';
+    hosts.forEach(function (el) {
+      el.className = 'portal-footer';
+      el.innerHTML = html;
+    });
+  }
+
+  function isInternalHref(href) {
+    if (!href) return true;
+    if (href.charAt(0) === '#' || href.indexOf('mailto:') === 0 || href.indexOf('tel:') === 0 || href.indexOf('javascript:') === 0) return true;
+    try {
+      var u = new URL(href, location.href);
+      return u.origin === location.origin;
+    } catch (e) {
+      return true;
+    }
+  }
+
+  function applyLinkTargets(root) {
+    (root || document).querySelectorAll('a[href]').forEach(function (a) {
+      var href = a.getAttribute('href') || '';
+      if (isInternalHref(href)) {
+        a.removeAttribute('target');
+      } else {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    });
+  }
+
+  function bootChrome() {
+    paintFooter();
+    stampBuild(EMBEDDED);
+    applyLinkTargets(document);
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href]');
+      if (!a) return;
+      var href = a.getAttribute('href') || '';
+      if (isInternalHref(href)) a.removeAttribute('target');
+      else {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+      }
+    }, true);
+  }
+
   var seen = '';
   try { seen = localStorage.getItem(KEY) || ''; } catch (e) {}
   var firstOfBuild = !seen || seen !== EMBEDDED;
   (firstOfBuild ? Promise.all([nukeSw(), nukeCaches()]) : Promise.resolve()).then(function () {
     stampWhenReady(EMBEDDED);
     try { if (EMBEDDED) localStorage.setItem(KEY, EMBEDDED); } catch (e) {}
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bootChrome, { once: true });
+    } else {
+      bootChrome();
+    }
     return checkRemote();
   });
 })();

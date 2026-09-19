@@ -106,6 +106,16 @@
       var a = authors().filter(function (x) { return x.slug === s; })[0];
       if (a && !list.some(function (x) { return x.slug === a.slug; })) list.push(a);
     });
+    if (!list.length && item.author) {
+      var name = String(item.author).trim().toLowerCase();
+      if (name && name !== 'ruscatholic' && name !== 'admin' && name !== 'редакция') {
+        authors().forEach(function (a) {
+          if (a && String(a.name || '').trim().toLowerCase() === name && !list.some(function (x) { return x.slug === a.slug; })) {
+            list.push(a);
+          }
+        });
+      }
+    }
     return list;
   }
 

@@ -4245,3 +4245,93 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
 @media (min-width: 981px) {
   .af-filters-backdrop { display: none !important; }
 }
+
+/* 19 Sep: chrome, about, rails, links, library, calendar */
+.portal-footer .footer-row {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; width: 100%;
+}
+.portal-footer .footer-links--row {
+  display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 0;
+}
+.portal-footer .footer-legal {
+  padding-left: 0; max-width: 52rem; line-height: 1.5; color: var(--stone-500);
+  font-size: 12.5px; margin: 8px 0 0;
+}
+.article-body a, .article-lead a, .lib-annotation a, .static-body a, .guide-body a {
+  color: var(--bronze-dark);
+}
+.article-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 8px; }
+.article-tag {
+  display: inline-flex; padding: 4px 10px; border-radius: 999px;
+  border: 1px solid var(--line); color: var(--bronze-dark); text-decoration: none; font-size: 13px;
+}
+.article-tag:hover { border-color: var(--bronze-dark); }
+.lib-book-cover.has-photo > span { display: none; }
+.lib-annotation p { margin: 0 0 12px; }
+.af-month-rail, .rail-wrap {
+  display: flex; align-items: center; gap: 8px;
+}
+.af-month-rail .af-month-strip, .rail-wrap .yt-shorts-rail, .rail-wrap .af-month-strip {
+  flex: 1 1 auto; min-width: 0;
+}
+.rail-arrow {
+  flex: 0 0 auto; width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  font-size: 20px; line-height: 1; cursor: pointer;
+}
+.rail-arrow:hover { border-color: var(--bronze); color: var(--bronze-dark); }
+@media (max-width: 720px) {
+  .rail-arrow { display: none; }
+}
+.vp-card { overflow: hidden; align-items: flex-start; }
+.vp-copy { min-width: 0; overflow: hidden; }
+.vp-copy strong { overflow-wrap: anywhere; word-break: break-word; }
+.page-static .static-photo img {
+  height: auto; max-height: min(68vh, 680px); object-fit: cover; object-position: center 18%;
+}
+@media (max-width: 880px) {
+  .page-static .static-photo img { max-height: 58vw; object-position: center 22%; }
+}
+.page-static .app-download-photo img {
+  max-height: none; height: auto; object-fit: cover; object-position: center 20%;
+}
+@media (min-width: 881px) {
+  .page-static .app-download-photo img { max-height: min(56vh, 520px); }
+}
+.page-static .principles { align-items: start; }
+.page-static .principle--person {
+  display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 14px; align-items: center;
+}
+.page-static .principle-photo {
+  width: 72px; height: 72px; border-radius: 50%; object-fit: cover;
+  filter: grayscale(1); background: var(--surface-2);
+}
+.page-static .principle--person span { display: none; }
+.app-download--wide { width: 100%; max-width: none; }
+.app-subtitle { margin: 0 0 16px; color: var(--stone-700); }
+.app-link-row {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 16px 0 20px;
+}
+.app-store-btn {
+  display: flex; align-items: center; justify-content: center; min-height: 52px;
+  padding: 12px 10px; border-radius: 14px; background: var(--bronze-dark); color: #fff;
+  text-decoration: none; font-weight: 700; text-align: center;
+}
+.app-store-btn:hover { filter: brightness(1.05); color: #fff; }
+.support-qr-row { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 18px; }
+.support-qr { margin: 0; text-align: center; }
+.support-qr img { width: 160px; height: 160px; object-fit: contain; background: #fff; border-radius: 12px; }
+.support-qr figcaption { margin-top: 8px; font-size: 13px; color: var(--stone-700); }
+.contact-grid--partners { align-items: start; }
+@media (max-width: 880px) {
+  .app-link-row { grid-template-columns: 1fr 1fr; }
+  .page-static .principle--person { grid-template-columns: 56px minmax(0, 1fr); }
+  .page-static .principle-photo { width: 56px; height: 56px; }
+}
+.cal-block-body, .cal-block-body p, .cal-block-body a, .cal-block-body span {
+  font-family: var(--ff); font-size: 15px; line-height: 1.55; color: var(--ink);
+}
+.cal-quote, .cal-block-body .cal-quote {
+  font-family: var(--ff); font-size: 15px !important; font-style: italic; color: var(--ink) !important;
+}
+.cal-saint-link { font-weight: 600; color: var(--bronze-dark); }

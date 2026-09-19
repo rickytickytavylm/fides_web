@@ -252,6 +252,27 @@
     if (item.externalUrl) window.open(item.externalUrl, '_blank', 'noopener');
   }
 
+  function bindRailHost(host) {
+    if (!host) return;
+    var rail = host.querySelector('.yt-shorts-rail') || host;
+    host.querySelectorAll('[data-rail-prev]').forEach(function (btn) {
+      btn.onclick = function () { rail.scrollBy({ left: -280, behavior: 'smooth' }); };
+    });
+    host.querySelectorAll('[data-rail-next]').forEach(function (btn) {
+      btn.onclick = function () { rail.scrollBy({ left: 280, behavior: 'smooth' }); };
+    });
+  }
+
+  function wrapRail(host, inner) {
+    host.classList.remove('yt-shorts-rail');
+    host.classList.add('rail-wrap');
+    host.innerHTML =
+      '<button type="button" class="rail-arrow" data-rail-prev aria-label="Назад">‹</button>' +
+      '<div class="yt-shorts-rail">' + inner + '</div>' +
+      '<button type="button" class="rail-arrow" data-rail-next aria-label="Вперёд">›</button>';
+    bindRailHost(host);
+  }
+
   function loopRail(el) {
     if (!el || el._looped) return;
     el._looped = true;
@@ -287,9 +308,14 @@
     if (smallGrid) {
       smallGrid.classList.toggle('yt-shorts-grid', filter === 'short');
       smallGrid.classList.toggle('yt-shorts-rail', filter !== 'short');
-      smallGrid.innerHTML = shorts.map(shortCard).join('');
-      bind(smallGrid);
-      if (filter !== 'short') loopRail(smallGrid);
+      if (filter !== 'short') {
+        wrapRail(smallGrid, shorts.map(shortCard).join(''));
+        bind(smallGrid);
+        loopRail(smallGrid.querySelector('.yt-shorts-rail') || smallGrid);
+      } else {
+        smallGrid.innerHTML = shorts.map(shortCard).join('');
+        bind(smallGrid);
+      }
     }
     if (partnersBand) partnersBand.hidden = filter === 'short' || !partners.length;
     if (partnersEl) partnersEl.innerHTML = partners.map(partnerCard).join('');
@@ -326,9 +352,10 @@
     if (shorts.length) {
       sections +=
         '<section class="video-band"><div class="block-head"><h2>Shorts</h2><span class="rule"></span></div>' +
+        '<div class="rail-wrap"><button type="button" class="rail-arrow" data-rail-prev="ch-shorts" aria-label="Назад">‹</button>' +
         '<div class="yt-shorts-rail" id="ch-shorts">' +
         shorts.map(shortCard).join('') +
-        '</div></section>';
+        '</div><button type="button" class="rail-arrow" data-rail-next="ch-shorts" aria-label="Вперёд">›</button></div></section>';
     }
 
     if (playlists.length || cycleKeys.length) {
@@ -369,12 +396,13 @@
       '<h1>' +
       esc(ch.name) +
       '</h1>' +
-      (ch.bio ? '<p class="author-bio">' + esc(ch.bio) + '</p>' : '') +
+      (ch.description || ch.bio ? '<p class="author-bio">' + esc(ch.description || ch.bio) + '</p>' : '') +
       (links ? '<div class="author-socials">' + links + '</div>' : '') +
       '<p><a class="wlink" href="video.html#video-partners-band">К списку партнёров</a></p>' +
       '</div></section>' +
       sections;
     bind(channelRoot);
+    bindRailHost(channelRoot);
   }
 
   if (dialog) {

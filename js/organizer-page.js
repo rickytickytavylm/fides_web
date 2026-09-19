@@ -9,6 +9,33 @@
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
+  function leftoverHref(href, orgId) {
+    var h = String(href || '');
+    if (!h) return true;
+    if (/rickytickytavylm\.github\.io/i.test(h)) return true;
+    if (/organizer\.html/i.test(h) && orgId && h.indexOf('id=' + orgId) !== -1) return true;
+    if (h === 'mailto:info@pokrovskie-vorota.ru' || h === 'info@pokrovskie-vorota.ru') return true;
+    return false;
+  }
+
+  function contactLinks(org) {
+    var html = '';
+    if (org.website && !leftoverHref(org.website, org.id)) {
+      html += '<a class="author-social" href="' + esc(org.website) + '" target="_blank" rel="noopener">Сайт</a>';
+    }
+    if (org.email && !leftoverHref(org.email, org.id)) {
+      html += '<a class="author-social" href="mailto:' + esc(org.email) + '">' + esc(org.email) + '</a>';
+    }
+    if (org.phone) {
+      html += '<a class="author-social" href="tel:' + esc(org.phone) + '">' + esc(org.phone) + '</a>';
+    }
+    (org.socials || []).forEach(function (s) {
+      if (!s || leftoverHref(s.href, org.id)) return;
+      html += '<a class="author-social" href="' + esc(s.href) + '" target="_blank" rel="noopener">' + esc(s.label || s.href) + '</a>';
+    });
+    return html;
+  }
+
   function fmtLong(iso) {
     var p = String(iso).split('-');
     var months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
@@ -40,12 +67,7 @@
       (org.city ? '<p class="af-org-city">' + esc(org.city) + (org.address ? ' · ' + esc(org.address) : '') + '</p>' : '') +
       '<p class="af-org-blurb">' + esc(org.blurb) + '</p>' +
       '<div class="af-org-contacts">' +
-      (org.website ? '<a class="author-social" href="' + esc(org.website) + '" target="_blank" rel="noopener">Сайт</a>' : '') +
-      (org.email ? '<a class="author-social" href="mailto:' + esc(org.email) + '">' + esc(org.email) + '</a>' : '') +
-      (org.phone ? '<a class="author-social" href="tel:' + esc(org.phone) + '">' + esc(org.phone) + '</a>' : '') +
-      (org.socials || []).map(function (s) {
-        return '<a class="author-social" href="' + esc(s.href) + '" target="_blank" rel="noopener">' + esc(s.label) + '</a>';
-      }).join('') +
+      contactLinks(org) +
       '</div>' +
       '<a class="wlink" href="events.html?org=' + encodeURIComponent(org.id) + '">Все анонсы в афише →</a>' +
       '</div></section>' +
