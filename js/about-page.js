@@ -28,18 +28,17 @@
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  function artPhoto(desk, mobile, className, tag) {
+  function artPhoto(desk, mobile, className) {
     desk = desk || '';
     mobile = mobile || '';
     if (!desk && !mobile) return '';
-    var el = tag || 'figure';
     var inner;
     if (mobile && desk && mobile !== desk) {
       inner = '<picture><source media="(max-width: 880px)" srcset="' + esc(mobile) + '" /><img src="' + esc(desk) + '" alt="" /></picture>';
     } else {
       inner = '<img src="' + esc(desk || mobile) + '" alt="" />';
     }
-    return '<' + el + ' class="' + className + '">' + inner + '</' + el + '>';
+    return '<figure class="' + className + '">' + inner + '</figure>';
   }
 
   function render() {
@@ -67,7 +66,7 @@
       '<p class="eyebrow">' + esc(app.eyebrow || 'Приложение') + '</p>' +
       '<h2>' + esc(app.title || '') + '</h2>' +
       (app.subtitle ? '<p class="app-subtitle">' + esc(app.subtitle) + '</p>' : '') +
-      artPhoto(app.photo, app.photoMobile, 'app-download-photo', 'div') +
+      (app.photo ? '<div class="app-download-photo"><img src="' + esc(app.photo) + '" alt="" /></div>' : '') +
       (links.length
         ? '<div class="app-link-row">' + links.map(function (l) {
           if (!l || !l.href) return '';
