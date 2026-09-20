@@ -28,6 +28,20 @@
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  function artPhoto(desk, mobile, className, tag) {
+    desk = desk || '';
+    mobile = mobile || '';
+    if (!desk && !mobile) return '';
+    var el = tag || 'figure';
+    var inner;
+    if (mobile && desk && mobile !== desk) {
+      inner = '<picture><source media="(max-width: 880px)" srcset="' + esc(mobile) + '" /><img src="' + esc(desk) + '" alt="" /></picture>';
+    } else {
+      inner = '<img src="' + esc(desk || mobile) + '" alt="" />';
+    }
+    return '<' + el + ' class="' + className + '">' + inner + '</' + el + '>';
+  }
+
   function render() {
     var d = A.get();
     var donate = d.donate || {};
@@ -35,9 +49,7 @@
     var qrs = donate.qrs || [];
     var links = app.links || [];
     var authors = app.authors || [];
-    var cover = d.cover
-      ? '<figure class="static-photo"><img src="' + esc(d.cover) + '" alt="" /></figure>'
-      : '';
+    var cover = artPhoto(d.cover, d.coverMobile, 'static-photo');
 
     root.innerHTML =
       '<nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="index.html">Главная</a><span>/</span><a href="page.html">О проекте</a></nav>' +
@@ -55,7 +67,7 @@
       '<p class="eyebrow">' + esc(app.eyebrow || 'Приложение') + '</p>' +
       '<h2>' + esc(app.title || '') + '</h2>' +
       (app.subtitle ? '<p class="app-subtitle">' + esc(app.subtitle) + '</p>' : '') +
-      (app.photo ? '<div class="app-download-photo"><img src="' + esc(app.photo) + '" alt="" /></div>' : '') +
+      artPhoto(app.photo, app.photoMobile, 'app-download-photo', 'div') +
       (links.length
         ? '<div class="app-link-row">' + links.map(function (l) {
           if (!l || !l.href) return '';
