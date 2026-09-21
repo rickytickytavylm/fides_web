@@ -594,7 +594,24 @@
         });
       });
     });
-    G._canon = { byId: byId, byTitle: byTitle };
+    var navTitleToId = {};
+    var navGroups = [];
+    var structureCards = [];
+    var churchNodes = G.church && G.church.nodes;
+    if (churchNodes && churchNodes.navigator && churchNodes.navigator.groups) {
+      navGroups = JSON.parse(JSON.stringify(churchNodes.navigator.groups));
+      navGroups.forEach(function (g) {
+        (g.items || []).forEach(function (it) {
+          if (it && it.title) navTitleToId[String(it.title).trim()] = hrefPath(it.href);
+        });
+      });
+    }
+    if (churchNodes && churchNodes.structure && churchNodes.structure.cards) {
+      structureCards = churchNodes.structure.cards.map(function (c) {
+        return { id: c.id, title: c.title };
+      });
+    }
+    G._canon = { byId: byId, byTitle: byTitle, navGroups: navGroups, navTitleToId: navTitleToId, structureCards: structureCards, notes: {} };
     return G._canon;
   }
 
@@ -622,6 +639,10 @@
       nodeId = owner;
     }
     var retargeted = String(nodeId) !== savedId;
+    if (ov.sub && String(ov.sub).trim() && canon.navTitleToId) {
+      var noteDest = canon.navTitleToId[titleKey] || '';
+      if (noteDest) canon.notes[noteDest] = String(ov.sub).trim();
+    }
 
     if (nodeId === 'hub' || ov.kind === 'hub') {
       if (ov.title) tree.title = ov.title;
@@ -711,28 +732,48 @@
     }
   }
 
-  function dedupeGuideLists(G) {
-    ['church', 'spirit'].forEach(function (sec) {
-      var nodes = G[sec] && G[sec].nodes;
-      if (!nodes) return;
-      Object.keys(nodes).forEach(function (k) {
-        var n = nodes[k];
-        if (!n || !n.groups) return;
-        n.groups.forEach(function (g) {
-          var seenHref = {};
-          var seenTitle = {};
-          g.items = (g.items || []).filter(function (it) {
-            if (!it || typeof it === 'string') return true;
-            var href = hrefPath(it.href);
-            var title = String(it.title || '');
-            if ((href && seenHref[href]) || (title && seenTitle[title])) return false;
-            if (href) seenHref[href] = 1;
-            if (title) seenTitle[title] = 1;
-            return true;
-          });
-        });
+  function freezeChurchLists(G) {
+    if (!G || !G._canon || !G.church || !G.church.nodes) return;
+    var nav = G.church.nodes.navigator;
+    if (nav && G._canon.navGroups) {
+      var notes = G._canon.notes || {};
+      nav.groups = G._canon.navGroups.map(function (g) {
+        return {
+          title: g.title,
+          items: (g.items || []).map(function (it) {
+            var id = hrefPath(it.href);
+            var copy = { title: it.title, href: it.href };
+            if (notes[id]) copy.note = notes[id];
+            else if (it.note) copy.note = it.note;
+            return copy;
+          }),
+        };
       });
-    });
+    }
+    var structure = G.church.nodes.structure;
+    if (structure && G._canon.structureCards) {
+      structure.showMore = false;
+      structure.tip = '';
+      structure.cards = G._canon.structureCards.map(function (c) {
+        return { id: c.id, title: c.title, routeId: 'structure' };
+      });
+      G._canon.structureCards.forEach(function (c) {
+        var n = G.church.nodes[c.id];
+        if (!n) return;
+        n.title = c.title;
+        n.siblingsOf = 'structure';
+        n.image = '';
+        var rich = htmlText(n.contentHtml);
+        var lead = String(n.lead || '');
+        var own = !rich && (!lead || /^Материал готовится/.test(lead));
+        if (own) {
+          n.lead = '';
+          n.body = null;
+          n.contentHtml = '';
+          n.also = null;
+        }
+      });
+    }
   }
 
   function applyGuides() {
@@ -740,7 +781,7 @@
     if (!G) return;
     function applyList(list) {
       (list || []).forEach(function (ov) { applyGuideOverride(G, ov); });
-      dedupeGuideLists(G);
+      freezeChurchLists(G);
     }
     applyList(read().guides || []);
     var V = global.Vera;

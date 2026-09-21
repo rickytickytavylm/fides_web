@@ -292,7 +292,7 @@
         html += '</ol>';
       }
     });
-    if (!node.lead && !(node.body && node.body.length)) {
+    if (!node.lead && !(node.body && node.body.length) && !(node.contentHtml && rich) && node.siblingsOf !== 'structure') {
       html += '<p>Материал готовится.</p>';
     }
     return html + '</article>';
