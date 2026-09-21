@@ -549,8 +549,58 @@
     if (typeof fn === 'function') guidePackFns.push(fn);
   };
 
+  function hrefPath(href) {
+    var m = /[?&]path=([^&]+)/.exec(String(href || ''));
+    if (!m) return '';
+    try { return decodeURIComponent(m[1]); } catch (e) { return m[1]; }
+  }
+
+  function htmlText(html) {
+    return String(html || '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function ensureGuideCanon(G) {
+    if (G._canon) return G._canon;
+    var byId = {};
+    var byTitle = {};
+    function add(id, title) {
+      id = String(id || '');
+      title = String(title || '').trim();
+      if (!id || !title) return;
+      if (!byId[id]) byId[id] = title;
+      if (!byTitle[title]) byTitle[title] = id;
+    }
+    ['church', 'spirit'].forEach(function (sec) {
+      var tree = G[sec];
+      if (!tree) return;
+      (tree.cards || []).forEach(function (c) { if (c) add(c.id, c.title); });
+      var nodes = tree.nodes || {};
+      Object.keys(nodes).forEach(function (k) {
+        var n = nodes[k];
+        if (!n) return;
+        add(k, n.title);
+        (n.cards || []).forEach(function (c) { if (c) add(c.id, c.title); });
+      });
+      Object.keys(nodes).forEach(function (k) {
+        var n = nodes[k];
+        if (!n || !n.groups) return;
+        n.groups.forEach(function (g) {
+          (g.items || []).forEach(function (it) {
+            if (!it || typeof it === 'string') return;
+            var id = hrefPath(it.href);
+            var title = String(it.title || '').trim();
+            if (id && title && !byTitle[title]) byTitle[title] = id;
+          });
+        });
+      });
+    });
+    G._canon = { byId: byId, byTitle: byTitle };
+    return G._canon;
+  }
+
   function applyGuideOverride(G, ov) {
     if (!ov || (ov.status && ov.status !== 'published')) return;
+    ensureGuideCanon(G);
     var section = ov.section;
     if (!section && ov.id) {
       if (String(ov.id).indexOf('church') === 0) section = 'church';
@@ -564,6 +614,14 @@
       nodeId = parts[parts.length - 1];
     }
     if (!nodeId) return;
+    var savedId = String(nodeId);
+    var canon = G._canon;
+    var titleKey = String(ov.title || '').trim();
+    var owner = titleKey && canon.byTitle[titleKey];
+    if (owner && owner !== savedId && canon.byId[savedId] !== titleKey) {
+      nodeId = owner;
+    }
+    var retargeted = String(nodeId) !== savedId;
 
     if (nodeId === 'hub' || ov.kind === 'hub') {
       if (ov.title) tree.title = ov.title;
@@ -595,11 +653,12 @@
       }
     } else {
       if (ov.title) node.title = ov.title;
-      if (ov.desc != null) node.desc = ov.desc;
-      if (ov.lead != null) node.lead = ov.lead;
-      if (ov.contentHtml) {
+      if (ov.desc != null && String(ov.desc).trim()) node.desc = ov.desc;
+      var lead = String(ov.lead || '');
+      if (lead && !/^Материал готовится/.test(lead)) node.lead = ov.lead;
+      if (htmlText(ov.contentHtml)) {
         node.contentHtml = ov.contentHtml;
-        if (!ov.lead || /^Материал готовится/.test(String(ov.lead || node.lead || ''))) node.lead = ov.lead && !/^Материал готовится/.test(String(ov.lead)) ? ov.lead : '';
+        if (!lead || /^Материал готовится/.test(lead)) node.lead = '';
       }
       if (ov.sub != null) node.sub = ov.sub;
       if (ov.image != null && ov.image !== '') node.image = ov.image;
@@ -624,26 +683,56 @@
       n.groups.forEach(function (g) {
         (g.items || []).forEach(function (it) {
           if (!it || typeof it === 'string') return;
-          if (String(it.href || '').indexOf('path=' + nodeId) !== -1) {
-            if (ov.title) it.title = ov.title;
-            if (ov.sub != null && String(ov.sub).trim()) it.note = ov.sub;
+          if (hrefPath(it.href) !== String(nodeId)) return;
+          var canonTitle = canon.byId[String(nodeId)] || '';
+          if (ov.title && String(it.title || '') === canonTitle) {
+            var clash = (g.items || []).some(function (other) {
+              return other && other !== it && String(other.title || '') === titleKey;
+            });
+            if (!clash) it.title = ov.title;
           }
+          if (ov.sub != null && String(ov.sub).trim()) it.note = ov.sub;
         });
       });
     });
-    if (ov.added && ov.siblingsOf && nodes[ov.siblingsOf] && nodes[ov.siblingsOf].type === 'navigator') {
+    if (!retargeted && ov.added && ov.siblingsOf && nodes[ov.siblingsOf] && nodes[ov.siblingsOf].type === 'navigator') {
       var href = file + '?path=' + nodeId;
       var groups = nodes[ov.siblingsOf].groups || [];
+      var exists = groups.some(function (g) {
+        return (g.items || []).some(function (it) {
+          return it && hrefPath(it.href) === String(nodeId);
+        });
+      });
       var last = groups[groups.length - 1];
-      if (last) {
+      if (last && !exists) {
         last.items = last.items || [];
-        if (!last.items.some(function (it) {
-          return it && String(it.href || '').indexOf('path=' + nodeId) !== -1;
-        })) {
-          last.items.push({ title: ov.title || nodeId, href: href });
-        }
+        last.items.push({ title: ov.title || nodeId, href: href, note: ov.sub || '' });
       }
     }
+  }
+
+  function dedupeGuideLists(G) {
+    ['church', 'spirit'].forEach(function (sec) {
+      var nodes = G[sec] && G[sec].nodes;
+      if (!nodes) return;
+      Object.keys(nodes).forEach(function (k) {
+        var n = nodes[k];
+        if (!n || !n.groups) return;
+        n.groups.forEach(function (g) {
+          var seenHref = {};
+          var seenTitle = {};
+          g.items = (g.items || []).filter(function (it) {
+            if (!it || typeof it === 'string') return true;
+            var href = hrefPath(it.href);
+            var title = String(it.title || '');
+            if ((href && seenHref[href]) || (title && seenTitle[title])) return false;
+            if (href) seenHref[href] = 1;
+            if (title) seenTitle[title] = 1;
+            return true;
+          });
+        });
+      });
+    });
   }
 
   function applyGuides() {
@@ -651,6 +740,7 @@
     if (!G) return;
     function applyList(list) {
       (list || []).forEach(function (ov) { applyGuideOverride(G, ov); });
+      dedupeGuideLists(G);
     }
     applyList(read().guides || []);
     var V = global.Vera;
