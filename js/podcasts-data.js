@@ -435,6 +435,32 @@
     });
   }
 
+  function fillKrupaFromAudio() {
+    var A = global.YakAudio;
+    var show = byId('propovedi-pavla-krupy');
+    if (!show || !A || !A.tracks || !A.tracks.length) return;
+    if (show.episodes && show.episodes.length) return;
+    var base = A.publicBase || 'https://storage.yandexcloud.net/fidesetratio/';
+    show.episodes = A.tracks.map(function (t) {
+      var key = t.audio_key || '';
+      return {
+        id: t.id,
+        title: t.title,
+        date: t.date || '',
+        audioUrl: t.url || t.audioUrl || (base + String(key).split('/').map(encodeURIComponent).join('/')),
+        duration: t.duration || '',
+        cover: t.cover || show.cover,
+      };
+    });
+    show.updated = latestDate(show);
+  }
+
+  fillKrupaFromAudio();
+  if (global.YakAudio && YakAudio.onPack) YakAudio.onPack(function () {
+    fillKrupaFromAudio();
+    notifyPack();
+  });
+
   function countOf(show) {
     if (show && show.episodes && show.episodes.length) return show.episodes.length;
     return Number(show && show.episodeCount) || 0;
@@ -451,6 +477,7 @@
     countOf: countOf,
     mergePack: mergePack,
     onPack: onPack,
-    notifyPack: notifyPack
+    notifyPack: notifyPack,
+    fillKrupa: fillKrupaFromAudio
   };
 })(typeof window !== 'undefined' ? window : this);

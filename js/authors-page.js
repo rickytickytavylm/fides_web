@@ -173,7 +173,7 @@
     var raw = item && item.author ? String(item.author).trim() : '';
     if (!raw) return '';
     var low = raw.toLowerCase();
-    if (low === 'ruscatholic' || low === 'admin' || low === 'редакция') return '';
+    if (low === 'ruscatholic' || low === 'admin' || low === 'super-admin' || low === 'superadmin' || low === 'супер-админ' || low === 'редакция' || /admin/.test(low)) return 'Редакция ЯКатолик';
     return raw;
   }
 

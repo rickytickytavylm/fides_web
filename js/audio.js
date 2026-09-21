@@ -8,6 +8,7 @@
   var listEl = document.getElementById('audio-list');
   var countEl = document.getElementById('audio-count');
   var stackEl = document.getElementById('audio-stack');
+  if (!listEl) return;
   var player = null;
   var index = 0;
 

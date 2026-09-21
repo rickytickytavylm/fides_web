@@ -597,7 +597,10 @@
       if (ov.title) node.title = ov.title;
       if (ov.desc != null) node.desc = ov.desc;
       if (ov.lead != null) node.lead = ov.lead;
-      if (ov.contentHtml) node.contentHtml = ov.contentHtml;
+      if (ov.contentHtml) {
+        node.contentHtml = ov.contentHtml;
+        if (!ov.lead || /^Материал готовится/.test(String(ov.lead || node.lead || ''))) node.lead = ov.lead && !/^Материал готовится/.test(String(ov.lead)) ? ov.lead : '';
+      }
       if (ov.sub != null) node.sub = ov.sub;
       if (ov.image != null && ov.image !== '') node.image = ov.image;
       if (ov.prayers && ov.prayers.length) node.prayers = ov.prayers;
@@ -621,8 +624,9 @@
       n.groups.forEach(function (g) {
         (g.items || []).forEach(function (it) {
           if (!it || typeof it === 'string') return;
-          if (String(it.href || '').indexOf('path=' + nodeId) !== -1 && ov.title) {
-            it.title = ov.title;
+          if (String(it.href || '').indexOf('path=' + nodeId) !== -1) {
+            if (ov.title) it.title = ov.title;
+            if (ov.sub != null && String(ov.sub).trim()) it.note = ov.sub;
           }
         });
       });

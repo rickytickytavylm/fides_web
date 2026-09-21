@@ -230,7 +230,7 @@
   V.getArticles({ category: 'columns', limit: 40, page: 1 })
     .then(function (pack) {
       var el = document.getElementById('articles-fresh');
-      var items = pack.items || [];
+      var items = (pack.items || []).filter(function (it) { return !V.isVoiceItem || !V.isVoiceItem(it); });
       if (el) el.innerHTML = renderFresh(V.freshItems ? V.freshItems(items, 7, 18) : items.slice(0, 7));
     })
     .catch(function () {

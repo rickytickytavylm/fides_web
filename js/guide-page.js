@@ -253,8 +253,10 @@
 
   function bodyBlock(node) {
     var html = '<article class="guide-body">';
-    if (node.lead) html += '<p class="guide-lead">' + esc(node.lead) + '</p>';
-    if (node.contentHtml) {
+    var lead = String(node.lead || '');
+    if (lead && !/^Материал готовится/.test(lead)) html += '<p class="guide-lead">' + esc(lead) + '</p>';
+    var rich = String(node.contentHtml || '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').trim();
+    if (node.contentHtml && rich) {
       html += '<div class="guide-rich">' + node.contentHtml + '</div>';
       return html + '</article>';
     }
@@ -420,6 +422,7 @@
           numbered: !!node.numbered,
           kicker: node.cardKicker || 'Тема',
           extra: node.showMore === false ? null : (tree.moreCard || null),
+          grid: path === 'structure' ? 'route-grid route-grid--2' : undefined,
         });
       return;
     }
@@ -503,6 +506,13 @@
     renderNode(node);
   }
 
-  paint();
-  if (window.YakGuidesOnPack) YakGuidesOnPack(paint);
+  var painted = false;
+  function paintOnceFromPack() {
+    painted = true;
+    paint();
+  }
+  if (window.YakGuidesOnPack) {
+    YakGuidesOnPack(paintOnceFromPack);
+    setTimeout(function () { if (!painted) paint(); }, 900);
+  } else paint();
 })();

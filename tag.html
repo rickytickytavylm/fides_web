@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="icon" href="yakatolik-logo.svg" />
     <meta name="theme-color" content="#ede9e2" />
-    <script>window.YAK_BUILD = '202609201420';</script>
+    <script>window.YAK_BUILD = '202609211116';</script>
     <script id="yak_theme_boot">
 (function(){
   try{document.documentElement.dataset.theme=localStorage.getItem('yak_theme')==='twilight'?'twilight':'light'}catch(e){document.documentElement.dataset.theme='light'}
@@ -22,7 +22,7 @@
   document.documentElement.appendChild(s);
 })();
 </script>
-    <link rel="stylesheet" href="portal.css?v=202609201420" />
+    <link rel="stylesheet" href="portal.css?v=202609211116" />
   </head>
   <body>
     <header class="masthead">
@@ -59,11 +59,11 @@
       <div class="news-grid" id="tag-feed"><p class="ps-status">Загрузка…</p></div>
     </main>
 
-    <script src="js/config.js?v=202609201420"></script>
-    <script src="js/api.js?v=202609201420"></script>
-    <script src="js/portal-nav.js?v=202609201420"></script>
-    <script src="js/theme.js?v=202609201420"></script>
-    <script src="js/cache-bust.js?v=202609201420"></script>
+    <script src="js/config.js?v=202609211116"></script>
+    <script src="js/api.js?v=202609211116"></script>
+    <script src="js/portal-nav.js?v=202609211116"></script>
+    <script src="js/theme.js?v=202609211116"></script>
+    <script src="js/cache-bust.js?v=202609211116"></script>
     <script>
       (function () {
         var V = window.Vera;
@@ -76,26 +76,70 @@
           if (feed) feed.innerHTML = '<p class="ps-status">Укажите ?slug=…</p>';
           return;
         }
-        V.getArticles({ q: slug.replace(/-/g, ' '), limit: 20, page: 1 })
-          .then(function (pack) {
-            var items = pack.items || [];
-            if (!items.length) {
-              feed.innerHTML = '<p class="ps-status">Пока нет публикаций с этой меткой.</p>';
-              return;
+        function hasTag(it) {
+          if (!it) return false;
+          var tags = it.tags || [];
+          var i;
+          for (i = 0; i < tags.length; i++) {
+            var t = tags[i];
+            if (String((t && (t.slug || t.name || t)) || '').replace(/^tag:/, '') === slug) return true;
+          }
+          var cats = it.categorySlugs || it.rubrics || [];
+          for (i = 0; i < cats.length; i++) {
+            var s = String(cats[i] || '');
+            if (s === slug || s === 'tag:' + slug || s.replace(/^tag:/, '') === slug) return true;
+          }
+          return false;
+        }
+        function titleFrom(items) {
+          for (var i = 0; i < items.length; i++) {
+            var tags = items[i].tags || [];
+            for (var j = 0; j < tags.length; j++) {
+              var t = tags[j];
+              if (String((t && (t.slug || t)) || '').replace(/^tag:/, '') === slug) {
+                return t.title || t.name || '';
+              }
             }
-            feed.innerHTML = '<div class="news-list">' + items.map(function (it) {
-              return (
-                '<a class="ncard" href="' + V.articleHref(it) + '">' +
-                '<div class="thumb" style="background-image:' +
-                (it.image ? "url('" + String(it.image).replace(/'/g, '%27') + "')" : 'linear-gradient(135deg,#553922,#8a6a3a)') +
-                '"></div><div class="ncard-body"><h4>' + V.escapeHtml(it.title) + '</h4>' +
-                '<div class="date">' + V.escapeHtml(V.formatDate(it.date)) + '</div></div></a>'
-              );
-            }).join('') + '</div>';
-          })
-          .catch(function () {
-            feed.innerHTML = '<p class="ps-status">Не удалось загрузить</p>';
+          }
+          return slug.replace(/-/g, ' ');
+        }
+        function paint(items, heading) {
+          if (titleEl) titleEl.textContent = heading;
+          document.title = heading + ' — ЯКатолик';
+          if (!items.length) {
+            feed.innerHTML = '<p class="ps-status">Пока нет публикаций с этой меткой.</p>';
+            return;
+          }
+          feed.innerHTML = '<div class="news-list">' + items.map(function (it) {
+            return (
+              '<a class="ncard" href="' + V.articleHref(it) + '">' +
+              '<div class="thumb" style="background-image:' +
+              (it.image ? "url('" + String(it.image).replace(/'/g, '%27') + "')" : 'linear-gradient(135deg,#553922,#8a6a3a)') +
+              '"></div><div class="ncard-body"><h4>' + V.escapeHtml(it.title) + '</h4>' +
+              '<div class="date">' + V.escapeHtml(V.formatDate(it.date)) + '</div></div></a>'
+            );
+          }).join('') + '</div>';
+        }
+        Promise.all([
+          V.getArticles({ category: 'tag:' + slug, limit: 40, page: 1 }).catch(function () { return { items: [] }; }),
+          V.getArticles({ q: slug.replace(/-/g, ' '), limit: 40, page: 1 }).catch(function () { return { items: [] }; }),
+          V.getArticles({ limit: 40, page: 1 }).catch(function () { return { items: [] }; }),
+        ]).then(function (packs) {
+          var seen = {};
+          var items = [];
+          packs.forEach(function (pack) {
+            (pack.items || []).forEach(function (it) {
+              var key = String(it.id || it.slug || it.title || '');
+              if (!key || seen[key] || !hasTag(it)) return;
+              seen[key] = 1;
+              items.push(it);
+            });
           });
+          items.sort(function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')); });
+          paint(items, titleFrom(items));
+        }).catch(function () {
+          feed.innerHTML = '<p class="ps-status">Не удалось загрузить</p>';
+        });
       })();
     </script>
   </body>

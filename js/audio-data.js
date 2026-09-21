@@ -109,7 +109,6 @@
       try { fn(tracks); } catch (e) {}
     });
   }
-
   global.YakAudio = {
     artist: ARTIST,
     album: ALBUM,
@@ -120,4 +119,7 @@
     onPack: onPack,
     notifyPack: notifyPack
   };
+  if (global.YakPodcasts && YakPodcasts.fillKrupa) {
+    try { YakPodcasts.fillKrupa(); } catch (e) {}
+  }
 })(typeof window !== 'undefined' ? window : this);

@@ -29,6 +29,25 @@
   ];
   window.YakHomePages = HOME_PAGES;
 
+  function guideCover(href) {
+    var G = window.YakGuides;
+    if (!G || !href) return '';
+    var m = /([^/?#]+)\.html\?path=([^&]+)/.exec(String(href));
+    if (!m) return '';
+    var id = decodeURIComponent(m[2]);
+    var tree = /spiritual/.test(m[1]) ? G.spirit : G.church;
+    if (!tree) return '';
+    var cards = (tree.cards || []).slice();
+    Object.keys(tree.nodes || {}).forEach(function (k) {
+      cards = cards.concat((tree.nodes[k] && tree.nodes[k].cards) || []);
+    });
+    for (var i = 0; i < cards.length; i++) {
+      if (cards[i] && cards[i].id === id && cards[i].image) return cards[i].image;
+    }
+    if (tree.nodes[id] && tree.nodes[id].image) return tree.nodes[id].image;
+    return '';
+  }
+
   function lookupHomePage(slug) {
     slug = String(slug || '');
     for (var i = 0; i < HOME_PAGES.length; i++) {
@@ -303,7 +322,8 @@
     freshEl.innerHTML = skEqualGrid();
     V.getArticles({ category: 'columns', limit: 40, page: 1 })
       .then(function (pack) {
-        var items = V.freshItems ? V.freshItems(pack.items || [], 6, 18) : (pack.items || []).slice(0, 6);
+        var raw = (pack.items || []).filter(function (it) { return !V.isVoiceItem || !V.isVoiceItem(it); });
+        var items = V.freshItems ? V.freshItems(raw, 6, 18) : raw.slice(0, 6);
         freshEl.innerHTML = renderFreshHome(items);
       })
       .catch(function () { freshEl.innerHTML = '<p class="ps-status">Не удалось загрузить статьи</p>'; });
@@ -527,7 +547,7 @@
       return Promise.resolve({
         id: src.slug || slug,
         title: x.title || src.title,
-        image: x.image || src.image,
+        image: x.image || guideCover(src.href) || src.image,
         href: src.href,
         kicker: src.kicker || 'Страница',
         categories: [src.kicker || 'Страница'],
@@ -590,7 +610,16 @@
   }
 
   /* ---------- Boot ---------- */
-  loadHero();
+  if (window.YakGuidesOnPack) {
+    var heroReady = false;
+    function bootHero() {
+      if (heroReady) return;
+      heroReady = true;
+      loadHero();
+    }
+    YakGuidesOnPack(bootHero);
+    setTimeout(bootHero, 1400);
+  } else loadHero();
 
   loadNews('ru');
   loadFresh();

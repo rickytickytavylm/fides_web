@@ -235,7 +235,7 @@
       else contentBlocks.push(b);
     });
     var bodyHtml = '';
-    if (article.kind === 'desk' && article.contentHtml) {
+    if (article.contentHtml && (article.kind === 'desk' || /<(div|figure|ul|ol|table|h[1-6])\b/i.test(article.contentHtml))) {
       bodyHtml = renderDeskBody(article.contentHtml);
     } else {
       bodyHtml = contentBlocks.length ? renderBlocks(contentBlocks) : '';
@@ -326,8 +326,8 @@
           var name = '';
           var raw = String(article.author || '').trim();
           var low = raw.toLowerCase();
-          if (raw && low !== 'ruscatholic' && low !== 'admin' && low !== 'редакция') name = raw;
-          if (!name) name = 'Редакция';
+          if (raw && low !== 'ruscatholic' && low !== 'admin' && low !== 'super-admin' && low !== 'superadmin' && low !== 'супер-админ' && low !== 'редакция' && !/admin/.test(low)) name = raw;
+          if (!name) name = 'Редакция ЯКатолик';
           return (
             '<div class="byline"><div class="byline-main"><div>' +
             '<p class="byline-name">' +
