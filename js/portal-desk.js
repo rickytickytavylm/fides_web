@@ -755,18 +755,21 @@
       structure.showMore = false;
       structure.tip = '';
       structure.cards = G._canon.structureCards.map(function (c) {
-        return { id: c.id, title: c.title, routeId: 'structure' };
+        var n = G.church.nodes[c.id] || {};
+        var card = { id: c.id, title: c.title, routeId: 'structure' };
+        if (n.sub) card.sub = n.sub;
+        if (n.image) card.image = n.image;
+        return card;
       });
       G._canon.structureCards.forEach(function (c) {
         var n = G.church.nodes[c.id];
         if (!n) return;
         n.title = c.title;
         n.siblingsOf = 'structure';
-        n.image = '';
         var rich = htmlText(n.contentHtml);
         var lead = String(n.lead || '');
-        var own = !rich && (!lead || /^Материал готовится/.test(lead));
-        if (own) {
+        var empty = !rich && (!lead || /^Материал готовится/.test(lead));
+        if (empty) {
           n.lead = '';
           n.body = null;
           n.contentHtml = '';
