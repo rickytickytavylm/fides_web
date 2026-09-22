@@ -10,9 +10,11 @@
 (function (global) {
   'use strict';
 
-  var DEFAULT_ARCHIVE =
-    'https://fides.186-246-11-81.sslip.io'; /* текущий прокси архива / чата */
-  var DEFAULT_TEMPLES = DEFAULT_ARCHIVE; /* тот же хост, пока нет его Python */
+  var RAILWAY = 'https://fides-at-ratioserver-production.up.railway.app';
+  var PROXY = 'https://fides.186-246-11-81.sslip.io';
+  /* Railway — рабочий прод; sslip-прокси часто не отвечает. */
+  var DEFAULT_ARCHIVE = RAILWAY;
+  var DEFAULT_TEMPLES = RAILWAY;
 
   var params = {};
   try {
@@ -24,6 +26,7 @@
   var config = {
     BRAND: 'ЯКатолик',
     ARCHIVE_API_BASE: override.ARCHIVE_API_BASE || params.archive || DEFAULT_ARCHIVE,
+    ARCHIVE_API_FALLBACKS: override.ARCHIVE_API_FALLBACKS || [RAILWAY, PROXY],
     /** База для карты храмов — сюда он подключает свой Python */
     TEMPLES_API_BASE: override.TEMPLES_API_BASE || params.api || DEFAULT_TEMPLES,
     /**

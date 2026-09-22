@@ -292,7 +292,7 @@
   }
 
   function pullServerDate() {
-    var base = (global.VeraConfig && VeraConfig.ARCHIVE_API_BASE) || 'https://fides.186-246-11-81.sslip.io';
+    var base = (global.VeraConfig && VeraConfig.ARCHIVE_API_BASE) || 'https://fides-at-ratioserver-production.up.railway.app';
     fetch(String(base).replace(/\/$/, '') + '/health')
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (h) {
@@ -301,7 +301,19 @@
           notifyPack();
         }
       })
-      .catch(function () {});
+      .catch(function () {
+        if (String(base).indexOf('railway') === -1) {
+          fetch('https://fides-at-ratioserver-production.up.railway.app/health')
+            .then(function (res) { return res.ok ? res.json() : null; })
+            .then(function (h) {
+              if (h && h.date && /^\d{4}-\d{2}-\d{2}$/.test(h.date)) {
+                serverDate = h.date;
+                notifyPack();
+              }
+            })
+            .catch(function () {});
+        }
+      });
   }
   pullServerDate();
 

@@ -9,12 +9,63 @@
   // Базу можно переопределить в js/config.js → ARCHIVE_API_BASE
   var RAILWAY_DIRECT = 'https://fides-at-ratioserver-production.up.railway.app';
   var PROXY_URL = 'https://fides.186-246-11-81.sslip.io';
-  var USE_PROXY = true;
 
   var API_BASE =
     (global.VeraConfig && global.VeraConfig.ARCHIVE_API_BASE) ||
-    (USE_PROXY ? PROXY_URL : RAILWAY_DIRECT);
+    RAILWAY_DIRECT;
   var INLINE_CDN = 'https://storage.yandexcloud.net/fidesetratio/ruscatholic/inline/';
+
+  function setApiBase(url) {
+    url = String(url || '').replace(/\/$/, '');
+    if (!url) return;
+    API_BASE = url;
+    if (global.Vera) global.Vera.API_BASE = url;
+    if (global.VeraConfig) global.VeraConfig.ARCHIVE_API_BASE = url;
+  }
+
+  function apiCandidates() {
+    var list = [];
+    var seen = {};
+    function add(u) {
+      u = String(u || '').replace(/\/$/, '');
+      if (!u || seen[u]) return;
+      seen[u] = 1;
+      list.push(u);
+    }
+    add(API_BASE);
+    ((global.VeraConfig && global.VeraConfig.ARCHIVE_API_FALLBACKS) || []).forEach(add);
+    add(RAILWAY_DIRECT);
+    add(PROXY_URL);
+    return list;
+  }
+
+  var apiReady = null;
+  function ensureApi() {
+    if (apiReady) return apiReady;
+    var list = apiCandidates();
+    apiReady = (function next(i) {
+      if (i >= list.length) return Promise.resolve(API_BASE);
+      var url = list[i];
+      var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 4000);
+      return fetch(url + '/health', {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        mode: 'cors',
+        credentials: 'omit',
+        signal: ctrl ? ctrl.signal : undefined,
+      }).then(function (res) {
+        clearTimeout(timer);
+        if (!res.ok) throw new Error('bad');
+        setApiBase(url);
+        return url;
+      }).catch(function () {
+        clearTimeout(timer);
+        return next(i + 1);
+      });
+    })(0);
+    return apiReady;
+  }
 
   var ARCHIVE_CHIPS = [
     { slug: '', label: 'Все' },
@@ -124,9 +175,11 @@
   }
 
   function apiGet(path) {
-    return fetch(API_BASE + path).then(function (res) {
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json();
+    return ensureApi().then(function () {
+      return fetch(API_BASE + path).then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      });
     });
   }
 
@@ -264,7 +317,8 @@
 
   /** Чат с ИИ — стриминг SSE (stream:true), тот же /api/chat */
   function sendChat(message, conversationHistory, onReplace) {
-    return fetch(API_BASE + '/api/chat', {
+    return ensureApi().then(function () {
+      return fetch(API_BASE + '/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -356,6 +410,7 @@
       }
 
       return readLoop();
+    });
     });
   }
 
@@ -735,6 +790,7 @@
     API_BASE: API_BASE,
     INLINE_CDN: INLINE_CDN,
     ARCHIVE_CHIPS: ARCHIVE_CHIPS,
+    ensureApi: ensureApi,
     apiGet: apiGet,
     getArticles: getArticles,
     getArticle: getArticle,
