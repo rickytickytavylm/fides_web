@@ -1,20 +1,17 @@
 /**
  * Центральный конфиг портала ЯКатолик.
- * При передаче заказчику: достаточно поменять TEMPLES_API_BASE
- * (и при необходимости ARCHIVE_API_BASE) на его Python-сервер.
+ * Прод API — Timeweb App Platform (епархия). Railway больше не основной.
  *
  * Переопределение без правки кода:
- *   window.VeraConfigOverride = { TEMPLES_API_BASE: 'https://his.api' };
- *   или ?api=https://his.api
+ *   window.VeraConfigOverride = { ARCHIVE_API_BASE: 'https://…' };
+ *   или ?archive=https://…
  */
 (function (global) {
   'use strict';
 
-  var RAILWAY = 'https://fides-at-ratioserver-production.up.railway.app';
-  var PROXY = 'https://fides.186-246-11-81.sslip.io';
-  /* Railway — рабочий прод; sslip-прокси часто не отвечает. */
-  var DEFAULT_ARCHIVE = RAILWAY;
-  var DEFAULT_TEMPLES = RAILWAY;
+  var TIMEWEB = 'https://rickytickytavylm-fides-at-ratio-server-d4c9.twc1.net';
+  var DEFAULT_ARCHIVE = TIMEWEB;
+  var DEFAULT_TEMPLES = TIMEWEB;
 
   var params = {};
   try {
@@ -26,15 +23,9 @@
   var config = {
     BRAND: 'ЯКатолик',
     ARCHIVE_API_BASE: override.ARCHIVE_API_BASE || params.archive || DEFAULT_ARCHIVE,
-    ARCHIVE_API_FALLBACKS: override.ARCHIVE_API_FALLBACKS || [RAILWAY, PROXY],
-    /** База для карты храмов — сюда он подключает свой Python */
+    /** Без Railway/sslip — чтобы трафик не уезжал «тихо» на старый бэкенд */
+    ARCHIVE_API_FALLBACKS: override.ARCHIVE_API_FALLBACKS || [TIMEWEB],
     TEMPLES_API_BASE: override.TEMPLES_API_BASE || params.api || DEFAULT_TEMPLES,
-    /**
-     * Режим карты:
-     *  - 'live'  — только API
-     *  - 'demo'  — только демо-точки (без сети)
-     *  - 'auto'  — API, при ошибке/пусто → демо
-     */
     TEMPLES_MODE: override.TEMPLES_MODE || params.mode || 'auto',
     TEMPLES_SEARCH_PATH: '/api/temples/search',
     TEMPLES_STATS_PATH: '/api/temples/stats',

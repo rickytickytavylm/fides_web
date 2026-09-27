@@ -292,7 +292,9 @@
   }
 
   function pullServerDate() {
-    var base = (global.VeraConfig && VeraConfig.ARCHIVE_API_BASE) || 'https://fides-at-ratioserver-production.up.railway.app';
+    var base =
+      (global.VeraConfig && VeraConfig.ARCHIVE_API_BASE) ||
+      'https://rickytickytavylm-fides-at-ratio-server-d4c9.twc1.net';
     fetch(String(base).replace(/\/$/, '') + '/health')
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (h) {
@@ -301,19 +303,7 @@
           notifyPack();
         }
       })
-      .catch(function () {
-        if (String(base).indexOf('railway') === -1) {
-          fetch('https://fides-at-ratioserver-production.up.railway.app/health')
-            .then(function (res) { return res.ok ? res.json() : null; })
-            .then(function (h) {
-              if (h && h.date && /^\d{4}-\d{2}-\d{2}$/.test(h.date)) {
-                serverDate = h.date;
-                notifyPack();
-              }
-            })
-            .catch(function () {});
-        }
-      });
+      .catch(function () {});
   }
   pullServerDate();
 

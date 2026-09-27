@@ -5,14 +5,12 @@
 (function (global) {
   'use strict';
 
-  // Как в Вера и Разум/src/config/api.js
-  // Базу можно переопределить в js/config.js → ARCHIVE_API_BASE
-  var RAILWAY_DIRECT = 'https://fides-at-ratioserver-production.up.railway.app';
-  var PROXY_URL = 'https://fides.186-246-11-81.sslip.io';
+  // Базу задаёт js/config.js → ARCHIVE_API_BASE (прод = Timeweb)
+  var TIMEWEB_API = 'https://rickytickytavylm-fides-at-ratio-server-d4c9.twc1.net';
 
   var API_BASE =
     (global.VeraConfig && global.VeraConfig.ARCHIVE_API_BASE) ||
-    RAILWAY_DIRECT;
+    TIMEWEB_API;
   var INLINE_CDN = 'https://storage.yandexcloud.net/fidesetratio/ruscatholic/inline/';
 
   function setApiBase(url) {
@@ -34,8 +32,7 @@
     }
     add(API_BASE);
     ((global.VeraConfig && global.VeraConfig.ARCHIVE_API_FALLBACKS) || []).forEach(add);
-    add(RAILWAY_DIRECT);
-    add(PROXY_URL);
+    add(TIMEWEB_API);
     return list;
   }
 
