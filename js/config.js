@@ -1,18 +1,12 @@
 /**
  * Центральный конфиг портала ЯКатолик.
- * Прод API — Timeweb App Platform (епархия). Railway больше не основной.
- *
- * Переопределение без правки кода:
- *   window.VeraConfigOverride = { ARCHIVE_API_BASE: 'https://…' };
- *   или ?archive=https://…
+ * Основной API — Timeweb. Railway — запас, если twc1.net недоступен (VPN).
  */
 (function (global) {
   'use strict';
 
   var TIMEWEB = 'https://rickytickytavylm-fides-at-ratio-server-d4c9.twc1.net';
   var RAILWAY = 'https://fides-at-ratioserver-production.up.railway.app';
-  var DEFAULT_ARCHIVE = TIMEWEB;
-  var DEFAULT_TEMPLES = TIMEWEB;
 
   var params = {};
   try {
@@ -21,19 +15,13 @@
 
   var override = global.VeraConfigOverride || {};
 
-  var config = {
+  global.VeraConfig = {
     BRAND: 'ЯКатолик',
-    ARCHIVE_API_BASE: override.ARCHIVE_API_BASE || params.archive || DEFAULT_ARCHIVE,
-    /**
-     * Сначала Timeweb. Railway — только если Timeweb недоступен
-     * (часто режется VPN на *.twc1.net).
-     */
+    ARCHIVE_API_BASE: override.ARCHIVE_API_BASE || params.archive || TIMEWEB,
     ARCHIVE_API_FALLBACKS: override.ARCHIVE_API_FALLBACKS || [TIMEWEB, RAILWAY],
-    TEMPLES_API_BASE: override.TEMPLES_API_BASE || params.api || DEFAULT_TEMPLES,
+    TEMPLES_API_BASE: override.TEMPLES_API_BASE || params.api || TIMEWEB,
     TEMPLES_MODE: override.TEMPLES_MODE || params.mode || 'auto',
     TEMPLES_SEARCH_PATH: '/api/temples/search',
     TEMPLES_STATS_PATH: '/api/temples/stats',
   };
-
-  global.VeraConfig = config;
 })(window);

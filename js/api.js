@@ -7,6 +7,7 @@
 
   // Базу задаёт js/config.js → ARCHIVE_API_BASE (прод = Timeweb)
   var TIMEWEB_API = 'https://rickytickytavylm-fides-at-ratio-server-d4c9.twc1.net';
+  var RAILWAY_API = 'https://fides-at-ratioserver-production.up.railway.app';
 
   var API_BASE =
     (global.VeraConfig && global.VeraConfig.ARCHIVE_API_BASE) ||
@@ -33,6 +34,7 @@
     add(API_BASE);
     ((global.VeraConfig && global.VeraConfig.ARCHIVE_API_FALLBACKS) || []).forEach(add);
     add(TIMEWEB_API);
+    add(RAILWAY_API);
     return list;
   }
 
@@ -40,27 +42,50 @@
   function ensureApi() {
     if (apiReady) return apiReady;
     var list = apiCandidates();
-    apiReady = (function next(i) {
-      if (i >= list.length) return Promise.resolve(API_BASE);
-      var url = list[i];
-      var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
-      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 2500);
-      return fetch(url + '/health', {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-        mode: 'cors',
-        credentials: 'omit',
-        signal: ctrl ? ctrl.signal : undefined,
-      }).then(function (res) {
-        clearTimeout(timer);
-        if (!res.ok) throw new Error('bad');
-        setApiBase(url);
-        return url;
-      }).catch(function () {
-        clearTimeout(timer);
-        return next(i + 1);
+    // Параллельный выбор: кто первый ответил /health — тот и прод.
+    // Жёсткий лимит 2.5с — главная не висит, если twc1.net режет VPN.
+    apiReady = new Promise(function (resolve) {
+      var settled = false;
+      var pending = list.length;
+      function done(url) {
+        if (settled) return;
+        settled = true;
+        if (url) setApiBase(url);
+        resolve(API_BASE);
+      }
+      if (!pending) {
+        done(null);
+        return;
+      }
+      list.forEach(function (url) {
+        var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        var timer = setTimeout(function () {
+          try {
+            if (ctrl) ctrl.abort();
+          } catch (e) {}
+        }, 2000);
+        fetch(url + '/health', {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+          mode: 'cors',
+          credentials: 'omit',
+          signal: ctrl ? ctrl.signal : undefined,
+        })
+          .then(function (res) {
+            clearTimeout(timer);
+            if (!res.ok) throw new Error('bad');
+            done(url);
+          })
+          .catch(function () {
+            clearTimeout(timer);
+            pending -= 1;
+            if (pending <= 0) done(null);
+          });
       });
-    })(0);
+      setTimeout(function () {
+        done(null);
+      }, 2500);
+    });
     return apiReady;
   }
 
