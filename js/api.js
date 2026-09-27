@@ -5,9 +5,8 @@
 (function (global) {
   'use strict';
 
-  // Базу задаёт js/config.js → ARCHIVE_API_BASE (прод = Timeweb)
+  // Базу задаёт js/config.js → ARCHIVE_API_BASE (прод = только Timeweb)
   var TIMEWEB_API = 'https://rickytickytavylm-fides-at-ratio-server-d4c9.twc1.net';
-  var RAILWAY_API = 'https://fides-at-ratioserver-production.up.railway.app';
 
   var API_BASE =
     (global.VeraConfig && global.VeraConfig.ARCHIVE_API_BASE) ||
@@ -27,14 +26,13 @@
     var seen = {};
     function add(u) {
       u = String(u || '').replace(/\/$/, '');
-      if (!u || seen[u]) return;
+      if (!u || seen[u] || /railway\.app/i.test(u)) return;
       seen[u] = 1;
       list.push(u);
     }
     add(API_BASE);
     ((global.VeraConfig && global.VeraConfig.ARCHIVE_API_FALLBACKS) || []).forEach(add);
     add(TIMEWEB_API);
-    add(RAILWAY_API);
     return list;
   }
 
@@ -42,8 +40,6 @@
   function ensureApi() {
     if (apiReady) return apiReady;
     var list = apiCandidates();
-    // Параллельный выбор: кто первый ответил /health — тот и прод.
-    // Жёсткий лимит 2.5с — главная не висит, если twc1.net режет VPN.
     apiReady = new Promise(function (resolve) {
       var settled = false;
       var pending = list.length;
@@ -51,10 +47,11 @@
         if (settled) return;
         settled = true;
         if (url) setApiBase(url);
+        else setApiBase(TIMEWEB_API);
         resolve(API_BASE);
       }
       if (!pending) {
-        done(null);
+        done(TIMEWEB_API);
         return;
       }
       list.forEach(function (url) {
@@ -63,7 +60,7 @@
           try {
             if (ctrl) ctrl.abort();
           } catch (e) {}
-        }, 2000);
+        }, 8000);
         fetch(url + '/health', {
           method: 'GET',
           headers: { Accept: 'application/json' },
@@ -84,7 +81,7 @@
       });
       setTimeout(function () {
         done(null);
-      }, 2500);
+      }, 9000);
     });
     return apiReady;
   }
