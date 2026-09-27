@@ -44,7 +44,7 @@
       if (i >= list.length) return Promise.resolve(API_BASE);
       var url = list[i];
       var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
-      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 4000);
+      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 2500);
       return fetch(url + '/health', {
         method: 'GET',
         headers: { Accept: 'application/json' },

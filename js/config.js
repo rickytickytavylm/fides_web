@@ -10,6 +10,7 @@
   'use strict';
 
   var TIMEWEB = 'https://rickytickytavylm-fides-at-ratio-server-d4c9.twc1.net';
+  var RAILWAY = 'https://fides-at-ratioserver-production.up.railway.app';
   var DEFAULT_ARCHIVE = TIMEWEB;
   var DEFAULT_TEMPLES = TIMEWEB;
 
@@ -23,8 +24,11 @@
   var config = {
     BRAND: 'ЯКатолик',
     ARCHIVE_API_BASE: override.ARCHIVE_API_BASE || params.archive || DEFAULT_ARCHIVE,
-    /** Без Railway/sslip — чтобы трафик не уезжал «тихо» на старый бэкенд */
-    ARCHIVE_API_FALLBACKS: override.ARCHIVE_API_FALLBACKS || [TIMEWEB],
+    /**
+     * Сначала Timeweb. Railway — только если Timeweb недоступен
+     * (часто режется VPN на *.twc1.net).
+     */
+    ARCHIVE_API_FALLBACKS: override.ARCHIVE_API_FALLBACKS || [TIMEWEB, RAILWAY],
     TEMPLES_API_BASE: override.TEMPLES_API_BASE || params.api || DEFAULT_TEMPLES,
     TEMPLES_MODE: override.TEMPLES_MODE || params.mode || 'auto',
     TEMPLES_SEARCH_PATH: '/api/temples/search',
