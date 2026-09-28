@@ -226,6 +226,14 @@
   }
 
   function render() {
+    if (A.packReady && !A.packReady()) {
+      root.innerHTML = '<p class="ps-status" style="padding:2rem 1.2rem">Загружаем афишу…</p>';
+      return;
+    }
+    if (A.packFailed && A.packFailed()) {
+      root.innerHTML = '<p class="ps-status" style="padding:2rem 1.2rem">Афиша с сервера не загрузилась. Обновите страницу.</p>';
+      return;
+    }
     var keepWhere = document.activeElement && document.activeElement.id === 'af-where'
       ? document.activeElement.selectionStart
       : null;

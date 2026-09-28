@@ -230,7 +230,9 @@
         if (pack && A.mergePack) A.mergePack(pack);
         patchList(A.EVENTS, published(read().events));
       })
-      .catch(function () {});
+      .catch(function () {
+        if (A.markPackFailed) A.markPackFailed();
+      });
   }
 
   function applyVideos() {

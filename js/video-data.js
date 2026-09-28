@@ -670,6 +670,9 @@
 
   function mergePack(pack) {
     if (!pack) return items;
+    if (Array.isArray(pack.channels) && /github\.io/i.test(location.hostname)) {
+      CHANNELS.length = 0;
+    }
     if (Array.isArray(pack.items)) pack.items.forEach(upsertItem);
     if (Array.isArray(pack.channels)) pack.channels.forEach(upsertChannel);
     return items;

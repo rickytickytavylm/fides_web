@@ -380,6 +380,14 @@
   function renderHomeEvents() {
     var el = document.getElementById('home-events');
     if (!el || !window.YakCalendar) return;
+    if (window.YakAfisha && YakAfisha.packReady && !YakAfisha.packReady()) {
+      el.innerHTML = '<p class="home-panel-empty">Загружаем афишу…</p>';
+      return;
+    }
+    if (window.YakAfisha && YakAfisha.packFailed && YakAfisha.packFailed()) {
+      el.innerHTML = '<p class="home-panel-empty">Афиша не загрузилась</p>';
+      return;
+    }
     var list = (YakCalendar.upcomingEvents() || []).slice(0, 3);
     if (!list.length) {
       el.innerHTML = '<p class="home-panel-empty">Скоро появятся события</p>';

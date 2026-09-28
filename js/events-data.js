@@ -445,8 +445,30 @@
     return 'background:linear-gradient(145deg,' + (o.coverTone || '#5c5346') + ',#1a1816)';
   }
 
+  function isPublicPortal() {
+    try {
+      return /github\.io/i.test(location.hostname);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  var packReady = !isPublicPortal();
+  var packFailed = false;
+
+  if (isPublicPortal()) {
+    EVENTS.length = 0;
+    ORGANIZERS.length = 0;
+  }
+
   function mergePack(pack) {
     var items = !pack ? [] : (Array.isArray(pack) ? pack : (pack.items || pack.events || []));
+    var orgs = pack && !Array.isArray(pack) ? (pack.organizers || []) : [];
+    // Прод: полная замена с Timeweb. Иначе старые вшитые карточки без лого живут рядом с новыми.
+    if (isPublicPortal()) {
+      EVENTS.length = 0;
+      ORGANIZERS.length = 0;
+    }
     items.forEach(function (it) {
       if (!it || !(it.id || it.slug)) return;
       var i;
@@ -460,8 +482,15 @@
       if (i === EVENTS.length) EVENTS.push(it);
       else EVENTS[i] = Object.assign({}, EVENTS[i], it);
     });
-    var orgs = pack && !Array.isArray(pack) ? (pack.organizers || []) : [];
     orgs.forEach(mergeOrganizer);
+    packReady = true;
+    packFailed = false;
+    notifyPack();
+  }
+
+  function markPackFailed() {
+    packReady = true;
+    packFailed = true;
     notifyPack();
   }
 
@@ -517,6 +546,9 @@
     monthDays: monthDays,
     eventEnd: eventEnd,
     mergePack: mergePack,
+    markPackFailed: markPackFailed,
+    packReady: function () { return packReady; },
+    packFailed: function () { return packFailed; },
     orgMarkStyle: orgMarkStyle,
     onPack: onPack
   };
