@@ -1,18 +1,32 @@
 /**
- * Публикации из админки (localStorage yak_desk) подмешиваются в блоки сайта.
- * Работает, когда портал и админка открыты с одного origin (localhost / один хост).
+ * Локальный оверлей админки (yak_desk) на проде выключен.
+ * Публичный сайт читает только Timeweb. Локальный черновик — localhost или ?desk=1.
  */
 (function (global) {
   'use strict';
 
   var KEY = 'yak_desk';
+  var EMPTY = {
+    articles: [], events: [], audio: [], video: [], churchDays: [],
+    authors: [], authorLinks: [], photographers: [], videoChannels: [], cycles: [],
+  };
+
+  function allowDeskOverlay() {
+    try {
+      if (/[?&]desk=1(?:&|$)/.test(location.search)) return true;
+      return /localhost|127\.0\.0\.1/.test(location.hostname);
+    } catch (e) {
+      return false;
+    }
+  }
 
   function read() {
+    if (!allowDeskOverlay()) return EMPTY;
     try {
       var raw = localStorage.getItem(KEY);
-      return raw ? JSON.parse(raw) : { articles: [], events: [], audio: [], video: [], churchDays: [], authors: [], authorLinks: [], photographers: [], videoChannels: [], cycles: [] };
+      return raw ? JSON.parse(raw) : EMPTY;
     } catch (e) {
-      return { articles: [], events: [], audio: [], video: [], churchDays: [], authors: [], authorLinks: [], photographers: [], videoChannels: [] };
+      return EMPTY;
     }
   }
 

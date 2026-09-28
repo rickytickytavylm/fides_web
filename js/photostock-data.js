@@ -70,8 +70,11 @@
     });
     var deskPh = [];
     try {
-      var desk = JSON.parse(localStorage.getItem('yak_desk') || '{}');
-      deskPh = desk.photographers || [];
+      var allowDesk = /[?&]desk=1(?:&|$)/.test(location.search) || /localhost|127\.0\.0\.1/.test(location.hostname);
+      if (allowDesk) {
+        var desk = JSON.parse(localStorage.getItem('yak_desk') || '{}');
+        deskPh = desk.photographers || [];
+      }
     } catch (e) {}
     deskPh.forEach(function (p) {
       var n = normalizePhotographer(p);

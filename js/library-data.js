@@ -548,6 +548,7 @@
 
   function applyDesk() {
     try {
+      if (!/[?&]desk=1(?:&|$)/.test(location.search) && !/localhost|127\.0\.0\.1/.test(location.hostname)) return;
       var raw = localStorage.getItem('yak_desk');
       var data = raw ? JSON.parse(raw) : null;
       if (!data) return;
