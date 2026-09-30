@@ -34,6 +34,38 @@
     return (list || []).filter(function (x) { return !x.status || x.status === 'published'; });
   }
 
+  function parsePackArticle(a) {
+    try { return JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { return null; }
+  }
+
+  function loadPack(owner, slug, onOk, onFail) {
+    var V = global.Vera;
+    if (!V || !V.getArticle) return;
+    if (owner._packOk || owner._packIng) return;
+    owner._packIng = true;
+    var tries = 0;
+    function attempt() {
+      V.getArticle(slug)
+        .then(function (a) {
+          var pack = parsePackArticle(a);
+          if (!pack) throw new Error('empty pack');
+          owner._packOk = true;
+          owner._packIng = false;
+          onOk(pack, a);
+        })
+        .catch(function () {
+          tries += 1;
+          if (tries < 4) {
+            setTimeout(attempt, 1000 * tries);
+            return;
+          }
+          owner._packIng = false;
+          if (onFail) onFail();
+        });
+    }
+    attempt();
+  }
+
   function dayOf(x) {
     return String((x && (x.date || x.createdAt)) || '').slice(0, 10);
   }
@@ -220,19 +252,12 @@
       A._deskApplied = true;
       patchList(A.EVENTS, published(read().events));
     }
-    var V = global.Vera;
-    if (!V || !V.getArticle || applyEvents._remote) return;
-    applyEvents._remote = true;
-    V.getArticle('yak-events-data')
-      .then(function (a) {
-        var pack = null;
-        try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
-        if (pack && A.mergePack) A.mergePack(pack);
-        patchList(A.EVENTS, published(read().events));
-      })
-      .catch(function () {
-        if (A.markPackFailed) A.markPackFailed();
-      });
+    loadPack(applyEvents, 'yak-events-data', function (pack) {
+      if (pack && A.mergePack) A.mergePack(pack);
+      patchList(A.EVENTS, published(read().events));
+    }, function () {
+      if (A.markPackFailed) A.markPackFailed();
+    });
   }
 
   function applyVideos() {
@@ -258,23 +283,13 @@
       Vd._deskApplied = true;
       patchList(Vd.items, published(read().video), asVideo);
     }
-    var Api = global.Vera;
-    if (!Api || !Api.getArticle || applyVideos._remote) {
+    loadPack(applyVideos, 'yak-video-data', function (pack) {
+      if (pack && Vd.mergePack) Vd.mergePack(pack);
+      patchList(Vd.items, published(read().video), asVideo);
       if (Vd.notifyPack) Vd.notifyPack();
-      return;
-    }
-    applyVideos._remote = true;
-    Api.getArticle('yak-video-data')
-      .then(function (a) {
-        var pack = null;
-        try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
-        if (pack && Vd.mergePack) Vd.mergePack(pack);
-        patchList(Vd.items, published(read().video), asVideo);
-        if (Vd.notifyPack) Vd.notifyPack();
-      })
-      .catch(function () {
-        if (Vd.notifyPack) Vd.notifyPack();
-      });
+    }, function () {
+      if (Vd.notifyPack) Vd.notifyPack();
+    });
   }
 
   function applyAudio() {
@@ -297,23 +312,13 @@
       A._deskApplied = true;
       patchList(A.tracks, published(read().audio), asTrack);
     }
-    var Api = global.Vera;
-    if (!Api || !Api.getArticle || applyAudio._remote) {
+    loadPack(applyAudio, 'yak-audio-data', function (pack) {
+      if (pack && A.mergePack) A.mergePack(pack);
+      patchList(A.tracks, published(read().audio), asTrack);
       if (A.notifyPack) A.notifyPack();
-      return;
-    }
-    applyAudio._remote = true;
-    Api.getArticle('yak-audio-data')
-      .then(function (a) {
-        var pack = null;
-        try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
-        if (pack && A.mergePack) A.mergePack(pack);
-        patchList(A.tracks, published(read().audio), asTrack);
-        if (A.notifyPack) A.notifyPack();
-      })
-      .catch(function () {
-        if (A.notifyPack) A.notifyPack();
-      });
+    }, function () {
+      if (A.notifyPack) A.notifyPack();
+    });
   }
 
   function applyPodcasts() {
@@ -321,23 +326,13 @@
     if (!P || !P.mergePack) return;
     var desk = published(read().podcasts || []);
     if (desk.length) P.mergePack({ shows: desk });
-    var Api = global.Vera;
-    if (!Api || !Api.getArticle || applyPodcasts._remote) {
+    loadPack(applyPodcasts, 'yak-podcasts-data', function (pack) {
+      if (pack) P.mergePack(pack);
+      if (desk.length) P.mergePack({ shows: desk });
       if (P.notifyPack) P.notifyPack();
-      return;
-    }
-    applyPodcasts._remote = true;
-    Api.getArticle('yak-podcasts-data')
-      .then(function (a) {
-        var pack = null;
-        try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
-        if (pack) P.mergePack(pack);
-        if (desk.length) P.mergePack({ shows: desk });
-        if (P.notifyPack) P.notifyPack();
-      })
-      .catch(function () {
-        if (P.notifyPack) P.notifyPack();
-      });
+    }, function () {
+      if (P.notifyPack) P.notifyPack();
+    });
   }
 
   function findAuthor(list, slug) {
@@ -467,28 +462,21 @@
       notifyAuthors();
     }
 
-    var V = global.Vera;
-    if (!V || !V.getArticle || applyAuthors._remote) return;
-    applyAuthors._remote = true;
-    V.getArticle('yak-authors-data')
-      .then(function (a) {
-        var parsed = [];
-        try { parsed = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { parsed = []; }
-        var list = Array.isArray(parsed) ? parsed : ((parsed && parsed.authors) || []);
-        var hidden = Array.isArray(parsed) ? [] : ((parsed && parsed.hiddenSlugs) || []);
-        global.YakHiddenPubs = hidden;
-        if (Array.isArray(list)) list.forEach(function (ov) { patchAuthor(A, ov); });
-        (read().authors || []).forEach(function (ov) { patchAuthor(A, ov); });
-        try {
-          var localHidden = (read().hiddenSlugs || []);
-          localHidden.forEach(function (s) {
-            if (s && global.YakHiddenPubs.indexOf(s) === -1) global.YakHiddenPubs.push(s);
-          });
-        } catch (e) {}
-        stripHiddenFromAuthors(A);
-      })
-      .catch(function () {})
-      .then(function () { notifyAuthors(); });
+    loadPack(applyAuthors, 'yak-authors-data', function (parsed) {
+      var list = Array.isArray(parsed) ? parsed : ((parsed && parsed.authors) || []);
+      var hidden = Array.isArray(parsed) ? [] : ((parsed && parsed.hiddenSlugs) || []);
+      global.YakHiddenPubs = hidden;
+      if (Array.isArray(list)) list.forEach(function (ov) { patchAuthor(A, ov); });
+      (read().authors || []).forEach(function (ov) { patchAuthor(A, ov); });
+      try {
+        var localHidden = (read().hiddenSlugs || []);
+        localHidden.forEach(function (s) {
+          if (s && global.YakHiddenPubs.indexOf(s) === -1) global.YakHiddenPubs.push(s);
+        });
+      } catch (e) {}
+      stripHiddenFromAuthors(A);
+      notifyAuthors();
+    }, function () { notifyAuthors(); });
   }
 
   function applyVideoChannels() {
@@ -514,23 +502,13 @@
     if (!C || !C.mergePack) return;
     var desk = published(read().churchDays);
     if (desk.length) C.mergePack({ days: desk });
-    var V = global.Vera;
-    if (!V || !V.getArticle || applyCalendar._remote) {
+    loadPack(applyCalendar, 'yak-calendar-data', function (pack) {
+      if (pack && C.mergePack) C.mergePack(pack);
+      if (desk.length) C.mergePack({ days: desk });
       if (C.notifyPack) C.notifyPack();
-      return;
-    }
-    applyCalendar._remote = true;
-    V.getArticle('yak-calendar-data')
-      .then(function (a) {
-        var pack = null;
-        try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
-        if (pack && C.mergePack) C.mergePack(pack);
-        if (desk.length) C.mergePack({ days: desk });
-        if (C.notifyPack) C.notifyPack();
-      })
-      .catch(function () {
-        if (C.notifyPack) C.notifyPack();
-      });
+    }, function () {
+      if (C.notifyPack) C.notifyPack();
+    });
   }
 
   function applyAbout() {
@@ -538,23 +516,13 @@
     if (!A || !A.mergePack) return;
     var desk = read().about;
     if (desk) A.mergePack(desk);
-    var V = global.Vera;
-    if (!V || !V.getArticle || applyAbout._remote) {
+    loadPack(applyAbout, 'yak-about-data', function (pack) {
+      if (pack) A.mergePack(pack);
+      if (read().about) A.mergePack(read().about);
       if (A.notifyPack) A.notifyPack();
-      return;
-    }
-    applyAbout._remote = true;
-    V.getArticle('yak-about-data')
-      .then(function (a) {
-        var pack = null;
-        try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
-        if (pack) A.mergePack(pack);
-        if (read().about) A.mergePack(read().about);
-        if (A.notifyPack) A.notifyPack();
-      })
-      .catch(function () {
-        if (A.notifyPack) A.notifyPack();
-      });
+    }, function () {
+      if (A.notifyPack) A.notifyPack();
+    });
   }
 
   var guidePackFns = [];
@@ -803,22 +771,12 @@
       freezeChurchLists(G);
     }
     applyList(read().guides || []);
-    var V = global.Vera;
-    if (!V || !V.getArticle || applyGuides._remote) {
+    loadPack(applyGuides, 'yak-guides-data', function (pack) {
+      var list = Array.isArray(pack) ? pack : (pack.guides || []);
+      applyList(list);
+      applyList(read().guides || []);
       notifyGuides();
-      return;
-    }
-    applyGuides._remote = true;
-    V.getArticle('yak-guides-data')
-      .then(function (a) {
-        var pack = null;
-        try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
-        var list = !pack ? [] : (Array.isArray(pack) ? pack : (pack.guides || []));
-        applyList(list);
-        applyList(read().guides || []);
-      })
-      .catch(function () {})
-      .then(function () { notifyGuides(); });
+    }, function () { notifyGuides(); });
   }
 
   var CYCLES_PAGE_SLUG = 'yak-cycles-data';
@@ -829,27 +787,13 @@
     var desk = published(read().cycles || []);
     if (C.merge && desk.length) C.merge(desk);
 
-    var V = global.Vera;
-    if (!V || !V.getArticle) {
+    loadPack(applyCycles, CYCLES_PAGE_SLUG, function (list) {
+      if (Array.isArray(list) && C.merge) C.merge(list);
+      if (desk.length && C.merge) C.merge(desk);
       if (C._resolveReady) C._resolveReady();
-      return;
-    }
-    if (applyCycles._once) return;
-    applyCycles._once = true;
-    var timer = setTimeout(function () { if (C._resolveReady) C._resolveReady(); }, 6000);
-    V.getArticle(CYCLES_PAGE_SLUG)
-      .then(function (a) {
-        var raw = (a && (a.contentText || a.content || '')) || '';
-        var list = [];
-        try { list = JSON.parse(raw); } catch (e) { list = []; }
-        if (Array.isArray(list) && C.merge) C.merge(list);
-      })
-      .catch(function () {})
-      .then(function () {
-        clearTimeout(timer);
-        if (desk.length && C.merge) C.merge(desk);
-        if (C._resolveReady) C._resolveReady();
-      });
+    }, function () {
+      if (C._resolveReady) C._resolveReady();
+    });
   }
 
   function applyLibrary() {
@@ -861,28 +805,18 @@
       if (desk.libraryItems) L.mergePack({ items: published(desk.libraryItems) });
       if (desk.libraryThemes) L.mergePack({ themes: desk.libraryThemes });
     } catch (e) {}
-    var V = global.Vera;
-    if (!V || !V.getArticle || applyLibrary._remote) {
+    loadPack(applyLibrary, 'yak-library-data', function (pack) {
+      if (pack && L.mergePack) L.mergePack(pack);
+      try {
+        var again = read();
+        if (again.libraryRubrics) L.mergePack({ rubrics: again.libraryRubrics });
+        if (again.libraryItems) L.mergePack({ items: published(again.libraryItems) });
+        if (again.libraryThemes) L.mergePack({ themes: again.libraryThemes });
+      } catch (e2) {}
       if (L.notifyPack) L.notifyPack();
-      return;
-    }
-    applyLibrary._remote = true;
-    V.getArticle('yak-library-data')
-      .then(function (a) {
-        var pack = null;
-        try { pack = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { pack = null; }
-        if (pack && L.mergePack) L.mergePack(pack);
-        try {
-          var again = read();
-          if (again.libraryRubrics) L.mergePack({ rubrics: again.libraryRubrics });
-          if (again.libraryItems) L.mergePack({ items: published(again.libraryItems) });
-          if (again.libraryThemes) L.mergePack({ themes: again.libraryThemes });
-        } catch (e2) {}
-        if (L.notifyPack) L.notifyPack();
-      })
-      .catch(function () {
-        if (L.notifyPack) L.notifyPack();
-      });
+    }, function () {
+      if (L.notifyPack) L.notifyPack();
+    });
   }
 
   function apply() {
@@ -915,4 +849,8 @@
   } else {
     setTimeout(apply, 0);
   }
+  setTimeout(apply, 3000);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) apply();
+  });
 })(window);
