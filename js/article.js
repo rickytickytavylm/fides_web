@@ -338,11 +338,24 @@
           );
         })();
 
-    var leadSource = article.excerptHtml || '';
-    if (!leadSource && article.excerpt && /<[a-z][\s\S]*>/i.test(article.excerpt)) leadSource = article.excerpt;
+    function stripOfficeJunk(s) {
+      return String(s == null ? '' : s)
+        .replace(/<!--\[if[\s\S]*?<!\[endif\]-->/gi, '')
+        .replace(/<!-+\s*StartFragment\s*-*>/gi, '')
+        .replace(/<!-+\s*EndFragment\s*-*>/gi, '')
+        .replace(/&lt;!-+\s*StartFragment\s*-*&gt;/gi, '')
+        .replace(/&lt;!-+\s*EndFragment\s*-*&gt;/gi, '')
+        .replace(/\uFEFF/g, '')
+        .trim();
+    }
+    var leadSource = stripOfficeJunk(article.excerptHtml || article.excerpt || '');
     var leadHtml = '';
     if (leadSource && String(V.stripTags ? V.stripTags(leadSource) : leadSource).replace(/\s+/g, '').length) {
-      var leadSafe = V.sanitizeInlineHtml ? V.sanitizeInlineHtml(leadSource) : linkifyHtml(leadSource);
+      var leadSafe = V.sanitizeInlineHtml
+        ? V.sanitizeInlineHtml(leadSource)
+        : /<[a-z][\s\S]*>/i.test(leadSource)
+          ? linkifyHtml(leadSource)
+          : V.escapeHtml(leadSource);
       leadHtml = '<div class="article-lead">' + leadSafe + '</div>';
     }
 

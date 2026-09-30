@@ -124,10 +124,15 @@
   }
 
   function freshCard(it, i, lead) {
-    var excerpt = lead
-      ? '<p class="ncard-excerpt">' +
-        esc(String(it.excerpt || '').replace(/\s+/g, ' ').trim().slice(0, 170)) +
-        '</p>'
+    var excerptText = String(it.excerpt || '')
+      .replace(/<!-+\s*StartFragment\s*-*>/gi, '')
+      .replace(/<!-+\s*EndFragment\s*-*>/gi, '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 170);
+    var excerpt = lead && excerptText
+      ? '<p class="ncard-excerpt">' + esc(excerptText) + '</p>'
       : '';
     return (
       '<a class="ncard' + (lead ? ' ncard--lead' : '') + '" href="' + V.articleHref(it) + '">' +

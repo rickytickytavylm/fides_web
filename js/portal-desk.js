@@ -99,7 +99,16 @@
         n.innerHTML = raw;
         return (n.textContent || '').replace(/\s+/g, ' ').trim();
       })(),
-      excerptHtml: a.excerptHtml || (/<[a-z][\s\S]*>/i.test(a.excerpt || '') ? a.excerpt : ''),
+      excerptHtml: (function () {
+        var raw = a.excerptHtml || a.excerpt || '';
+        if (!raw) return '';
+        return String(raw)
+          .replace(/<!--\[if[\s\S]*?<!\[endif\]-->/gi, '')
+          .replace(/<!-+\s*StartFragment\s*-*>/gi, '')
+          .replace(/<!-+\s*EndFragment\s*-*>/gi, '')
+          .replace(/\uFEFF/g, '')
+          .trim();
+      })(),
       contentHtml: a.contentHtml || (a.body ? '<p>' + String(a.body).replace(/\n+/g, '</p><p>') + '</p>' : ''),
       contentText: a.body || a.excerpt || '',
       image: a.image || a.cover || '',

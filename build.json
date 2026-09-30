@@ -1,4 +1,4 @@
 {
-  "id": "202609301248",
-  "note": "Bump this id on every deploy; clients reload when it changes."
+  "id": "202609301456",
+  "note": "Clients reload when this id differs from window.YAK_BUILD"
 }
