@@ -50,11 +50,15 @@
     return (
       '<div class="ps-share">' +
       '<button type="button" class="btn-primary" id="share-btn">Поделиться</button>' +
-      '<div class="ps-share-menu" id="share-menu" hidden>' +
-      '<a target="_blank" rel="noopener" href="https://vk.com/share.php?url=' + u + '&title=' + t + '">ВК</a>' +
-      '<a target="_blank" rel="noopener" href="https://t.me/share/url?url=' + u + '&text=' + t + '">ТГ</a>' +
-      '<a target="_blank" rel="noopener" href="https://max.ru/share?url=' + u + '">Макс</a>' +
-      '</div></div>'
+      '<div class="ps-share-pop" id="share-pop" hidden>' +
+      '<button type="button" class="ps-share-scrim" id="share-scrim" aria-label="Закрыть"></button>' +
+      '<div class="ps-share-sheet" role="dialog" aria-label="Поделиться">' +
+      '<p>Куда отправить</p>' +
+      '<a target="_blank" rel="noopener" href="https://vk.com/share.php?url=' + u + '&title=' + t + '">ВКонтакте</a>' +
+      '<a target="_blank" rel="noopener" href="https://t.me/share/url?url=' + u + '&text=' + t + '">Telegram</a>' +
+      '<a target="_blank" rel="noopener" href="https://max.ru/share?url=' + u + '">MAX</a>' +
+      '<button type="button" class="ps-share-copy" id="share-copy">Скопировать ссылку</button>' +
+      '</div></div></div>'
     );
   }
 
@@ -114,10 +118,29 @@
     bindBack('ps-back');
 
     var btn = document.getElementById('share-btn');
-    var menu = document.getElementById('share-menu');
-    if (btn && menu) {
-      btn.onclick = function () {
-        menu.hidden = !menu.hidden;
+    var pop = document.getElementById('share-pop');
+    var scrim = document.getElementById('share-scrim');
+    var copyBtn = document.getElementById('share-copy');
+    function closeShare() { if (pop) pop.hidden = true; }
+    function openShare() {
+      if (navigator.share) {
+        navigator.share({ title: name, url: pageUrl }).catch(function () {
+          if (pop) pop.hidden = false;
+        });
+        return;
+      }
+      if (pop) pop.hidden = false;
+    }
+    if (btn) btn.onclick = openShare;
+    if (scrim) scrim.onclick = closeShare;
+    if (copyBtn) {
+      copyBtn.onclick = function () {
+        var done = function () { copyBtn.textContent = 'Скопировано'; };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(pageUrl).then(done).catch(function () {
+            window.prompt('Ссылка', pageUrl);
+          });
+        } else window.prompt('Ссылка', pageUrl);
       };
     }
   });

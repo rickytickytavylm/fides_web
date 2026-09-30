@@ -718,7 +718,7 @@
       flagBadges(item) +
       '</div>' +
       (item.annotation
-        ? '<div class="lib-annotation">' + (hasMarkup(item.annotation) ? item.annotation : annotationPlain(item.annotation)) + '</div>'
+        ? '<div class="lib-annotation">' + (hasMarkup(cleanOffice(item.annotation)) ? cleanOffice(item.annotation) : annotationPlain(cleanOffice(item.annotation))) + '</div>'
         : '') +
       '<div class="lib-meta">' +
       metaRows
@@ -795,6 +795,17 @@
   function hideDonate() {
     var el = document.getElementById('lib-donate');
     if (el) el.hidden = true;
+  }
+
+  function cleanOffice(s) {
+    return String(s == null ? '' : s)
+      .replace(/<!--\[if[\s\S]*?<!\[endif\]-->/gi, '')
+      .replace(/<!-+\s*StartFragment\s*-*>/gi, '')
+      .replace(/<!-+\s*EndFragment\s*-*>/gi, '')
+      .replace(/&lt;!-+\s*StartFragment\s*-*&gt;/gi, '')
+      .replace(/&lt;!-+\s*EndFragment\s*-*&gt;/gi, '')
+      .replace(/\uFEFF/g, '')
+      .replace(/^\s+|\s+$/g, '');
   }
 
   function hasMarkup(s) {

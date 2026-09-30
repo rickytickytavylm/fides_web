@@ -456,35 +456,70 @@
     return '';
   }
 
+  function allowSaintHtml(html) {
+    var box = document.createElement('div');
+    box.innerHTML = html || '';
+    box.querySelectorAll('script,style,iframe,img,object').forEach(function (n) { n.remove(); });
+    box.querySelectorAll('*').forEach(function (n) {
+      var tag = n.tagName.toLowerCase();
+      if (['p', 'a', 'strong', 'em', 'b', 'i', 'br', 'span'].indexOf(tag) === -1) {
+        var t = document.createElement('span');
+        t.innerHTML = n.innerHTML;
+        n.parentNode.replaceChild(t, n);
+        return;
+      }
+      [].forEach.call(n.attributes, function (a) {
+        if (a.name !== 'href' && a.name !== 'target' && a.name !== 'rel') n.removeAttribute(a.name);
+      });
+      if (tag === 'a') {
+        var href = n.getAttribute('href') || '';
+        if (!/^https?:|^\/|^mailto:|#/i.test(href)) n.removeAttribute('href');
+        else {
+          n.setAttribute('rel', 'noopener');
+          if (/^https?:/i.test(href)) n.setAttribute('target', '_blank');
+        }
+      }
+    });
+    return box.innerHTML;
+  }
+
+  function asideBlock(label, bodyHtml) {
+    if (!bodyHtml) return '';
+    return (
+      '<div class="aside-day-block">' +
+      '<h4>' + esc(label) + '</h4>' +
+      '<div>' + bodyHtml + '</div></div>'
+    );
+  }
+
   function renderAsideDay() {
     var dateEl = document.getElementById('aside-day-date');
+    var fieldsEl = document.getElementById('aside-day-fields');
     var saintEl = document.getElementById('aside-day-saint');
-    var readEl = document.getElementById('aside-day-read');
     if (!dateEl || !window.YakCalendar) return;
     var iso = YakCalendar.todayIso();
     var day = (YakCalendar.dayFor && YakCalendar.dayFor(iso)) || YakCalendar.byDate(iso);
     if (!day) {
       dateEl.textContent = iso;
-      if (saintEl) saintEl.textContent = 'Откройте календарь';
+      if (fieldsEl) fieldsEl.innerHTML = '<p class="widget-saint">Откройте календарь</p>';
+      else if (saintEl) saintEl.textContent = 'Откройте календарь';
       return;
     }
     var L = day.liturgical || {};
-    var dateLabel = [day.weekday, L.title || day.label].filter(Boolean).join(' · ');
-    dateEl.textContent = dateLabel || iso;
-    if (saintEl) {
-      var saintHtml = L.saint && (L.saint.html || L.saintHtml);
-      if (saintHtml) saintEl.innerHTML = saintHtml;
-      else {
-        saintEl.textContent =
-          litText(L.saint) || litText(L.title) || litText(day.title) || 'День Церкви';
-      }
-    }
-    if (readEl) {
-      var reading = litText(L.reading) || litText(L.gospel) || litText(L.readings);
-      readEl.textContent = reading
-        ? reading.slice(0, 140)
-        : litText(L.category);
-    }
+    dateEl.textContent = [day.weekday, iso.slice(8, 10) + '.' + iso.slice(5, 7)].filter(Boolean).join(' · ') || iso;
+    var saintBody = '';
+    if (L.saint && (L.saint.html || L.saintHtml)) saintBody = allowSaintHtml(L.saint.html || L.saintHtml);
+    else if (litText(L.saint)) saintBody = '<p>' + esc(litText(L.saint)) + '</p>';
+    var html =
+      (L.category ? '<p class="aside-day-rank">' + esc(L.category) + '</p>' : '') +
+      (L.title ? '<p class="widget-saint">' + esc(L.title) + '</p>' : '') +
+      (L.color ? '<p class="aside-day-color">Цвет: <b>' + esc(L.color) + '</b></p>' : '') +
+      asideBlock('Святой дня', saintBody) +
+      asideBlock('Чтение дня', litText(L.reading) ? '<p>' + esc(litText(L.reading)) + '</p>' : '') +
+      asideBlock('Молитва дня', litText(L.prayer) ? '<p>' + esc(litText(L.prayer)) + '</p>' : '') +
+      asideBlock('Цитата дня', litText(L.quote) ? '<p class="aside-day-quote">' + esc(litText(L.quote)) + '</p>' : '');
+    if (fieldsEl) fieldsEl.innerHTML = html || '<p class="widget-read">Редакция ещё не заполнила день</p>';
+    else if (saintEl) saintEl.textContent = litText(L.saint) || litText(L.title) || 'День Церкви';
   }
 
   function renderHomeAudio() {

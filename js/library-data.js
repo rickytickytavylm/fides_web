@@ -510,6 +510,16 @@
     return null;
   }
 
+  function stripOfficeJunk(s) {
+    return String(s == null ? '' : s)
+      .replace(/<!--\[if[\s\S]*?<!\[endif\]-->/gi, '')
+      .replace(/<!-+\s*StartFragment\s*-*>/gi, '')
+      .replace(/<!-+\s*EndFragment\s*-*>/gi, '')
+      .replace(/&lt;!-+\s*StartFragment\s*-*&gt;/gi, '')
+      .replace(/&lt;!-+\s*EndFragment\s*-*&gt;/gi, '')
+      .replace(/\uFEFF/g, '');
+  }
+
   function mergeItems(list) {
     if (!Array.isArray(list)) return;
     list.forEach(function (it) {
@@ -518,6 +528,8 @@
         ITEMS = ITEMS.filter(function (x) { return x.id !== it.id; });
         return;
       }
+      if (it.annotation) it.annotation = stripOfficeJunk(it.annotation);
+      if (it.contentHtml) it.contentHtml = stripOfficeJunk(it.contentHtml);
       var i;
       for (i = 0; i < ITEMS.length; i++) if (ITEMS[i].id === it.id) break;
       if (i === ITEMS.length) ITEMS.push(it);
