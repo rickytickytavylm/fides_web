@@ -1,5 +1,5 @@
 /**
- * API — 1:1 как в приложении (прокси VPS → Railway).
+ * API портала — только Timeweb (адреса railway.app отсекаются ниже).
  * Классический скрипт: работает из file:// как админка.
  */
 (function (global) {
@@ -400,13 +400,14 @@
       var buffer = '';
       var reply = '';
       var sources = [];
+      var links = [];
       var remaining;
       var limit;
 
       function readLoop() {
         return reader.read().then(function (result) {
           if (result.done) {
-            return { reply: reply, sources: sources, remaining: remaining, limit: limit };
+            return { reply: reply, sources: sources, links: links, remaining: remaining, limit: limit };
           }
           buffer += decoder.decode(result.value, { stream: true });
           buffer = parseSseBuffer(buffer, function (evt) {
@@ -417,6 +418,7 @@
             } else if (evt.type === 'done') {
               reply = evt.reply || reply;
               sources = Array.isArray(evt.sources) ? evt.sources : [];
+              links = Array.isArray(evt.links) ? evt.links : [];
               remaining = evt.remaining;
               limit = evt.limit;
               if (typeof onReplace === 'function') onReplace(reply);
@@ -805,6 +807,41 @@
     return 'style="--img:url(\'' + resolved.replace(/'/g, '%27') + '\')"';
   }
 
+  /* Каркас страницы, пока данные в пути: та же сетка, что у готовой страницы. */
+  function skeleton(kind, label) {
+    var cards = { cards: 4, tiles: 8, events: 4, day: 1 }[kind] || 4;
+    var head =
+      '<div class="sk sk-line page-skel-crumb"></div>' +
+      '<div class="sk sk-line page-skel-title"></div>' +
+      '<div class="sk sk-line page-skel-desc"></div>';
+    var grid = '';
+    for (var i = 0; i < cards; i++) grid += '<div class="sk page-skel-card"></div>';
+    return (
+      '<div class="page-skel page-skel--' + kind + ' in-shell" role="status" aria-busy="true" aria-label="' +
+      escapeHtml(label || 'Загрузка') + '">' +
+      (kind === 'tiles' ? '' : head) +
+      (kind === 'events' ? '<div class="page-skel-strip">' + new Array(7).join('<div class="sk"></div>') + '</div>' : '') +
+      '<div class="page-skel-grid">' + grid + '</div></div>'
+    );
+  }
+
+  function skeletonRows(n, height) {
+    var out = '';
+    for (var i = 0; i < (n || 3); i++) out += '<div class="sk skel-row" style="height:' + (height || 72) + 'px"></div>';
+    return '<div class="skel-rows" role="status" aria-busy="true" aria-label="Загрузка">' + out + '</div>';
+  }
+
+  function skeletonCards(n) {
+    var out = '';
+    for (var i = 0; i < (n || 3); i++) {
+      out += '<div class="art" aria-hidden="true"><div class="ph sk"></div><div class="in">' +
+        '<div class="sk sk-line" style="width:35%;height:10px;margin-bottom:9px"></div>' +
+        '<div class="sk sk-line" style="width:95%;height:16px;margin-bottom:7px"></div>' +
+        '<div class="sk sk-line" style="width:80%;height:12px"></div></div></div>';
+    }
+    return out;
+  }
+
   global.Vera = {
     API_BASE: API_BASE,
     INLINE_CDN: INLINE_CDN,
@@ -833,6 +870,9 @@
     articleHref: articleHref,
     pageHref: pageHref,
     coverStyle: coverStyle,
+    skeleton: skeleton,
+    skeletonRows: skeletonRows,
+    skeletonCards: skeletonCards,
     displayCategories: displayCategories,
     categoryLine: categoryLine,
     primaryCategorySlug: primaryCategorySlug,

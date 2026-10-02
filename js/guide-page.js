@@ -304,7 +304,7 @@
     setTimeout(function () {
       var el = document.getElementById(boxId);
       if (!el) return;
-      el.innerHTML = '<div class="spinner" aria-label="Загрузка"></div>';
+      el.innerHTML = V.skeletonCards ? V.skeletonCards(3) : '';
       V.getArticles({ category: node.feedCategory, limit: 6 })
         .then(function (pack) {
           var items = pack.items || [];

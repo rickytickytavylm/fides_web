@@ -88,6 +88,10 @@
     for (var n = 0; n < tracks.length; n++) {
       if (String(tracks[n].id) === String(incoming.id)) { i = n; break; }
     }
+    if (incoming.status && incoming.status !== 'published') {
+      if (i !== -1) tracks.splice(i, 1);
+      return;
+    }
     var next = Object.assign({}, i === -1 ? {} : tracks[i], incoming);
     if (i === -1) tracks.unshift(next);
     else tracks[i] = next;

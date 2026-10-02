@@ -106,7 +106,7 @@
       '<span class="mark"><img src="yakatolik-logo.svg" alt="ЯКатолик" width="30" height="30" /></span>' +
       '<span class="wm">ЯКатолик</span></a>' +
       '<nav class="footer-links footer-links--row" aria-label="Разделы">' + links + '</nav></div>' +
-      '<p class="footer-tagline footer-legal">' + LEGAL + '</p>';
+      '<div class="wrap footer-legal-wrap"><p class="footer-tagline footer-legal">' + LEGAL + '</p></div>';
     hosts.forEach(function (el) {
       el.className = 'portal-footer';
       el.innerHTML = html;

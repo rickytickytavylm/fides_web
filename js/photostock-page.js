@@ -141,6 +141,9 @@
   }
 
   PS.load().then(boot).catch(function () {
-    if (statusEl) statusEl.textContent = 'Не удалось загрузить фотосток';
+    if (grid) grid.innerHTML = '';
+    if (asideEl) asideEl.innerHTML = '';
+    if (tagsEl) tagsEl.innerHTML = '';
+    if (statusEl) statusEl.textContent = 'Фотосток не загрузился — сервер не ответил. Обновите страницу.';
   });
 })();

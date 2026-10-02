@@ -61,9 +61,9 @@
   var SUGGESTIONS = [
     'Что такое Символ веры?',
     'Как начать молиться каждый день?',
-    'Где на сайте карта храмов?',
+    'Какой сегодня день в календаре Церкви?',
     'Куда зайти, если я в Церкви впервые?',
-    'Где афиша и День Церкви?',
+    'Что интересного в афише на ближайшие дни?',
     'Чем отличается католицизм от православия?',
   ];
 
@@ -80,19 +80,20 @@
     label.className = 'chat-sources-label';
     label.textContent = 'По теме';
     block.appendChild(label);
-    sources.slice(0, 3).forEach(function (s) {
+    sources.slice(0, 5).forEach(function (s) {
       if (!s || !s.id) return;
       var a = document.createElement('a');
       a.className = 'chat-source';
-      a.href = 'article.html?id=' + encodeURIComponent(s.slug || s.id);
+      a.href = s.href || ('article.html?id=' + encodeURIComponent(s.slug || s.id));
       var title = document.createElement('span');
       title.className = 'chat-source-title';
       title.textContent = s.title || ('Статья #' + s.id);
       a.appendChild(title);
-      if (s.excerpt) {
+      var note = [s.kind, s.excerpt].filter(Boolean).join(' · ');
+      if (note) {
         var ex = document.createElement('span');
         ex.className = 'chat-source-excerpt';
-        ex.textContent = s.excerpt;
+        ex.textContent = note;
         a.appendChild(ex);
       }
       block.appendChild(a);
@@ -248,6 +249,7 @@
       .then(function (data) {
         var reply = (data && data.reply) || assistant.body.textContent || 'Не удалось получить ответ.';
         var sources = data && Array.isArray(data.sources) ? data.sources : [];
+        if (data && Array.isArray(data.links)) sources = data.links.concat(sources);
         assistant.body.textContent = reply;
         if (sources.length) addSources(assistant.bubble, sources);
         /* Кнопки разделов — только если модель сама их упомянула */

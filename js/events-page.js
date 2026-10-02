@@ -227,11 +227,15 @@
 
   function render() {
     if (A.packReady && !A.packReady()) {
-      root.innerHTML = '<p class="ps-status" style="padding:2rem 1.2rem">Загружаем афишу…</p>';
+      root.innerHTML = window.Vera && Vera.skeleton
+        ? Vera.skeleton('events', 'Загружаем афишу')
+        : '<p class="ps-status" style="padding:2rem 1.2rem">Загружаем афишу…</p>';
       return;
     }
     if (A.packFailed && A.packFailed()) {
-      root.innerHTML = '<p class="ps-status" style="padding:2rem 1.2rem">Афиша с сервера не загрузилась. Обновите страницу.</p>';
+      root.innerHTML =
+        '<div class="page-fail in-shell" role="alert"><p>Афиша не загрузилась — сервер не ответил.</p>' +
+        '<button type="button" class="loadmore" onclick="location.reload()">Обновить</button></div>';
       return;
     }
     var keepWhere = document.activeElement && document.activeElement.id === 'af-where'

@@ -284,6 +284,7 @@
   }
 
   function renderHome() {
+    if (waitingPack()) { renderSkeleton(); return; }
     var longs = all.filter(function (v) { return v.type === 'long'; });
     var shorts = all.filter(function (v) { return v.type === 'short'; });
     var partners = channels.filter(function (c) {
@@ -313,6 +314,7 @@
         bind(smallGrid);
         loopRail(smallGrid.querySelector('.yt-shorts-rail') || smallGrid);
       } else {
+        smallGrid.classList.remove('rail-wrap');
         smallGrid.innerHTML = shorts.map(shortCard).join('');
         bind(smallGrid);
       }
@@ -322,8 +324,40 @@
     if (latestBand) latestBand.hidden = true;
   }
 
+  function waitingPack() {
+    return !!(window.YakVideos && YakVideos.packState === 'wait');
+  }
+
+  function renderSkeleton() {
+    var sk = function (n, style) { return new Array(n + 1).join('<div class="sk" aria-hidden="true" style="' + style + '"></div>'); };
+    if (partnersBand) partnersBand.hidden = false;
+    if (partnersEl) {
+      partnersEl.innerHTML = new Array(5).join(
+        '<div class="vp-card" aria-hidden="true"><span class="vp-logo sk"></span><span class="vp-copy" style="flex:1">' +
+        '<span class="sk sk-line" style="display:block;width:70%;height:15px;margin-top:10px"></span>' +
+        '<span class="sk sk-line" style="display:block;width:40%;height:12px;margin-top:9px"></span></span></div>'
+      );
+    }
+    if (featuredEl) {
+      featuredEl.hidden = false;
+      featuredEl.innerHTML = sk(1, 'aspect-ratio:16/9;border-radius:18px');
+    }
+    if (longBand) longBand.hidden = false;
+    if (largeGrid) largeGrid.innerHTML = sk(2, 'aspect-ratio:16/9;border-radius:14px');
+    if (shortBand) shortBand.hidden = false;
+    if (smallGrid) {
+      smallGrid.classList.remove('yt-shorts-rail', 'yt-shorts-grid');
+      smallGrid.classList.add('rail-wrap');
+      smallGrid.innerHTML = '<div class="yt-shorts-rail">' + sk(4, 'aspect-ratio:9/16;border-radius:14px') + '</div>';
+    }
+  }
+
   function renderChannel() {
     if (!channelRoot) return;
+    if (waitingPack()) {
+      channelRoot.innerHTML = window.Vera && Vera.skeleton ? Vera.skeleton('cards', 'Загружаем канал') : '';
+      return;
+    }
     var id = new URLSearchParams(location.search).get('id') || '';
     var ch = channels.filter(function (c) { return c.id === id; })[0];
     if (!ch) {

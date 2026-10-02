@@ -57,20 +57,29 @@
     };
   }
 
+  /* Черновики админки (тот же домен) видны только в режиме предпросмотра редакции. */
+  function deskMode() {
+    try {
+      return /[?&]desk=1(?:&|$)/.test(location.search) || /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || location.protocol === 'file:';
+    } catch (e) {
+      return false;
+    }
+  }
+
   function mergeData(seed) {
+    var allowDesk = deskMode();
     var photographers = {};
     (seed.photographers || []).forEach(function (p) {
       var n = normalizePhotographer(p);
       if (n && n.id) photographers[n.id] = n;
     });
-    var lsPh = readLs(PHOTOGRAPHERS_KEY) || [];
+    var lsPh = allowDesk ? (readLs(PHOTOGRAPHERS_KEY) || []) : [];
     lsPh.forEach(function (p) {
       var n = normalizePhotographer(p);
       if (n && (n.id || n.slug)) photographers[n.id || n.slug] = n;
     });
     var deskPh = [];
     try {
-      var allowDesk = /[?&]desk=1(?:&|$)/.test(location.search) || /localhost|127\.0\.0\.1/.test(location.hostname);
       if (allowDesk) {
         var desk = JSON.parse(localStorage.getItem('yak_desk') || '{}');
         deskPh = desk.photographers || [];
@@ -92,7 +101,7 @@
       var n = normalizePhoto(p);
       if (n && n.id && n.url) photosMap[n.id] = n;
     });
-    var lsMedia = readLs(MEDIA_KEY) || [];
+    var lsMedia = allowDesk ? (readLs(MEDIA_KEY) || []) : [];
     lsMedia.forEach(function (m) {
       if (m.kind && m.kind !== 'image') return;
       var n = normalizePhoto(m);
@@ -120,20 +129,29 @@
       if (p && (p.id || p.slug)) photographers[p.id || p.slug] = p;
     });
     (pack.photographers || []).forEach(function (p) {
-      var n = normalizePhotographer(p);
-      if (n && (n.id || n.slug)) {
-        photographers[n.id || n.slug] = Object.assign({}, photographers[n.id || n.slug] || {}, n);
+      if (!p || !(p.id || p.slug)) return;
+      var key = String(p.id || p.slug);
+      if (p.status === 'hidden') {
+        delete photographers[key];
+        return;
       }
+      var n = normalizePhotographer(p);
+      photographers[key] = Object.assign({}, photographers[key] || {}, n);
     });
     var photosMap = {};
     (data.photos || []).forEach(function (p) {
       if (p && p.id) photosMap[p.id] = p;
     });
     (pack.photos || []).forEach(function (p) {
+      if (!p || !p.id) return;
+      var id = String(p.id);
+      if ((p.status || 'approved') !== 'approved') {
+        delete photosMap[id];
+        return;
+      }
       var n = normalizePhoto(p);
-      if (!n || !n.id || !n.url) return;
-      if (n.status && n.status !== 'approved') return;
-      photosMap[n.id] = Object.assign({}, photosMap[n.id] || {}, n);
+      if (!n || !n.url) return;
+      photosMap[id] = Object.assign({}, photosMap[id] || {}, n);
     });
     var photos = Object.keys(photosMap).map(function (k) { return photosMap[k]; });
     photos.sort(function (a, b) {

@@ -378,16 +378,25 @@
     return list[list.length - 1] || show.latest || null;
   }
 
+  function liveEpisodes(list) {
+    return (list || []).filter(function (ep) {
+      return ep && (!ep.status || ep.status === 'published');
+    }).map(function (ep) { return Object.assign({}, ep); });
+  }
+
+  /* Пакет редакции — правда для своих шоу: снятое шоу уходит, список выпусков заменяется целиком. */
   function upsertShow(incoming) {
     if (!incoming || !incoming.id) return;
     var i = -1;
     for (var n = 0; n < SHOWS.length; n++) {
       if (SHOWS[n].id === incoming.id) { i = n; break; }
     }
-    var next = i === -1 ? cloneShow(incoming) : Object.assign(cloneShow(SHOWS[i]), incoming);
-    if (incoming.episodes && incoming.episodes.length) {
-      next.episodes = incoming.episodes.map(function (ep) { return Object.assign({}, ep); });
+    if (incoming.status && incoming.status !== 'published') {
+      if (i !== -1) SHOWS.splice(i, 1);
+      return;
     }
+    var next = i === -1 ? cloneShow(incoming) : Object.assign(cloneShow(SHOWS[i]), incoming);
+    next.episodes = liveEpisodes(Array.isArray(incoming.episodes) ? incoming.episodes : next.episodes);
     next.episodes = sortEpisodes(next.episodes);
     next.updated = latestDate(next);
     var last = latestEpisode(next);

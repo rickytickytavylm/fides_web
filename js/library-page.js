@@ -845,6 +845,8 @@
     }
     var V = window.Vera;
     if (V && V.getArticle) {
+      var host = bookRoot || libRoot;
+      if (host && V.skeleton) host.innerHTML = V.skeleton('cards', 'Загружаем библиотеку');
       V.getArticle('yak-library-data')
         .then(function (a) {
           var raw = (a && (a.contentText || a.content || '')) || '';

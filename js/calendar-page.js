@@ -76,6 +76,10 @@
     var L = day.liturgical || {};
     var cat = categoryLabel(L.category || L.rank);
     var hasBody = !!(L.title || (L.saint && (L.saint.name || L.saint.html)) || L.reading || L.prayer || L.quote);
+    if (!hasBody && !C.packState && window.Vera && Vera.skeleton) {
+      root.innerHTML = Vera.skeleton('day', 'Загружаем день Церкви');
+      return;
+    }
 
     root.innerHTML =
       '<nav class="breadcrumbs in-shell"><a href="index.html">Главная</a><span>/</span><span>День Церкви</span></nav>' +
@@ -96,7 +100,11 @@
       block('Чтение дня', L.reading ? '<p>' + esc(L.reading) + '</p>' : '') +
       block('Молитва дня', L.prayer ? '<p>' + esc(L.prayer) + '</p>' : '') +
       block('Цитата дня', L.quote ? '<p class="cal-quote">' + esc(L.quote) + '</p>' : '') +
-      (!hasBody ? '<p class="cal-empty">Редакция ещё не заполнила карточку на сегодня.</p>' : '') +
+      (!hasBody
+        ? '<p class="cal-empty">' + (C.packState === 'fail'
+          ? 'Карточка дня не загрузилась — сервер не ответил. Обновите страницу.'
+          : 'Редакция ещё не заполнила карточку на сегодня.') + '</p>'
+        : '') +
       '</div></header>' +
 
       (dayEvents.length

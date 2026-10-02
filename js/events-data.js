@@ -445,9 +445,10 @@
     return 'background:linear-gradient(145deg,' + (o.coverTone || '#5c5346') + ',#1a1816)';
   }
 
+  /* Любой боевой адрес (github.io, свой домен) — афиша целиком из пакета; локальная разработка — нет. */
   function isPublicPortal() {
     try {
-      return /github\.io/i.test(location.hostname);
+      return location.protocol !== 'file:' && !/^(localhost|127\.0\.0\.1|\[::1\])$/i.test(location.hostname);
     } catch (e) {
       return false;
     }

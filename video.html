@@ -12,11 +12,11 @@
     <link rel="apple-touch-icon" href="yakatolik-logo.svg" />
     <link rel="manifest" href="site.webmanifest" />
     <meta name="theme-color" content="#ede9e2" />
-    <script>window.YAK_BUILD = '202609301456';</script>
+    <script>window.YAK_BUILD = '202610021405';</script>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="ЯКатолик" />
     <script id="yak_theme_boot">try{document.documentElement.dataset.theme=localStorage.getItem('yak_theme')==='twilight'?'twilight':'light'}catch(e){document.documentElement.dataset.theme='light'}</script>
-    <link rel="stylesheet" href="portal.css?v=202609301456" />
+    <link rel="stylesheet" href="portal.css?v=202610021405" />
   </head>
   <body>
         <header class="masthead">
@@ -66,17 +66,22 @@
           <h2>Каналы партнёров</h2>
           <span class="rule"></span>
         </div>
-        <div class="vp-rail" id="video-partners"></div>
+        <div class="vp-rail" id="video-partners">
+          <div class="vp-card" aria-hidden="true"><span class="vp-logo sk"></span><span class="vp-copy" style="flex:1"><span class="sk sk-line" style="display:block;width:70%;height:15px;margin-top:10px"></span><span class="sk sk-line" style="display:block;width:40%;height:12px;margin-top:9px"></span></span></div>
+          <div class="vp-card" aria-hidden="true"><span class="vp-logo sk"></span><span class="vp-copy" style="flex:1"><span class="sk sk-line" style="display:block;width:70%;height:15px;margin-top:10px"></span><span class="sk sk-line" style="display:block;width:40%;height:12px;margin-top:9px"></span></span></div>
+          <div class="vp-card" aria-hidden="true"><span class="vp-logo sk"></span><span class="vp-copy" style="flex:1"><span class="sk sk-line" style="display:block;width:70%;height:15px;margin-top:10px"></span><span class="sk sk-line" style="display:block;width:40%;height:12px;margin-top:9px"></span></span></div>
+          <div class="vp-card" aria-hidden="true"><span class="vp-logo sk"></span><span class="vp-copy" style="flex:1"><span class="sk sk-line" style="display:block;width:70%;height:15px;margin-top:10px"></span><span class="sk sk-line" style="display:block;width:40%;height:12px;margin-top:9px"></span></span></div>
+        </div>
       </section>
 
-      <div class="yt-featured-host in-shell" id="video-featured"></div>
+      <div class="yt-featured-host in-shell" id="video-featured"><div class="sk" aria-hidden="true" style="aspect-ratio:16/9;border-radius:18px"></div></div>
 
       <section class="video-band" id="video-long-band">
         <div class="block-head">
           <h2>Фильмы</h2>
           <span class="rule"></span>
         </div>
-        <div class="yt-film-grid" id="video-large"></div>
+        <div class="yt-film-grid" id="video-large"><div class="sk" aria-hidden="true" style="aspect-ratio:16/9;border-radius:14px"></div><div class="sk" aria-hidden="true" style="aspect-ratio:16/9;border-radius:14px"></div></div>
       </section>
 
       <section class="video-band" id="video-short-band">
@@ -84,7 +89,7 @@
           <h2>Shorts</h2>
           <span class="rule"></span>
         </div>
-        <div class="yt-shorts-rail" id="video-small"></div>
+        <div class="rail-wrap" id="video-small"><div class="yt-shorts-rail"><div class="sk" aria-hidden="true" style="aspect-ratio:9/16;border-radius:14px"></div><div class="sk" aria-hidden="true" style="aspect-ratio:9/16;border-radius:14px"></div><div class="sk" aria-hidden="true" style="aspect-ratio:9/16;border-radius:14px"></div><div class="sk" aria-hidden="true" style="aspect-ratio:9/16;border-radius:14px"></div></div></div>
       </section>
 
       <div id="video-latest-band" hidden>
@@ -97,7 +102,7 @@
         <p id="video-dialog-title"></p>
         <button type="submit" class="ghost-button" value="close">Закрыть</button>
       </form>
-      <video id="video-player" controls playsinline></video>
+      <video id="video-player" controls playsinline hidden></video>
       <iframe id="video-embed" class="video-embed" title="Видео" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen hidden></iframe>
     </dialog>
 
@@ -116,6 +121,7 @@
     </div></footer>
 
                 <nav class="app-tabbar" aria-label="Основная навигация">
+      <a class="tab-item" href="index.html" data-tab="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 10.8 12 4.6l7.5 6.2V20a1.4 1.4 0 0 1-1.4 1.4h-4.2v-5.2h-3.8v5.2H5.9A1.4 1.4 0 0 1 4.5 20V10.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span>Главная</span></a>
       <a class="tab-item" href="church.html" data-tab="church">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2v2.4M10.2 4.6h3.6L14.8 7H9.2l1-2.4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M4.5 10.2 12 6.2l7.5 4V21H4.5V10.2Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 21v-5.2h4V21M8.2 12.8h2M13.8 12.8h2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>О Церкви</span>
@@ -137,15 +143,15 @@
         <span>Спросить</span>
       </a>
     </nav>
-    <script src="js/config.js?v=202609301456"></script>
-    <script src="js/api.js?v=202609301456"></script>
-    <script src="js/portal-desk.js?v=202609301456"></script>
-    <script src="js/portal-nav.js?v=202609301456"></script>
-    <script src="js/app.js?v=202609301456"></script>
-    <script src="js/video-data.js?v=202609301456"></script>
-    <script src="js/video.js?v=202609301456"></script>
+    <script src="js/config.js?v=202610021405"></script>
+    <script src="js/api.js?v=202610021405"></script>
+    <script src="js/portal-desk.js?v=202610021405"></script>
+    <script src="js/portal-nav.js?v=202610021405"></script>
+    <script src="js/app.js?v=202610021405"></script>
+    <script src="js/video-data.js?v=202610021405"></script>
+    <script src="js/video.js?v=202610021405"></script>
       
-      <script src="js/theme.js?v=202609301456"></script>
-    <script src="js/cache-bust.js?v=202609301456"></script>
+      <script src="js/theme.js?v=202610021405"></script>
+    <script src="js/cache-bust.js?v=202610021405"></script>
   </body>
 </html>

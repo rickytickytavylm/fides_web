@@ -41,7 +41,7 @@
   function loadPack(owner, slug, onOk, onFail) {
     var V = global.Vera;
     if (!V || !V.getArticle) return;
-    if (owner._packOk || owner._packIng) return;
+    if (owner._packOk || owner._packIng || owner._packMissing) return;
     owner._packIng = true;
     var tries = 0;
     function attempt() {
@@ -53,13 +53,16 @@
           owner._packIng = false;
           onOk(pack, a);
         })
-        .catch(function () {
+        .catch(function (e) {
           tries += 1;
-          if (tries < 4) {
+          /* 404 — пакета ещё нет (раздел не публиковали из админки): повторять бессмысленно. */
+          var missing = /HTTP 404/.test(String(e && e.message));
+          if (tries < 4 && !missing) {
             setTimeout(attempt, 1000 * tries);
             return;
           }
           owner._packIng = false;
+          if (missing) owner._packMissing = true;
           if (onFail) onFail();
         });
     }
@@ -295,8 +298,10 @@
     loadPack(applyVideos, 'yak-video-data', function (pack) {
       if (pack && Vd.mergePack) Vd.mergePack(pack);
       patchList(Vd.items, published(read().video), asVideo);
+      Vd.packState = 'ok';
       if (Vd.notifyPack) Vd.notifyPack();
     }, function () {
+      Vd.packState = 'fail';
       if (Vd.notifyPack) Vd.notifyPack();
     });
   }
@@ -514,8 +519,10 @@
     loadPack(applyCalendar, 'yak-calendar-data', function (pack) {
       if (pack && C.mergePack) C.mergePack(pack);
       if (desk.length) C.mergePack({ days: desk });
+      C.packState = 'ok';
       if (C.notifyPack) C.notifyPack();
     }, function () {
+      C.packState = 'fail';
       if (C.notifyPack) C.notifyPack();
     });
   }

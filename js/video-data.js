@@ -647,9 +647,21 @@
     for (var n = 0; n < items.length; n++) {
       if (String(items[n].id) === String(incoming.id)) { i = n; break; }
     }
+    if (incoming.status && incoming.status !== 'published') {
+      if (i !== -1) items.splice(i, 1);
+      return;
+    }
     var next = Object.assign({}, i === -1 ? {} : items[i], incoming);
     if (i === -1) items.unshift(next);
     else items[i] = next;
+  }
+
+  function isPublicPortal() {
+    try {
+      return location.protocol !== 'file:' && !/^(localhost|127\.0\.0\.1|\[::1\])$/i.test(location.hostname);
+    } catch (e) {
+      return false;
+    }
   }
 
   function upsertChannel(incoming) {
@@ -670,7 +682,7 @@
 
   function mergePack(pack) {
     if (!pack) return items;
-    if (Array.isArray(pack.channels) && /github\.io/i.test(location.hostname)) {
+    if (Array.isArray(pack.channels) && isPublicPortal()) {
       CHANNELS.length = 0;
     }
     if (Array.isArray(pack.items)) pack.items.forEach(upsertItem);
@@ -692,6 +704,8 @@
     bucket: BUCKET,
     items: items,
     channels: CHANNELS,
+    /* На боевом сайте ждём пакет: вшитые ролики и партнёры могли быть сняты в админке. */
+    packState: isPublicPortal() ? 'wait' : 'ok',
     mergePack: mergePack,
     onPack: onPack,
     notifyPack: notifyPack

@@ -201,7 +201,7 @@
     section('Голоса', 'Интервью, свидетельства и проповеди', cardGrid(VOICES, 'Голоса')) +
     '<section class="articles-block" id="articles-fresh-wrap">' +
     '<div class="block-head"><span class="kicker"></span><h2>Свежее</h2><span class="rule"></span></div>' +
-    '<div id="articles-fresh"><div class="spinner" aria-label="Загрузка"></div></div>' +
+    '<div id="articles-fresh">' + (V.skeletonRows ? V.skeletonRows(4, 96) : '') + '</div>' +
     '<p class="articles-more"><a class="wlink" href="archive.html?category=columns">Весь каталог →</a></p>' +
     '</section>';
 
@@ -222,9 +222,10 @@
         var list = [];
         try { list = JSON.parse((a && (a.contentText || a.content || '')) || ''); } catch (e) { list = []; }
         if (!Array.isArray(list) || !list.length) return;
-        TOPICS = list.filter(function (t) { return t && t.title; });
+        TOPICS = list.filter(function (t) { return t && t.title && (t.status || 'published') === 'published'; });
         var host = document.getElementById('articles-topics');
         if (host) {
+          host.hidden = !TOPICS.length;
           var inner = host.querySelector('.articles-link-list');
           if (inner) inner.outerHTML = linkList(TOPICS);
         }

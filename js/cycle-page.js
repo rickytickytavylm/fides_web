@@ -143,7 +143,7 @@
       '<section class="cycle-list"><h2>Содержание цикла</h2>' +
       '<div class="cycle-items">' +
       (items || (cycle.hubSlug && !cycle._hydratedDone
-        ? '<p class="archive-empty">Загружаем содержание цикла…</p>'
+        ? (window.Vera && Vera.skeletonRows ? Vera.skeletonRows(4, 76) : '')
         : '<p class="archive-empty">Пока нет материалов в карточке цикла.' +
         (cycle.id
           ? ' Полный список — на <a href="article.html?id=' + esc(cycle.id) + '">странице цикла</a>.'

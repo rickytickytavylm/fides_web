@@ -56,6 +56,44 @@
     return null;
   }
 
+  /* Деревья разделов на главной не подключены — подгружаем, только если в слоте «guide:раздел» вне HOME_PAGES. */
+  var guidesReady = null;
+  function loadGuides() {
+    if (window.YakGuides) return Promise.resolve(window.YakGuides);
+    if (guidesReady) return guidesReady;
+    guidesReady = new Promise(function (resolve) {
+      var me = document.querySelector('script[src*="portal-home.js"]');
+      var v = me && /[?&]v=([^&]+)/.exec(me.getAttribute('src') || '');
+      var s = document.createElement('script');
+      s.src = 'js/guides-data.js' + (v ? '?v=' + v[1] : '');
+      s.onload = function () { resolve(window.YakGuides || null); };
+      s.onerror = function () { resolve(null); };
+      document.head.appendChild(s);
+    });
+    return guidesReady;
+  }
+
+  function guidePage(slug) {
+    var m = /^guide:(.+)$/.exec(String(slug || ''));
+    if (!m) return Promise.resolve(null);
+    var id = m[1];
+    return loadGuides().then(function (G) {
+      var trees = G ? [['church.html', G.church, 'О Церкви'], ['spiritual-life.html', G.spirit, 'Духовный путь']] : [];
+      for (var i = 0; i < trees.length; i++) {
+        var file = trees[i][0];
+        var tree = trees[i][1];
+        if (!tree) continue;
+        if (tree.id === id) return { slug: slug, title: tree.title, href: file, image: '', kicker: trees[i][2] };
+        var node = tree.nodes && tree.nodes[id];
+        if (node && node.title && node.type !== 'external') {
+          var href = file + '?path=' + encodeURIComponent(id);
+          return { slug: slug, title: node.title, href: href, image: guideCover(href), kicker: trees[i][2] };
+        }
+      }
+      return null;
+    });
+  }
+
   function homeHref(it) {
     if (it && it.href) return it.href;
     if (it && (it.kind === 'page' || it.type === 'page') && V.pageHref) return V.pageHref(it);
@@ -381,7 +419,7 @@
     var el = document.getElementById('home-events');
     if (!el || !window.YakCalendar) return;
     if (window.YakAfisha && YakAfisha.packReady && !YakAfisha.packReady()) {
-      el.innerHTML = '<p class="home-panel-empty">Загружаем афишу…</p>';
+      el.innerHTML = V.skeletonRows ? V.skeletonRows(3, 66) : '';
       return;
     }
     if (window.YakAfisha && YakAfisha.packFailed && YakAfisha.packFailed()) {
@@ -585,16 +623,19 @@
     var slug = typeof x === 'string' ? x : (x.slug || x.id || x.href || '');
     var page = lookupHomePage(slug);
     if (!page && x.href) page = lookupHomePage(x.href);
-    if (page || (x.href && /\.html/.test(String(x.href)))) {
-      var src = page || x;
-      return Promise.resolve({
+    function asSlot(src) {
+      return {
         id: src.slug || slug,
         title: x.title || src.title,
         image: x.image || guideCover(src.href) || src.image,
         href: src.href,
         kicker: src.kicker || 'Страница',
         categories: [src.kicker || 'Страница'],
-      });
+      };
+    }
+    if (page || (x.href && /\.html/.test(String(x.href)))) return Promise.resolve(asSlot(page || x));
+    if (/^guide:/.test(slug)) {
+      return guidePage(slug).then(function (pg) { return pg ? asSlot(pg) : null; });
     }
     var getArt = V.getArticle ? V.getArticle(slug).catch(function () { return null; }) : Promise.resolve(null);
     return getArt.then(function (art) {

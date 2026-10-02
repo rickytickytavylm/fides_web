@@ -106,6 +106,8 @@ a, button, summary, .theme-toggle, .cal-btn, .tab-item, .theme-opt {
 h1, h2, h3, h4 { margin: 0; font-weight: 700; text-wrap: balance; letter-spacing: -.01em; }
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
+/* Атрибут hidden сильнее любых display у классов (кнопки «ещё», плееры, панели). */
+[hidden] { display: none !important; }
 .eyebrow { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--stone-700); font-weight: 700; }
 
 .chip { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; font-size: 10px; letter-spacing: .07em;
@@ -1980,7 +1982,43 @@ body:not(.map-page) { padding-bottom: 0; }
 .article-skel-lines .sk { height: 14px; }
 .article-skel-lines .sk:nth-child(4n) { width: 78%; }
 .article-skel-lines .sk:nth-child(5n) { width: 88%; }
+.page-skel { display: grid; gap: 12px; padding: 18px 0 40px; }
+.page-skel-crumb { width: 30%; height: 11px; }
+.page-skel-title { width: 52%; height: 34px; border-radius: 10px; margin-top: 10px; }
+.page-skel-desc { width: 78%; height: 14px; }
+.page-skel-grid { display: grid; gap: 14px; margin-top: 14px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.page-skel-card { height: 118px; border-radius: 18px; }
+.page-skel--tiles { padding-top: 6px; }
+.page-skel--tiles .page-skel-grid { margin-top: 0; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.page-skel--tiles .page-skel-card { height: auto; aspect-ratio: 4 / 3; border-radius: 12px; }
+.page-skel--events .page-skel-card { height: 320px; }
+.page-skel--day .page-skel-card { height: 440px; border-radius: 22px; }
+.page-skel-strip { display: flex; gap: 8px; overflow: hidden; margin-top: 14px; }
+.page-skel-strip .sk { flex: none; width: 46px; height: 62px; border-radius: 12px; }
+.vp-card[aria-hidden="true"] { min-height: 98px; }
+.skel-rows { display: grid; gap: 8px; }
+.skel-row { border-radius: 14px; }
+.page-fail { padding: 40px 0 8px; text-align: center; color: var(--stone-500); font-size: 14px; }
+.page-fail p { margin: 0; }
+.ps-skel-ava { width: 42px; height: 42px; border-radius: 50%; }
+.ps-skel-name { width: 60%; height: 14px; }
+.ps-ph-list[aria-hidden="true"] .ps-ph-row { min-height: 47px; }
+.ps-popular-skel { display: grid; gap: 13px; padding: 6px 0 4px; }
+.ps-popular-skel .sk { height: 16px; }
+.ps-popular-skel .sk:nth-child(1) { width: 92%; }
+.ps-popular-skel .sk:nth-child(2) { width: 78%; }
+.ps-popular-skel .sk:nth-child(3) { width: 86%; }
+.ps-popular-skel .sk:nth-child(4) { width: 54%; }
+@media (min-width: 881px) { .ps-popular-skel .sk:nth-child(n+3) { display: none; } }
 @media (prefers-reduced-motion: reduce) { .sk, .spinner { animation: none; } }
+
+/* Пока данные в пути, футер ниже первого экрана — иначе он прыгает вниз при каждой подгрузке. */
+body > main { min-height: 100vh; min-height: 100svh; }
+.tabs:empty { min-height: 37px; }
+.chips:empty { min-height: 43px; }
+.rubric-count:empty::before { content: '\00a0'; }
+.portal-footer .footer-legal-wrap { padding-top: 0; align-items: center; text-align: center; }
+.portal-footer .footer-legal-wrap .footer-legal { margin: 0 auto; }
 
 /* Резервируем высоту, чтобы не было скачков при подгрузке */
 .news-grid, .art-grid { min-height: 180px; }
@@ -2291,6 +2329,7 @@ main.article { padding-bottom: 48px; }
 .video-dialog .video-embed {
   width: 100%; display: block; background: #000; max-height: 72vh; border: 0;
 }
+.video-dialog [hidden] { display: none !important; }
 .video-dialog .video-embed { aspect-ratio: 16 / 9; min-height: 240px; }
 .video-dialog.is-short video,
 .video-dialog.is-short .video-embed {

@@ -311,9 +311,10 @@
   function load(replace) {
     if (state.loading) return;
     state.loading = true;
-    if (replace && !state.items.length) skeletonFeed(5);
+    var firstPaint = replace && !state.items.length;
+    if (firstPaint) skeletonFeed(5);
     if (moreBtn) {
-      moreBtn.hidden = false;
+      moreBtn.hidden = firstPaint;
       moreBtn.disabled = true;
       moreBtn.textContent = 'Загрузка…';
     }
@@ -347,7 +348,8 @@
       })
       .catch(function (e) {
         console.error(e);
-        if (replace && leadEl) leadEl.innerHTML = '<p class="archive-empty">Не удалось загрузить архив</p>';
+        if (replace && leadEl) leadEl.innerHTML = '<p class="archive-empty">Не удалось загрузить — сервер не ответил. Обновите страницу.</p>';
+        if (replace && feedEl) feedEl.innerHTML = '';
         if (!replace && moreBtn) moreBtn.textContent = 'Повторить';
       })
       .then(function () {
