@@ -781,7 +781,7 @@
 
   function applyGuides() {
     var G = global.YakGuides;
-    if (!G) return;
+    if (!G || global.YakGuidesLite) return;
     function applyList(list) {
       (list || []).forEach(function (ov) { applyGuideOverride(G, ov); });
       freezeChurchLists(G);

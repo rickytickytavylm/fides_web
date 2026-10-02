@@ -31,6 +31,8 @@
   function artPhoto(desk, mobile, className) {
     desk = desk || '';
     mobile = mobile || '';
+    /* Встроенный кадр сайта не перекрывает обложку, которую редакция поставила в админке. */
+    if (/^assets\//.test(mobile) && desk && !/^assets\//.test(desk)) mobile = '';
     if (!desk && !mobile) return '';
     var inner;
     if (mobile && desk && mobile !== desk) {
@@ -123,10 +125,7 @@
   }
 
   if (A.get && A.get().cover) render();
-  else {
-    root.innerHTML = '<div class="about-wait" aria-hidden="true"></div>';
-    setTimeout(function () { if (!painted) render(); }, 1200);
-  }
+  else setTimeout(function () { if (!painted) render(); }, 1200);
   if (A.onPack) A.onPack(function () {
     render();
     setTimeout(scrollApp, 40);

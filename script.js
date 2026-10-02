@@ -2,7 +2,7 @@ const header = document.querySelector(".site-header");
 const menuToggle = document.querySelector(".menu-toggle");
 const navigation = document.querySelector(".main-nav");
 
-const updateHeader = () => header.classList.toggle("scrolled", window.scrollY > 32);
+const updateHeader = () => header?.classList.toggle("scrolled", window.scrollY > 32);
 updateHeader();
 window.addEventListener("scroll", updateHeader, { passive: true });
 

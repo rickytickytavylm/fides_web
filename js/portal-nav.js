@@ -26,9 +26,26 @@
     '<path d="M10 18.6h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>' +
     '</svg>';
 
+  function bindAppBtn(btn) {
+    btn.addEventListener('click', function (e) {
+      var onAbout = /(^|\/)page\.html$/i.test(location.pathname);
+      var app = document.getElementById('app');
+      if (onAbout) {
+        e.preventDefault();
+        history.replaceState(null, '', 'page.html#app');
+        if (app) app.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  }
+
   function ensureAppBtn() {
     var wrap = document.querySelector('.masthead .wrap');
-    if (!wrap || wrap.querySelector('.app-btn')) return;
+    if (!wrap) return;
+    var existing = wrap.querySelector('.app-btn');
+    if (existing) {
+      bindAppBtn(existing);
+      return;
+    }
     var cal = wrap.querySelector('.cal-btn');
     var tools = wrap.querySelector('.header-tools') || wrap.querySelector('.masthead-tools');
     if (!tools) {
@@ -48,15 +65,7 @@
     btn.setAttribute('aria-label', 'Приложение');
     btn.title = 'Приложение';
     btn.innerHTML = APP_SVG + '<span>Приложение</span>';
-    btn.addEventListener('click', function (e) {
-      var onAbout = /(^|\/)page\.html$/i.test(location.pathname);
-      var app = document.getElementById('app');
-      if (onAbout) {
-        e.preventDefault();
-        history.replaceState(null, '', 'page.html#app');
-        if (app) app.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
+    bindAppBtn(btn);
     tools.insertBefore(btn, tools.firstChild);
   }
   ensureAppBtn();

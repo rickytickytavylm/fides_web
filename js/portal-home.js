@@ -48,6 +48,12 @@
     return '';
   }
 
+  function sectionKicker(href) {
+    if (/^church\.html/.test(String(href || ''))) return 'О Церкви';
+    if (/^spiritual-life\.html/.test(String(href || ''))) return 'Духовный путь';
+    return '';
+  }
+
   function lookupHomePage(slug) {
     slug = String(slug || '');
     for (var i = 0; i < HOME_PAGES.length; i++) {
@@ -56,11 +62,13 @@
     return null;
   }
 
-  /* Деревья разделов на главной не подключены — подгружаем, только если в слоте «guide:раздел» вне HOME_PAGES. */
+  /* Деревья разделов на главной не подключены — подгружаем, только если в слоте «guide:раздел» нет ссылки
+     (так сохраняла старая админка). Пакет разделов (~2 МБ) главной не нужен: обложку кладёт в слот админка. */
   var guidesReady = null;
   function loadGuides() {
     if (window.YakGuides) return Promise.resolve(window.YakGuides);
     if (guidesReady) return guidesReady;
+    window.YakGuidesLite = true;
     guidesReady = new Promise(function (resolve) {
       var me = document.querySelector('script[src*="portal-home.js"]');
       var v = me && /[?&]v=([^&]+)/.exec(me.getAttribute('src') || '');
@@ -139,10 +147,13 @@
   var sideEl = document.getElementById('hero-side');
   var slideTimer = null;
 
-  function preload(url) {
+  function preload(url, first) {
     if (!url) return;
     var img = new Image();
-    try { img.decoding = 'async'; } catch (e) {}
+    try {
+      img.decoding = 'async';
+      if (first) img.fetchPriority = 'high';
+    } catch (e) {}
     img.src = url;
   }
 
@@ -152,7 +163,7 @@
     var minis = items.slice(3, 7);
 
     // Предзагружаем картинки героя, чтобы не подвисали/не мигали при переходах
-    slides.forEach(function (it) { preload(it.image); });
+    slides.forEach(function (it, i) { preload(it.image, i === 0); });
 
     var slidesHtml = slides.map(function (it, i) {
       return (
@@ -623,14 +634,17 @@
     var slug = typeof x === 'string' ? x : (x.slug || x.id || x.href || '');
     var page = lookupHomePage(slug);
     if (!page && x.href) page = lookupHomePage(x.href);
+    /* Ссылка, обложка и название — из слота: их кладёт админка из опубликованного раздела. */
     function asSlot(src) {
+      var href = x.href || src.href;
+      var kicker = src.kicker || x.kicker || sectionKicker(href) || 'Страница';
       return {
         id: src.slug || slug,
         title: x.title || src.title,
-        image: x.image || guideCover(src.href) || src.image,
-        href: src.href,
-        kicker: src.kicker || 'Страница',
-        categories: [src.kicker || 'Страница'],
+        image: x.image || src.image || guideCover(href),
+        href: href,
+        kicker: kicker,
+        categories: [kicker],
       };
     }
     if (page || (x.href && /\.html/.test(String(x.href)))) return Promise.resolve(asSlot(page || x));
@@ -694,16 +708,7 @@
   }
 
   /* ---------- Boot ---------- */
-  if (window.YakGuidesOnPack) {
-    var heroReady = false;
-    function bootHero() {
-      if (heroReady) return;
-      heroReady = true;
-      loadHero();
-    }
-    YakGuidesOnPack(bootHero);
-    setTimeout(bootHero, 1400);
-  } else loadHero();
+  loadHero();
 
   loadNews('ru');
   loadFresh();

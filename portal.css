@@ -3,10 +3,30 @@
    Темы: «Свет» (#ede9e2) · «Сумерки»
    ============================================================ */
 
+/* Times New Roman под метрики Cormorant Garamond: пока грузится веб-шрифт, заголовки переносятся так же и не прыгают. */
+@font-face {
+  font-family: 'Cormorant Fallback';
+  src: local('Times New Roman'), local('TimesNewRomanPSMT');
+  font-weight: 100 549;
+  size-adjust: 95.5%;
+  ascent-override: 96.8%;
+  descent-override: 30%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Cormorant Fallback';
+  src: local('Times New Roman Bold'), local('TimesNewRomanPS-BoldMT');
+  font-weight: 550 900;
+  size-adjust: 90.4%;
+  ascent-override: 102.2%;
+  descent-override: 31.8%;
+  line-gap-override: 0%;
+}
+
 :root {
   color-scheme: light;
   --ff: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --serif: 'Cormorant Garamond', Georgia, serif;
+  --serif: 'Cormorant Garamond', 'Cormorant Fallback', Georgia, serif;
   --maxw: 1180px;
   --gutter: 24px;
   --ls: normal;
@@ -2495,6 +2515,31 @@ main.article { padding-bottom: 48px; }
   font-weight: 700;
   color: var(--bronze-dark);
 }
+/* Высота карточек не зависит от длины текста — заглушки из разметки совпадают с ними до пикселя. */
+.cast-tile strong,
+.cast-ep-body strong {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.5em;
+}
+.cast-row-meta em { min-height: 2.8em; }
+@media (max-width: 560px) {
+  .cast-row-meta strong {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.4em;
+  }
+}
+.cast-skel { pointer-events: none; }
+.cast-skel .sk-line { color: transparent; }
+.cast-skel strong.sk-line { width: 82%; }
+.cast-skel em.sk-line,
+.cast-skel small.sk-line { width: 56%; }
+.cast-skel .cast-listen { background: var(--surface-2); color: transparent; }
 .cast-listen,
 .cast-open,
 .cast-soon-close {
@@ -2938,9 +2983,9 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
   border-radius: 50%; background: var(--surface); box-shadow: var(--shadow-card);
   transition: transform .2s ease;
 }
-.theme-toggle.is-twilight .theme-toggle-track i { transform: translateX(20px); }
-.theme-toggle:not(.is-twilight) .theme-sun { color: var(--bronze-dark); }
-.theme-toggle.is-twilight .theme-moon { color: var(--bronze-dark); }
+[data-theme="twilight"] .theme-toggle-track i { transform: translateX(20px); }
+:root:not([data-theme="twilight"]) .theme-sun { color: var(--bronze-dark); }
+[data-theme="twilight"] .theme-moon { color: var(--bronze-dark); }
 .theme-toggle-name { display: none; }
 
 :root:not([data-theme="twilight"]) .app-tabbar {
@@ -4422,6 +4467,19 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
 }
 @media (min-width: 881px) {
   .page-static .app-download-photo img { max-height: min(56vh, 520px); }
+  .page-static .static-photo {
+    position: relative;
+    aspect-ratio: 50 / 31;
+    max-height: min(68vh, 680px);
+  }
+  .page-static .static-photo picture,
+  .page-static .static-photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-height: none;
+  }
 }
 @media (max-width: 880px) {
   .page-static .static-photo {
@@ -4442,6 +4500,11 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
     object-fit: cover;
     object-position: center 22%;
   }
+}
+.about-wait { min-height: 100vh; }
+.about-wait-photo { margin-top: 14px; aspect-ratio: 4 / 5; border-radius: 16px; }
+@media (min-width: 881px) {
+  .about-wait-photo { aspect-ratio: 50 / 31; max-height: min(68vh, 680px); }
 }
 .page-static .principles { align-items: start; }
 .page-static .principle--person {
