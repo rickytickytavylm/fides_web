@@ -209,7 +209,7 @@
     var play = document.getElementById('cast-play');
     if (play) {
       play.addEventListener('click', function () {
-        openEpisode(episodes.length ? episodes.length - 1 : 0);
+        openEpisode(0);
       });
     }
   }

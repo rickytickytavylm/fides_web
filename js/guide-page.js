@@ -404,7 +404,15 @@
       feedBlock(node);
   }
 
+  function mirrored(node) {
+    var ref = String(node.mirrorOf).split(':');
+    var src = G[ref[0]] && G[ref[0]].nodes && G[ref[0]].nodes[ref[1]];
+    if (!src) return node;
+    return Object.assign({}, src, { title: node.title, siblingsOf: node.siblingsOf, also: node.also });
+  }
+
   function renderNode(node) {
+    if (node.mirrorOf) node = mirrored(node);
     if (node.type === 'cards') {
       document.title = node.title + ' — ЯКатолик';
       var tip = node.tip

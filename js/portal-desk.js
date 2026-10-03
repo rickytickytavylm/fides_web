@@ -89,6 +89,7 @@
       history: 'История', biografii: 'Биографии', saints: 'Святые', bible: 'Библеистика', liturgy: 'Литургика',
       interview: 'Интервью', svidetelstva: 'Свидетельства', propovedi: 'Проповеди',
       music: 'Музыка', puteshestviya: 'Путешествия',
+      'ask-priest': 'Вопросы священнику', psiholog: 'Вопросы психологу',
     };
     return {
       id: a.id,

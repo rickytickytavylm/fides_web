@@ -15,6 +15,8 @@
     { slug: 'bible', label: 'Библеистика' },
     { slug: 'liturgy', label: 'Литургика' },
     { slug: 'puteshestviya', label: 'Путешествия' },
+    { slug: 'ask-priest', label: 'Вопросы священнику' },
+    { slug: 'psiholog', label: 'Вопросы психологу' },
   ];
   // Новости по ТЗ: digest→Новости, church-rus→Россия, pope+santa-sede→Святой Престол.
   // Анонсы / пастырство и пр. не переносим на витрину.

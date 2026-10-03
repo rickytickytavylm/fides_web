@@ -168,6 +168,7 @@
     var slidesHtml = slides.map(function (it, i) {
       return (
         '<a class="hero-slide' + (i === 0 ? ' active' : '') + '" href="' + homeHref(it) + '" ' +
+        (i === 0 ? '' : 'tabindex="-1" aria-hidden="true" ') +
         'style="background-image:' + bg(it.image, i) + '">' +
         '<div class="hero-cap"><span class="rub">' + esc(cat(it)) + '</span>' +
         '<h3>' + esc(cleanTitle(it.title)) + '</h3></div></a>'
@@ -210,9 +211,13 @@
     function go(n) {
       n = (n + slides.length) % slides.length;
       slides[idx].classList.remove('active');
+      slides[idx].setAttribute('tabindex', '-1');
+      slides[idx].setAttribute('aria-hidden', 'true');
       if (dotsEl && dotsEl.children[idx]) dotsEl.children[idx].classList.remove('on');
       idx = n;
       slides[idx].classList.add('active');
+      slides[idx].removeAttribute('tabindex');
+      slides[idx].removeAttribute('aria-hidden');
       if (dotsEl && dotsEl.children[idx]) dotsEl.children[idx].classList.add('on');
     }
 

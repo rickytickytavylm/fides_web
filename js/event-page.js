@@ -31,6 +31,50 @@
     return url;
   }
 
+  var DESC_TAGS = { P: 1, BR: 1, STRONG: 1, B: 1, EM: 1, I: 1, U: 1, UL: 1, OL: 1, LI: 1, A: 1 };
+  var DESC_DROP = { SCRIPT: 1, STYLE: 1, IFRAME: 1, OBJECT: 1, EMBED: 1, TEMPLATE: 1, SVG: 1 };
+
+  function cleanDesc(html) {
+    var tpl = document.createElement('template');
+    tpl.innerHTML = String(html || '');
+    (function walk(parent) {
+      [].slice.call(parent.childNodes).forEach(function (n) {
+        if (n.nodeType === 3) return;
+        if (n.nodeType !== 1 || DESC_DROP[n.tagName.toUpperCase()]) {
+          parent.removeChild(n);
+          return;
+        }
+        walk(n);
+        if (!DESC_TAGS[n.tagName]) {
+          while (n.firstChild) parent.insertBefore(n.firstChild, n);
+          parent.removeChild(n);
+          return;
+        }
+        var href = n.tagName === 'A' ? extHref(n.getAttribute('href')) : '';
+        [].slice.call(n.attributes).forEach(function (a) { n.removeAttribute(a.name); });
+        if (href) {
+          n.setAttribute('href', href);
+          n.setAttribute('target', '_blank');
+          n.setAttribute('rel', 'noopener');
+        }
+      });
+    })(tpl.content);
+    var box = document.createElement('div');
+    box.appendChild(tpl.content);
+    return box.innerHTML;
+  }
+
+  function descBlock(e) {
+    var html = e.descHtml ? cleanDesc(e.descHtml) : '';
+    if (!html.replace(/<[^>]+>/g, '').trim()) {
+      html = String(e.desc || '').split(/\n+/).map(function (p) {
+        p = p.trim();
+        return p ? '<p>' + esc(p) + '</p>' : '';
+      }).join('');
+    }
+    return html ? '<div class="af-event-lead af-event-desc">' + html + '</div>' : '';
+  }
+
   function paint() {
     var id = new URLSearchParams(location.search).get('id') || '';
     var e = A.byId(id);
@@ -76,7 +120,7 @@
       '<span class="cal-chip">' + esc(A.costLabel(e.cost)) + '</span>' +
       '<span class="cal-chip ghost">' + esc(A.regLabel(e.registration)) + '</span>' +
       '</div>' +
-      (e.desc ? '<p class="af-event-lead">' + esc(e.desc) + '</p>' : '') +
+      descBlock(e) +
       '<div class="lib-meta">' +
       facts.map(function (row) {
         var val = row[0] === 'Организатор' && org
