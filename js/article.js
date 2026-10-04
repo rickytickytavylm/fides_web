@@ -123,6 +123,35 @@
     return box.innerHTML;
   }
 
+  var OLD_SITE = /^(?:www\.)?(?:ruscatholic\.org|xn--80aqecdrlilg\.xn--p1ai)$/i;
+  var OLD_SECTIONS = { category: 1, tag: 1, author: 1, feed: 1, page: 1, 'wp-content': 1, 'wp-admin': 1, 'wp-json': 1, 'wp-includes': 1 };
+
+  /* Ссылки на страницы старого сайта ведут на наши: статьи — на article.html, рубрики — в архив.
+     Картинка, обёрнутая ссылкой на страницу вложения (/статья/картинка/), открывает сам файл. */
+  function localizeOldLinks(box) {
+    box.querySelectorAll('a[href]').forEach(function (a) {
+      var raw = String(a.getAttribute('href') || '').trim();
+      if (!/^(?:https?:)?\/\//i.test(raw) && !/^\/[^/]/.test(raw)) return;
+      var u;
+      try {
+        u = new URL(raw, 'https://ruscatholic.org/');
+      } catch (e) {
+        return;
+      }
+      if (!OLD_SITE.test(u.hostname)) return;
+      var parts = u.pathname.split('/').filter(Boolean);
+      var img = a.querySelector('img');
+      if (img && parts.length === 2 && !OLD_SECTIONS[parts[0].toLowerCase()] && !String(a.textContent || '').trim()) {
+        var file = img.getAttribute('src');
+        if (file) a.setAttribute('href', file);
+        else a.removeAttribute('href');
+        return;
+      }
+      var resolved = V.resolveContentHref ? V.resolveContentHref(u.href) : null;
+      if (resolved && !resolved.external) a.setAttribute('href', resolved.href);
+    });
+  }
+
   function renderDeskBody(html) {
     var box = document.createElement('div');
     box.innerHTML = html || '';
@@ -130,7 +159,54 @@
     box.querySelectorAll('figcaption').forEach(function (n) {
       if (!String(n.textContent || '').trim()) n.parentNode.removeChild(n);
     });
+    localizeOldLinks(box);
     return box.innerHTML;
+  }
+
+  /* Фото из текста не загрузилось: прячем его вместе с подписью и обёрткой, чтобы в тексте не было дыры.
+     Хранилище иногда отвечает с перебоями, поэтому один повтор через полторы секунды; удалось — фото возвращается. */
+  var PHOTO_RETRY_MS = 1500;
+
+  function photoBox(img) {
+    var box = img;
+    var up = img.parentNode;
+    while (up && up.nodeType === 1 && !up.classList.contains('article-body')) {
+      if (up.querySelectorAll('img,video,audio,iframe,embed,picture source').length > 1) break;
+      var caption = up.querySelector('figcaption, .wp-caption-text, .wp-element-caption');
+      var captionLen = caption ? String(caption.textContent || '').replace(/\s+/g, '').length : 0;
+      if (String(up.textContent || '').replace(/\s+/g, '').length > captionLen) break;
+      box = up;
+      if (up.tagName === 'FIGURE' || /\bwp-caption\b/.test(up.className || '')) break;
+      up = up.parentNode;
+    }
+    return box;
+  }
+
+  function watchPhotos(scope) {
+    scope.addEventListener('error', function (e) {
+      var img = e.target;
+      if (!img || img.tagName !== 'IMG' || !img.closest('.article-body') || !img.getAttribute('src')) return;
+      var box = photoBox(img);
+      box.style.display = 'none';
+      box.setAttribute('data-photo-gone', '');
+      if (img.getAttribute('data-photo-retry')) return;
+      img.setAttribute('data-photo-retry', '1');
+      setTimeout(function () {
+        if (!img.isConnected) return;
+        img.addEventListener('load', function () {
+          box.style.display = '';
+          img.style.display = '';
+          box.removeAttribute('data-photo-gone');
+        }, { once: true });
+        img.loading = 'eager';
+        var set = img.getAttribute('srcset');
+        if (set) {
+          img.removeAttribute('srcset');
+          img.setAttribute('srcset', set);
+        }
+        img.src = img.getAttribute('src');
+      }, PHOTO_RETRY_MS);
+    }, true);
   }
 
   function cycleOf(article) {
@@ -486,6 +562,7 @@
   }
 
   root.innerHTML = articleSkeleton();
+  watchPhotos(root);
 
   // Статья (post) или WP page — внутренние ссылки Рускатолика часто ведут на pages.
   var load = V.getContent || V.getArticle;

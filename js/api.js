@@ -589,11 +589,13 @@
 
     var path = '';
     var host = '';
+    var query = '';
     if (/^https?:\/\//i.test(raw)) {
       try {
         var u = new URL(raw);
         host = String(u.hostname || '').toLowerCase();
         path = u.pathname || '/';
+        query = u.search || '';
         if (!INTERNAL_HOSTS[host]) {
           return { href: u.href, external: true };
         }
@@ -602,6 +604,7 @@
       }
     } else if (raw.charAt(0) === '/') {
       path = raw.split(/[?#]/)[0];
+      query = (/\?[^#]*/.exec(raw) || [''])[0];
     } else if (/^[a-z0-9\-_%]+\/?$/i.test(raw)) {
       path = '/' + raw;
     } else {
@@ -609,7 +612,23 @@
     }
 
     var parts = path.replace(/\/+$/, '').split('/').filter(Boolean);
-    if (!parts.length) return { href: 'index.html', external: false };
+    if (!parts.length || (parts.length === 1 && parts[0].toLowerCase() === 'index.php')) {
+      var postId = /[?&](?:p|page_id)=(\d+)(?:&|$)/.exec(query);
+      if (postId) return { href: 'article.html?id=' + postId[1], external: false, internal: true };
+      return { href: 'index.html', external: false };
+    }
+    var head = parts[0].toLowerCase();
+    if (head === 'category' && parts.length > 1) {
+      var rubric = parts[parts.length - 1];
+      try {
+        rubric = decodeURIComponent(rubric);
+      } catch (e3) {}
+      return { href: 'archive.html?category=' + encodeURIComponent(rubric.toLowerCase()), external: false };
+    }
+    if (SKIP_INTERNAL_SLUGS[head]) {
+      if (/^https?:\/\//i.test(raw)) return { href: raw, external: true };
+      return null;
+    }
     var slug = parts[parts.length - 1];
     try {
       slug = decodeURIComponent(slug);
