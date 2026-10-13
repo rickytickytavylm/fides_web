@@ -344,8 +344,10 @@
     loadPack(applyPodcasts, 'yak-podcasts-data', function (pack) {
       if (pack) P.mergePack(pack);
       if (desk.length) P.mergePack({ shows: desk });
+      if (P.fillKrupa) P.fillKrupa();
       if (P.notifyPack) P.notifyPack();
     }, function () {
+      if (P.fillKrupa) P.fillKrupa();
       if (P.notifyPack) P.notifyPack();
     });
   }

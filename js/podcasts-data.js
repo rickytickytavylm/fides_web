@@ -448,6 +448,7 @@
     var A = global.YakAudio;
     var show = byId('propovedi-pavla-krupy');
     if (!show || !A || !A.tracks || !A.tracks.length) return;
+    /* Пустой список в пакете редакции не стирает каталог: выпуски живут в аудио. */
     if (show.episodes && show.episodes.length) return;
     var base = A.publicBase || 'https://storage.yandexcloud.net/fidesetratio/';
     show.episodes = A.tracks.map(function (t) {

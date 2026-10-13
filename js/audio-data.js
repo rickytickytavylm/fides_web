@@ -124,6 +124,9 @@
     notifyPack: notifyPack
   };
   if (global.YakPodcasts && YakPodcasts.fillKrupa) {
-    try { YakPodcasts.fillKrupa(); } catch (e) {}
+    try {
+      YakPodcasts.fillKrupa();
+      if (YakPodcasts.notifyPack) YakPodcasts.notifyPack();
+    } catch (e) {}
   }
 })(typeof window !== 'undefined' ? window : this);
