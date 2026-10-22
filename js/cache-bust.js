@@ -165,6 +165,7 @@
 
   function showOpening() {
     try { if (localStorage.getItem(OPENING_KEY)) return; } catch (e) { return; }
+    if (!window.matchMedia || !window.matchMedia('(max-width: 880px)').matches) return;
     if (!document.body) return;
     var box = document.createElement('div');
     box.className = 'yak-opening';
