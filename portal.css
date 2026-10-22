@@ -243,14 +243,14 @@ section.block { padding-top: 36px; padding-bottom: 36px; }
   justify-content: flex-end;
   background: var(--surface-2);
 }
-.hero-slide { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity .6s ease; background-size: cover; background-position: center; background-color: var(--surface); display: flex; flex-direction: column; justify-content: flex-end; }
+.hero-slide { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity .6s ease; background-size: cover; background-position: center; background-color: var(--surface); display: flex; flex-direction: column; }
 .hero-slide.active { opacity: 1; pointer-events: auto; z-index: 1; }
 .hero-slide::after { content: ""; position: absolute; inset: 0;
   background: linear-gradient(180deg, rgba(15, 9, 6, 0) 32%, rgba(15, 9, 6, .88) 100%); }
-.hero-cap { position: relative; z-index: 2; padding: 32px 88px 28px 32px; color: #fff; }
+.hero-cap { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; padding: 22px 28px 56px 32px; color: #fff; }
 .hero-cap .rub {
   display: inline-block; font-weight: 800; font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
-  color: #fff; background: var(--accent); padding: 4px 11px; border-radius: 4px; margin-bottom: 14px;
+  color: #fff; background: var(--accent); padding: 4px 11px; border-radius: 4px; margin: 0;
 }
 .hero-cap h3 {
   color: #fff; font-family: var(--serif); font-size: clamp(28px, 2.9vw, 40px);
@@ -1416,7 +1416,7 @@ aside { display: flex; flex-direction: column; gap: 0; }
   .block-head .eyebrow.inline { width: 100%; margin-left: 22px; }
   .hero { grid-template-columns: 1fr; gap: 12px; border-top: 0; padding-top: 0; }
   .hero-main { min-height: 360px; border-radius: 20px; box-shadow: var(--shadow-lift); }
-  .hero-cap { padding: 22px 72px 22px 20px; }
+  .hero-cap { padding: 18px 20px 52px; }
   .hero-cap h3 { font-size: 22px; max-width: none; font-family: var(--serif); }
   .hero-cap .rub { border-radius: 100px; }
   .hero-side {
@@ -1592,7 +1592,7 @@ aside { display: flex; flex-direction: column; gap: 0; }
   .logo .mark { width: 30px; height: 30px; }
   section.block { padding-top: 22px; padding-bottom: 22px; }
   .hero-main { min-height: 340px; border-radius: 18px; }
-  .hero-cap { padding: 18px 64px 20px 16px; }
+  .hero-cap { padding: 16px 16px 48px; }
   .hero-cap h3 { font-size: 20px; line-height: 1.2; }
   .hero-dots { right: 14px; bottom: 14px; gap: 9px; }
   .hero-dots button { width: 11px; height: 11px; }
