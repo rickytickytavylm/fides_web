@@ -22,9 +22,9 @@
   var HOME_PAGES = [
     { slug: 'guide:navigator', title: 'Навигатор по католической жизни', href: 'church.html?path=navigator', image: 'assets/cards/church-navigator.webp', kicker: 'О Церкви' },
     { slug: 'guide:structure', title: 'Как устроена Католическая Церковь', href: 'church.html?path=structure', image: 'assets/cards/church-become-parish.webp', kicker: 'О Церкви' },
-    { slug: 'guide:spirit', title: 'Духовная жизнь', href: 'spiritual-life.html', image: 'assets/cards/spirit-prayer.webp', kicker: 'Духовный путь' },
-    { slug: 'guide:mass', title: 'Путеводитель по Мессе', href: 'spiritual-life.html?path=mass-guide', image: 'assets/cards/liturgy-mass-guide.webp', kicker: 'Духовный путь' },
-    { slug: 'guide:prayer', title: 'Молитва', href: 'spiritual-life.html?path=prayer', image: 'assets/cards/spirit-prayer.webp', kicker: 'Духовный путь' },
+    { slug: 'guide:spirit', title: 'Духовная жизнь', href: 'spiritual-life.html', image: 'assets/cards/spirit-prayer.webp', kicker: 'Духовная жизнь' },
+    { slug: 'guide:mass', title: 'Путеводитель по Мессе', href: 'spiritual-life.html?path=mass-guide', image: 'assets/cards/liturgy-mass-guide.webp', kicker: 'Духовная жизнь' },
+    { slug: 'guide:prayer', title: 'Молитва', href: 'spiritual-life.html?path=prayer', image: 'assets/cards/spirit-prayer.webp', kicker: 'Духовная жизнь' },
     { slug: 'guide:church', title: 'О Церкви', href: 'church.html', image: 'assets/cards/church-first-time.webp', kicker: 'О Церкви' },
   ];
   window.YakHomePages = HOME_PAGES;
@@ -50,7 +50,7 @@
 
   function sectionKicker(href) {
     if (/^church\.html/.test(String(href || ''))) return 'О Церкви';
-    if (/^spiritual-life\.html/.test(String(href || ''))) return 'Духовный путь';
+    if (/^spiritual-life\.html/.test(String(href || ''))) return 'Духовная жизнь';
     return '';
   }
 
@@ -86,7 +86,7 @@
     if (!m) return Promise.resolve(null);
     var id = m[1];
     return loadGuides().then(function (G) {
-      var trees = G ? [['church.html', G.church, 'О Церкви'], ['spiritual-life.html', G.spirit, 'Духовный путь']] : [];
+      var trees = G ? [['church.html', G.church, 'О Церкви'], ['spiritual-life.html', G.spirit, 'Духовная жизнь']] : [];
       for (var i = 0; i < trees.length; i++) {
         var file = trees[i][0];
         var tree = trees[i][1];
