@@ -162,6 +162,20 @@ img { max-width: 100%; display: block; }
   display: block; width: auto !important; height: 36px !important; max-width: none !important; object-fit: contain;
 }
 .logo .wm { display: none; }
+
+/* Заставка с ожившим знаком: один раз на устройство. */
+.yak-opening {
+  position: fixed; inset: 0; z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  background: #EAE5DB;
+  transition: opacity .4s ease;
+}
+.yak-opening.is-out { opacity: 0; pointer-events: none; }
+:root[data-theme="twilight"] .yak-opening { background: #131E1A; }
+.yak-opening video {
+  width: min(86vw, 420px); height: auto; max-height: 70vh;
+  object-fit: contain; background: transparent; display: block;
+}
 .masthead .logo .mark,
 .masthead .logo .mark img { height: 36px !important; }
 .logo .wm { font-family: var(--serif); font-weight: 600; font-size: 22px; letter-spacing: .01em; color: var(--ink); white-space: nowrap; }
