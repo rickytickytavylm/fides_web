@@ -161,7 +161,7 @@ img { max-width: 100%; display: block; }
 .logo .mark img, .logo .mark svg, .logo img {
   display: block; width: auto !important; height: 36px !important; max-width: none !important; object-fit: contain;
 }
-.masthead .logo .wm { display: none; }
+.logo .wm { display: none; }
 .masthead .logo .mark,
 .masthead .logo .mark img { height: 36px !important; }
 .logo .wm { font-family: var(--serif); font-weight: 600; font-size: 22px; letter-spacing: .01em; color: var(--ink); white-space: nowrap; }

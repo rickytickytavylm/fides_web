@@ -103,8 +103,7 @@
     var html =
       '<div class="wrap footer-row">' +
       '<a class="logo" href="index.html">' +
-      '<span class="mark"><img src="mark-p.png" alt="ЯКатолик" width="30" height="30" /></span>' +
-      '<span class="wm">ЯКатолик</span></a>' +
+      '<span class="mark"><img src="mark-p.png" alt="" width="30" height="30" /></span></a>' +
       '<nav class="footer-links footer-links--row" aria-label="Разделы">' + links + '</nav></div>' +
       '<div class="wrap footer-legal-wrap"><p class="footer-tagline footer-legal">' + LEGAL + '</p></div>';
     hosts.forEach(function (el) {
