@@ -1,6 +1,6 @@
 /**
  * Оформление портала:
-   * - light: «Свет» (крем #F7F2EC)
+   * - light: «Свет» (фон #EAE5DB, шапка #F3F1EA)
  * - twilight: «Сумерки»
  */
 (function () {
@@ -23,7 +23,7 @@
     root.style.colorScheme = value === 'twilight' ? 'dark' : 'light';
 
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', value === 'twilight' ? '#131E1A' : '#F7F2EC');
+    if (meta) meta.setAttribute('content', value === 'twilight' ? '#131E1A' : '#F3F1EA');
 
     document.querySelectorAll('.theme-toggle').forEach(function (button) {
       var twilight = value === 'twilight';
