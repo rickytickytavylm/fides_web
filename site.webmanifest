@@ -2,18 +2,18 @@
   "name": "ЯКатолик",
   "short_name": "ЯКатолик",
   "description": "Католический портал: новости, статьи, карта храмов и чат о вере.",
-  "start_url": "./index.html?b=202610131609",
+  "start_url": "./index.html?b=202610220927",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#ede9e2",
-  "theme_color": "#ede9e2",
+  "background_color": "#F7F2EC",
+  "theme_color": "#F7F2EC",
   "lang": "ru",
   "icons": [
     {
-      "src": "yakatolik-logo.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "mark-p.png",
+      "sizes": "646x737",
+      "type": "image/png",
       "purpose": "any"
     }
   ]
