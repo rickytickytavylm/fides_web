@@ -151,7 +151,7 @@
     }, true);
   }
 
-  var OPENING_KEY = 'yak_opening_seen';
+  var OPENING_KEY = 'yak_opening_full';
 
   function closeOpening(box) {
     if (!box || box._gone) return;
