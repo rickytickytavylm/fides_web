@@ -166,15 +166,15 @@ img { max-width: 100%; display: block; }
 /* Заставка с ожившим знаком: один раз на устройство. */
 .yak-opening {
   position: fixed; inset: 0; z-index: 10000;
-  display: flex; align-items: center; justify-content: center;
-  background: #EAE5DB;
+  background: #000;
   transition: opacity .4s ease;
 }
 .yak-opening.is-out { opacity: 0; pointer-events: none; }
-:root[data-theme="twilight"] .yak-opening { background: #131E1A; }
 .yak-opening video {
-  width: min(86vw, 420px); height: auto; max-height: 70vh;
-  object-fit: contain; background: transparent; display: block;
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block; background: #000;
 }
 .masthead .logo .mark,
 .masthead .logo .mark img { height: 36px !important; }
