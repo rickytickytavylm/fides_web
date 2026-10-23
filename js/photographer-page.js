@@ -45,7 +45,7 @@
       root.innerHTML = '<p class="ps-status">Фотограф не найден. <a href="photostock.html">К фотостоку</a></p>';
       return;
     }
-    document.title = ph.name + ' — фотограф — ЯКатолик';
+    document.title = ph.name + ' — фотограф — Рускатолик';
     var photos = data.photos.filter(function (p) {
       return p.photographerId === ph.id || p.photographerSlug === ph.slug;
     });

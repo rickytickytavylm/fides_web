@@ -71,7 +71,7 @@
     var author = authors.filter(function (a) {
       return a.slug === cycle.authorSlug;
     })[0];
-    document.title = cycle.title + ' — ЯКатолик';
+    document.title = cycle.title + ' — Рускатолик';
 
     var items = (cycle.items || [])
       .slice()

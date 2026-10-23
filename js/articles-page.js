@@ -175,7 +175,7 @@
     return html;
   }
 
-  document.title = 'Статьи — ЯКатолик';
+  document.title = 'Статьи — Рускатолик';
   root.innerHTML =
     '<nav class="breadcrumbs in-shell" aria-label="Хлебные крошки">' +
     '<a href="index.html">Главная</a><span>/</span><span>Статьи</span></nav>' +

@@ -1,6 +1,6 @@
 /**
  * Адаптер карты храмов.
- * Контракт ответа — тот же, что уже использует приложение ЯКатолик / Вера и Разум:
+ * Контракт ответа — тот же, что уже использует приложение Рускатолик / Вера и Разум:
  *
  *   GET {TEMPLES_API_BASE}/api/temples/search?bbox=lonMin,latMin,lonMax,latMax
  *   → { features: GeoJSON-like[], source?: string }

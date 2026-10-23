@@ -1,5 +1,5 @@
 /**
- * Центральный конфиг портала ЯКатолик.
+ * Центральный конфиг портала Рускатолик.
  * Прод API — только Timeweb (епархия). Без Railway.
  */
 (function (global) {
@@ -15,7 +15,7 @@
   var override = global.VeraConfigOverride || {};
 
   global.VeraConfig = {
-    BRAND: 'ЯКатолик',
+    BRAND: 'Рускатолик',
     ARCHIVE_API_BASE: override.ARCHIVE_API_BASE || params.archive || TIMEWEB,
     ARCHIVE_API_FALLBACKS: override.ARCHIVE_API_FALLBACKS || [TIMEWEB],
     TEMPLES_API_BASE: override.TEMPLES_API_BASE || params.api || TIMEWEB,

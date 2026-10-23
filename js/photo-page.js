@@ -46,7 +46,7 @@
 
   function shareMenu(url, title) {
     var u = encodeURIComponent(url);
-    var t = encodeURIComponent(title || 'Фото — ЯКатолик');
+    var t = encodeURIComponent(title || 'Фото — Рускатолик');
     return (
       '<div class="ps-share">' +
       '<button type="button" class="btn-primary" id="share-btn">Поделиться</button>' +
@@ -79,7 +79,7 @@
     var name = (ph && ph.name) || photo.photographerName || 'Фотограф';
     var slug = (ph && ph.slug) || photo.photographerSlug || '';
     var pageUrl = location.href;
-    document.title = name + ' — фото — ЯКатолик';
+    document.title = name + ' — фото — Рускатолик';
 
     root.innerHTML =
       '<p class="ps-back-row">' +

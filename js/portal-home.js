@@ -587,7 +587,7 @@
     }
     el.innerHTML = list.map(function (t) {
       var cover = t.cover || (window.YakAudio && YakAudio.cover) || '';
-      var meta = [t.artist || 'ЯКатолик', t.duration].filter(Boolean).join(' · ');
+      var meta = [t.artist || 'Рускатолик', t.duration].filter(Boolean).join(' · ');
       return (
         '<a class="audio-row" href="audio.html">' +
         '<span class="audio-ava"' + (cover ? ' style="background-image:url(\'' + esc(cover) + '\')"' : '') + '></span>' +

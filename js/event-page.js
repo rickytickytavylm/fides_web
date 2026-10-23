@@ -95,7 +95,7 @@
       ? 'background-image:url(\'' + esc(cover) + '\')'
       : 'background:linear-gradient(155deg,' + esc(tone) + ',#1a1816)';
 
-    document.title = e.title + ' — Афиша · ЯКатолик';
+    document.title = e.title + ' — Афиша · Рускатолик';
 
     var facts = [
       ['Когда', dateLine(e)],

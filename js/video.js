@@ -367,7 +367,7 @@
         '<p class="in-shell"><a class="wlink" href="video.html">К списку партнёров</a></p>';
       return;
     }
-    document.title = ch.name + ' — Видео — ЯКатолик';
+    document.title = ch.name + ' — Видео — Рускатолик';
     var mine = all.filter(function (v) { return v.channelId === ch.id; });
     var shorts = mine.filter(function (v) { return v.type === 'short'; });
     var cycles = {};

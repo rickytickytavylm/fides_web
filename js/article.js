@@ -403,7 +403,7 @@
           var raw = String(article.author || '').trim();
           var low = raw.toLowerCase();
           if (raw && low !== 'ruscatholic' && low !== 'admin' && low !== 'super-admin' && low !== 'superadmin' && low !== 'супер-админ' && low !== 'редакция' && !/admin/.test(low)) name = raw;
-          if (!name) name = 'Редакция ЯКатолик';
+          if (!name) name = 'Редакция Рускатолик';
           return (
             '<div class="byline"><div class="byline-main"><div>' +
             '<p class="byline-name">' +
@@ -575,7 +575,7 @@
       if (hidden.indexOf(String(article.slug || id)) !== -1 || (slugs.length === 1 && slugs[0] === 'hidden')) {
         throw new Error('Article empty');
       }
-      document.title = article.title + ' — ЯКатолик';
+      document.title = article.title + ' — Рускатолик';
       function paint() {
         root.innerHTML = renderArticle(article);
         if (relatedSection) relatedSection.hidden = article.kind === 'page';

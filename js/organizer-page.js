@@ -53,7 +53,7 @@
       return;
     }
 
-    document.title = org.name + ' — Афиша — ЯКатолик';
+    document.title = org.name + ' — Афиша — Рускатолик';
     var events = A.byOrganizer(org.id, 24);
 
     root.innerHTML =

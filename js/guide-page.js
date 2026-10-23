@@ -338,7 +338,7 @@
   }
 
   function renderHub() {
-    document.title = tree.title + ' — ЯКатолик';
+    document.title = tree.title + ' — Рускатолик';
     var intro = tree.intro
       ? '<p class="guide-hub-intro">' + esc(tree.intro) + '</p>'
       : '';
@@ -353,7 +353,7 @@
   }
 
   function renderNavigator(node) {
-    document.title = node.title + ' — ЯКатолик';
+    document.title = node.title + ' — Рускатолик';
     var html =
       crumbs([
         { label: 'Главная', href: 'index.html' },
@@ -385,7 +385,7 @@
   }
 
   function renderArticleLike(node) {
-    document.title = node.title + ' — ЯКатолик';
+    document.title = node.title + ' — Рускатолик';
     var parent = node.siblingsOf && tree.nodes[node.siblingsOf];
     root.innerHTML =
       crumbs([
@@ -414,7 +414,7 @@
   function renderNode(node) {
     if (node.mirrorOf) node = mirrored(node);
     if (node.type === 'cards') {
-      document.title = node.title + ' — ЯКатолик';
+      document.title = node.title + ' — Рускатолик';
       var tip = node.tip
         ? '<p class="guide-route-tip">' + esc(node.tip) + '</p>'
         : '';
@@ -465,7 +465,7 @@
     }
 
     if (node.type === 'prayers') {
-      document.title = node.title + ' — ЯКатолик';
+      document.title = node.title + ' — Рускатолик';
       var html =
         crumbs([
           { label: 'Главная', href: 'index.html' },

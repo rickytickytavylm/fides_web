@@ -163,7 +163,7 @@
       return;
     }
 
-    document.title = show.title + ' — ЯКатолик';
+    document.title = show.title + ' — Рускатолик';
     var crumb = document.getElementById('cast-crumb');
     if (crumb) crumb.textContent = show.title;
 

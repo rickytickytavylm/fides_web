@@ -139,7 +139,7 @@
     var desc = document.getElementById('page-desc');
     if (h1) h1.textContent = title;
     if (crumb) crumb.textContent = title;
-    document.title = title + ' — ЯКатолик';
+    document.title = title + ' — Рускатолик';
     if (desc) {
       desc.textContent =
         title === 'Статьи'

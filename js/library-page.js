@@ -764,7 +764,7 @@
       '<button type="button" class="lib-btn ghost" id="lib-donate-later">Позже</button>' +
       '</div></div></div>';
 
-    document.title = main + ' — Библиотека · ЯКатолик';
+    document.title = main + ' — Библиотека · Рускатолик';
 
     root.querySelectorAll('.lib-dl').forEach(function (btn) {
       btn.addEventListener('click', function () {

@@ -14,9 +14,9 @@
   function formatBio(bio) {
     if (!bio) return '';
     bio = String(bio)
-      .replace(/архива\s+Рускатолик/gi, 'ЯКатолик')
+      .replace(/архива\s+Рускатолик/gi, 'Рускатолик')
       .replace(/\s*Тег на Рускатолик:[^.]*\.?/gi, '')
-      .replace(/портал[а]?\s+«?Рускатолик»?/gi, 'портал ЯКатолик');
+      .replace(/портал[а]?\s+«?Рускатолик»?/gi, 'портал Рускатолик');
     if (V && V.sanitizeRichHtml) return V.sanitizeRichHtml(bio);
     if (/<[a-z][\s\S]*>/i.test(bio)) return String(bio);
     return '<p>' + esc(bio).replace(/\n\n+/g, '</p><p>').replace(/\n/g, '<br>') + '</p>';
@@ -173,7 +173,7 @@
     var raw = item && item.author ? String(item.author).trim() : '';
     if (!raw) return '';
     var low = raw.toLowerCase();
-    if (low === 'ruscatholic' || low === 'admin' || low === 'super-admin' || low === 'superadmin' || low === 'супер-админ' || low === 'редакция' || /admin/.test(low)) return 'Редакция ЯКатолик';
+    if (low === 'ruscatholic' || low === 'admin' || low === 'super-admin' || low === 'superadmin' || low === 'супер-админ' || low === 'редакция' || /admin/.test(low)) return 'Редакция Рускатолик';
     return raw;
   }
 
@@ -301,7 +301,7 @@
           '<p><a class="wlink" href="authors.html">← К каталогу</a></p>';
         return;
       }
-      document.title = a.name + ' — ЯКатолик';
+      document.title = a.name + ' — Рускатолик';
       root.classList.add('author-page');
       root.style.removeProperty('--author-ink');
       root.style.removeProperty('--author-wash');

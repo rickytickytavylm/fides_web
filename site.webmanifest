@@ -1,8 +1,8 @@
 {
-  "name": "ЯКатолик",
-  "short_name": "ЯКатолик",
+  "name": "Рускатолик",
+  "short_name": "Рускатолик",
   "description": "Католический портал: новости, статьи, карта храмов и чат о вере.",
-  "start_url": "./index.html?b=202610221246",
+  "start_url": "./index.html?b=202610231230",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
