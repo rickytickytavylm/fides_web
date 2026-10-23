@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Disallow: /go.html
+Disallow: /ruscatholic-portal-mockup.html
+
+Sitemap: https://rickytickytavylm.github.io/fides_web/sitemap.xml
