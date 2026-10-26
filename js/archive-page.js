@@ -69,8 +69,13 @@
   }
 
   function authorMini(item) {
-    if (window.YakAuthorLink && YakAuthorLink.cardHtml) {
-      return YakAuthorLink.cardHtml(item, { className: 'card-author card-author--feed', link: true });
+    var list = window.YakAuthorLink && YakAuthorLink.findAllByArticle
+      ? YakAuthorLink.findAllByArticle(item)
+      : [];
+    if (list.length) {
+      return '<p class="feed-author">' + list.map(function (a) {
+        return '<a href="author.html?slug=' + encodeURIComponent(a.slug) + '">' + V.escapeHtml(a.name) + '</a>';
+      }).join(', ') + '</p>';
     }
     var name = authorLabel(item);
     return name ? '<p class="feed-author">' + V.escapeHtml(name) + '</p>' : '';
@@ -85,9 +90,11 @@
     total: 0,
     loading: false,
     items: [],
-    limit: 12,
+    limit: 50,
     lastPageCount: 0,
+    grew: false,
   };
+  var restart = false;
 
   // WP pages — только черновики админки, не портал
   if (state.category === 'pages') {
@@ -260,9 +267,13 @@
           '</a></h2>' +
           /* Лид под заголовком на мобе ломает вёрстку — только десктоп */
           (hero.excerpt && !window.matchMedia('(max-width: 880px)').matches
-            ? '<p class="lead-excerpt">' +
-              V.escapeHtml(String(hero.excerpt).replace(/\s+/g, ' ').trim().slice(0, 180)) +
-              '</p>'
+            ? (function () {
+                var raw = String(hero.excerpt || '');
+                var paras = V.sanitizeRichHtml
+                  ? V.sanitizeRichHtml(raw)
+                  : '<p>' + V.escapeHtml(raw.replace(/\s+/g, ' ').trim().slice(0, 180)) + '</p>';
+                return paras ? '<div class="lead-excerpt">' + paras + '</div>' : '';
+              })()
             : '') +
           '</div>';
       }
@@ -310,8 +321,11 @@
     }
   }
 
-  function load(replace) {
-    if (state.loading) return;
+  function load(replace, silent) {
+    if (state.loading) {
+      if (replace) restart = true;
+      return;
+    }
     state.loading = true;
     var firstPaint = replace && !state.items.length;
     if (firstPaint) skeletonFeed(5);
@@ -338,10 +352,12 @@
           batch = batch.filter(function (it) { return !V.isVoiceItem || !V.isVoiceItem(it); });
         }
         state.total = Number(pack.total) || 0;
-        state.lastPageCount = batch.length;
+        state.lastPageCount = (pack.items || []).length;
+        var before = replace ? 0 : state.items.length;
         state.items = replace ? batch : state.items.concat(batch);
+        state.grew = state.items.length > before;
         render();
-        if (!replace && batch.length && feedEl) {
+        if (!silent && !replace && batch.length && feedEl) {
           var firstNew = feedEl.querySelector('.feed-item:nth-last-child(' + Math.min(batch.length, 5) + ')');
           if (firstNew && firstNew.scrollIntoView) {
             try { firstNew.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) {}
@@ -356,13 +372,27 @@
       })
       .then(function () {
         state.loading = false;
+        if (restart) {
+          restart = false;
+          state.page = 1;
+          state.items = [];
+          load(true);
+          return;
+        }
+        var hasMore =
+          state.total > 0
+            ? state.items.length < state.total
+            : state.lastPageCount >= state.limit;
+        var failed = moreBtn && moreBtn.textContent === 'Повторить';
+        var auto = !failed && hasMore && state.grew && state.lastPageCount > 0 && state.page < 80 && state.items.length < 4000;
+        if (auto) {
+          state.page += 1;
+          load(false, true);
+          return;
+        }
         if (moreBtn) {
           moreBtn.disabled = false;
-          if (moreBtn.textContent !== 'Повторить') moreBtn.textContent = 'Загрузить ещё';
-          var hasMore =
-            state.total > 0
-              ? state.items.length < state.total
-              : state.lastPageCount >= state.limit;
+          if (!failed) moreBtn.textContent = 'Загрузить ещё';
           moreBtn.hidden = !hasMore || !state.items.length;
         }
       });
@@ -399,4 +429,9 @@
   updateRubricLabel();
   renderChips();
   load(true);
+  if (window.YakAuthorsOnPack) {
+    YakAuthorsOnPack(function () {
+      if (state.items.length) render();
+    });
+  }
 })();

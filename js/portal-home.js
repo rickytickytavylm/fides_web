@@ -579,20 +579,23 @@
   function renderHomeAudio() {
     var el = document.getElementById('home-audio');
     if (!el) return;
-    var tracks = (window.YakAudio && YakAudio.tracks) || [];
-    var list = tracks.slice(0, 6);
-    if (!list.length) {
-      el.innerHTML = '<p class="widget-copy">Проповеди и подкасты — в разделе Аудио</p>';
+    var shows = ((window.YakPodcasts && YakPodcasts.shows) || []).filter(function (s) {
+      if (!s || !s.id || !s.title) return false;
+      if (s.status === 'hidden' || s.status === 'draft') return false;
+      return true;
+    }).slice(0, 8);
+    if (!shows.length) {
+      el.innerHTML = '<p class="widget-copy">Подкасты — в разделе Аудио</p>';
       return;
     }
-    el.innerHTML = list.map(function (t) {
-      var cover = t.cover || (window.YakAudio && YakAudio.cover) || '';
-      var meta = [t.artist || 'Рускатолик', t.duration].filter(Boolean).join(' · ');
+    el.innerHTML = shows.map(function (s) {
+      var cover = s.cover || '';
+      var meta = s.host || '';
       return (
-        '<a class="audio-row" href="audio.html">' +
+        '<a class="audio-row" href="podcast.html?id=' + encodeURIComponent(s.id) + '">' +
         '<span class="audio-ava"' + (cover ? ' style="background-image:url(\'' + esc(cover) + '\')"' : '') + '></span>' +
         '<span class="audio-row-text">' +
-        '<strong>' + esc(cleanTitle(t.title)) + '</strong>' +
+        '<strong>' + esc(cleanTitle(s.title)) + '</strong>' +
         (meta ? '<small>' + esc(meta) + '</small>' : '') +
         '</span></a>'
       );
@@ -725,6 +728,7 @@
   renderAsideDay();
   if (window.YakCalendar && YakCalendar.onPack) YakCalendar.onPack(renderAsideDay);
   renderHomeAudio();
+  if (window.YakPodcasts && YakPodcasts.onPack) YakPodcasts.onPack(renderHomeAudio);
   renderHomeEvents();
   if (window.YakAfisha && YakAfisha.onPack) YakAfisha.onPack(renderHomeEvents);
   renderHomeLibrary();

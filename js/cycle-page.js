@@ -39,10 +39,12 @@
     }).join(' ');
   }
 
-  function cycleKicker(cycle, author) {
+  function cycleKicker(cycle, authorList) {
+    var names = (authorList || []).map(function (a) { return a && a.name; }).filter(Boolean);
     var sub = String(cycle.subtitle || '');
-    if (author && author.name && (!sub || /^Авторский цикл /i.test(sub))) {
-      return 'Авторский цикл ' + genitiveName(author.name);
+    if (names.length > 1) return 'Авторский цикл ' + names.map(genitiveName).join(' и ');
+    if (names.length === 1 && (!sub || /^Авторский цикл /i.test(sub))) {
+      return 'Авторский цикл ' + genitiveName(names[0]);
     }
     return sub || 'Цикл публикаций';
   }
@@ -68,9 +70,13 @@
       C.hydrate(cycle).then(paint);
     }
 
-    var author = authors.filter(function (a) {
-      return a.slug === cycle.authorSlug;
-    })[0];
+    var authorSlugs = (cycle.authorSlugs && cycle.authorSlugs.length)
+      ? cycle.authorSlugs
+      : (cycle.authorSlug ? [cycle.authorSlug] : []);
+    var authorList = authorSlugs.map(function (s) {
+      return authors.filter(function (a) { return a.slug === s; })[0];
+    }).filter(Boolean);
+    var author = authorList[0] || null;
     document.title = cycle.title + ' — Рускатолик';
 
     var items = (cycle.items || [])
@@ -112,17 +118,17 @@
       '<span>Цикл</span></nav>' +
       '<header class="cycle-head">' +
       '<p class="eyebrow">' +
-      esc(cycleKicker(cycle, author)) +
+      esc(cycleKicker(cycle, authorList)) +
       '</p>' +
       '<h1>' +
       esc(cycle.title) +
       '</h1>' +
-      (author
-        ? '<p class="cycle-byline"><a href="author.html?slug=' +
-          encodeURIComponent(author.slug) +
-          '">' +
-          esc(author.name) +
-          '</a></p>'
+      (authorList.length
+        ? '<p class="cycle-byline">' +
+          authorList.map(function (a) {
+            return '<a href="author.html?slug=' + encodeURIComponent(a.slug) + '">' + esc(a.name) + '</a>';
+          }).join(', ') +
+          '</p>'
         : '') +
       '</header>' +
       intro +

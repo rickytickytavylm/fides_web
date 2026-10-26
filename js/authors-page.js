@@ -56,11 +56,19 @@
   /* slug статьи → авторы[] (соавторство: несколько тегов на одну публикацию) */
   var articleAuthorIndex = null;
   function pushAuthor(map, slug, a) {
-    if (!slug || !a) return;
+    if (!slug || !a || !a.slug) return;
     var key = String(slug);
     if (!map[key]) map[key] = [];
-    var exists = map[key].some(function (x) { return x.slug === a.slug; });
-    if (!exists) map[key].push(a);
+    if (map[key].indexOf(a.slug) === -1) map[key].push(a.slug);
+  }
+
+  function authorsBySlugs(slugs) {
+    var list = [];
+    (slugs || []).forEach(function (s) {
+      var a = authors().filter(function (x) { return x.slug === s; })[0];
+      if (a && !list.some(function (x) { return x.slug === a.slug; })) list.push(a);
+    });
+    return list;
   }
 
   function buildArticleAuthorIndex() {
@@ -99,22 +107,31 @@
         return authors().filter(function (x) { return x.slug === s; })[0];
       }).filter(Boolean);
     }
-    var slug = item.slug || item.id;
-    var list = slug ? (buildArticleAuthorIndex()[String(slug)] || []).slice() : [];
+    var keys = [];
+    if (item.slug) keys.push(String(item.slug));
+    if (item.id != null && String(item.id) !== String(item.slug || '')) keys.push(String(item.id));
+    var index = buildArticleAuthorIndex();
+    var slugs = [];
+    keys.forEach(function (k) {
+      (index[k] || []).forEach(function (s) {
+        if (slugs.indexOf(s) === -1) slugs.push(s);
+      });
+    });
     var extra = item.authorSlugs || (item.authorSlug ? [item.authorSlug] : []);
     extra.forEach(function (s) {
-      var a = authors().filter(function (x) { return x.slug === s; })[0];
-      if (a && !list.some(function (x) { return x.slug === a.slug; })) list.push(a);
+      if (s && slugs.indexOf(s) === -1) slugs.push(s);
     });
+    var list = authorsBySlugs(slugs);
     if (!list.length && item.author) {
-      var name = String(item.author).trim().toLowerCase();
-      if (name && name !== 'ruscatholic' && name !== 'admin' && name !== 'редакция') {
+      String(item.author).split(/\s*,\s*/).forEach(function (part) {
+        var name = part.trim().toLowerCase();
+        if (!name || name === 'ruscatholic' || name === 'admin' || name === 'редакция' || /admin/.test(name)) return;
         authors().forEach(function (a) {
           if (a && String(a.name || '').trim().toLowerCase() === name && !list.some(function (x) { return x.slug === a.slug; })) {
             list.push(a);
           }
         });
-      }
+      });
     }
     return list;
   }
@@ -317,6 +334,8 @@
         if (hiddenPubs.indexOf(String(p.slug)) !== -1) return false;
         if (hasOwnPodcast() && isPodcastLeftover(p)) return false;
         return true;
+      }).slice().sort(function (x, y) {
+        return String(y.date || '').localeCompare(String(x.date || ''));
       });
       var socials = (a.socials || []).filter(function (s) {
         var href = String((s && s.href) || '').toLowerCase();
@@ -449,6 +468,7 @@
   };
   if (window.YakAuthorsOnPack) {
     window.YakAuthorsOnPack(function () {
+      articleAuthorIndex = null;
       window.renderHomeAuthors(document.getElementById('authors-home'), 6);
       window.renderHomeAuthors(document.getElementById('authors-home-mobile'), 5);
     });

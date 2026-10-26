@@ -1,5 +1,5 @@
 /* Kill-switch: unregister leftover SW and wipe caches. Do not serve pages. */
-var BUILD = '202610231307';
+var BUILD = '202610261450';
 
 self.addEventListener('install', function (event) {
   self.skipWaiting();

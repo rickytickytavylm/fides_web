@@ -195,7 +195,7 @@
     '<a href="archive.html?category=interview">Голоса</a>' +
     '</div>' +
     section('Рубрики', 'Основные подразделы публикаций', cardGrid(RUBRICS, 'Рубрика')) +
-    section('Темы', 'Специальные подборки. Редакция задаёт их в «Рубрики и темы».', linkList(TOPICS), 'articles-topics') +
+    section('Темы', 'Специальные подборки.', linkList(TOPICS), 'articles-topics') +
     section('Вопрос — ответ', '', cardGrid(QA, 'Раздел')) +
     section('Идеи', 'Лёгкие и прикладные материалы', cardGrid(IDEAS, 'Подборка')) +
     section('Голоса', 'Интервью, свидетельства и проповеди', cardGrid(VOICES, 'Голоса')) +

@@ -208,7 +208,9 @@
           extra = extra.filter(function (ex) {
             return !/^yak-.*-data$/.test(String(ex.slug || ex.id || ''));
           });
-          return { items: byDateDesc(extra.concat(rest)), total: extra.length + rest.length };
+          var pageItems = byDateDesc(extra.concat(rest));
+          var serverTotal = Number(pack.total) || 0;
+          return { items: pageItems, total: Math.max(serverTotal, pageItems.length) };
         }).catch(function () {
           return { items: extra, total: extra.length };
         });

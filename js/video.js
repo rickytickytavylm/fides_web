@@ -292,13 +292,11 @@
     });
     var showLong = filter !== 'short';
     var showShort = filter !== 'long';
-    var feature = showLong && longs[0] ? longs[0] : null;
-    var rest = showLong ? longs.slice(feature ? 1 : 0) : [];
+    var rest = showLong ? longs : [];
 
     if (featuredEl) {
-      featuredEl.hidden = !feature;
-      featuredEl.innerHTML = feature ? featuredHtml(feature) : '';
-      bind(featuredEl);
+      featuredEl.hidden = true;
+      featuredEl.innerHTML = '';
     }
     if (longBand) longBand.hidden = !rest.length;
     if (largeGrid) {
@@ -339,8 +337,8 @@
       );
     }
     if (featuredEl) {
-      featuredEl.hidden = false;
-      featuredEl.innerHTML = sk(1, 'aspect-ratio:16/9;border-radius:18px');
+      featuredEl.hidden = true;
+      featuredEl.innerHTML = '';
     }
     if (longBand) longBand.hidden = false;
     if (largeGrid) largeGrid.innerHTML = sk(2, 'aspect-ratio:16/9;border-radius:14px');

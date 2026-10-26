@@ -427,8 +427,8 @@
     var leadSource = stripOfficeJunk(article.excerptHtml || article.excerpt || '');
     var leadHtml = '';
     if (leadSource && String(V.stripTags ? V.stripTags(leadSource) : leadSource).replace(/\s+/g, '').length) {
-      var leadSafe = V.sanitizeInlineHtml
-        ? V.sanitizeInlineHtml(leadSource)
+      var leadSafe = V.sanitizeRichHtml
+        ? V.sanitizeRichHtml(leadSource)
         : /<[a-z][\s\S]*>/i.test(leadSource)
           ? linkifyHtml(leadSource)
           : V.escapeHtml(leadSource);
