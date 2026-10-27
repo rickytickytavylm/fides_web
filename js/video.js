@@ -60,7 +60,7 @@
   }
 
   function featuredHtml(v) {
-    return (
+        return (
       '<article class="yt-featured">' +
       '<button type="button" class="yt-open yt-featured-media" data-id="' +
       esc(String(v.id)) +
@@ -80,7 +80,7 @@
       '<span>' +
       esc(v.speaker || channelName(v.channelId) || 'Фильм') +
       (v.duration ? ' · ' + fmtDur(v.duration) : '') +
-      '</span></p>' +
+          '</span></p>' +
       '<button type="button" class="yt-watch yt-open" data-id="' +
       esc(String(v.id)) +
       '">Смотреть</button>' +
@@ -212,9 +212,9 @@
   }
 
   function openItem(id) {
-    var item = all.filter(function (x) {
+        var item = all.filter(function (x) {
       return String(x.id) === String(id);
-    })[0];
+        })[0];
     if (!item) return;
 
     /* Только внешняя ссылка (VK и т.п.) — открываем у партнёра */
@@ -227,7 +227,7 @@
       return;
     }
 
-    if (dialogTitle) dialogTitle.textContent = item.title || '';
+        if (dialogTitle) dialogTitle.textContent = item.title || '';
     dialog.classList.toggle('is-short', item.type === 'short');
     clearPlayer();
 
@@ -242,10 +242,10 @@
     if (item.videoUrl && player) {
       player.hidden = false;
       if (embedEl) embedEl.hidden = true;
-      player.poster = item.thumb || '';
-      player.src = item.videoUrl;
-      dialog.showModal();
-      if (player.play) player.play().catch(function () {});
+        player.poster = item.thumb || '';
+        player.src = item.videoUrl;
+        dialog.showModal();
+        if (player.play) player.play().catch(function () {});
       return;
     }
 

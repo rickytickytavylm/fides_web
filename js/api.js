@@ -53,7 +53,7 @@
           return;
         }
         var url = list[i];
-        var waitMs = i === 0 ? 8000 : 20000;
+        var waitMs = i === 0 ? 5000 : 20000;
         i += 1;
         var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
         var timer = setTimeout(function () {
@@ -191,12 +191,57 @@
     return slugs.some(function (s) { return VOICE_SLUGS[s]; });
   }
 
+  function orderedBases() {
+    var out = [];
+    function push(u) {
+      u = String(u || '').replace(/\/$/, '');
+      if (u && out.indexOf(u) === -1) out.push(u);
+    }
+    push(API_BASE);
+    apiCandidates().forEach(push);
+    return out;
+  }
+
   function apiGet(path) {
     return ensureApi().then(function () {
-      return fetch(API_BASE + path).then(function (res) {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.json();
-      });
+      var bases = orderedBases();
+      var i = 0;
+      function next() {
+        if (i >= bases.length) return Promise.reject(new Error('network'));
+        var base = bases[i];
+        var ms = i === 0 ? 20000 : 45000;
+        i += 1;
+        var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        var timer = setTimeout(function () {
+          try { if (ctrl) ctrl.abort(); } catch (e) {}
+        }, ms);
+        return fetch(base + path, {
+          method: 'GET',
+          credentials: 'omit',
+          mode: 'cors',
+          signal: ctrl ? ctrl.signal : undefined,
+        }).then(function (res) {
+          if ((res.status === 502 || res.status === 503 || res.status === 504) && i < bases.length) {
+            clearTimeout(timer);
+            return next();
+          }
+          if (!res.ok) {
+            clearTimeout(timer);
+            throw new Error('HTTP ' + res.status);
+          }
+          return res.json().then(function (data) {
+            clearTimeout(timer);
+            setApiBase(base);
+            return data;
+          });
+        }).catch(function (err) {
+          clearTimeout(timer);
+          if (err && /^HTTP /.test(String(err && err.message))) throw err;
+          if (i < bases.length) return next();
+          throw err;
+        });
+      }
+      return next();
     });
   }
 
@@ -334,19 +379,44 @@
 
   /** Чат с ИИ — стриминг SSE (stream:true), тот же /api/chat */
   function sendChat(message, conversationHistory, onReplace) {
+    var chatBody = JSON.stringify({
+      message: message,
+      conversationHistory: conversationHistory || [],
+      userId: getDeviceId(),
+      stream: true,
+    });
     return ensureApi().then(function () {
-      return fetch(API_BASE + '/api/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'text/event-stream',
-      },
-      body: JSON.stringify({
-        message: message,
-        conversationHistory: conversationHistory || [],
-        userId: getDeviceId(),
-        stream: true,
-      }),
+      var bases = orderedBases();
+      var i = 0;
+      function open() {
+        if (i >= bases.length) return Promise.reject(new Error('network'));
+        var base = bases[i];
+        var ms = i === 0 ? 20000 : 30000;
+        i += 1;
+        var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        var timer = setTimeout(function () {
+          try { if (ctrl) ctrl.abort(); } catch (e) {}
+        }, ms);
+        return fetch(base + '/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'text/event-stream',
+          },
+          body: chatBody,
+          signal: ctrl ? ctrl.signal : undefined,
+        }).then(function (res) {
+          clearTimeout(timer);
+          if ((res.status === 502 || res.status === 503 || res.status === 504) && i < bases.length) return open();
+          setApiBase(base);
+          return res;
+        }).catch(function () {
+          clearTimeout(timer);
+          if (i < bases.length) return open();
+          return Promise.reject(new Error('network'));
+        });
+      }
+      return open();
     }).then(function (res) {
       if (!res.ok) {
         return res.json().then(function (data) {
@@ -429,7 +499,6 @@
       }
 
       return readLoop();
-    });
     });
   }
 

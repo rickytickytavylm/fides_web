@@ -7,7 +7,7 @@
 
   var TIMEWEB = 'https://rickytickytavylm-fides-at-ratio-server-d4c9.twc1.net';
   /* Тот же Timeweb, если прямой адрес не ответил. */
-  var PROXY = 'https://portal.186-246-11-81.sslip.io';
+  var PROXY = 'https://portal.72-56-99-181.sslip.io';
 
   var params = {};
   try {
