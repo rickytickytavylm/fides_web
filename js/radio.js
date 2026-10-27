@@ -1,27 +1,19 @@
 (function () {
   'use strict';
-  var V = window.Vera;
-  var el = document.getElementById('radio-schedule');
-  if (!el || !V) return;
+  var audio = document.getElementById('radio-el');
+  var btn = document.getElementById('radio-play');
+  var stage = document.querySelector('.radio-stage');
+  if (!audio || !btn || !stage) return;
 
-  function todayKey() {
-    var d = new Date();
-    var m = String(d.getMonth() + 1).padStart(2, '0');
-    var day = String(d.getDate()).padStart(2, '0');
-    return d.getFullYear() + '-' + m + '-' + day;
+  function sync() {
+    stage.classList.toggle('is-on', !audio.paused);
+    btn.setAttribute('aria-label', audio.paused ? 'Слушать эфир' : 'Пауза');
   }
 
-  V.getSchedule()
-    .then(function (obj) {
-      var key = todayKey();
-      var text = (obj && (obj[key] || obj[Object.keys(obj)[0]])) || '';
-      if (!text) {
-        el.textContent = 'Расписание на сегодня появится позже.';
-        return;
-      }
-      el.textContent = text;
-    })
-    .catch(function () {
-      el.textContent = 'Расписание временно недоступно.';
-    });
+  btn.addEventListener('click', function () {
+    if (audio.paused) audio.play().catch(function () {});
+    else audio.pause();
+  });
+  audio.addEventListener('play', sync);
+  audio.addEventListener('pause', sync);
 })();

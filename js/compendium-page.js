@@ -12,6 +12,12 @@
     order.push(it.n);
   });
 
+  var COVERS = {
+    faith: 'assets/cards/articles-spirituality.webp',
+    sacraments: 'assets/cards/articles-liturgy.webp',
+    life: 'assets/cards/articles-lifestyle.webp',
+    prayer: 'assets/cards/church-deepen-pray.webp'
+  };
   var state = { part: null, q: '' };
   var player = null;
   var current = 0;
@@ -88,10 +94,10 @@
           var from = p.shelves[0].from;
           var to = p.shelves[p.shelves.length - 1].to;
           return (
-            '<button type="button" class="comp-gate" data-part="' + esc(p.id) + '">' +
-            '<span class="comp-range">' + from + '–' + to + '</span>' +
-            '<strong>' + esc(p.title) + '</strong>' +
-            '<em>' + esc(ruCount(partCount(p))) + '</em></button>'
+            '<button type="button" class="comp-gate" data-part="' + esc(p.id) + '" style="background-image:url(\'' +
+            esc(COVERS[p.id]) + '\')">' +
+            '<span><small>' + from + '–' + to + '</small><strong>' + esc(p.title) + '</strong><em>' +
+            esc(ruCount(partCount(p))) + '</em></span></button>'
           );
         }).join('') +
         '</div>';

@@ -22,16 +22,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="icon" href="favicon.ico?v=202610271231" sizes="any" />
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=202610271231" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=202610271231" />
+    <link rel="icon" href="favicon.ico?v=202610271255" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=202610271255" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=202610271255" />
         <link rel="manifest" href="site.webmanifest" />
     <meta name="theme-color" content="#F3F1EA" />
-    <script>window.YAK_BUILD = '202610271231';</script>
+    <script>window.YAK_BUILD = '202610271255';</script>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Рускатолик" />
     <script id="yak_theme_boot">try{document.documentElement.dataset.theme=localStorage.getItem('yak_theme')==='twilight'?'twilight':'light'}catch(e){document.documentElement.dataset.theme='light'}</script>
-    <link rel="stylesheet" href="portal.css?v=202610271231" />
+    <link rel="stylesheet" href="portal.css?v=202610271255" />
   </head>
   <body>
         <header class="masthead">
@@ -74,9 +74,13 @@
         <p class="comp-by">Молитва, слово и музыка</p>
       </header>
 
-      <section class="radio-card in-shell">
+      <section class="radio-stage in-shell">
+        <button type="button" class="radio-play" id="radio-play" aria-label="Слушать эфир">
+          <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5L8 5.5Z" fill="currentColor"/></svg>
+          <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.4v14H7V5Zm6.6 0H17v14h-3.4V5Z" fill="currentColor"/></svg>
+        </button>
         <p class="radio-live"><i></i>В эфире</p>
-        <audio id="radio-el" controls preload="none" playsinline src="https://radiomaria.hostingradio.ru/radiomaria192.aacp"></audio>
+        <audio id="radio-el" preload="none" playsinline src="https://radiomaria.hostingradio.ru/radiomaria192.aacp"></audio>
       </section>
     </main>
 
@@ -118,10 +122,11 @@
         <span>Спросить</span>
       </a>
     </nav>
-    <script src="js/config.js?v=202610271231"></script>
-    <script src="js/api.js?v=202610271231"></script>
-    <script src="js/portal-nav.js?v=202610271231"></script>
-    <script src="js/theme.js?v=202610271231"></script>
-    <script src="js/cache-bust.js?v=202610271231"></script>
+    <script src="js/config.js?v=202610271255"></script>
+    <script src="js/api.js?v=202610271255"></script>
+    <script src="js/portal-nav.js?v=202610271255"></script>
+    <script src="js/radio.js?v=202610271255"></script>
+    <script src="js/theme.js?v=202610271255"></script>
+    <script src="js/cache-bust.js?v=202610271255"></script>
   </body>
 </html>

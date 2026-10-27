@@ -19,17 +19,14 @@
 
   function render() {
     var rail = document.getElementById('cast-rail');
-    var liveMark =
-      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 10a7.5 7.5 0 0 1 15 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>' +
-      '<path d="M8 10a4 4 0 0 1 8 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>' +
-      '<circle cx="12" cy="16.2" r="1.7" fill="currentColor"/></svg>';
+    var radioArt = 'assets/cards/articles-liturgy.webp';
     var radioTile =
       '<a class="cast-tile" href="radio.html">' +
-      '<span class="cast-tile-art cast-tile-art--live">' + liveMark + '</span>' +
+      '<span class="cast-tile-art" style="background-image:url(\'' + radioArt + '\')"></span>' +
       '<strong>Радио Мария</strong><em>Прямой эфир</em></a>';
     var radioRow =
       '<article class="cast-row"><a class="cast-row-main" href="radio.html">' +
-      '<span class="cast-row-art cast-tile-art--live">' + liveMark + '</span>' +
+      '<span class="cast-row-art" style="background-image:url(\'' + radioArt + '\')"></span>' +
       '<span class="cast-row-meta"><strong>Радио Мария</strong>' +
       '<em>Прямой эфир</em><small>Слушать сейчас</small></span></a>' +
       '<a class="cast-listen" href="radio.html">Слушать</a></article>';
