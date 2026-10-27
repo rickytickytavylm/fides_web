@@ -292,11 +292,14 @@
   }
 
   function pullServerDate() {
-    var base =
-      (global.VeraConfig && VeraConfig.ARCHIVE_API_BASE) ||
-      'https://rickytickytavylm-fides-at-ratio-server-d4c9.twc1.net';
-    fetch(String(base).replace(/\/$/, '') + '/health')
-      .then(function (res) { return res.ok ? res.json() : null; })
+    var ready = (global.Vera && global.Vera.ensureApi) ? global.Vera.ensureApi() : Promise.resolve();
+    ready.then(function () {
+      var base =
+        (global.VeraConfig && VeraConfig.ARCHIVE_API_BASE) ||
+        'https://rickytickytavylm-fides-at-ratio-server-d4c9.twc1.net';
+      return fetch(String(base).replace(/\/$/, '') + '/health');
+    })
+      .then(function (res) { return res && res.ok ? res.json() : null; })
       .then(function (h) {
         if (h && h.date && /^\d{4}-\d{2}-\d{2}$/.test(h.date)) {
           serverDate = h.date;

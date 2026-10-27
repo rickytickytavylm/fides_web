@@ -514,13 +514,22 @@
     renderNode(node);
   }
 
-  var painted = false;
+  root.setAttribute('aria-busy', 'true');
+  root.innerHTML =
+    '<div class="skel-rows" role="status" aria-label="Загрузка" style="padding:28px 0">' +
+    '<div class="sk sk-line" style="width:28%;height:12px"></div>' +
+    '<div class="sk sk-line" style="width:70%;height:28px"></div>' +
+    '<div class="sk sk-line" style="width:96%;height:14px"></div>' +
+    '<div class="sk sk-line" style="width:88%;height:14px"></div>' +
+    '<div class="sk sk-line" style="width:76%;height:14px"></div>' +
+    '</div>';
   function paintOnceFromPack() {
-    painted = true;
+    root.removeAttribute('aria-busy');
     paint();
   }
-  if (window.YakGuidesOnPack) {
-    YakGuidesOnPack(paintOnceFromPack);
-    setTimeout(function () { if (!painted) paint(); }, 900);
-  } else paint();
+  if (window.YakGuidesOnPack) YakGuidesOnPack(paintOnceFromPack);
+  else {
+    root.removeAttribute('aria-busy');
+    paint();
+  }
 })();

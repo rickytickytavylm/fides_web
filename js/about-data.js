@@ -83,8 +83,14 @@
     return current;
   }
 
+  var packState = '';
+
   function onPack(fn) {
-    if (typeof fn === 'function') listeners.push(fn);
+    if (typeof fn !== 'function') return;
+    listeners.push(fn);
+    if (packState) {
+      try { fn(current); } catch (e) {}
+    }
   }
 
   function notifyPack() {
@@ -99,5 +105,6 @@
     mergePack: mergePack,
     onPack: onPack,
     notifyPack: notifyPack,
+    markPack: function (state) { packState = state || 'ok'; },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -51,6 +51,7 @@
           if (!pack) throw new Error('empty pack');
           owner._packOk = true;
           owner._packIng = false;
+          owner._packSettled = true;
           onOk(pack, a);
         })
         .catch(function (e) {
@@ -62,6 +63,7 @@
             return;
           }
           owner._packIng = false;
+          owner._packSettled = true;
           if (missing) owner._packMissing = true;
           if (onFail) onFail();
         });
@@ -540,8 +542,10 @@
     loadPack(applyAbout, 'yak-about-data', function (pack) {
       if (pack) A.mergePack(pack);
       if (read().about) A.mergePack(read().about);
+      if (A.markPack) A.markPack('ok');
       if (A.notifyPack) A.notifyPack();
     }, function () {
+      if (A.markPack) A.markPack('fail');
       if (A.notifyPack) A.notifyPack();
     });
   }
@@ -551,7 +555,11 @@
     guidePackFns.forEach(function (fn) { try { fn(); } catch (e) {} });
   }
   global.YakGuidesOnPack = function (fn) {
-    if (typeof fn === 'function') guidePackFns.push(fn);
+    if (typeof fn !== 'function') return;
+    guidePackFns.push(fn);
+    if (applyGuides._packSettled) {
+      try { fn(); } catch (e) {}
+    }
   };
 
   function hrefPath(href) {

@@ -212,11 +212,14 @@
       return Promise.resolve(filterByBbox(demoPack(), bbox));
     }
 
-    var base = (C.TEMPLES_API_BASE || '').replace(/\/$/, '');
     var path = C.TEMPLES_SEARCH_PATH || '/api/temples/search';
-    var url = base + path + '?bbox=' + encodeURIComponent(bbox.join(','));
+    var ready = (global.Vera && global.Vera.ensureApi) ? global.Vera.ensureApi() : Promise.resolve();
 
-    return fetch(url, { signal: options.signal })
+    return ready.then(function () {
+      var base = (C.TEMPLES_API_BASE || '').replace(/\/$/, '');
+      var url = base + path + '?bbox=' + encodeURIComponent(bbox.join(','));
+      return fetch(url, { signal: options.signal });
+    })
       .then(function (res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
         return res.json();
@@ -254,9 +257,12 @@
   }
 
   function getStats() {
-    var base = (C.TEMPLES_API_BASE || '').replace(/\/$/, '');
     var path = C.TEMPLES_STATS_PATH || '/api/temples/stats';
-    return fetch(base + path)
+    var ready = (global.Vera && global.Vera.ensureApi) ? global.Vera.ensureApi() : Promise.resolve();
+    return ready.then(function () {
+      var base = (C.TEMPLES_API_BASE || '').replace(/\/$/, '');
+      return fetch(base + path);
+    })
       .then(function (res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
         return res.json();

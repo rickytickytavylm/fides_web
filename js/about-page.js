@@ -138,8 +138,6 @@
     if (location.hash === '#app') setTimeout(scrollApp, 40);
   }
 
-  if (A.get && A.get().cover) render();
-  else setTimeout(function () { if (!painted) render(); }, 1200);
   if (A.onPack) A.onPack(function () {
     render();
     setTimeout(scrollApp, 40);

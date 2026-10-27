@@ -18,7 +18,10 @@
     if (!url) return;
     API_BASE = url;
     if (global.Vera) global.Vera.API_BASE = url;
-    if (global.VeraConfig) global.VeraConfig.ARCHIVE_API_BASE = url;
+    if (global.VeraConfig) {
+      global.VeraConfig.ARCHIVE_API_BASE = url;
+      global.VeraConfig.TEMPLES_API_BASE = url;
+    }
   }
 
   function apiCandidates() {
@@ -37,30 +40,27 @@
   }
 
   var apiReady = null;
+  /* Сначала Timeweb. Следующий адрес — только если предыдущий не ответил. */
   function ensureApi() {
     if (apiReady) return apiReady;
     var list = apiCandidates();
     apiReady = new Promise(function (resolve) {
-      var settled = false;
-      var pending = list.length;
-      function done(url) {
-        if (settled) return;
-        settled = true;
-        if (url) setApiBase(url);
-        else setApiBase(TIMEWEB_API);
-        resolve(API_BASE);
-      }
-      if (!pending) {
-        done(TIMEWEB_API);
-        return;
-      }
-      list.forEach(function (url) {
+      var i = 0;
+      function next() {
+        if (i >= list.length) {
+          setApiBase(TIMEWEB_API);
+          resolve(API_BASE);
+          return;
+        }
+        var url = list[i];
+        var waitMs = i === 0 ? 8000 : 20000;
+        i += 1;
         var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
         var timer = setTimeout(function () {
           try {
             if (ctrl) ctrl.abort();
           } catch (e) {}
-        }, 8000);
+        }, waitMs);
         fetch(url + '/health', {
           method: 'GET',
           headers: { Accept: 'application/json' },
@@ -71,17 +71,15 @@
           .then(function (res) {
             clearTimeout(timer);
             if (!res.ok) throw new Error('bad');
-            done(url);
+            setApiBase(url);
+            resolve(API_BASE);
           })
           .catch(function () {
             clearTimeout(timer);
-            pending -= 1;
-            if (pending <= 0) done(null);
+            next();
           });
-      });
-      setTimeout(function () {
-        done(null);
-      }, 9000);
+      }
+      next();
     });
     return apiReady;
   }
