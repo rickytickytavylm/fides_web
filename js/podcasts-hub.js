@@ -19,6 +19,20 @@
 
   function render() {
     var rail = document.getElementById('cast-rail');
+    var liveMark =
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 10a7.5 7.5 0 0 1 15 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>' +
+      '<path d="M8 10a4 4 0 0 1 8 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>' +
+      '<circle cx="12" cy="16.2" r="1.7" fill="currentColor"/></svg>';
+    var radioTile =
+      '<a class="cast-tile" href="radio.html">' +
+      '<span class="cast-tile-art cast-tile-art--live">' + liveMark + '</span>' +
+      '<strong>Радио Мария</strong><em>Прямой эфир</em></a>';
+    var radioRow =
+      '<article class="cast-row"><a class="cast-row-main" href="radio.html">' +
+      '<span class="cast-row-art cast-tile-art--live">' + liveMark + '</span>' +
+      '<span class="cast-row-meta"><strong>Радио Мария</strong>' +
+      '<em>Прямой эфир</em><small>Слушать сейчас</small></span></a>' +
+      '<a class="cast-listen" href="radio.html">Слушать</a></article>';
     var compTile =
       '<a class="cast-tile" href="compendium.html">' +
       '<span class="cast-tile-art" style="background-image:url(\'assets/compendium/newcom.jpg\');background-position:72% 84%"></span>' +
@@ -30,7 +44,7 @@
       '<em>о. Максим Гурезов</em><small>595 вопросов</small></span></a>' +
       '<a class="cast-listen" href="compendium.html">Слушать</a></article>';
     if (rail) {
-      rail.innerHTML = compTile + P.shows.map(function (show) {
+      rail.innerHTML = radioTile + compTile + P.shows.map(function (show) {
         return (
           '<a class="cast-tile" href="' + href(show.id) + '">' +
           '<span class="cast-tile-art" style="background-image:url(\'' + esc(show.cover) + '\')"></span>' +
@@ -57,7 +71,7 @@
 
     var list = document.getElementById('cast-list');
     if (list) {
-      list.innerHTML = compRow + P.shows.map(function (show) {
+      list.innerHTML = radioRow + compRow + P.shows.map(function (show) {
         return (
           '<article class="cast-row">' +
           '<a class="cast-row-main" href="' + href(show.id) + '">' +

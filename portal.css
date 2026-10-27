@@ -2817,6 +2817,23 @@ body.audio-player-open {
   margin: 8px 0 22px; padding: 22px; border-radius: 18px; background: var(--surface); box-shadow: var(--shadow-card);
 }
 .radio-card h2 { margin: 8px 0 16px; font-size: 22px; }
+.radio-live {
+  display: flex; align-items: center; gap: 8px; margin: 0 0 14px;
+  font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--bronze-dark);
+}
+.radio-live i {
+  width: 8px; height: 8px; border-radius: 50%; background: #c4554a;
+  box-shadow: 0 0 0 0 rgba(196, 85, 74, .55); animation: radio-pulse 1.8s ease-out infinite;
+}
+@keyframes radio-pulse {
+  70% { box-shadow: 0 0 0 8px rgba(196, 85, 74, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(196, 85, 74, 0); }
+}
+.cast-tile-art--live {
+  display: grid; place-items: center; color: var(--bronze-dark); background: var(--surface-2);
+}
+.cast-tile-art--live svg { width: 46px; height: 46px; }
+.cast-row-art.cast-tile-art--live svg { width: 30px; height: 30px; }
 .radio-note { margin: 14px 0 0; color: var(--stone-500); font-size: 12.5px; }
 .radio-schedule-block { padding: 18px; border-radius: 16px; background: var(--surface-2); border: 1px dashed var(--line-strong); }
 .radio-schedule-block h3 { margin: 0 0 12px; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }

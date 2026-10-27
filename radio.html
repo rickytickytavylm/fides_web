@@ -22,16 +22,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="icon" href="favicon.ico?v=202610271216" sizes="any" />
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=202610271216" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=202610271216" />
+    <link rel="icon" href="favicon.ico?v=202610271222" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=202610271222" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=202610271222" />
         <link rel="manifest" href="site.webmanifest" />
     <meta name="theme-color" content="#F3F1EA" />
-    <script>window.YAK_BUILD = '202610271216';</script>
+    <script>window.YAK_BUILD = '202610271222';</script>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Рускатолик" />
     <script id="yak_theme_boot">try{document.documentElement.dataset.theme=localStorage.getItem('yak_theme')==='twilight'?'twilight':'light'}catch(e){document.documentElement.dataset.theme='light'}</script>
-    <link rel="stylesheet" href="portal.css?v=202610271216" />
+    <link rel="stylesheet" href="portal.css?v=202610271222" />
   </head>
   <body>
         <header class="masthead">
@@ -64,36 +64,36 @@
 
 <main class="page-shell">
       <nav class="breadcrumbs in-shell" aria-label="Хлебные крошки">
-        <a href="index.html">Главная</a><span>/</span><span>Радио</span>
+        <a href="index.html">Главная</a><span>/</span>
+        <a href="audio.html">Аудио</a><span>/</span>
+        <span>Радио Мария</span>
       </nav>
-      <header class="page-head in-shell">
-        <div>
-          <p class="eyebrow">Эфир</p>
-          <h1>Радио Мария</h1>
-        </div>
-        <p class="page-desc">Прямой эфир — молитва, слово и музыка в течение дня</p>
+      <header class="comp-head in-shell">
+        <p class="eyebrow">Прямой эфир</p>
+        <h1>Радио Мария</h1>
+        <p class="comp-by">Молитва, слово и музыка</p>
       </header>
 
-      <section class="radio-card">
-        <p class="eyebrow">В эфире</p>
-        <h2>Слушать сейчас</h2>
-        <audio id="radio-el" controls preload="none" src="http://85.249.234.114:8100/rm160"></audio>
-        <p class="radio-note">Если плеер не запускается в браузере, откройте раздел в приложении «Вера и Разум».</p>
-      </section>
-
-      <section class="radio-schedule-block">
-        <h3>Расписание</h3>
-        <pre class="radio-schedule" id="radio-schedule">Загрузка…</pre>
+      <section class="radio-card in-shell">
+        <p class="radio-live"><i></i>В эфире</p>
+        <audio id="radio-el" controls preload="none" playsinline src="https://radiomaria.hostingradio.ru/radiomaria192.aacp"></audio>
       </section>
     </main>
 
-    <footer class="site-footer site-footer-narrow">
-      <div class="footer-brand">
-        <img class="brand-logo" src="mark-p.png" alt="" width="40" height="40" />
-        <div><strong>Рускатолик</strong><p>Радио</p></div>
-      </div>
-      <p class="footer-copy">© Рускатолик</p>
-    </footer>
+    <footer class="portal-footer"><div class="wrap">
+      <a class="logo" href="index.html">
+        <span class="mark"><img src="mark-p.png" alt="Рускатолик" width="30" height="30" /></span>
+        <span class="wm">Рускатолик</span>
+      </a>
+      <p class="footer-tagline">Католический портал</p>
+      <nav class="footer-links" aria-label="Ещё">
+        <a href="events.html">Афиша</a>
+        <a href="library.html">Библиотека</a>
+        <a href="audio.html">Аудио</a>
+        <a href="video.html">Видео</a>
+        <a href="page.html">О проекте</a>
+      </nav>
+    </div></footer>
 
                 <nav class="app-tabbar" aria-label="Основная навигация">
       <a class="tab-item" href="index.html" data-tab="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 10.8 12 4.6l7.5 6.2V20a1.4 1.4 0 0 1-1.4 1.4h-4.2v-5.2h-3.8v5.2H5.9A1.4 1.4 0 0 1 4.5 20V10.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span>Главная</span></a>
@@ -118,13 +118,10 @@
         <span>Спросить</span>
       </a>
     </nav>
-    <script src="js/config.js?v=202610271216"></script>
-    <script src="js/api.js?v=202610271216"></script>
-    <script src="js/portal-nav.js?v=202610271216"></script>
-    <script src="js/app.js?v=202610271216"></script>
-    <script src="js/radio.js?v=202610271216"></script>
-      
-      <script src="js/theme.js?v=202610271216"></script>
-    <script src="js/cache-bust.js?v=202610271216"></script>
+    <script src="js/config.js?v=202610271222"></script>
+    <script src="js/api.js?v=202610271222"></script>
+    <script src="js/portal-nav.js?v=202610271222"></script>
+    <script src="js/theme.js?v=202610271222"></script>
+    <script src="js/cache-bust.js?v=202610271222"></script>
   </body>
 </html>
