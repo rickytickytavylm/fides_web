@@ -11,15 +11,6 @@
     byNum[it.n] = it;
     order.push(it.n);
   });
-  var partOf = {};
-  C.parts.forEach(function (part) {
-    part.shelves.forEach(function (shelf) {
-      var n;
-      for (n = shelf.from; n <= shelf.to; n++) {
-        if (byNum[n]) partOf[n] = part;
-      }
-    });
-  });
 
   var state = { part: null, q: '' };
   var player = null;
@@ -94,10 +85,13 @@
       body.innerHTML =
         '<div class="comp-gates">' +
         C.parts.map(function (p) {
+          var from = p.shelves[0].from;
+          var to = p.shelves[p.shelves.length - 1].to;
           return (
-            '<button type="button" class="comp-gate" data-part="' + esc(p.id) + '" style="background-image:url(\'' +
-            esc(p.image) + '\');background-position:' + esc(p.pos) + '">' +
-            '<span><strong>' + esc(p.title) + '</strong><em>' + esc(ruCount(partCount(p))) + '</em></span></button>'
+            '<button type="button" class="comp-gate" data-part="' + esc(p.id) + '">' +
+            '<span class="comp-range">' + from + '–' + to + '</span>' +
+            '<strong>' + esc(p.title) + '</strong>' +
+            '<em>' + esc(ruCount(partCount(p))) + '</em></button>'
           );
         }).join('') +
         '</div>';
@@ -175,11 +169,6 @@
     return order.indexOf(n);
   }
 
-  function artOf(n) {
-    var part = partOf[n];
-    return part ? part.image : C.parts[0].image;
-  }
-
   function fmt(sec) {
     if (!isFinite(sec) || sec < 0) return '0:00';
     var m = Math.floor(sec / 60);
@@ -203,7 +192,7 @@
   function ensurePlayer() {
     if (player) return player;
     var overlay = document.createElement('div');
-    overlay.className = 'ytm-now';
+    overlay.className = 'ytm-now ytm-now--face';
     overlay.hidden = true;
     overlay.innerHTML =
       '<button type="button" class="ytm-close" aria-label="Закрыть">' +
@@ -289,7 +278,6 @@
     if (!it) return;
     current = n;
     var p = ensurePlayer();
-    p.overlay.style.setProperty('--audio-artwork', 'url("' + artOf(n) + '")');
     p.overlay.querySelector('#comp-title').textContent = it.n + '. ' + it.t;
     p.overlay.querySelector('#comp-artist').textContent = C.artist;
     p.overlay.hidden = false;

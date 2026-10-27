@@ -4626,24 +4626,33 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
 }
 .cal-saint-link { font-weight: 600; color: var(--bronze-dark); }
 
-.comp-head { padding: 8px 0 4px; }
-.comp-head h1 { margin: 0; font-family: var(--serif); font-weight: 600; font-size: clamp(36px, 4.5vw, 52px); line-height: 1.05; }
-.comp-by { margin: 8px 0 18px; color: var(--stone-700); font-size: 16px; }
-.comp-gates { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.comp-head { display: flex; align-items: center; gap: 18px; padding: 8px 0 4px; }
+.comp-head > div { min-width: 0; }
+.comp-portrait {
+  width: 86px; height: 112px; object-fit: cover; object-position: center 18%;
+  border-radius: 16px; flex: none; background: var(--surface-2);
+}
+.comp-head h1 { margin: 0; font-family: var(--serif); font-weight: 600; font-size: clamp(32px, 4.2vw, 48px); line-height: 1.05; }
+.comp-by { margin: 8px 0 0; color: var(--stone-700); font-size: 16px; }
+.comp-gates { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 6px; }
 .comp-gate {
-  position: relative; display: block; aspect-ratio: 3 / 4; min-height: 0; padding: 0; border: 0; border-radius: 18px;
-  overflow: hidden; cursor: pointer; color: #fff; text-align: left;
-  background: #1a1613 center / 280% no-repeat;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  min-height: 132px; padding: 18px 18px 16px; border: 1px solid var(--line); border-radius: 18px;
+  background: var(--surface); box-shadow: var(--shadow-card); color: inherit; text-align: left; cursor: pointer;
 }
-.comp-gate span {
-  position: absolute; left: 0; right: 0; bottom: 0;
-  padding: 36px 16px 14px;
-  background: linear-gradient(180deg, transparent, rgba(15, 9, 6, .88));
+.comp-gate:hover { border-color: var(--bronze); }
+.comp-range { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--bronze-dark); }
+.comp-gate strong { font-family: var(--serif); font-size: clamp(26px, 3vw, 34px); font-weight: 600; line-height: 1.1; }
+.comp-gate em { margin-top: auto; font-style: normal; font-size: 13px; color: var(--stone-500); }
+.ytm-now.ytm-now--face {
+  background-color: #161310;
+  background-image:
+    linear-gradient(180deg, rgba(22, 19, 16, 0) 0 50%, rgba(22, 19, 16, .82) 70%, #161310 84%),
+    url("assets/compendium/portrait.jpg");
+  background-repeat: no-repeat, no-repeat;
+  background-size: auto, min(72vw, 340px) auto;
+  background-position: center, center 8%;
 }
-.comp-gate strong {
-  display: block; font-family: var(--serif); font-size: clamp(28px, 3vw, 36px); font-weight: 600; line-height: 1.05;
-}
-.comp-gate em { display: block; margin-top: 4px; font-style: normal; font-size: 13px; opacity: .82; }
 .comp-back {
   border: 0; background: transparent; padding: 0; margin: 0 0 8px; cursor: pointer;
   color: var(--bronze-dark); font: 700 14px var(--ff);
