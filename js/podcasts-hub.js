@@ -19,8 +19,18 @@
 
   function render() {
     var rail = document.getElementById('cast-rail');
+    var compTile =
+      '<a class="cast-tile" href="compendium.html">' +
+      '<span class="cast-tile-art" style="background-image:url(\'assets/compendium/newcom.jpg\');background-position:72% 84%"></span>' +
+      '<strong>Компендиум</strong><em>о. Максим Гурезов</em></a>';
+    var compRow =
+      '<article class="cast-row"><a class="cast-row-main" href="compendium.html">' +
+      '<span class="cast-row-art" style="background-image:url(\'assets/compendium/newcom.jpg\');background-position:72% 84%"></span>' +
+      '<span class="cast-row-meta"><strong>Компендиум Катехизиса</strong>' +
+      '<em>о. Максим Гурезов</em><small>595 вопросов</small></span></a>' +
+      '<a class="cast-listen" href="compendium.html">Слушать</a></article>';
     if (rail) {
-      rail.innerHTML = P.shows.map(function (show) {
+      rail.innerHTML = compTile + P.shows.map(function (show) {
         return (
           '<a class="cast-tile" href="' + href(show.id) + '">' +
           '<span class="cast-tile-art" style="background-image:url(\'' + esc(show.cover) + '\')"></span>' +
@@ -47,7 +57,7 @@
 
     var list = document.getElementById('cast-list');
     if (list) {
-      list.innerHTML = P.shows.map(function (show) {
+      list.innerHTML = compRow + P.shows.map(function (show) {
         return (
           '<article class="cast-row">' +
           '<a class="cast-row-main" href="' + href(show.id) + '">' +

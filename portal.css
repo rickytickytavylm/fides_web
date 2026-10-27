@@ -4608,3 +4608,46 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
   font-family: var(--ff); font-size: 15px !important; font-style: italic; color: var(--ink) !important;
 }
 .cal-saint-link { font-weight: 600; color: var(--bronze-dark); }
+
+.comp-head { padding: 8px 0 4px; }
+.comp-head h1 { margin: 0; font-family: var(--serif); font-weight: 600; font-size: clamp(36px, 4.5vw, 52px); line-height: 1.05; }
+.comp-by { margin: 8px 0 18px; color: var(--stone-700); font-size: 16px; }
+.comp-gates { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.comp-gate {
+  position: relative; display: block; aspect-ratio: 3 / 4; min-height: 0; padding: 0; border: 0; border-radius: 18px;
+  overflow: hidden; cursor: pointer; color: #fff; text-align: left;
+  background: #1a1613 center / 280% no-repeat;
+}
+.comp-gate span {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 36px 16px 14px;
+  background: linear-gradient(180deg, transparent, rgba(15, 9, 6, .88));
+}
+.comp-gate strong {
+  display: block; font-family: var(--serif); font-size: clamp(28px, 3vw, 36px); font-weight: 600; line-height: 1.05;
+}
+.comp-gate em { display: block; margin-top: 4px; font-style: normal; font-size: 13px; opacity: .82; }
+.comp-back {
+  border: 0; background: transparent; padding: 0; margin: 0 0 8px; cursor: pointer;
+  color: var(--bronze-dark); font: 700 14px var(--ff);
+}
+.comp-part-title {
+  margin: 0 0 8px; font-family: var(--serif); font-size: clamp(32px, 4vw, 44px); font-weight: 600;
+}
+.comp-shelf { margin: 26px 0 0; }
+.comp-shelf header { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
+.comp-shelf h3 { margin: 0; font-family: var(--serif); font-size: 26px; font-weight: 600; }
+.comp-shelf header span { color: var(--stone-500); font-size: 13px; }
+.comp-list { display: flex; flex-direction: column; }
+.comp-q {
+  display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 8px; align-items: baseline;
+  width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--line);
+  background: transparent; color: inherit; cursor: pointer; padding: 12px 4px; font: 500 15.5px/1.35 var(--ff);
+}
+.comp-q b { color: var(--stone-500); font-weight: 700; font-size: 13px; }
+.comp-q:hover, .comp-q.is-on { color: var(--bronze-dark); }
+.comp-note { margin: 0 0 8px; color: var(--stone-700); }
+body.comp-open { overflow: hidden; }
+@media (max-width: 880px) {
+  .comp-gates { grid-template-columns: 1fr 1fr; }
+}
