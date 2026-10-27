@@ -4473,8 +4473,24 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
   font-size: 12.5px; margin: 8px 0 0;
 }
 .article-body a, .article-lead a, .lib-annotation a, .static-body a, .guide-body a {
-  color: var(--bronze-dark);
+  color: #2f6fed;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
 }
+.article-body a:hover, .article-lead a:hover, .lib-annotation a:hover, .static-body a:hover, .guide-body a:hover {
+  color: #1f4fc4;
+}
+[data-theme="twilight"] .article-body a,
+[data-theme="twilight"] .article-lead a,
+[data-theme="twilight"] .lib-annotation a,
+[data-theme="twilight"] .static-body a,
+[data-theme="twilight"] .guide-body a { color: #7eb0ff; }
+[data-theme="twilight"] .article-body a:hover,
+[data-theme="twilight"] .article-lead a:hover,
+[data-theme="twilight"] .lib-annotation a:hover,
+[data-theme="twilight"] .static-body a:hover,
+[data-theme="twilight"] .guide-body a:hover { color: #a8c8ff; }
 .article-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 8px; }
 .article-tag {
   display: inline-flex; padding: 4px 10px; border-radius: 999px;
