@@ -52,11 +52,9 @@
     var authors = app.authors || [];
     var cover = artPhoto(d.cover, d.coverMobile, 'static-photo');
 
-    function qrFigure(q) {
+    function qrImg(q) {
       if (!q || !q.image) return '';
-      return '<figure class="support-qr"><img src="' + esc(q.image) + '" alt="" />' +
-        (q.label ? '<figcaption>' + esc(q.label) + '</figcaption>' : '') +
-        '</figure>';
+      return '<figure class="support-qr"><img src="' + esc(q.image) + '" alt="" /></figure>';
     }
     function pickQr(re) {
       return (qrs || []).filter(function (q) {
@@ -65,12 +63,25 @@
     }
     var portalQr = pickQr(/портал/i);
     var appQr = pickQr(/приложен/i);
-    var portalQrHtml = portalQr ? '<aside class="about-side-qr">' + qrFigure(portalQr) + '</aside>' : '';
+    var supportText = donate.textHtml || '';
+    var portalCard = (supportText || portalQr)
+      ? '<aside class="about-support">' +
+        '<h2>' + esc(donate.eyebrow || 'Поддержите нас') + '</h2>' +
+        supportText +
+        qrImg(portalQr) +
+        '</aside>'
+      : '';
     var appAuthorsHtml = authors.length
       ? '<div class="app-authors"><h3>Авторы приложения</h3><section class="principles">' +
         authors.map(personCard).join('') + '</section></div>'
       : '';
-    var appQrHtml = appQr ? '<aside class="about-side-qr">' + qrFigure(appQr) + '</aside>' : '';
+    var appQrHtml = appQr
+      ? '<aside class="about-support about-support--app">' +
+        '<h3>' + esc(appQr.label || 'Поддержать приложение') + '</h3>' +
+        '<p>Ваши пожертвования пойдут на оплату технических расходов и развитие новых сервисов.</p>' +
+        qrImg(appQr) +
+        '</aside>'
+      : '';
 
     root.innerHTML =
       '<nav class="breadcrumbs" aria-label="Хлебные крошки"><a href="index.html">Главная</a><span>/</span><a href="page.html">О проекте</a></nav>' +
@@ -79,15 +90,13 @@
       '<h1>' + (d.titleHtml || '') + '</h1></header>' +
       cover +
       '<div class="about-intro">' +
-      '<div class="article-body static-body">' + (d.descriptionHtml || '') +
-      (d.principlesTitle ? '<h2>' + esc(d.principlesTitle) + '</h2>' : '') +
+      '<div class="article-body static-body">' + (d.descriptionHtml || '') + '</div>' +
+      portalCard +
       '</div>' +
-      portalQrHtml +
-      '</div>' +
+      (d.principlesTitle ? '<h2 class="about-team-title">' + esc(d.principlesTitle) + '</h2>' : '') +
       '<section class="principles">' +
       (d.principles || []).map(personCard).join('') +
       '</section>' +
-      (portalQr ? '<div class="about-side-qr about-side-qr--flow">' + qrFigure(portalQr) + '</div>' : '') +
       '<section class="app-download app-download--wide" id="app">' +
       '<p class="eyebrow">' + esc(app.eyebrow || 'Приложение') + '</p>' +
       '<h2>' + esc(app.title || '') + '</h2>' +
@@ -102,11 +111,6 @@
       '<div class="app-download-body">' + (app.html || '') + '</div>' +
       ((appAuthorsHtml || appQrHtml) ? '<div class="app-support-row">' + appAuthorsHtml + appQrHtml + '</div>' : '') +
       '</section>' +
-      '<section class="support-block">' +
-      '<div class="support-inner">' +
-      '<p class="eyebrow">' + esc(donate.eyebrow || 'Поддержите нас') + '</p>' +
-      '<h2>' + (donate.titleHtml || '') + '</h2>' +
-      '</div></section>' +
       '<section class="section partners">' +
       '<div class="section-top"><p class="eyebrow">Партнёры</p><h2>' + esc(d.partnersTitle || 'С кем мы работаем') + '</h2></div>' +
       '<div class="partner-grid">' +

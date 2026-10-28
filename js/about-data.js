@@ -21,7 +21,8 @@
     ],
     donate: {
       eyebrow: 'Поддержите нас',
-      titleHtml: 'Издание живёт<br />на пожертвования читателей.',
+      titleHtml: '',
+      textHtml: '<p>Чтобы расти и развиваться, порталу нужна полноценная редакция. Её бюджет напрямую зависит от ваших пожертвований. Если вам нравится наш сайт, настройте ежемесячное пожертвование или пожертвуйте единоразово сумму, которую обычно тратите за ужин с друзьями. Это будет ваш конкретный вклад в развитие миссии Церкви в цифровой среде. Будьте нашим другом и единомышленником!</p>',
       qrs: [{ image: '', label: 'Портал' }, { image: '', label: 'Приложение' }],
     },
     app: {
@@ -70,6 +71,7 @@
     if (pack.principles && pack.principles.length) next.principles = pack.principles.filter(function (p) { return p && (p.title || p.text || p.photo); });
     if (pack.donate) {
       next.donate = Object.assign({}, next.donate, pack.donate);
+      if (!pack.donate.textHtml) next.donate.textHtml = (current.donate && current.donate.textHtml) || '';
       if (Array.isArray(pack.donate.qrs)) next.donate.qrs = pack.donate.qrs;
     }
     if (pack.app) {
