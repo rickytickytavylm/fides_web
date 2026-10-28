@@ -1,7 +1,8 @@
 /**
  * Оформление портала:
-   * - light: «Свет» (фон #EAE5DB, шапка #F3F1EA)
+ * - light: «Свет»
  * - twilight: «Сумерки»
+ * Пока человек сам не переключил, повторяем оформление системы.
  */
 (function () {
   'use strict';
@@ -11,6 +12,22 @@
 
   function normalize(theme) {
     return theme === 'twilight' ? 'twilight' : 'light';
+  }
+
+  function systemTheme() {
+    try {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'twilight' : 'light';
+    } catch (e) {
+      return 'light';
+    }
+  }
+
+  function savedTheme() {
+    try {
+      var value = localStorage.getItem(KEY);
+      if (value === 'light' || value === 'twilight') return value;
+    } catch (e) {}
+    return null;
   }
 
   function current() {
@@ -33,8 +50,6 @@
         'aria-label',
         twilight ? 'Включить оформление «Свет»' : 'Включить оформление «Сумерки»'
       );
-      var name = button.querySelector('.theme-toggle-name');
-      if (name) name.remove();
     });
 
     if (persist) {
@@ -52,34 +67,45 @@
     );
   }
 
+  function host() {
+    if (document.body && document.body.classList.contains('chat-page')) {
+      return document.querySelector('.chat-app .masthead .wrap');
+    }
+    return document.querySelector('.portal-footer .wrap') || document.querySelector('.site-footer');
+  }
+
   function mount() {
-    document.querySelectorAll('.theme-switch').forEach(function (el) { el.remove(); });
-
-    document.querySelectorAll('.masthead .wrap').forEach(function (header) {
-      if (header.querySelector('.theme-toggle')) return;
-      var calendar = header.querySelector('.cal-btn');
-      if (!calendar) return;
-
-      var tools = header.querySelector('.header-tools') || header.querySelector('.masthead-tools');
-      if (!tools) {
-        tools = document.createElement('div');
-        tools.className = 'header-tools';
-        calendar.parentNode.insertBefore(tools, calendar);
-        tools.appendChild(calendar);
-      }
-      tools.classList.add('header-tools');
-      tools.insertAdjacentHTML('afterbegin', toggleHtml());
+    document.querySelectorAll('.masthead .theme-toggle').forEach(function (button) {
+      if (!document.body.classList.contains('chat-page')) button.remove();
     });
 
+    var box = host();
+    if (box && !box.querySelector('.theme-toggle')) {
+      var row = document.createElement('div');
+      row.className = 'footer-theme';
+      row.innerHTML = toggleHtml();
+      box.appendChild(row);
+    }
+
     document.querySelectorAll('.theme-toggle').forEach(function (button) {
+      if (button.dataset.bound) return;
+      button.dataset.bound = '1';
       button.addEventListener('click', function () {
         apply(current() === 'twilight' ? 'light' : 'twilight', true);
       });
     });
 
-    var saved = null;
-    try { saved = localStorage.getItem(KEY); } catch (e) {}
-    apply(saved === 'twilight' ? 'twilight' : 'light', false);
+    apply(savedTheme() || systemTheme(), false);
+
+    try {
+      var mq = window.matchMedia('(prefers-color-scheme: dark)');
+      var onChange = function () {
+        if (savedTheme()) return;
+        apply(systemTheme(), false);
+      };
+      if (mq.addEventListener) mq.addEventListener('change', onChange);
+      else if (mq.addListener) mq.addListener(onChange);
+    } catch (e) {}
   }
 
   if (document.readyState === 'loading') {
