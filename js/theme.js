@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var KEY = 'yak_theme';
+  var KEY = 'yak_theme_pick';
   var root = document.documentElement;
 
   function normalize(theme) {
@@ -59,6 +59,7 @@
 
   function toggleHtml() {
     return (
+      '<span class="footer-theme-label">Оформление</span>' +
       '<button type="button" class="theme-toggle" aria-pressed="false">' +
       '<span class="theme-toggle-track" aria-hidden="true">' +
       '<svg class="theme-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>' +
