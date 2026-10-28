@@ -2,7 +2,7 @@
   "name": "Рускатолик",
   "short_name": "Рускатолик",
   "description": "Первая католическая экосистема: новости, статьи, медиа, катехетические материалы",
-  "start_url": "./index.html?b=202610282101",
+  "start_url": "./index.html?b=202610282105",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
