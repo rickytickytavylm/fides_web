@@ -105,11 +105,20 @@
       '<a class="logo" href="index.html">' +
       '<span class="mark"><img src="mark-p.png" alt="" width="30" height="30" /></span></a>' +
       '<nav class="footer-links footer-links--row" aria-label="Разделы">' + links + '</nav></div>' +
+      '<div class="wrap footer-theme-wrap"><div class="footer-theme">' +
+      '<span class="footer-theme-label">Оформление</span>' +
+      '<button type="button" class="theme-toggle" aria-pressed="false" aria-label="Включить оформление «Сумерки»">' +
+      '<span class="theme-toggle-track" aria-hidden="true">' +
+      '<svg class="theme-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/>' +
+      '<path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>' +
+      '<svg class="theme-moon" viewBox="0 0 24 24"><path d="M19.2 15.3A7.7 7.7 0 0 1 8.7 4.8 7.8 7.8 0 1 0 19.2 15.3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>' +
+      '<i></i></span></button></div></div>' +
       '<div class="wrap footer-legal-wrap"><p class="footer-tagline footer-legal">' + LEGAL + '</p></div>';
     hosts.forEach(function (el) {
       el.className = 'portal-footer';
       el.innerHTML = html;
     });
+    if (window.YakThemeBind) window.YakThemeBind();
   }
 
   function isInternalHref(href) {

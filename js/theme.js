@@ -97,6 +97,16 @@
     });
 
     apply(savedTheme() || systemTheme(), false);
+    window.YakThemeBind = function () {
+      document.querySelectorAll('.theme-toggle').forEach(function (button) {
+        if (button.dataset.bound) return;
+        button.dataset.bound = '1';
+        button.addEventListener('click', function () {
+          apply(current() === 'twilight' ? 'light' : 'twilight', true);
+        });
+      });
+      apply(savedTheme() || current(), false);
+    };
 
     try {
       var mq = window.matchMedia('(prefers-color-scheme: dark)');
