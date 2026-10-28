@@ -190,26 +190,21 @@ nav.top a:hover { background: var(--accent-soft); color: var(--bronze-dark); }
 .app-btn {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  justify-content: center;
+  width: 42px;
   height: 42px;
-  padding: 0 14px 0 12px;
+  padding: 0;
   border-radius: 14px;
   border: 1px solid var(--line-strong);
   background: var(--ground);
   color: var(--bronze-dark);
-  font-size: 13px;
-  font-weight: 700;
   text-decoration: none;
-  white-space: nowrap;
   transition: border-color .15s, background .15s, color .15s;
 }
 .app-btn svg { width: 18px; height: 18px; display: block; flex: none; }
+.app-btn span { display: none; }
 .app-btn:hover {
   border-color: var(--bronze); background: var(--accent-soft); color: var(--ink);
-}
-@media (max-width: 1180px) {
-  .app-btn { width: 42px; padding: 0; justify-content: center; }
-  .app-btn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
 }
 
 /* ---------- Blocks ---------- */

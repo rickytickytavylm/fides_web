@@ -22,8 +22,8 @@
 
   var APP_SVG =
     '<svg viewBox="0 0 24 24" aria-hidden="true">' +
-    '<path d="M4.5 6.2c2.2-.8 4.4-.5 7.5 1.4 3.1-1.9 5.3-2.2 7.5-1.4v12.2c-2.2-.7-4.4-.4-7.5 1.4-3.1-1.8-5.3-2.1-7.5-1.4V6.2Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>' +
-    '<path d="M12 7.6v12.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>' +
+    '<rect x="7" y="2.8" width="10" height="18.4" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.7"/>' +
+    '<path d="M10 18.6h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>' +
     '</svg>';
 
   function bindAppBtn(btn) {
@@ -61,8 +61,7 @@
     btn.className = 'app-btn';
     btn.href = 'page.html';
     btn.setAttribute('aria-label', 'О проекте');
-    btn.title = 'О проекте';
-    btn.innerHTML = APP_SVG + '<span>О проекте</span>';
+    btn.innerHTML = APP_SVG;
     bindAppBtn(btn);
     tools.insertBefore(btn, tools.firstChild);
   }
