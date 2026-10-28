@@ -19,7 +19,7 @@
 
   function render() {
     var rail = document.getElementById('cast-rail');
-    var radioArt = 'assets/cards/articles-liturgy.webp';
+    var radioArt = 'assets/radio/mario-promo.webp';
     var radioTile =
       '<a class="cast-tile" href="radio.html">' +
       '<span class="cast-tile-art" style="background-image:url(\'' + radioArt + '\')"></span>' +
