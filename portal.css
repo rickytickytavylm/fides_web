@@ -2984,8 +2984,17 @@ body.chat-page .chat-back:hover { background: var(--accent-soft); color: var(--b
   font-size: 13px; font-weight: 700; color: var(--stone-700);
 }
 .portal-footer .footer-links a:hover { color: var(--bronze-dark); }
-.footer-theme-wrap { display: flex; justify-content: center; }
-.footer-theme-wrap .footer-theme { margin: 4px 0 0; padding-left: 0; }
+.footer-theme-wrap { display: flex; justify-content: center; width: 100%; }
+.portal-footer .wrap.footer-theme-wrap {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.footer-theme-wrap .footer-theme,
+.portal-footer .footer-theme-wrap .footer-theme {
+  margin: 4px auto 0;
+  padding-left: 0;
+}
 .footer-theme { display: flex; align-items: center; gap: 10px; margin-top: 14px; padding-left: 41px; }
 .site-footer .footer-theme { margin: 0 0 0 auto; padding-left: 0; }
 .footer-theme-label { font-size: 13px; font-weight: 700; color: var(--stone-700); }
