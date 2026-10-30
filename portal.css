@@ -4697,12 +4697,32 @@ a.guide-step-row:hover strong { color: var(--bronze-dark); }
   .about-intro .static-body { max-width: none; }
   .app-support-row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
-    gap: 28px 40px;
-    align-items: start;
+    grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+    gap: 24px 32px;
+    align-items: center;
     margin-top: 28px;
   }
-  .about-support--app .support-qr img { width: min(100%, 168px); }
+  .about-support--app {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 156px;
+    column-gap: 22px;
+    row-gap: 8px;
+    align-items: center;
+    padding: 22px 22px 22px 26px;
+  }
+  .about-support--app h3,
+  .about-support--app p { grid-column: 1; margin: 0; }
+  .about-support--app h3 { font-size: 26px; }
+  .about-support--app .support-qr {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    margin: 0;
+  }
+  .about-support--app .support-qr img {
+    width: 148px;
+    height: 148px;
+    margin: 0;
+  }
 }
 @media (max-width: 880px) {
   .page-static .static-head { margin-bottom: 16px; }
