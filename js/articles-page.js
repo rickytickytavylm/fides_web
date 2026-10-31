@@ -16,8 +16,14 @@
   function hrefFor(item) {
     if (item.href) return item.href;
     if (item.tag) return 'tag.html?slug=' + encodeURIComponent(item.tag);
+    var slug = item.slug || '';
+    var title = String(item.title || '');
+    if (title === 'Искусственный интеллект') slug = 'ai';
+    else if (title === 'Экуменический диалог') slug = 'ecumenism';
+    else if (title === 'Забота об общем доме') slug = 'Laudato';
+    if (slug) return 'archive.html?category=' + encodeURIComponent(slug);
     if (item.q) return 'archive.html?q=' + encodeURIComponent(item.q);
-    return 'archive.html?category=' + encodeURIComponent(item.slug || 'columns');
+    return 'archive.html?category=columns';
   }
 
   var RUBRICS = [
