@@ -576,6 +576,32 @@
         throw new Error('Article empty');
       }
       document.title = article.title + ' — Рускатолик';
+      var site = 'https://ruscatholic.org';
+      var pageUrl = site + '/article.html?id=' + encodeURIComponent(article.slug || id);
+      var plain = String(article.excerpt || article.contentText || '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 180);
+      var link = document.querySelector('link[rel="canonical"]');
+      if (link) link.setAttribute('href', pageUrl);
+      function meta(attr, key, value) {
+        var el = document.querySelector('meta[' + attr + '="' + key + '"]');
+        if (el && value) el.setAttribute('content', value);
+      }
+      meta('property', 'og:url', pageUrl);
+      meta('property', 'og:title', document.title);
+      meta('property', 'og:type', 'article');
+      meta('name', 'twitter:title', document.title);
+      if (plain) {
+        meta('name', 'description', plain);
+        meta('property', 'og:description', plain);
+        meta('name', 'twitter:description', plain);
+      }
+      if (article.image) {
+        meta('property', 'og:image', article.image);
+        meta('name', 'twitter:image', article.image);
+      }
       function paint() {
         root.innerHTML = renderArticle(article);
         if (relatedSection) relatedSection.hidden = article.kind === 'page';
