@@ -15,6 +15,7 @@
 
   function hrefFor(item) {
     if (item.href) return item.href;
+    if (item.tag) return 'tag.html?slug=' + encodeURIComponent(item.tag);
     if (item.q) return 'archive.html?q=' + encodeURIComponent(item.q);
     return 'archive.html?category=' + encodeURIComponent(item.slug || 'columns');
   }
@@ -33,11 +34,11 @@
 
   // Темы: где тега ещё нет — временный поиск q (см. HANDOFF §6)
   var TOPICS = [
-    { title: 'Искусственный интеллект', q: 'искусственный интеллект' },
+    { title: 'Искусственный интеллект', slug: 'ai' },
     { title: 'Теология тела', slug: 'theology-of-the-body' },
     { title: 'Мифы и правда о Католической Церкви', slug: 'pravda' },
-    { title: 'Забота об общем доме', q: 'Laudato' },
-    { title: 'Экуменический диалог', q: 'экуменический' },
+    { title: 'Забота об общем доме', slug: 'Laudato' },
+    { title: 'Экуменический диалог', slug: 'ecumenism' },
   ];
 
   var QA = [
@@ -46,9 +47,9 @@
   ];
 
   var IDEAS = [
-    { title: 'Это интересно', slug: 'eto-interesno', tone: 'c', image: 'assets/cards/articles-interesting.webp' },
-    { title: 'Кино со смыслом', slug: 'kino-so-smyislom', tone: 'd', image: 'assets/cards/articles-meaningful-cinema.webp' },
-    { title: 'Католическая кухня', slug: 'cook', tone: 'e', image: 'assets/cards/articles-catholic-kitchen.webp' },
+    { title: 'Это интересно', tag: 'eto-interesno', tone: 'c', image: 'assets/cards/articles-interesting.webp' },
+    { title: 'Кино со смыслом', tag: 'kino-so-smyslom', tone: 'd', image: 'assets/cards/articles-meaningful-cinema.webp' },
+    { title: 'Католическая кухня', tag: 'katolicheskaya-kuhnya', tone: 'e', image: 'assets/cards/articles-catholic-kitchen.webp' },
   ];
 
   var VOICES = [
