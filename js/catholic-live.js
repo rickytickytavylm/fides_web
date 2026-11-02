@@ -13,6 +13,8 @@
     { id: 'moskva-sobor', city: 'Москва', name: 'Кафедральный собор Непорочного Зачатия Пресвятой Девы Марии', cover: 'assets/video/catholic-live/moskva-sobor.jpg' },
     { id: 'rostov', city: 'Ростов-на-Дону', name: 'Приход Тайной Вечери', cover: 'assets/video/catholic-live/rostov.jpg' },
     { id: 'spb', city: 'Санкт-Петербург', name: 'Храм Посещения Пресвятой Девой Марией Елизаветы', cover: 'assets/video/catholic-live/spb.jpg' },
+    { id: 'spb-catherine', city: 'Санкт-Петербург', name: 'Базилика святой Екатерины Александрийской', cover: 'assets/video/catholic-live/spb-catherine.jpg' },
+    { id: 'spb-uspenie', city: 'Санкт-Петербург', name: 'Собор Успения Пресвятой Девы Марии', cover: 'assets/video/catholic-live/spb-uspenie.jpg' },
     { id: 'smolensk', city: 'Смоленск', name: 'Приход Непорочного Зачатия Пресвятой Девы Марии', cover: 'assets/video/catholic-live/smolensk.jpg' },
     { id: 'chita', city: 'Чита', name: 'Приход святых апостолов Петра и Павла', cover: 'assets/video/catholic-live/chita.jpg' }
   ];
@@ -25,12 +27,12 @@
     [9105, 'rostov', 'rostov/02-allilujya-rozhdestvenskie-bogosluzheniya-v-priho.mp4', 'Аллилуйя. Рождественские богослужения, 2025'],
     [9106, 'rostov', 'rostov/03-prestolnyj-prazdnik-v-cerkvi-tajnoj-vecheri-v-ro.mp4', 'Престольный праздник'],
     [9107, 'rostov', 'rostov/04-psalom-96-95-rozhdestvenskie-bogosluzheniya-v-pr.mp4', 'Псалом 96 (95). Рождественские богослужения, 2025'],
-    [9108, 'spb', 'spb/01-12-iyunya-2026-goda-pri-bogosluzhenie-vozglavil-.mp4', '12 июня 2026. Богослужение возглавил отец Павел Крупа, OP'],
+    [9108, 'spb-catherine', 'spb/01-12-iyunya-2026-goda-pri-bogosluzhenie-vozglavil-.mp4', '12 июня 2026. Богослужение возглавил отец Павел Крупа, OP'],
     [9109, 'spb', 'spb/02-verbnoe-voskresene-2026-v-hrame-posescheniya-pre.mov', 'Вербное воскресенье, 2026'],
     [9110, 'spb', 'spb/03-eleopomazanie-na-svyatoj-messe-v-hrame-poseschen.mov', 'Елеопомазание на Святой Мессе, 22 марта 2026'],
     [9111, 'spb', 'spb/04-krestnyj-put-1-v-hrame-posescheniya-presvyatoj-d.mov', 'Крестный путь, часть 1, 8 марта 2026'],
     [9112, 'spb', 'spb/05-krestnyj-put-2-v-hrame-posescheniya-presvyatoj-d.mov', 'Крестный путь, часть 2, 8 марта 2026'],
-    [9113, 'spb', 'spb/06-svyataya-messa-posvyaschen-nkt-peterburg-27-01-2.mp4', 'Святая Месса, 27 января 2026'],
+    [9113, 'spb-uspenie', 'spb/06-svyataya-messa-posvyaschen-nkt-peterburg-27-01-2.mp4', 'Святая Месса, 27 января 2026'],
     [9114, 'spb', 'spb/07-scenka-rozhdestvenskij-arii-elizavety-v-sankt-pe.mp4', 'Рождественская сценка, 4 января 2026'],
     [9115, 'smolensk', 'smolensk/01-16-maya-2026-goda-smolensk-ptolomeush-kuchmik-by.mp4', 'Рукоположение Птоломеуша Кучмика, 16 мая 2026'],
     [9116, 'smolensk', 'smolensk/02-v-prihode-neporochnogo-zachatiya-presvyatoj-devy.mp4', 'Сооружают вертеп'],
