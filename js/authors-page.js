@@ -14,6 +14,7 @@
   function formatBio(bio) {
     if (!bio) return '';
     bio = String(bio)
+      .replace(/https?:\/\/(?:www\.)?katolik\.live[^\s"'<>]*/gi, 'https://vk.ru/katoliklive')
       .replace(/архива\s+Рускатолик/gi, 'Рускатолик')
       .replace(/\s*Тег на Рускатолик:[^.]*\.?/gi, '')
       .replace(/портал[а]?\s+«?Рускатолик»?/gi, 'портал Рускатолик');

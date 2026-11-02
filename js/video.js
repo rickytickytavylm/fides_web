@@ -362,6 +362,7 @@
     var s = String(bio || '')
       .replace(/<!--[\s\S]*?-->/g, '')
       .replace(/<span>\s*(?:&nbsp;|\u00a0)?\s*<\/span>/gi, ' ')
+      .replace(/https?:\/\/(?:www\.)?katolik\.live[^\s"'<>]*/gi, 'https://vk.ru/katoliklive')
       .trim();
     if (!s) return '';
     if (V && V.sanitizeRichHtml) return V.sanitizeRichHtml(s);
