@@ -407,9 +407,9 @@
     var grouped = {};
     cities.forEach(function (c) { grouped[c.id] = true; });
 
-    function folderCard(href, cover, title, meta) {
+    function folderCard(href, cover, title, meta, cityName) {
       return (
-        '<a class="live-folder" href="' + href + '">' +
+        '<a class="live-folder" data-city="' + esc(cityName || title) + '" href="' + href + '">' +
         '<img src="' + esc(cover) + '" alt="" />' +
         '<span class="live-folder-copy"><strong>' + esc(title) + '</strong>' +
         '<em>' + esc(meta) + '</em></span></a>'
@@ -445,12 +445,13 @@
           channelHref('&city=' + encodeURIComponent(c.id)),
           c.cover,
           c.name,
-          churches.length + ' ' + (churches.length === 1 ? 'храм' : churches.length < 5 ? 'храма' : 'храмов') + ' · ' + clipsLabel(n)
+          churches.length + ' ' + (churches.length === 1 ? 'храм' : churches.length < 5 ? 'храма' : 'храмов') + ' · ' + clipsLabel(n),
+          c.name
         );
       }).join('');
       top += parishes.filter(function (p) { return !grouped[p.cityId]; }).map(function (p) {
         var n = mine.filter(function (v) { return v.parish === p.id; }).length;
-        return folderCard(channelHref('&parish=' + encodeURIComponent(p.id)), p.cover, p.name, p.city + ' · ' + clipsLabel(n));
+        return folderCard(channelHref('&parish=' + encodeURIComponent(p.id)), p.cover, p.name, p.city + ' · ' + clipsLabel(n), p.city);
       }).join('');
       channelRoot.innerHTML =
         crumbs +
@@ -461,9 +462,26 @@
         '<h1>' + esc(ch.name) + '</h1>' +
         (ch.bio ? '<p class="live-lead">' + esc(ch.bio) + '</p>' : '') +
         liveAuthorHtml(ch.authorSlug) +
+        '<label class="live-city-search"><input type="search" id="live-city-q" placeholder="Найти город" autocomplete="off" enterkeyhint="search" /></label>' +
         '</div></section>' +
         '<section class="video-band"><div class="block-head"><h2>Приходы</h2><span class="rule"></span></div>' +
+        '<p class="live-city-empty" id="live-city-empty" hidden>Такого города нет</p>' +
         '<div class="live-folders">' + top + '</div></section>';
+      var cityInput = channelRoot.querySelector('#live-city-q');
+      if (cityInput) {
+        cityInput.addEventListener('input', function () {
+          var q = String(cityInput.value || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, '');
+          var shown = 0;
+          channelRoot.querySelectorAll('.live-folder').forEach(function (card) {
+            var name = String(card.getAttribute('data-city') || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, '');
+            var ok = !q || name.indexOf(q) !== -1;
+            card.hidden = !ok;
+            if (ok) shown += 1;
+          });
+          var empty = channelRoot.querySelector('#live-city-empty');
+          if (empty) empty.hidden = shown > 0;
+        });
+      }
       return;
     }
 

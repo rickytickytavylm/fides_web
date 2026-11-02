@@ -2397,6 +2397,14 @@ main.article { padding-bottom: 48px; }
 .live-author-bio p { margin: 0 0 .45em; }
 .live-author-bio p:last-child { margin-bottom: 0; }
 .live-author-bio a { color: #2a5bd7; text-decoration: underline; }
+.live-city-search { display: block; margin-top: 18px; max-width: 420px; }
+.live-city-search input {
+  width: 100%; box-sizing: border-box; padding: 12px 0; border: 0;
+  border-bottom: 1px solid var(--line-strong); background: transparent; color: var(--ink); font: inherit;
+}
+.live-city-search input:focus { outline: none; border-bottom-color: var(--bronze); }
+.live-city-search input::placeholder { color: var(--stone-500); }
+.live-city-empty { margin: 0 0 12px; color: var(--stone-500); }
 .live-folders { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px 16px; }
 .live-folder { display: grid; gap: 10px; text-decoration: none; color: inherit; min-width: 0; }
 .live-folder img {
