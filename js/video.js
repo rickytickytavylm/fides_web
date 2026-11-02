@@ -464,7 +464,7 @@
         liveAuthorHtml(ch.authorSlug) +
         '<label class="live-city-search"><input type="search" id="live-city-q" placeholder="Найти город" autocomplete="off" enterkeyhint="search" /></label>' +
         '</div></section>' +
-        '<section class="video-band"><div class="block-head"><h2>Приходы</h2><span class="rule"></span></div>' +
+        '<section class="video-band"><div class="block-head"><h2>Города</h2><span class="rule"></span></div>' +
         '<p class="live-city-empty" id="live-city-empty" hidden>Такого города нет</p>' +
         '<div class="live-folders">' + top + '</div></section>';
       var cityInput = channelRoot.querySelector('#live-city-q');

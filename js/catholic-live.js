@@ -8,15 +8,15 @@
   var ROOT = 'https://storage.yandexcloud.net/fidesetratio/desk/video/catholic-live/';
 
   var parishes = [
-    { id: 'berezniki', city: 'Березники', name: 'Приход Мария Царица Мира', cover: 'assets/video/catholic-live/berezniki.jpg' },
+    { id: 'berezniki', cityId: 'berezniki', city: 'Березники', name: 'Приход Мария Царица Мира', cover: 'assets/video/catholic-live/berezniki.jpg' },
     { id: 'moskva', cityId: 'moskva', city: 'Москва', name: 'Храм святого Людовика, приход Петра и Павла', cover: 'assets/video/catholic-live/moskva.jpg' },
     { id: 'moskva-sobor', cityId: 'moskva', city: 'Москва', name: 'Кафедральный собор Непорочного Зачатия Пресвятой Девы Марии', cover: 'assets/video/catholic-live/moskva-sobor.jpg' },
-    { id: 'rostov', city: 'Ростов-на-Дону', name: 'Приход Тайной Вечери', cover: 'assets/video/catholic-live/rostov.jpg' },
+    { id: 'rostov', cityId: 'rostov', city: 'Ростов-на-Дону', name: 'Приход Тайной Вечери', cover: 'assets/video/catholic-live/rostov.jpg' },
     { id: 'spb', cityId: 'spb', city: 'Санкт-Петербург', name: 'Храм Посещения Пресвятой Девой Марией Елизаветы', cover: 'assets/video/catholic-live/spb.jpg' },
     { id: 'spb-heart', cityId: 'spb', city: 'Санкт-Петербург', name: 'Храм Святейшего Сердца Иисуса', cover: 'assets/video/catholic-live/spb-heart.jpg' },
     { id: 'spb-uspenie', cityId: 'spb', city: 'Санкт-Петербург', name: 'Собор Успения Пресвятой Девы Марии', cover: 'assets/video/catholic-live/spb-uspenie.jpg' },
-    { id: 'smolensk', city: 'Смоленск', name: 'Приход Непорочного Зачатия Пресвятой Девы Марии', cover: 'assets/video/catholic-live/smolensk.jpg' },
-    { id: 'chita', city: 'Чита', name: 'Приход святых апостолов Петра и Павла', cover: 'assets/video/catholic-live/chita.jpg' }
+    { id: 'smolensk', cityId: 'smolensk', city: 'Смоленск', name: 'Приход Непорочного Зачатия Пресвятой Девы Марии', cover: 'assets/video/catholic-live/smolensk.jpg' },
+    { id: 'chita', cityId: 'chita', city: 'Чита', name: 'Приход святых апостолов Петра и Павла', cover: 'assets/video/catholic-live/chita.jpg' }
   ];
 
   var rows = [
@@ -79,8 +79,12 @@
     authorSlug: 'igor-fofanov',
     parishes: parishes,
     cities: [
+      { id: 'berezniki', name: 'Березники', cover: 'assets/video/catholic-live/city-berezniki.jpg' },
       { id: 'moskva', name: 'Москва', cover: 'assets/video/catholic-live/city-moskva.jpg' },
-      { id: 'spb', name: 'Санкт-Петербург', cover: 'assets/video/catholic-live/city-spb.jpg' }
+      { id: 'rostov', name: 'Ростов-на-Дону', cover: 'assets/video/catholic-live/city-rostov.jpg' },
+      { id: 'spb', name: 'Санкт-Петербург', cover: 'assets/video/catholic-live/city-spb.jpg' },
+      { id: 'smolensk', name: 'Смоленск', cover: 'assets/video/catholic-live/city-smolensk.jpg' },
+      { id: 'chita', name: 'Чита', cover: 'assets/video/catholic-live/city-chita.jpg' }
     ],
     bio: '«Католик.LIVE. Живая история католической России» — интернет-портал, созданный для того, чтобы прихожане, священники и монашествующие присылали истории из жизни своих приходов, свидетельства христианской жизни. Материалы разделены по епархиям и приходам и представлены в виде коротких видео.',
     links: [],
