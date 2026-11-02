@@ -366,19 +366,25 @@
       if (list[i].slug === slug) { a = list[i]; break; }
     }
     var name = (a && a.name) || 'Игорь Фофанов';
+    var photo = (a && (a.photo || a.image || a.avatar)) || '';
     var bio = (a && a.bio) || '';
     var letters = name.split(/\s+/).filter(Boolean).slice(0, 2).map(function (w) { return w.charAt(0); }).join('');
-    var ava = a && a.photo
-      ? '<span class="author-ava" style="background-image:url(\'' + esc(a.photo) + '\')"></span>'
+    var ava = photo
+      ? '<span class="author-ava" style="background-image:url(\'' + esc(photo) + '\')"></span>'
       : '<span class="author-ava initials">' + esc(letters || 'ИФ') + '</span>';
+    var bioHtml = '';
+    if (bio) {
+      bioHtml = (V && V.sanitizeRichHtml)
+        ? V.sanitizeRichHtml(bio)
+        : '<p>' + esc(bio) + '</p>';
+    }
+    var href = 'author.html?slug=' + encodeURIComponent(slug || 'igor-fofanov');
     return (
-      '<a class="live-author" href="author.html?slug=' + encodeURIComponent(slug || 'igor-fofanov') + '">' +
-      ava +
-      '<span class="live-author-copy">' +
-      '<small>Автор проекта</small>' +
-      '<strong>' + esc(name) + '</strong>' +
-      (bio ? '<em>' + esc(bio) + '</em>' : '') +
-      '</span></a>'
+      '<div class="live-author">' +
+      '<a class="live-author-person" href="' + href + '">' + ava +
+      '<span class="live-author-copy"><small>Автор проекта</small><strong>' + esc(name) + '</strong></span></a>' +
+      (bioHtml ? '<div class="live-author-bio">' + bioHtml + '</div>' : '') +
+      '</div>'
     );
   }
 
