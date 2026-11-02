@@ -358,6 +358,16 @@
     return n + ' роликов';
   }
 
+  function authorBioHtml(bio) {
+    var s = String(bio || '')
+      .replace(/<!--[\s\S]*?-->/g, '')
+      .replace(/<span>\s*(?:&nbsp;|\u00a0)?\s*<\/span>/gi, ' ')
+      .trim();
+    if (!s) return '';
+    if (V && V.sanitizeRichHtml) return V.sanitizeRichHtml(s);
+    return '<p>' + esc(s.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()) + '</p>';
+  }
+
   function liveAuthorHtml(slug) {
     var list = window.YakAuthors || [];
     var a = null;
@@ -372,12 +382,7 @@
     var ava = photo
       ? '<span class="author-ava" style="background-image:url(\'' + esc(photo) + '\')"></span>'
       : '<span class="author-ava initials">' + esc(letters || 'ИФ') + '</span>';
-    var bioHtml = '';
-    if (bio) {
-      bioHtml = (V && V.sanitizeRichHtml)
-        ? V.sanitizeRichHtml(bio)
-        : '<p>' + esc(bio) + '</p>';
-    }
+    var bioHtml = authorBioHtml(bio);
     var href = 'author.html?slug=' + encodeURIComponent(slug || 'igor-fofanov');
     return (
       '<div class="live-author">' +
