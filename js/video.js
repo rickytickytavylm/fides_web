@@ -395,19 +395,63 @@
   }
 
   function renderParishChannel(ch) {
-    var parishId = new URLSearchParams(location.search).get('parish') || '';
+    var params = new URLSearchParams(location.search);
+    var parishId = params.get('parish') || '';
+    var cityId = params.get('city') || '';
     var parishes = ch.parishes || [];
+    var cities = ch.cities || [];
     var mine = all.filter(function (v) { return v.channelId === ch.id; });
     var parish = parishes.filter(function (p) { return p.id === parishId; })[0] || null;
-    document.title = (parish ? parish.name + ' — ' : '') + ch.name + ' — Видео — Рускатолик';
+    var city = cities.filter(function (c) { return c.id === cityId; })[0] || null;
+    if (parish && parish.cityId) city = cities.filter(function (c) { return c.id === parish.cityId; })[0] || city;
+    var grouped = {};
+    cities.forEach(function (c) { grouped[c.id] = true; });
+
+    function folderCard(href, cover, title, meta) {
+      return (
+        '<a class="live-folder" href="' + href + '">' +
+        '<img src="' + esc(cover) + '" alt="" />' +
+        '<span class="live-folder-copy"><strong>' + esc(title) + '</strong>' +
+        '<em>' + esc(meta) + '</em></span></a>'
+      );
+    }
+    function channelHref(extra) {
+      return 'video-channel.html?id=' + encodeURIComponent(ch.id) + (extra || '');
+    }
+
+    document.title = (parish ? parish.name + ' — ' : city ? city.name + ' — ' : '') + ch.name + ' — Видео — Рускатолик';
     var crumbs =
       '<nav class="breadcrumbs in-shell"><a href="index.html">Главная</a><span>/</span><a href="video.html">Видео</a><span>/</span>' +
-      (parish
-        ? '<a href="video-channel.html?id=' + encodeURIComponent(ch.id) + '">' + esc(ch.name) + '</a><span>/</span><span>' + esc(parish.name) + '</span>'
+      (parish || city
+        ? '<a href="' + channelHref('') + '">' + esc(ch.name) + '</a><span>/</span>'
         : '<span>' + esc(ch.name) + '</span>') +
+      (parish && city
+        ? '<a href="' + channelHref('&city=' + encodeURIComponent(city.id)) + '">' + esc(city.name) + '</a><span>/</span><span>' + esc(parish.name) + '</span>'
+        : parish
+          ? '<span>' + esc(parish.name) + '</span>'
+          : city
+            ? '<span>' + esc(city.name) + '</span>'
+            : '') +
       '</nav>';
 
-    if (!parish) {
+    if (!parish && !city) {
+      var top = cities.map(function (c) {
+        var churches = parishes.filter(function (p) { return p.cityId === c.id; });
+        var n = 0;
+        churches.forEach(function (p) {
+          n += mine.filter(function (v) { return v.parish === p.id; }).length;
+        });
+        return folderCard(
+          channelHref('&city=' + encodeURIComponent(c.id)),
+          c.cover,
+          c.name,
+          churches.length + ' ' + (churches.length === 1 ? 'храм' : churches.length < 5 ? 'храма' : 'храмов') + ' · ' + clipsLabel(n)
+        );
+      }).join('');
+      top += parishes.filter(function (p) { return !grouped[p.cityId]; }).map(function (p) {
+        var n = mine.filter(function (v) { return v.parish === p.id; }).length;
+        return folderCard(channelHref('&parish=' + encodeURIComponent(p.id)), p.cover, p.name, p.city + ' · ' + clipsLabel(n));
+      }).join('');
       channelRoot.innerHTML =
         crumbs +
         '<section class="live-hero in-shell">' +
@@ -419,25 +463,37 @@
         liveAuthorHtml(ch.authorSlug) +
         '</div></section>' +
         '<section class="video-band"><div class="block-head"><h2>Приходы</h2><span class="rule"></span></div>' +
+        '<div class="live-folders">' + top + '</div></section>';
+      return;
+    }
+
+    if (!parish && city) {
+      var churches = parishes.filter(function (p) { return p.cityId === city.id; });
+      channelRoot.innerHTML =
+        crumbs +
+        '<section class="live-parish in-shell">' +
+        '<a class="wlink" href="' + channelHref('') + '">Все города</a>' +
+        '<div class="live-parish-head">' +
+        '<img src="' + esc(city.cover) + '" alt="" />' +
+        '<div><p class="eyebrow">Город</p><h1>' + esc(city.name) + '</h1>' +
+        '<p class="live-lead">Выберите храм</p></div></div>' +
         '<div class="live-folders">' +
-        parishes.map(function (p) {
+        churches.map(function (p) {
           var n = mine.filter(function (v) { return v.parish === p.id; }).length;
-          return (
-            '<a class="live-folder" href="video-channel.html?id=' + encodeURIComponent(ch.id) + '&parish=' + encodeURIComponent(p.id) + '">' +
-            '<img src="' + esc(p.cover) + '" alt="" />' +
-            '<span class="live-folder-copy"><strong>' + esc(p.name) + '</strong>' +
-            '<em>' + esc(p.city) + ' · ' + esc(clipsLabel(n)) + '</em></span></a>'
-          );
+          return folderCard(channelHref('&parish=' + encodeURIComponent(p.id)), p.cover, p.name, clipsLabel(n));
         }).join('') +
         '</div></section>';
       return;
     }
 
     var clips = mine.filter(function (v) { return v.parish === parish.id; });
+    var back = city
+      ? '<a class="wlink" href="' + channelHref('&city=' + encodeURIComponent(city.id)) + '">Храмы: ' + esc(city.name) + '</a>'
+      : '<a class="wlink" href="' + channelHref('') + '">Все приходы</a>';
     channelRoot.innerHTML =
       crumbs +
       '<section class="live-parish in-shell">' +
-      '<a class="wlink" href="video-channel.html?id=' + encodeURIComponent(ch.id) + '">Все приходы</a>' +
+      back +
       '<div class="live-parish-head">' +
       '<img src="' + esc(parish.cover) + '" alt="" />' +
       '<div><p class="eyebrow">' + esc(parish.city) + '</p><h1>' + esc(parish.name) + '</h1>' +
