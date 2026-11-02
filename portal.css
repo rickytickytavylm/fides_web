@@ -2406,7 +2406,7 @@ main.article { padding-bottom: 48px; }
 .live-folder-copy { display: grid; gap: 4px; }
 .live-folder-copy strong { font-size: 16px; line-height: 1.3; }
 .live-folder-copy em { font-style: normal; font-size: 13px; color: var(--stone-500); }
-.live-parish { display: grid; gap: 16px; }
+.live-parish .yt-play { opacity: 1; }
 .live-parish-head {
   display: grid; grid-template-columns: minmax(220px, 420px) minmax(0, 1fr);
   gap: 22px; align-items: center;

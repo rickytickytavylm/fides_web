@@ -61,7 +61,7 @@
       type: 'parish',
       channelId: 'catholic-live',
       parish: row[1],
-      thumb: '',
+      thumb: 'assets/video/catholic-live/frames/' + row[0] + '.jpg',
       videoUrl: ROOT + row[2]
     };
   });
@@ -91,13 +91,10 @@
       }
       V.items.push(v);
     });
-    for (var n = 0; n < V.channels.length; n++) {
-      if (V.channels[n].id === channel.id) {
-        V.channels[n] = Object.assign({}, V.channels[n], channel);
-        return;
-      }
+    for (var n = V.channels.length - 1; n >= 0; n--) {
+      if (V.channels[n].id === channel.id) V.channels.splice(n, 1);
     }
-    V.channels.unshift(channel);
+    V.channels.push(channel);
   }
 
   var orig = V.mergePack;

@@ -441,14 +441,8 @@
       '<img src="' + esc(parish.cover) + '" alt="" />' +
       '<div><p class="eyebrow">' + esc(parish.city) + '</p><h1>' + esc(parish.name) + '</h1>' +
       '<p class="live-lead">' + esc(clipsLabel(clips.length)) + '</p></div></div>' +
-      '<div class="live-list">' +
-      clips.map(function (v) {
-        return (
-          '<button type="button" class="live-row yt-open" data-id="' + esc(String(v.id)) + '">' +
-          '<i class="live-row-play" aria-hidden="true"></i>' +
-          '<span>' + esc(v.title || '') + '</span></button>'
-        );
-      }).join('') +
+      '<div class="yt-film-grid">' +
+      clips.map(filmCard).join('') +
       '</div></section>';
     bind(channelRoot);
   }
