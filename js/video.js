@@ -513,7 +513,7 @@
       '<img src="' + esc(parish.cover) + '" alt="" />' +
       '<div><p class="eyebrow">' + esc(parish.city) + '</p><h1>' + esc(parish.name) + '</h1>' +
       '<p class="live-lead">' + esc(clipsLabel(clips.length)) + '</p></div></div>' +
-      '<div class="yt-film-grid">' +
+      '<div class="yt-film-grid live-films ' + (clips.length === 1 ? 'cols-1' : clips.length === 2 ? 'cols-2' : 'cols-3') + '">' +
       clips.map(filmCard).join('') +
       '</div></section>';
     bind(channelRoot);
