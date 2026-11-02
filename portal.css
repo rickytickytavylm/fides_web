@@ -2404,7 +2404,10 @@ main.article { padding-bottom: 48px; }
 }
 .live-city-search input:focus { outline: none; border-bottom-color: var(--bronze); }
 .live-city-search input::placeholder { color: var(--stone-500); }
-.live-city-empty { margin: 0 0 12px; color: var(--stone-500); }
+.live-city-title {
+  margin: 8px 0 4px; font-family: var(--serif); font-weight: 600;
+  font-size: clamp(32px, 4vw, 48px); letter-spacing: -.03em; line-height: 1.05;
+}
 .live-folders { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px 16px; }
 .live-folder { display: grid; gap: 10px; text-decoration: none; color: inherit; min-width: 0; }
 .live-folder img {

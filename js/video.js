@@ -491,10 +491,7 @@
         crumbs +
         '<section class="live-parish in-shell">' +
         '<a class="wlink" href="' + channelHref('') + '">Все города</a>' +
-        '<div class="live-parish-head">' +
-        '<img src="' + esc(city.cover) + '" alt="" />' +
-        '<div><p class="eyebrow">Город</p><h1>' + esc(city.name) + '</h1>' +
-        '<p class="live-lead">Выберите храм</p></div></div>' +
+        '<h1 class="live-city-title">' + esc(city.name) + '</h1>' +
         '<div class="live-folders">' +
         churches.map(function (p) {
           var n = mine.filter(function (v) { return v.parish === p.id; }).length;
