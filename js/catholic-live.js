@@ -10,6 +10,7 @@
   var parishes = [
     { id: 'berezniki', city: 'Березники', name: 'Приход Мария Царица Мира', cover: 'assets/video/catholic-live/berezniki.jpg' },
     { id: 'moskva', city: 'Москва', name: 'Приход святых апостолов Петра и Павла', cover: 'assets/video/catholic-live/moskva.jpg' },
+    { id: 'moskva-sobor', city: 'Москва', name: 'Кафедральный собор Непорочного Зачатия Пресвятой Девы Марии', cover: 'assets/video/catholic-live/moskva-sobor.jpg' },
     { id: 'rostov', city: 'Ростов-на-Дону', name: 'Приход Тайной Вечери', cover: 'assets/video/catholic-live/rostov.jpg' },
     { id: 'spb', city: 'Санкт-Петербург', name: 'Храм Посещения Пресвятой Девой Марией Елизаветы', cover: 'assets/video/catholic-live/spb.jpg' },
     { id: 'smolensk', city: 'Смоленск', name: 'Приход Непорочного Зачатия Пресвятой Девы Марии', cover: 'assets/video/catholic-live/smolensk.jpg' },
@@ -19,7 +20,7 @@
   var rows = [
     [9101, 'berezniki', 'berezniki/01-krestnyj-hod-po-sluchayu-torzhestva-svyatyh-tela.mp4', 'Крестный ход на торжество Тела и Крови Христовых, 2026'],
     [9102, 'moskva', 'moskva/01-tollite-hostias-i-gaudete-ispolnyaet-hor-prihoda.mov', 'Tollite Hostias и Gaudete. Хор прихода, 2025'],
-    [9103, 'moskva', 'moskva/02-lyubov-tebya-derzhit-ispolnyaet-l-2025-goda-v-ch.mp4', '«Любовь тебя держит». К 1700-летию Никейского Собора, 2025'],
+    [9103, 'moskva-sobor', 'moskva/02-lyubov-tebya-derzhit-ispolnyaet-l-2025-goda-v-ch.mp4', '«Любовь тебя держит». К 1700-летию Никейского Собора, 2025'],
     [9104, 'rostov', 'rostov/01-agnus-dei-rozhdestvenskie-bogosluzheniya-v-priho.mov', 'Agnus Dei. Рождественские богослужения, 2025'],
     [9105, 'rostov', 'rostov/02-allilujya-rozhdestvenskie-bogosluzheniya-v-priho.mp4', 'Аллилуйя. Рождественские богослужения, 2025'],
     [9106, 'rostov', 'rostov/03-prestolnyj-prazdnik-v-cerkvi-tajnoj-vecheri-v-ro.mp4', 'Престольный праздник'],
