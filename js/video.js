@@ -350,6 +350,98 @@
     }
   }
 
+  function clipsLabel(n) {
+    var n10 = n % 10;
+    var n100 = n % 100;
+    if (n10 === 1 && n100 !== 11) return n + ' ролик';
+    if (n10 >= 2 && n10 <= 4 && (n100 < 12 || n100 > 14)) return n + ' ролика';
+    return n + ' роликов';
+  }
+
+  function liveAuthorHtml(slug) {
+    var list = window.YakAuthors || [];
+    var a = null;
+    var i;
+    for (i = 0; i < list.length; i++) {
+      if (list[i].slug === slug) { a = list[i]; break; }
+    }
+    var name = (a && a.name) || 'Игорь Фофанов';
+    var bio = (a && a.bio) || '';
+    var letters = name.split(/\s+/).filter(Boolean).slice(0, 2).map(function (w) { return w.charAt(0); }).join('');
+    var ava = a && a.photo
+      ? '<span class="author-ava" style="background-image:url(\'' + esc(a.photo) + '\')"></span>'
+      : '<span class="author-ava initials">' + esc(letters || 'ИФ') + '</span>';
+    return (
+      '<a class="live-author" href="author.html?slug=' + encodeURIComponent(slug || 'igor-fofanov') + '">' +
+      ava +
+      '<span class="live-author-copy">' +
+      '<small>Автор проекта</small>' +
+      '<strong>' + esc(name) + '</strong>' +
+      (bio ? '<em>' + esc(bio) + '</em>' : '') +
+      '</span></a>'
+    );
+  }
+
+  function renderParishChannel(ch) {
+    var parishId = new URLSearchParams(location.search).get('parish') || '';
+    var parishes = ch.parishes || [];
+    var mine = all.filter(function (v) { return v.channelId === ch.id; });
+    var parish = parishes.filter(function (p) { return p.id === parishId; })[0] || null;
+    document.title = (parish ? parish.name + ' — ' : '') + ch.name + ' — Видео — Рускатолик';
+    var crumbs =
+      '<nav class="breadcrumbs in-shell"><a href="index.html">Главная</a><span>/</span><a href="video.html">Видео</a><span>/</span>' +
+      (parish
+        ? '<a href="video-channel.html?id=' + encodeURIComponent(ch.id) + '">' + esc(ch.name) + '</a><span>/</span><span>' + esc(parish.name) + '</span>'
+        : '<span>' + esc(ch.name) + '</span>') +
+      '</nav>';
+
+    if (!parish) {
+      channelRoot.innerHTML =
+        crumbs +
+        '<section class="live-hero in-shell">' +
+        '<img class="live-cover" src="' + esc(ch.cover || ch.logo || '') + '" alt="' + esc(ch.name) + '" />' +
+        '<div class="live-hero-copy">' +
+        '<p class="eyebrow">Проект</p>' +
+        '<h1>' + esc(ch.name) + '</h1>' +
+        (ch.bio ? '<p class="live-lead">' + esc(ch.bio) + '</p>' : '') +
+        liveAuthorHtml(ch.authorSlug) +
+        '</div></section>' +
+        '<section class="video-band"><div class="block-head"><h2>Приходы</h2><span class="rule"></span></div>' +
+        '<div class="live-folders">' +
+        parishes.map(function (p) {
+          var n = mine.filter(function (v) { return v.parish === p.id; }).length;
+          return (
+            '<a class="live-folder" href="video-channel.html?id=' + encodeURIComponent(ch.id) + '&parish=' + encodeURIComponent(p.id) + '">' +
+            '<img src="' + esc(p.cover) + '" alt="" />' +
+            '<span class="live-folder-copy"><strong>' + esc(p.name) + '</strong>' +
+            '<em>' + esc(p.city) + ' · ' + esc(clipsLabel(n)) + '</em></span></a>'
+          );
+        }).join('') +
+        '</div></section>';
+      return;
+    }
+
+    var clips = mine.filter(function (v) { return v.parish === parish.id; });
+    channelRoot.innerHTML =
+      crumbs +
+      '<section class="live-parish in-shell">' +
+      '<a class="wlink" href="video-channel.html?id=' + encodeURIComponent(ch.id) + '">Все приходы</a>' +
+      '<div class="live-parish-head">' +
+      '<img src="' + esc(parish.cover) + '" alt="" />' +
+      '<div><p class="eyebrow">' + esc(parish.city) + '</p><h1>' + esc(parish.name) + '</h1>' +
+      '<p class="live-lead">' + esc(clipsLabel(clips.length)) + '</p></div></div>' +
+      '<div class="live-list">' +
+      clips.map(function (v) {
+        return (
+          '<button type="button" class="live-row yt-open" data-id="' + esc(String(v.id)) + '">' +
+          '<i class="live-row-play" aria-hidden="true"></i>' +
+          '<span>' + esc(v.title || '') + '</span></button>'
+        );
+      }).join('') +
+      '</div></section>';
+    bind(channelRoot);
+  }
+
   function renderChannel() {
     if (!channelRoot) return;
     if (waitingPack()) {
@@ -358,6 +450,10 @@
     }
     var id = new URLSearchParams(location.search).get('id') || '';
     var ch = channels.filter(function (c) { return c.id === id; })[0];
+    if (ch && ch.layout === 'parishes') {
+      renderParishChannel(ch);
+      return;
+    }
     if (!ch) {
       channelRoot.innerHTML =
         '<nav class="breadcrumbs in-shell"><a href="video.html">Видео</a><span>/</span><span>Не найден</span></nav>' +
@@ -465,5 +561,6 @@
   }
 
   if (window.YakVideos && YakVideos.onPack) YakVideos.onPack(refresh);
+  if (window.YakAuthorsOnPack) YakAuthorsOnPack(function () { if (channelRoot) renderChannel(); });
   refresh();
 })();
