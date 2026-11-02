@@ -79,12 +79,12 @@
     authorSlug: 'igor-fofanov',
     parishes: parishes,
     cities: [
-      { id: 'berezniki', name: 'Березники', cover: 'assets/video/catholic-live/city-berezniki.jpg' },
       { id: 'moskva', name: 'Москва', cover: 'assets/video/catholic-live/city-moskva.jpg' },
       { id: 'rostov', name: 'Ростов-на-Дону', cover: 'assets/video/catholic-live/city-rostov.jpg' },
       { id: 'spb', name: 'Санкт-Петербург', cover: 'assets/video/catholic-live/city-spb.jpg' },
       { id: 'smolensk', name: 'Смоленск', cover: 'assets/video/catholic-live/city-smolensk.jpg' },
-      { id: 'chita', name: 'Чита', cover: 'assets/video/catholic-live/city-chita.jpg' }
+      { id: 'chita', name: 'Чита', cover: 'assets/video/catholic-live/city-chita.jpg' },
+      { id: 'berezniki', name: 'Березники', cover: 'assets/video/catholic-live/city-berezniki.jpg' }
     ],
     bio: '«Католик.LIVE. Живая история католической России» — интернет-портал, созданный для того, чтобы прихожане, священники и монашествующие присылали истории из жизни своих приходов, свидетельства христианской жизни. Материалы разделены по епархиям и приходам и представлены в виде коротких видео.',
     links: [],
