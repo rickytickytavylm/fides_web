@@ -13,10 +13,39 @@
     TIMEWEB_API;
   var INLINE_CDN = 'https://storage.yandexcloud.net/fidesetratio/ruscatholic/inline/';
 
+  var API_PICK_KEY = 'yak_api_base';
+
+  function allowedBase(url) {
+    url = String(url || '').replace(/\/$/, '');
+    if (!url || /railway\.app/i.test(url)) return '';
+    if (url === TIMEWEB_API) return url;
+    var falls = (global.VeraConfig && global.VeraConfig.ARCHIVE_API_FALLBACKS) || [];
+    var i;
+    for (i = 0; i < falls.length; i++) {
+      if (String(falls[i] || '').replace(/\/$/, '') === url) return url;
+    }
+    return '';
+  }
+
+  function rememberedBase() {
+    try {
+      return allowedBase(localStorage.getItem(API_PICK_KEY));
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function rememberBase(url) {
+    url = allowedBase(url);
+    if (!url) return;
+    try { localStorage.setItem(API_PICK_KEY, url); } catch (e) {}
+  }
+
   function setApiBase(url) {
     url = String(url || '').replace(/\/$/, '');
     if (!url) return;
     API_BASE = url;
+    rememberBase(url);
     if (global.Vera) global.Vera.API_BASE = url;
     if (global.VeraConfig) {
       global.VeraConfig.ARCHIVE_API_BASE = url;
@@ -33,53 +62,61 @@
       seen[u] = 1;
       list.push(u);
     }
+    add(rememberedBase());
     add(API_BASE);
     ((global.VeraConfig && global.VeraConfig.ARCHIVE_API_FALLBACKS) || []).forEach(add);
     add(TIMEWEB_API);
     return list;
   }
 
+  function probeHealth(url, ms) {
+    var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var timer = setTimeout(function () {
+      try { if (ctrl) ctrl.abort(); } catch (e) {}
+    }, ms);
+    return fetch(url + '/health', {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      mode: 'cors',
+      credentials: 'omit',
+      cache: 'no-store',
+      signal: ctrl ? ctrl.signal : undefined,
+    }).then(function (res) {
+      clearTimeout(timer);
+      if (!res.ok) throw new Error('bad');
+      return url;
+    }).catch(function (err) {
+      clearTimeout(timer);
+      throw err;
+    });
+  }
+
   var apiReady = null;
-  /* Сначала Timeweb. Следующий адрес — только если предыдущий не ответил. */
+  /* Кто живой — того и берём. С VPN Timeweb часто не падает, а висит. */
   function ensureApi() {
     if (apiReady) return apiReady;
     var list = apiCandidates();
     apiReady = new Promise(function (resolve) {
-      var i = 0;
-      function next() {
-        if (i >= list.length) {
-          setApiBase(TIMEWEB_API);
-          resolve(API_BASE);
-          return;
-        }
-        var url = list[i];
-        var waitMs = i === 0 ? 5000 : 20000;
-        i += 1;
-        var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
-        var timer = setTimeout(function () {
-          try {
-            if (ctrl) ctrl.abort();
-          } catch (e) {}
-        }, waitMs);
-        fetch(url + '/health', {
-          method: 'GET',
-          headers: { Accept: 'application/json' },
-          mode: 'cors',
-          credentials: 'omit',
-          signal: ctrl ? ctrl.signal : undefined,
-        })
-          .then(function (res) {
-            clearTimeout(timer);
-            if (!res.ok) throw new Error('bad');
-            setApiBase(url);
-            resolve(API_BASE);
-          })
-          .catch(function () {
-            clearTimeout(timer);
-            next();
-          });
+      var done = false;
+      var left = list.length;
+      function finish(url) {
+        if (done) return;
+        done = true;
+        setApiBase(url || rememberedBase() || TIMEWEB_API);
+        resolve(API_BASE);
       }
-      next();
+      if (!list.length) {
+        finish(TIMEWEB_API);
+        return;
+      }
+      list.forEach(function (url) {
+        probeHealth(url, 3500)
+          .then(finish)
+          .catch(function () {
+            left -= 1;
+            if (!done && left <= 0) finish('');
+          });
+      });
     });
     return apiReady;
   }
