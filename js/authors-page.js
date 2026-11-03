@@ -11,7 +11,10 @@
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  function formatBio(bio) {
+  function formatBio(bio, slug) {
+    if (slug && window.YakAuthorFixedBios && YakAuthorFixedBios[slug]) {
+      bio = YakAuthorFixedBios[slug];
+    }
     if (!bio) return '';
     bio = String(bio)
       .replace(/https?:\/\/(?:www\.)?katolik\.live[^\s"'<>]*/gi, 'https://vk.ru/katoliklive')
@@ -411,7 +414,9 @@
         '<div class="author-head-body">' +
         '<p class="eyebrow">' + esc(a.role || 'Автор') + '</p>' +
         '<h1>' + esc(a.name) + '</h1>' +
-        (a.bio ? '<div class="author-bio">' + formatBio(a.bio) + '</div>' : '') +
+        (a.bio || (window.YakAuthorFixedBios && YakAuthorFixedBios[a.slug])
+          ? '<div class="author-bio">' + formatBio(a.bio, a.slug) + '</div>'
+          : '') +
         (socials ? '<div class="author-socials">' + socials + '</div>' : '') +
         '<div class="author-stats">' +
         '<span><b>' + esc(String(pubCount)) + '</b> ' +

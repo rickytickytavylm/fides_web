@@ -378,7 +378,7 @@
     }
     var name = (a && a.name) || 'Игорь Фофанов';
     var photo = (a && (a.photo || a.image || a.avatar)) || '';
-    var bio = (a && a.bio) || '';
+    var bio = (window.YakAuthorFixedBios && YakAuthorFixedBios[slug]) || (a && a.bio) || '';
     var letters = name.split(/\s+/).filter(Boolean).slice(0, 2).map(function (w) { return w.charAt(0); }).join('');
     var ava = photo
       ? '<span class="author-ava" style="background-image:url(\'' + esc(photo) + '\')"></span>'
