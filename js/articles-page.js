@@ -188,13 +188,13 @@
     '<a href="index.html">Главная</a><span>/</span><span>Статьи</span></nav>' +
     '<header class="page-head in-shell"><div>' +
     '<p class="eyebrow">Читать</p><h1>Статьи</h1></div>' +
-    '<p class="page-desc">Рубрики, темы, вопрос-ответ и подборки — не только общий поиск по каталогу</p>' +
+    '<p class="page-desc">Рубрики, темы и подборки. Общий поиск — лупа в шапке</p>' +
     '</header>' +
     '<form class="archive-toolbar in-shell articles-search" id="articles-search-form" role="search">' +
     '<label class="archive-search-shell">' +
-    '<input id="articles-search" type="search" placeholder="Поиск по статьям…" autocomplete="off" />' +
+    '<input id="articles-search" type="search" placeholder="Найти материал…" autocomplete="off" />' +
     '</label>' +
-    '<p class="articles-search-hint">Ищет по каталогу статей · Для новостей — раздел «Новости»</p>' +
+    '<p class="articles-search-hint">Ищет по статьям, новостям и всему порталу</p>' +
     '</form>' +
     '<div class="tabs articles-toolbar" role="navigation" aria-label="Разделы">' +
     '<a class="on" href="archive.html?category=columns">Все статьи</a>' +
@@ -218,8 +218,7 @@
     searchForm.addEventListener('submit', function (e) {
       e.preventDefault();
       var q = String(searchInput.value || '').trim();
-      location.href =
-        'archive.html?category=columns' + (q ? '&q=' + encodeURIComponent(q) : '');
+      location.href = q ? 'search.html?q=' + encodeURIComponent(q) : 'search.html';
     });
   }
 

@@ -188,7 +188,8 @@ nav.top a:hover { background: var(--accent-soft); color: var(--bronze-dark); }
   flex: none;
 }
 .app-btn,
-.head-book {
+.head-book,
+.head-search {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -203,11 +204,15 @@ nav.top a:hover { background: var(--accent-soft); color: var(--bronze-dark); }
   transition: border-color .15s, background .15s, color .15s;
 }
 .app-btn svg,
-.head-book svg { width: 18px; height: 18px; display: block; flex: none; }
+.head-book svg,
+.head-search svg { width: 18px; height: 18px; display: block; flex: none; }
 .app-btn span,
-.head-book span { display: none; }
+.head-book span,
+.head-search span { display: none; }
 .app-btn:hover,
-.head-book:hover {
+.head-book:hover,
+.head-search:hover,
+.head-search.on {
   border-color: var(--bronze); background: var(--accent-soft); color: var(--ink);
 }
 
@@ -1567,8 +1572,8 @@ aside { display: flex; flex-direction: column; gap: 0; }
   nav.top { display: none; }
   .search { padding: 8px 12px; font-size: 12px; }
   .cal-btn { width: 40px; height: 40px; border-radius: 12px; }
-  .app-btn, .head-book { width: 40px; height: 40px; padding: 0; justify-content: center; border-radius: 12px; }
-  .app-btn span, .head-book span { display: none; }
+  .app-btn, .head-book, .head-search { width: 40px; height: 40px; padding: 0; justify-content: center; border-radius: 12px; }
+  .app-btn span, .head-book span, .head-search span { display: none; }
   .panel { padding: 18px; border-radius: 16px; }
   .widget { padding: 16px 0; }
   .portal-footer .wrap { padding-top: 22px; padding-bottom: 22px; }
@@ -2153,6 +2158,64 @@ main.article { padding-bottom: 48px; }
 .article-body .embed-link a:hover { color: var(--bronze-dark); }
 .articles-search { margin: 0 0 18px; }
 .articles-search-hint { margin: 8px 0 0; font-size: 12.5px; color: var(--stone-500); }
+.articles-search-hint a { color: var(--bronze-dark); font-weight: 600; }
+.archive-toolbar .articles-search-hint { margin: 0 0 12px; }
+
+.search-hero { margin: 0 0 10px; }
+.search-hero .archive-search-shell { margin-bottom: 0; }
+.search-hero input {
+  font-size: 16.5px;
+  padding: 15px 18px;
+}
+.search-count { margin: 14px 0 0; font-size: 13px; color: var(--stone-500); }
+.search-idle {
+  margin: 28px 0 0;
+  padding: 22px 0;
+  color: var(--stone-500);
+  font-size: 15px;
+  line-height: 1.55;
+  max-width: 36em;
+}
+.search-group { margin-top: 28px; }
+.search-group h2 {
+  margin: 0 0 14px;
+  font-size: 13px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--stone-700);
+}
+.search-hits { display: flex; flex-direction: column; }
+.search-side {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+}
+.search-mini {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  color: inherit;
+  text-decoration: none;
+  min-height: 64px;
+}
+.search-mini:hover { border-color: var(--bronze); }
+.search-mini strong {
+  display: block;
+  font-size: 14.5px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+.search-mini small {
+  display: block;
+  margin-top: 3px;
+  color: var(--stone-500);
+  font-size: 12px;
+}
 
 /* Колонка чтения: тело + связанные + источники в одной ширине */
 .article-reading {
@@ -3018,6 +3081,8 @@ body.chat-page .masthead .top,
 body.chat-page .masthead .search,
 body.chat-page .masthead .cal-btn,
 body.chat-page .masthead .app-btn,
+body.chat-page .masthead .head-search,
+body.chat-page .masthead .header-tools,
 body.chat-page .masthead .masthead-tools { display: none !important; }
 body.chat-page .masthead .logo { justify-self: center; grid-column: 2; }
 body.chat-page .chat-back {

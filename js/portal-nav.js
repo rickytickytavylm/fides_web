@@ -26,6 +26,34 @@
     '<path d="M10 18.6h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>' +
     '</svg>';
 
+  var SEARCH_SVG =
+    '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+    '<circle cx="10.6" cy="10.6" r="5.7" fill="none" stroke="currentColor" stroke-width="1.7"/>' +
+    '<path d="M15.2 15.2 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>' +
+    '</svg>';
+
+  function ensureSearchBtn() {
+    if (document.body && document.body.classList.contains('chat-page')) return;
+    var wrap = document.querySelector('.masthead .wrap');
+    if (!wrap) return;
+    var tools = wrap.querySelector('.header-tools') || wrap.querySelector('.masthead-tools');
+    if (!tools) return;
+    var existing = tools.querySelector('.head-search');
+    if (existing) {
+      if (/(^|\/)search\.html$/i.test(location.pathname)) existing.classList.add('on');
+      return;
+    }
+    var btn = document.createElement('a');
+    btn.className = 'head-search';
+    btn.href = 'search.html';
+    btn.setAttribute('aria-label', 'Поиск по порталу');
+    btn.setAttribute('title', 'Поиск');
+    btn.innerHTML = SEARCH_SVG;
+    if (/(^|\/)search\.html$/i.test(location.pathname)) btn.classList.add('on');
+    tools.insertBefore(btn, tools.firstChild);
+  }
+  ensureSearchBtn();
+
   function bindAppBtn(btn) {
     btn.addEventListener('click', function (e) {
       var onAbout = /(^|\/)page\.html$/i.test(location.pathname);

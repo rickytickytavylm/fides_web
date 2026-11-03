@@ -169,6 +169,19 @@
 
   function updateRubricLabel() {
     syncPageChrome();
+    var allEl = document.getElementById('archive-search-all');
+    if (allEl) {
+      if (state.q) {
+        allEl.hidden = false;
+        allEl.innerHTML =
+          'Ищет только в этом разделе · <a href="search.html?q=' +
+          encodeURIComponent(state.q) +
+          '">По всему порталу</a>';
+      } else {
+        allEl.hidden = true;
+        allEl.textContent = '';
+      }
+    }
     if (!rubricEl) return;
     if (state.q) {
       rubricEl.textContent = 'Поиск: «' + state.q + '»';
@@ -242,7 +255,12 @@
 
     if (leadEl) {
       if (!hero) {
-        leadEl.innerHTML = '<p class="archive-empty">Ничего не найдено</p>';
+        leadEl.innerHTML =
+          '<p class="archive-empty">В этом разделе ничего не найдено' +
+          (state.q
+            ? '. <a href="search.html?q=' + encodeURIComponent(state.q) + '">Искать по всему порталу →</a>'
+            : '') +
+          '</p>';
       } else {
         var cat = itemRubric(hero);
         var heroAuthor = authorMini(hero);
