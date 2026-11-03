@@ -2167,6 +2167,13 @@ main.article { padding-bottom: 48px; }
   font-size: 16.5px;
   padding: 15px 18px;
 }
+.search-hero .articles-search-hint {
+  margin: 14px 0 0;
+  padding: 0 8px 0 44px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--stone-500);
+}
 .page-head--search {
   grid-template-columns: 1fr;
   padding: 10px 0 14px;

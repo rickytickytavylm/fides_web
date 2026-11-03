@@ -221,7 +221,7 @@
 
   function paintIdle() {
     filter = 'all';
-    if (hint) hint.textContent = 'Ищет сразу по статьям, новостям, библиотеке, авторам и афише';
+    if (hint) hint.textContent = 'Статьи, новости, библиотека, авторы и афиша';
     if (countEl) countEl.textContent = '';
     box.innerHTML =
       '<div class="search-idle">' +
