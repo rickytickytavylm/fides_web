@@ -2161,22 +2161,29 @@ main.article { padding-bottom: 48px; }
 .articles-search-hint a { color: var(--bronze-dark); font-weight: 600; }
 .archive-toolbar .articles-search-hint { margin: 0 0 12px; }
 
-.search-hero { margin: 0 0 10px; }
+.search-hero { margin: 0 0 8px; }
 .search-hero .archive-search-shell { margin-bottom: 0; }
 .search-hero input {
   font-size: 16.5px;
   padding: 15px 18px;
 }
-.search-count { margin: 14px 0 0; font-size: 13px; color: var(--stone-500); }
-.search-idle {
-  margin: 28px 0 0;
-  padding: 22px 0;
-  color: var(--stone-500);
-  font-size: 15px;
-  line-height: 1.55;
-  max-width: 36em;
+.page-head--search {
+  grid-template-columns: 1fr;
+  padding: 10px 0 14px;
+  margin-bottom: 18px;
 }
-.search-group { margin-top: 28px; }
+.page-head--search h1 { font-size: clamp(32px, 4vw, 44px); }
+.search-field { position: relative; display: block; }
+.search-field svg {
+  position: absolute; left: 16px; top: 50%; width: 18px; height: 18px;
+  transform: translateY(-50%); color: var(--bronze-dark); pointer-events: none;
+}
+.search-field input { padding-left: 44px; }
+.search-count { margin: 10px 0 0; font-size: 13px; color: var(--stone-500); }
+.search-idle { margin: 8px 0 0; padding: 6px 0 0; }
+.search-suggest, .search-places { margin-top: 28px; }
+.search-suggest h2,
+.search-places h2,
 .search-group h2 {
   margin: 0 0 14px;
   font-size: 13px;
@@ -2185,7 +2192,37 @@ main.article { padding-bottom: 48px; }
   font-weight: 700;
   color: var(--stone-700);
 }
+.search-suggest .chips { flex-wrap: wrap; overflow: visible; padding-bottom: 0; }
+.search-place-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.search-place {
+  display: grid; gap: 8px; padding: 20px 18px; border-radius: 18px;
+  background: var(--surface); box-shadow: var(--shadow-card);
+  text-decoration: none; color: inherit;
+  transition: transform .2s, box-shadow .2s;
+}
+.search-place:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+.search-place strong {
+  font-family: var(--serif); font-size: 26px; font-weight: 600;
+  letter-spacing: -.02em; line-height: 1.05;
+}
+.search-place span:last-child { font-size: 13px; color: var(--stone-700); line-height: 1.45; }
+.search-filters { margin: 6px 0 18px; flex-wrap: wrap; overflow: visible; }
+.search-group { margin-top: 28px; }
 .search-hits { display: flex; flex-direction: column; }
+.search-excerpt {
+  margin: 8px 0 0;
+  color: var(--stone-700);
+  font-size: 14px;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .search-side {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -2215,6 +2252,15 @@ main.article { padding-bottom: 48px; }
   margin-top: 3px;
   color: var(--stone-500);
   font-size: 12px;
+}
+@media (max-width: 880px) {
+  .search-place-grid { grid-template-columns: 1fr 1fr; }
+  .search-place { padding: 16px 14px; }
+  .search-place strong { font-size: 22px; }
+  .search-excerpt { display: none; }
+}
+@media (max-width: 560px) {
+  .search-place-grid { grid-template-columns: 1fr; }
 }
 
 /* Колонка чтения: тело + связанные + источники в одной ширине */
