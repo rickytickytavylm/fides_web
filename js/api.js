@@ -671,9 +671,9 @@
   };
 
   function pageHref(item) {
-    var id = item && (item.id != null ? item.id : item.slug);
-    if (id == null || id === '') return 'pages.html';
-    return 'static.html?id=' + encodeURIComponent(id);
+    var key = item && (item.slug || item.id);
+    if (key == null || key === '') return 'pages.html';
+    return 'static.html?id=' + encodeURIComponent(key);
   }
 
   /**
@@ -917,10 +917,9 @@
   }
 
   function articleHref(item) {
-    var id = item && item.id;
-    if (id == null || id === '') return 'archive.html';
-    // относительный путь — работает и из file://, и с Pages
-    return 'article.html?id=' + encodeURIComponent(id);
+    var key = item && (item.slug || item.id);
+    if (key == null || key === '') return 'archive.html';
+    return 'article.html?id=' + encodeURIComponent(key);
   }
 
   function coverStyle(url) {

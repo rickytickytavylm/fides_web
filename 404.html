@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Открываем материал — Рускатолик</title>
+    <meta name="robots" content="noindex" />
+    <script>
+      (function () {
+        var SKIP = {
+          category: 1, tag: 1, author: 1, feed: 1, page: 1,
+          wpadmin: 1, 'wp-admin': 1, 'wp-content': 1, 'wp-json': 1, 'wp-login.php': 1
+        };
+        var PAGES = {
+          archive: 'archive.html',
+          articles: 'articles.html',
+          authors: 'authors.html',
+          audio: 'audio.html',
+          video: 'video.html',
+          calendar: 'calendar.html',
+          church: 'church.html',
+          events: 'events.html',
+          library: 'library.html',
+          search: 'search.html',
+          chat: 'chat.html',
+          radio: 'radio.html',
+          podcast: 'podcast.html',
+          photostock: 'photostock.html',
+          map: 'map.html',
+          media: 'media.html',
+          about: 'page.html'
+        };
+
+        var host = String(location.hostname || '').toLowerCase();
+        var parts = String(location.pathname || '').split('/').filter(Boolean);
+        var base = '';
+        if (/\.github\.io$/i.test(host) && parts[0] === 'fides_web') {
+          base = '/fides_web';
+          parts = parts.slice(1);
+        }
+
+        function go(path) {
+          location.replace(base + '/' + path.replace(/^\//, ''));
+        }
+
+        var q = location.search || '';
+        var postId = /(?:^\?|&)(?:p|page_id)=(\d+)(?:&|$)/.exec(q);
+        if (postId) {
+          go('article.html?id=' + postId[1]);
+          return;
+        }
+
+        if (!parts.length) {
+          go('index.html');
+          return;
+        }
+
+        var head = String(parts[0] || '').toLowerCase();
+        if (PAGES[head] && parts.length === 1) {
+          go(PAGES[head] + q);
+          return;
+        }
+        if (head === 'category' && parts.length > 1) {
+          var rubric = parts[parts.length - 1];
+          if (/^\d+$/.test(rubric) && parts.length > 2) rubric = parts[parts.length - 2];
+          if (/^page$/i.test(rubric) && parts.length > 2) rubric = parts[parts.length - 2];
+          try { rubric = decodeURIComponent(rubric); } catch (e) {}
+          go('archive.html?category=' + encodeURIComponent(String(rubric).toLowerCase()));
+          return;
+        }
+        if ((head === 'author' || head === 'tag') && parts.length > 1) {
+          var name = parts[parts.length - 1];
+          try { name = decodeURIComponent(name); } catch (e2) {}
+          go((head === 'author' ? 'author.html?slug=' : 'tag.html?slug=') + encodeURIComponent(String(name).toLowerCase()));
+          return;
+        }
+        if (SKIP[head]) {
+          go('index.html');
+          return;
+        }
+
+        var slug = parts[parts.length - 1];
+        if (/^\d+$/.test(slug) && parts.length > 1) slug = parts[parts.length - 2];
+        if (/^page$/i.test(slug) && parts.length > 1) slug = parts[parts.length - 2];
+        try { slug = decodeURIComponent(slug); } catch (e3) {}
+        slug = String(slug || '').toLowerCase();
+        if (!slug || SKIP[slug] || /\.(php|html?|xml|json|js|css|jpg|jpeg|png|webp|gif|svg|ico|pdf|txt|map)$/i.test(slug)) {
+          return;
+        }
+        go('article.html?id=' + encodeURIComponent(slug));
+      })();
+    </script>
+  </head>
+  <body style="font-family:system-ui,sans-serif;padding:32px;background:#EAE5DB;color:#1c1a14">
+    <p>Открываем материал…</p>
+    <p><a href="/">На главную</a></p>
+  </body>
+</html>

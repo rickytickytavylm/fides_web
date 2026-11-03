@@ -551,7 +551,7 @@
     );
   }
 
-  var id = qs('id');
+  var id = qs('id') || qs('p') || qs('page_id');
   var root = document.getElementById('article-root');
   var relatedSection = document.querySelector('.related-section');
   if (relatedSection) relatedSection.hidden = true;
@@ -578,6 +578,16 @@
       document.title = article.title + ' — Рускатолик';
       var site = 'https://ruscatholic.org';
       var pageUrl = site + '/article.html?id=' + encodeURIComponent(article.slug || id);
+      if (article.slug && String(article.slug) !== String(id)) {
+        try {
+          var next = new URL(location.href);
+          next.searchParams.set('id', article.slug);
+          next.searchParams.delete('p');
+          next.searchParams.delete('page_id');
+          var file = next.pathname.split('/').pop() || 'article.html';
+          history.replaceState(null, '', file + next.search + next.hash);
+        } catch (e1) {}
+      }
       var plain = String(article.excerpt || article.contentText || '')
         .replace(/<[^>]+>/g, ' ')
         .replace(/\s+/g, ' ')
