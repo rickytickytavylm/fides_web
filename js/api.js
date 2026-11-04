@@ -618,19 +618,27 @@
   }
 
   function decodeEntities(text) {
-    return String(text || '')
-      .replace(/&#(\d+);/g, function (_, n) { return String.fromCharCode(Number(n)); })
-      .replace(/&#x([0-9a-f]+);/gi, function (_, h) { return String.fromCharCode(parseInt(h, 16)); })
-      .replace(/&nbsp;/gi, ' ')
-      .replace(/&quot;/gi, '"')
-      .replace(/&laquo;/gi, '«')
-      .replace(/&raquo;/gi, '»')
-      .replace(/&mdash;/gi, '—')
-      .replace(/&ndash;/gi, '–')
-      .replace(/&hellip;/gi, '…')
-      .replace(/&amp;/gi, '&')
-      .replace(/&lt;/gi, '<')
-      .replace(/&gt;/gi, '>');
+    var s = String(text || '');
+    var i;
+    for (i = 0; i < 3; i++) {
+      var next = s
+        .replace(/&amp;/gi, '&')
+        .replace(/&#(\d+);/g, function (_, n) { return String.fromCharCode(Number(n)); })
+        .replace(/&#x([0-9a-f]+);/gi, function (_, h) { return String.fromCharCode(parseInt(h, 16)); })
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/&quot;/gi, '"')
+        .replace(/&laquo;/gi, '«')
+        .replace(/&raquo;/gi, '»')
+        .replace(/&mdash;/gi, '—')
+        .replace(/&ndash;/gi, '–')
+        .replace(/&hellip;/gi, '…')
+        .replace(/&lt;/gi, '<')
+        .replace(/&gt;/gi, '>')
+        .replace(/\u00a0/g, ' ');
+      if (next === s) break;
+      s = next;
+    }
+    return s;
   }
 
   function stripTags(html) {
