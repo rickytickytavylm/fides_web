@@ -91,8 +91,30 @@
     cycles: []
   };
 
+  /* Присланные и одобренные редакцией ролики: приходят с сервера, а не из этого файла. */
+  var sent = [];
+  var parishById = {};
+  parishes.forEach(function (p) { parishById[p.id] = p; });
+
+  function fromServer(row) {
+    var p = parishById[row.parishId];
+    if (!p || !row.videoUrl || !row.id) return null;
+    return {
+      id: 'live-' + row.id,
+      title: row.title,
+      description: row.description || '',
+      speaker: p.city,
+      type: 'parish',
+      channelId: 'catholic-live',
+      parish: p.id,
+      thumb: p.cover,
+      videoUrl: row.videoUrl
+    };
+  }
+
   function ensure() {
-    videos.forEach(function (v) {
+    var list = videos.concat(sent);
+    list.forEach(function (v) {
       var i;
       for (i = 0; i < V.items.length; i++) {
         if (String(V.items[i].id) === String(v.id)) {
@@ -116,4 +138,23 @@
   };
 
   ensure();
+
+  function loadSent() {
+    if (!window.Vera || !Vera.ensureApi || typeof fetch !== 'function') return;
+    Vera.ensureApi().then(function (base) {
+      return fetch(String(base || '').replace(/\/$/, '') + '/api/content/live-videos', { headers: { Accept: 'application/json' }, cache: 'no-store' });
+    }).then(function (res) {
+      if (!res.ok) throw new Error('bad');
+      return res.json();
+    }).then(function (data) {
+      var next = ((data && data.items) || []).map(fromServer).filter(Boolean);
+      var same = next.length === sent.length && next.every(function (v, i) { return v.id === sent[i].id; });
+      if (same) return;
+      sent = next;
+      ensure();
+      if (V.notifyPack) V.notifyPack();
+    }).catch(function () {});
+  }
+
+  loadSent();
 })();

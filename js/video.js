@@ -394,6 +394,16 @@
     );
   }
 
+  /* Кнопка «Прислать ролик»: страница с формой, нужен ключ от редакции. */
+  function liveSendHtml(parishId) {
+    return (
+      '<p class="live-send-row"><a class="btn-primary live-send" href="live-submit.html' +
+      (parishId ? '?parish=' + encodeURIComponent(parishId) : '') +
+      '">Прислать ролик</a>' +
+      '<span class="live-send-note">Видео из жизни вашего прихода — после проверки редакцией оно появится здесь</span></p>'
+    );
+  }
+
   function renderParishChannel(ch) {
     var params = new URLSearchParams(location.search);
     var parishId = params.get('parish') || '';
@@ -462,6 +472,7 @@
         '<h1>' + esc(ch.name) + '</h1>' +
         (ch.bio ? '<p class="live-lead">' + esc(ch.bio) + '</p>' : '') +
         liveAuthorHtml(ch.authorSlug) +
+        liveSendHtml('') +
         '<label class="live-city-search"><input type="search" id="live-city-q" placeholder="Найти город" autocomplete="off" enterkeyhint="search" /></label>' +
         '</div></section>' +
         '<section class="video-band"><div class="block-head"><h2>Города</h2><span class="rule"></span></div>' +
@@ -512,7 +523,7 @@
       '<div class="live-parish-head">' +
       '<img src="' + esc(parish.cover) + '" alt="" />' +
       '<div><p class="eyebrow">' + esc(parish.city) + '</p><h1>' + esc(parish.name) + '</h1>' +
-      '<p class="live-lead">' + esc(clipsLabel(clips.length)) + '</p></div></div>' +
+      '<p class="live-lead">' + esc(clipsLabel(clips.length)) + '</p>' + liveSendHtml(parish.id) + '</div></div>' +
       '<div class="yt-film-grid live-films ' + (clips.length === 1 ? 'cols-1' : clips.length === 2 ? 'cols-2' : 'cols-3') + '">' +
       clips.map(filmCard).join('') +
       '</div></section>';
