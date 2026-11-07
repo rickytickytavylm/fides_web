@@ -99,21 +99,50 @@
     });
   }
 
+  /* Пока идёт загрузка, экран телефона не гасим: уснувший браузер обрывает отправку. */
+  var wake = null;
+  function keepAwake(on) {
+    try {
+      if (on && navigator.wakeLock && navigator.wakeLock.request) {
+        navigator.wakeLock.request('screen').then(function (l) { wake = l; }, function () {});
+      } else if (!on && wake) {
+        wake.release();
+        wake = null;
+      }
+    } catch (e) {}
+  }
+
   function upload(url, headers, file) {
     return new Promise(function (resolve, reject) {
       var xhr = new XMLHttpRequest();
+      var sent = 0;
+      var hidden = false;
+      function onVis() { if (document.hidden) hidden = true; }
+      document.addEventListener('visibilitychange', onVis);
+      function done() { document.removeEventListener('visibilitychange', onVis); keepAwake(false); }
+      function broke(kind) {
+        var pct = file.size ? Math.round((sent / file.size) * 100) : 0;
+        var why = !navigator.onLine ? ' Нет сети.' : hidden ? ' Страница уходила в фон — оставайтесь на ней, пока идёт загрузка.' : '';
+        var err = new Error('Загрузка оборвалась на ' + pct + '%.' + why + ' Попробуйте ещё раз.');
+        err.detail = kind + ' ' + (xhr.status || 0) + ' ' + pct + '%';
+        reject(err);
+      }
+      keepAwake(true);
       xhr.open('PUT', url, true);
       Object.keys(headers || {}).forEach(function (h) { xhr.setRequestHeader(h, headers[h]); });
       xhr.upload.onprogress = function (e) {
+        sent = e.loaded;
         if (!e.lengthComputable) return;
         progress((e.loaded / e.total) * 100, 'Загружаю ролик: ' + fmtMb(e.loaded) + ' из ' + fmtMb(e.total));
       };
       xhr.onload = function () {
+        done();
         if (xhr.status >= 200 && xhr.status < 300) resolve();
         else reject(new Error('Хранилище не приняло файл (' + xhr.status + '). Попробуйте ещё раз.'));
       };
-      xhr.onerror = function () { reject(new Error('Загрузка оборвалась. Проверьте интернет и попробуйте ещё раз.')); };
-      xhr.ontimeout = xhr.onerror;
+      xhr.onerror = function () { done(); broke('error'); };
+      xhr.onabort = function () { done(); broke('abort'); };
+      xhr.ontimeout = function () { done(); broke('timeout'); };
       xhr.send(file);
     });
   }
@@ -172,7 +201,9 @@
       try { doneEl.scrollIntoView({ block: 'start', behavior: 'smooth' }); } catch (err) {}
     }).catch(function (err) {
       progEl.hidden = true;
-      showError(err && err.message ? err.message : 'Не получилось отправить. Попробуйте ещё раз.');
+      var text = err && err.message ? err.message : 'Не получилось отправить. Попробуйте ещё раз.';
+      if (err && err.detail) text += ' [' + err.detail + ']';
+      showError(text);
     }).then(function () {
       setBusy(false);
     });
