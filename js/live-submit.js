@@ -126,7 +126,36 @@
     } catch (e) {}
   }
 
+  /* Телефон иногда не отдаёт файл из галереи сразу (готовит видео, тянет из iCloud). Проверяем до отправки. */
+  function canRead(file) {
+    return new Promise(function (resolve) {
+      try {
+        var r = new FileReader();
+        r.onload = function () { resolve(true); };
+        r.onerror = function () { resolve(false); };
+        r.readAsArrayBuffer(file.slice(0, 4096));
+      } catch (e) { resolve(false); }
+    });
+  }
+
+  function envNote() {
+    var ua = String(navigator.userAgent || '');
+    var ios = (ua.match(/OS (\d+)[_\d]*/) || [])[1];
+    return (ios ? 'ios' + ios : /Android/i.test(ua) ? 'android' : 'pc') + (navigator.standalone ? ' app' : '');
+  }
+
   function upload(url, headers, file) {
+    return canRead(file).then(function (ok) {
+      if (!ok) {
+        var err = new Error('Телефон не может прочитать этот файл. Возможно, видео ещё готовится или лежит в iCloud. Подождите минуту и выберите файл заново либо выберите другое видео.');
+        err.detail = 'unreadable ' + envNote();
+        throw err;
+      }
+      return upload2(url, headers, file);
+    });
+  }
+
+  function upload2(url, headers, file) {
     return new Promise(function (resolve, reject) {
       var xhr = new XMLHttpRequest();
       var sent = 0;
@@ -138,7 +167,7 @@
         var pct = file.size ? Math.round((sent / file.size) * 100) : 0;
         var why = !navigator.onLine ? ' Нет сети.' : hidden ? ' Страница уходила в фон — оставайтесь на ней, пока идёт загрузка.' : '';
         var err = new Error('Загрузка оборвалась на ' + pct + '%.' + why + ' Попробуйте ещё раз.');
-        err.detail = kind + ' ' + (xhr.status || 0) + ' ' + pct + '%';
+        err.detail = kind + ' ' + (xhr.status || 0) + ' ' + pct + '% ' + envNote() + ' ' + (file.type || '?') + ' ' + Math.round(file.size / 1048576) + 'MB';
         reject(err);
       }
       keepAwake(true);
