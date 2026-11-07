@@ -1,15 +1,14 @@
-/* Форма «Прислать ролик» (Католик.LIVE): файл идёт сразу в хранилище, на сервер — только заявка. */
+/* Форма «Прислать ролик» (Католик.LIVE): открыта всем. Файл идёт сразу в хранилище, на сервер — только заявка. */
 (function () {
   'use strict';
 
   var MAX = 1024 * 1024 * 1024;
-  var KEY_STORE = 'yak_live_key';
   var V = window.YakVideos;
   var form = document.getElementById('live-form');
   if (!form) return;
 
   var $ = function (id) { return document.getElementById(id); };
-  var keyEl = $('lf-key');
+  var trapEl = $('lf-website');
   var titleEl = $('lf-title');
   var parishEl = $('lf-parish');
   var nameEl = $('lf-name');
@@ -23,13 +22,6 @@
   var progText = $('lf-progress-text');
   var doneEl = $('live-done');
   var busy = false;
-
-  function readKey() {
-    try { return localStorage.getItem(KEY_STORE) || ''; } catch (e) { return ''; }
-  }
-  function saveKey(k) {
-    try { localStorage.setItem(KEY_STORE, k); } catch (e) {}
-  }
 
   function fillParishes() {
     var channel = ((V && V.channels) || []).filter(function (c) { return c.id === 'catholic-live'; })[0];
@@ -92,19 +84,15 @@
     return '';
   }
 
-  function api(base, path, key, body) {
+  function api(base, path, body) {
     return fetch(base + path, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-admin-token': key },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     }).then(function (res) {
       return res.json().catch(function () { return {}; }).then(function (data) {
         if (res.ok) return data;
-        var msg = data.error || 'Не получилось отправить';
-        if (res.status === 401) msg = data.code === 'wrong_key' ? 'Ключ не подошёл. Проверьте, что вставили его целиком.' : 'Введите ключ для отправки.';
-        if (res.status === 403) msg = 'Этим ключом ролики присылать нельзя. Нужен ключ для видео — спросите в редакции.';
-        if (res.status === 429) msg = data.error || 'Слишком много попыток. Подождите немного.';
-        var err = new Error(msg);
+        var err = new Error(data.error || 'Не получилось отправить. Попробуйте ещё раз.');
         err.status = res.status;
         throw err;
       });
@@ -132,7 +120,6 @@
 
   function validate() {
     var file = fileEl.files && fileEl.files[0];
-    if (!keyEl.value.trim()) return 'Введите ключ для отправки.';
     if (titleEl.value.trim().length < 3) return 'Напишите название ролика.';
     if (!parishEl.value) return 'Выберите приход.';
     if (nameEl.value.trim().length < 2) return 'Напишите, как вас зовут.';
@@ -152,23 +139,21 @@
     var bad = validate();
     if (bad) { showError(bad); return; }
     var file = fileEl.files[0];
-    var key = keyEl.value.trim();
     var opt = parishEl.options[parishEl.selectedIndex];
     setBusy(true);
-    progress(0, 'Проверяю ключ…');
+    progress(0, 'Готовлю загрузку…');
 
     window.Vera.ensureApi().then(function (base) {
       base = String(base || '').replace(/\/$/, '');
-      return api(base, '/api/live/submissions/sign', key, {
+      return api(base, '/api/live/submissions/sign', {
         filename: file.name,
         contentType: typeOf(file),
         size: file.size,
       }).then(function (ticket) {
-        saveKey(key);
         progress(0, 'Загружаю ролик…');
         return upload(ticket.uploadUrl, ticket.headers || { 'Content-Type': typeOf(file) }, file).then(function () {
           progress(100, 'Файл загружен. Отправляю заявку…');
-          return api(base, '/api/live/submissions', key, {
+          return api(base, '/api/live/submissions', {
             title: titleEl.value,
             parishId: parishEl.value,
             parishName: (opt && opt.getAttribute('data-name')) || '',
@@ -176,6 +161,7 @@
             contact: contactEl.value,
             description: textEl.value,
             videoKey: ticket.key,
+            website: trapEl ? trapEl.value : '',
           });
         });
       });
@@ -201,6 +187,5 @@
     form.hidden = false;
   });
 
-  keyEl.value = readKey();
   fillParishes();
 })();

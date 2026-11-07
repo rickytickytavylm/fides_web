@@ -5169,3 +5169,4 @@ html[data-theme="twilight"] .lf-error { background: rgba(220, 90, 90, .16); colo
   .live-submit-logo { width: 64px; height: 64px; border-radius: 14px; }
   .lf-actions .btn-primary, .lf-actions .btn-ghost { flex: 1 1 100%; }
 }
+.lf-trap { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; }
