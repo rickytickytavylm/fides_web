@@ -10,7 +10,10 @@
   var $ = function (id) { return document.getElementById(id); };
   var trapEl = $('lf-website');
   var titleEl = $('lf-title');
+  var OTHER = 'other';
   var parishEl = $('lf-parish');
+  var otherWrap = $('lf-other-wrap');
+  var otherEl = $('lf-other');
   var nameEl = $('lf-name');
   var contactEl = $('lf-contact');
   var textEl = $('lf-text');
@@ -44,8 +47,19 @@
       });
       parishEl.appendChild(group);
     });
+    var other = document.createElement('option');
+    other.value = OTHER;
+    other.textContent = 'Моего прихода нет в списке';
+    parishEl.appendChild(other);
     var want = new URLSearchParams(location.search).get('parish') || '';
     if (want) parishEl.value = want;
+    syncOther();
+  }
+
+  function syncOther() {
+    var on = parishEl.value === OTHER;
+    otherWrap.hidden = !on;
+    if (on) { try { otherEl.focus(); } catch (e) {} }
   }
 
   function showError(msg) {
@@ -151,6 +165,7 @@
     var file = fileEl.files && fileEl.files[0];
     if (titleEl.value.trim().length < 3) return 'Напишите название ролика.';
     if (!parishEl.value) return 'Выберите приход.';
+    if (parishEl.value === OTHER && otherEl.value.trim().length < 3) return 'Напишите название вашего прихода и город.';
     if (nameEl.value.trim().length < 2) return 'Напишите, как вас зовут.';
     if (contactEl.value.trim().length < 3) return 'Оставьте телефон, почту или Telegram, чтобы с вами можно было связаться.';
     if (textEl.value.trim().length < 10) return 'Расскажите о ролике хотя бы в одном-двух предложениях.';
@@ -185,7 +200,7 @@
           return api(base, '/api/live/submissions', {
             title: titleEl.value,
             parishId: parishEl.value,
-            parishName: (opt && opt.getAttribute('data-name')) || '',
+            parishName: parishEl.value === OTHER ? otherEl.value : ((opt && opt.getAttribute('data-name')) || ''),
             senderName: nameEl.value,
             contact: contactEl.value,
             description: textEl.value,
@@ -213,10 +228,12 @@
     titleEl.value = '';
     textEl.value = '';
     fileEl.value = '';
+    otherEl.value = '';
     barEl.style.width = '0';
     doneEl.hidden = true;
     form.hidden = false;
   });
 
+  parishEl.addEventListener('change', syncOther);
   fillParishes();
 })();
