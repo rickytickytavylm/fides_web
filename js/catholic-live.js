@@ -118,7 +118,7 @@
       type: 'parish',
       channelId: 'catholic-live',
       parish: p.id,
-      thumb: p.cover,
+      thumb: '',
       videoUrl: row.videoUrl
     };
   }

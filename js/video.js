@@ -52,7 +52,9 @@
       '">' +
       (v.thumb
         ? '<img src="' + esc(v.thumb) + '" alt="" loading="lazy" />'
-        : '<span class="yt-thumb-empty"></span>') +
+        : v.videoUrl
+          ? '<video class="yt-frame" muted playsinline preload="metadata" src="' + esc(v.videoUrl) + '#t=0.1"></video>'
+          : '<span class="yt-thumb-empty"></span>') +
       '<i class="yt-play" aria-hidden="true"></i>' +
       (v.duration ? '<b class="yt-time">' + esc(fmtDur(v.duration)) + '</b>' : '') +
       '</span>'
@@ -194,6 +196,15 @@
       btn.addEventListener('click', function () {
         openItem(btn.getAttribute('data-id'));
       });
+    });
+    root.querySelectorAll('video.yt-frame').forEach(function (el) {
+      function showFrame() {
+        try {
+          if (el.currentTime < 0.05) el.currentTime = 0.1;
+        } catch (e) {}
+      }
+      el.addEventListener('loadedmetadata', showFrame);
+      el.addEventListener('loadeddata', showFrame);
     });
   }
 
@@ -522,7 +533,6 @@
       '<section class="live-parish in-shell">' +
       back +
       '<div class="live-parish-head">' +
-      '<img src="' + esc(parish.cover) + '" alt="" />' +
       '<div>' + (parish.city ? '<p class="eyebrow">' + esc(parish.city) + '</p>' : '') + '<h1>' + esc(parish.name) + '</h1>' +
       '<p class="live-lead">' + esc(clipsLabel(clips.length)) + '</p>' + liveSendHtml(parish.id) + '</div></div>' +
       '<div class="yt-film-grid live-films ' + (clips.length === 1 ? 'cols-1' : clips.length === 2 ? 'cols-2' : 'cols-3') + '">' +

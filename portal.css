@@ -2483,9 +2483,10 @@ main.article { padding-bottom: 48px; }
 }
 .yt-thumb--wide { aspect-ratio: 16 / 9; }
 .yt-thumb--portrait { aspect-ratio: 9 / 16; }
-.yt-thumb img, .yt-thumb-empty {
+.yt-thumb img, .yt-thumb video.yt-frame, .yt-thumb-empty {
   position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;
 }
+.yt-thumb video.yt-frame { pointer-events: none; background: #1a1613; }
 .yt-thumb-empty { background: #2a241f; }
 .yt-play {
   position: absolute; inset: 0; margin: auto; width: 52px; height: 52px; border-radius: 50%;
@@ -2613,14 +2614,7 @@ main.article { padding-bottom: 48px; }
 .live-folder-copy strong { font-size: 16px; line-height: 1.3; }
 .live-folder-copy em { font-style: normal; font-size: 13px; color: var(--stone-500); }
 .live-parish .yt-play { opacity: 1; }
-.live-parish-head {
-  display: grid; grid-template-columns: minmax(220px, 420px) minmax(0, 1fr);
-  gap: 22px; align-items: center;
-}
-.live-parish-head img {
-  width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block;
-  border-radius: 16px; border: 1px solid var(--line);
-}
+.live-parish-head { display: block; }
 .live-list { display: grid; border-top: 1px solid var(--line); }
 .live-row {
   display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 14px; align-items: center;
@@ -2653,8 +2647,7 @@ main.article { padding-bottom: 48px; }
   .live-parish { display: grid; gap: 18px; }
   .live-parish .wlink { margin: 0; }
   .live-parish-head {
-    grid-template-columns: 280px minmax(0, 1fr);
-    align-items: center; padding-bottom: 8px;
+    padding-bottom: 8px;
     border-bottom: 1px solid var(--line);
   }
   .live-parish h1 { font-size: clamp(28px, 2.4vw, 40px); max-width: 18ch; }
@@ -2666,7 +2659,6 @@ main.article { padding-bottom: 48px; }
   .live-hero { grid-template-columns: 1fr; gap: 16px; }
   .live-cover { max-width: 220px; }
   .live-folders { grid-template-columns: 1fr 1fr; }
-  .live-parish-head { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) {
   .live-folders { grid-template-columns: 1fr; }
