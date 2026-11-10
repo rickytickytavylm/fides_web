@@ -461,7 +461,8 @@
       }).join('');
       top += parishes.filter(function (p) { return !grouped[p.cityId]; }).map(function (p) {
         var n = mine.filter(function (v) { return v.parish === p.id; }).length;
-        return folderCard(channelHref('&parish=' + encodeURIComponent(p.id)), p.cover, p.name, p.city + ' · ' + clipsLabel(n), p.city);
+        var meta = p.city ? p.city + ' · ' + clipsLabel(n) : clipsLabel(n);
+        return folderCard(channelHref('&parish=' + encodeURIComponent(p.id)), p.cover, p.name, meta, p.city || p.name);
       }).join('');
       channelRoot.innerHTML =
         crumbs +
@@ -522,7 +523,7 @@
       back +
       '<div class="live-parish-head">' +
       '<img src="' + esc(parish.cover) + '" alt="" />' +
-      '<div><p class="eyebrow">' + esc(parish.city) + '</p><h1>' + esc(parish.name) + '</h1>' +
+      '<div>' + (parish.city ? '<p class="eyebrow">' + esc(parish.city) + '</p>' : '') + '<h1>' + esc(parish.name) + '</h1>' +
       '<p class="live-lead">' + esc(clipsLabel(clips.length)) + '</p>' + liveSendHtml(parish.id) + '</div></div>' +
       '<div class="yt-film-grid live-films ' + (clips.length === 1 ? 'cols-1' : clips.length === 2 ? 'cols-2' : 'cols-3') + '">' +
       clips.map(filmCard).join('') +

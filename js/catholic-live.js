@@ -16,7 +16,8 @@
     { id: 'spb-heart', cityId: 'spb', city: 'Санкт-Петербург', name: 'Храм Святейшего Сердца Иисуса', cover: 'assets/video/catholic-live/spb-heart.jpg' },
     { id: 'spb-uspenie', cityId: 'spb', city: 'Санкт-Петербург', name: 'Собор Успения Пресвятой Девы Марии', cover: 'assets/video/catholic-live/spb-uspenie.jpg' },
     { id: 'smolensk', cityId: 'smolensk', city: 'Смоленск', name: 'Приход Непорочного Зачатия Пресвятой Девы Марии', cover: 'assets/video/catholic-live/smolensk.jpg' },
-    { id: 'chita', cityId: 'chita', city: 'Чита', name: 'Приход святых апостолов Петра и Павла', cover: 'assets/video/catholic-live/chita.jpg' }
+    { id: 'chita', cityId: 'chita', city: 'Чита', name: 'Приход святых апостолов Петра и Павла', cover: 'assets/video/catholic-live/chita.jpg' },
+    { id: 'antoniy-paduanskiy', cityId: 'antoniy-paduanskiy', city: '', name: 'Приход св. Антония Падуанского', cover: 'assets/video/catholic-live/antoniy.jpg' }
   ];
 
   var rows = [
@@ -96,8 +97,17 @@
   var parishById = {};
   parishes.forEach(function (p) { parishById[p.id] = p; });
 
+  function parishOf(row) {
+    var known = parishById[row.parishId];
+    if (known) return known;
+    if (row.parishId !== 'other') return null;
+    var name = String(row.parishName || '').toLowerCase().replace(/ё/g, 'е');
+    if (name.indexOf('антони') !== -1 && name.indexOf('паду') !== -1) return parishById['antoniy-paduanskiy'];
+    return null;
+  }
+
   function fromServer(row) {
-    var p = parishById[row.parishId];
+    var p = parishOf(row);
     if (!p || !row.videoUrl || !row.id) return null;
     return {
       id: 'live-' + row.id,

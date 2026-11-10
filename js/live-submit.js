@@ -37,7 +37,7 @@
     });
     order.forEach(function (city) {
       var group = document.createElement('optgroup');
-      group.label = city;
+      group.label = city || 'Приход';
       byCity[city].forEach(function (p) {
         var o = document.createElement('option');
         o.value = p.id;
