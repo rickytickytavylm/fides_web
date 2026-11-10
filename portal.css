@@ -1289,6 +1289,53 @@ aside { display: flex; flex-direction: column; gap: 0; }
 }
 .ps-card-figure { margin: 0; border-radius: 16px; overflow: hidden; background: var(--surface-2); }
 .ps-card-figure img { width: 100%; display: block; }
+.ps-card-open {
+  display: block; width: 100%; padding: 0; margin: 0; border: 0;
+  background: transparent; cursor: zoom-in; position: relative; color: inherit;
+}
+.ps-card-open-hint {
+  position: absolute; left: 12px; bottom: 12px; z-index: 1;
+  padding: 7px 11px; border-radius: 999px;
+  background: rgba(16, 14, 12, .62); color: #fff;
+  font: 700 12px/1 var(--ff); letter-spacing: .01em;
+  pointer-events: none; opacity: .92;
+}
+.ps-lightbox[hidden] { display: none !important; }
+.ps-lightbox {
+  position: fixed; inset: 0; z-index: 120;
+  display: flex; align-items: center; justify-content: center;
+  padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+    max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  box-sizing: border-box;
+}
+.ps-lightbox-scrim {
+  position: absolute; inset: 0; border: 0; padding: 0;
+  background: rgba(8, 7, 6, .92); cursor: zoom-out;
+}
+.ps-lightbox-img {
+  position: relative; z-index: 1;
+  max-width: 100%; max-height: 100%;
+  width: auto; height: auto; object-fit: contain;
+  border-radius: 4px; box-shadow: 0 18px 60px rgba(0, 0, 0, .45);
+  user-select: none; -webkit-user-drag: none;
+}
+.ps-lightbox-close {
+  position: absolute; z-index: 2;
+  top: max(10px, env(safe-area-inset-top));
+  right: max(10px, env(safe-area-inset-right));
+  width: 44px; height: 44px; border: 0; border-radius: 50%;
+  background: rgba(255, 255, 255, .14); color: #fff;
+  font: 400 30px/1 system-ui, sans-serif;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; backdrop-filter: blur(8px);
+}
+.ps-lightbox-close:hover { background: rgba(255, 255, 255, .24); }
+body.ps-lightbox-open { overflow: hidden; }
+@media (hover: hover) {
+  .ps-card-open-hint { opacity: 0; transition: opacity .15s; }
+  .ps-card-open:hover .ps-card-open-hint,
+  .ps-card-open:focus-visible .ps-card-open-hint { opacity: .95; }
+}
 .ps-card-meta h1 { margin: 0 0 12px; font-family: var(--serif); font-size: clamp(28px, 3vw, 40px); }
 .ps-card-meta h1 a { color: inherit; text-decoration: none; }
 .ps-card-meta h1 a:hover { color: var(--bronze-dark); }

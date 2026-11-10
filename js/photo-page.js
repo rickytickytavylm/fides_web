@@ -89,7 +89,11 @@
       '<a href="index.html">Главная</a><span>/</span>' +
       '<a href="photostock.html">Фотосток</a><span>/</span><span>Фото</span></nav>' +
       '<div class="ps-card-layout">' +
-      '<figure class="ps-card-figure"><img src="' + esc(photo.url) + '" alt="" /></figure>' +
+      '<figure class="ps-card-figure">' +
+      '<button type="button" class="ps-card-open" id="ps-open" aria-label="Открыть фото на весь экран">' +
+      '<img src="' + esc(photo.url) + '" alt="" />' +
+      '<span class="ps-card-open-hint">На весь экран</span>' +
+      '</button></figure>' +
       '<aside class="ps-card-meta">' +
       '<p class="eyebrow">Фотограф</p>' +
       '<h1><a href="photographer.html?slug=' + encodeURIComponent(slug) + '">' + esc(name) + '</a></h1>' +
@@ -113,9 +117,36 @@
       '. Используйте с указанием автора, если того требует лицензия.</p>' +
       shareMenu(pageUrl, name) +
       '</div>' +
-      '</aside></div>';
+      '</aside></div>' +
+      '<div class="ps-lightbox" id="ps-lightbox" hidden>' +
+      '<button type="button" class="ps-lightbox-scrim" id="ps-lb-scrim" aria-label="Закрыть"></button>' +
+      '<button type="button" class="ps-lightbox-close" id="ps-lb-close" aria-label="Закрыть">×</button>' +
+      '<img class="ps-lightbox-img" id="ps-lb-img" src="' + esc(photo.url) + '" alt="" />' +
+      '</div>';
 
     bindBack('ps-back');
+
+    var lightbox = document.getElementById('ps-lightbox');
+    var openBtn = document.getElementById('ps-open');
+    var lbClose = document.getElementById('ps-lb-close');
+    var lbScrim = document.getElementById('ps-lb-scrim');
+    function closeLightbox() {
+      if (!lightbox || lightbox.hidden) return;
+      lightbox.hidden = true;
+      document.body.classList.remove('ps-lightbox-open');
+    }
+    function openLightbox() {
+      if (!lightbox) return;
+      lightbox.hidden = false;
+      document.body.classList.add('ps-lightbox-open');
+      if (lbClose) lbClose.focus();
+    }
+    if (openBtn) openBtn.onclick = openLightbox;
+    if (lbClose) lbClose.onclick = closeLightbox;
+    if (lbScrim) lbScrim.onclick = closeLightbox;
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeLightbox();
+    });
 
     var btn = document.getElementById('share-btn');
     var pop = document.getElementById('share-pop');
