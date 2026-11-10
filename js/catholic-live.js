@@ -110,9 +110,14 @@
   function fromServer(row) {
     var p = parishOf(row);
     if (!p || !row.videoUrl || !row.id) return null;
+    var title = row.title;
+    if (p.id === 'antoniy-paduanskiy') {
+      var raw = (String(row.title || '') + ' ' + String(row.description || '')).toLowerCase();
+      if (raw.indexOf('маленьк') !== -1 || raw.indexOf('каникул') !== -1) title = 'Каникулы с Богом 2026';
+    }
     return {
       id: 'live-' + row.id,
-      title: row.title,
+      title: title,
       description: row.description || '',
       speaker: p.city,
       type: 'parish',
