@@ -118,9 +118,11 @@
       shareMenu(pageUrl, name) +
       '</div>' +
       '</aside></div>' +
-      '<div class="ps-lightbox" id="ps-lightbox" hidden>' +
-      '<button type="button" class="ps-lightbox-scrim" id="ps-lb-scrim" aria-label="Закрыть"></button>' +
-      '<button type="button" class="ps-lightbox-close" id="ps-lb-close" aria-label="Закрыть">×</button>' +
+      '<div class="ps-lightbox" id="ps-lightbox" hidden role="dialog" aria-modal="true" aria-label="Просмотр фото">' +
+      '<button type="button" class="ps-lightbox-scrim" id="ps-lb-scrim" tabindex="-1" aria-label="Закрыть"></button>' +
+      '<button type="button" class="ps-lightbox-close" id="ps-lb-close" aria-label="Закрыть">' +
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.4 6.4l11.2 11.2M17.6 6.4L6.4 17.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>' +
+      '</button>' +
       '<img class="ps-lightbox-img" id="ps-lb-img" src="' + esc(photo.url) + '" alt="" />' +
       '</div>';
 
@@ -130,20 +132,59 @@
     var openBtn = document.getElementById('ps-open');
     var lbClose = document.getElementById('ps-lb-close');
     var lbScrim = document.getElementById('ps-lb-scrim');
+    var lbImg = document.getElementById('ps-lb-img');
+    var lbArmTimer = 0;
+    var swallowClick = null;
     function closeLightbox() {
       if (!lightbox || lightbox.hidden) return;
       lightbox.hidden = true;
+      if (lbArmTimer) {
+        clearTimeout(lbArmTimer);
+        lbArmTimer = 0;
+      }
+      if (swallowClick) {
+        document.removeEventListener('click', swallowClick, true);
+        swallowClick = null;
+      }
       document.body.classList.remove('ps-lightbox-open');
     }
-    function openLightbox() {
-      if (!lightbox) return;
+    function openLightbox(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      if (!lightbox || !lightbox.hidden) return;
       lightbox.hidden = false;
       document.body.classList.add('ps-lightbox-open');
-      if (lbClose) lbClose.focus();
+      /* Мобильный «хвост» того же тапа иначе сразу закрывает оверлей. */
+      if (swallowClick) document.removeEventListener('click', swallowClick, true);
+      swallowClick = function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        document.removeEventListener('click', swallowClick, true);
+        swallowClick = null;
+      };
+      if (lbArmTimer) clearTimeout(lbArmTimer);
+      lbArmTimer = setTimeout(function () {
+        document.addEventListener('click', swallowClick, true);
+        lbArmTimer = setTimeout(function () {
+          if (swallowClick) {
+            document.removeEventListener('click', swallowClick, true);
+            swallowClick = null;
+          }
+          lbArmTimer = 0;
+        }, 400);
+      }, 0);
     }
-    if (openBtn) openBtn.onclick = openLightbox;
-    if (lbClose) lbClose.onclick = closeLightbox;
-    if (lbScrim) lbScrim.onclick = closeLightbox;
+    if (openBtn) openBtn.addEventListener('click', openLightbox);
+    if (lbClose) {
+      lbClose.addEventListener('click', function (e) {
+        e.stopPropagation();
+        closeLightbox();
+      });
+    }
+    if (lbScrim) lbScrim.addEventListener('click', closeLightbox);
+    if (lbImg) lbImg.addEventListener('click', function (e) { e.stopPropagation(); });
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closeLightbox();
     });
