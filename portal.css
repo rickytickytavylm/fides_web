@@ -1292,8 +1292,11 @@ aside { display: flex; flex-direction: column; gap: 0; }
 .ps-card-meta h1 { margin: 0 0 12px; font-family: var(--serif); font-size: clamp(28px, 3vw, 40px); }
 .ps-card-meta h1 a { color: inherit; text-decoration: none; }
 .ps-card-meta h1 a:hover { color: var(--bronze-dark); }
-.ps-card-tags { margin: 0 0 18px; }
-.ps-card-actions { display: grid; gap: 10px; margin-bottom: 18px; }
+.ps-card-tags { margin: 0 0 18px; display: flex; flex-wrap: wrap; gap: 8px 12px; }
+.ps-card-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 18px; }
+.ps-card-actions > .btn-primary { width: auto; min-width: 132px; flex: 0 0 auto; }
+.ps-card-actions .ps-license { flex: 1 1 100%; }
+.ps-card-actions .ps-share { flex: 0 0 auto; }
 .ps-license { margin: 0; font-size: 12.5px; color: var(--stone-500); line-height: 1.4; }
 .ps-share { position: relative; }
 .ps-share-pop[hidden] { display: none !important; }
@@ -1331,9 +1334,24 @@ aside { display: flex; flex-direction: column; gap: 0; }
 .ps-social { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; }
 .ps-social a { font-weight: 700; font-size: 13px; color: var(--bronze-dark); text-decoration: none; }
 @media (max-width: 880px) {
-  .ps-layout, .ps-card-layout { grid-template-columns: 1fr; }
+  .ps-layout, .ps-card-layout { grid-template-columns: 1fr; gap: 18px; }
   .ps-grid-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ps-aside { order: -1; }
+  .photo-page .ps-card-meta {
+    padding: 0 2px;
+  }
+  .photo-page .ps-card-meta .eyebrow,
+  .photo-page .ps-card-meta h1,
+  .photo-page .ps-card-tags,
+  .photo-page .ps-card-actions {
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+  .photo-page .ps-card-actions > .btn-primary,
+  .photo-page .ps-card-actions .ps-share .btn-primary {
+    width: auto;
+    max-width: 100%;
+  }
 }
 .ps-toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; }
 .ps-search { flex: 1; min-width: 220px; display: flex; align-items: center; gap: 8px; background: var(--surface);
