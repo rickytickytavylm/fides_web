@@ -17,7 +17,7 @@
     { id: 'spb-uspenie', cityId: 'spb', city: 'Санкт-Петербург', name: 'Собор Успения Пресвятой Девы Марии', cover: 'assets/video/catholic-live/spb-uspenie.jpg' },
     { id: 'smolensk', cityId: 'smolensk', city: 'Смоленск', name: 'Приход Непорочного Зачатия Пресвятой Девы Марии', cover: 'assets/video/catholic-live/smolensk.jpg' },
     { id: 'chita', cityId: 'chita', city: 'Чита', name: 'Приход святых апостолов Петра и Павла', cover: 'assets/video/catholic-live/chita.jpg' },
-    { id: 'antoniy-paduanskiy', cityId: 'antoniy-paduanskiy', city: '', name: 'Приход св. Антония Падуанского', cover: 'assets/video/catholic-live/antoniy.jpg' }
+    { id: 'antoniy-paduanskiy', cityId: 'gorodovikovsk', city: 'Городовиковск', name: 'Приход св. Антония Падуанского', cover: 'assets/video/catholic-live/antoniy.jpg' }
   ];
 
   var rows = [
@@ -85,7 +85,8 @@
       { id: 'spb', name: 'Санкт-Петербург', cover: 'assets/video/catholic-live/city-spb.jpg' },
       { id: 'smolensk', name: 'Смоленск', cover: 'assets/video/catholic-live/city-smolensk.jpg' },
       { id: 'chita', name: 'Чита', cover: 'assets/video/catholic-live/city-chita.jpg' },
-      { id: 'berezniki', name: 'Березники', cover: 'assets/video/catholic-live/city-berezniki.jpg' }
+      { id: 'berezniki', name: 'Березники', cover: 'assets/video/catholic-live/city-berezniki.jpg' },
+      { id: 'gorodovikovsk', name: 'Городовиковск', cover: 'assets/video/catholic-live/city-gorodovikovsk.jpg' }
     ],
     bio: '«Католик.LIVE. Живая история католической России» — интернет-портал, созданный для того, чтобы прихожане, священники и монашествующие присылали истории из жизни своих приходов, свидетельства христианской жизни. Материалы разделены по епархиям и приходам и представлены в виде коротких видео.',
     links: [],
