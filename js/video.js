@@ -288,16 +288,6 @@
     bindRailHost(host);
   }
 
-  function loopRail(el) {
-    if (!el || el._looped) return;
-    el._looped = true;
-    el.addEventListener('scroll', function () {
-      if (el.scrollWidth - el.scrollLeft - el.clientWidth < 80) {
-        el.scrollLeft = 8;
-      }
-    });
-  }
-
   function renderHome() {
     if (waitingPack()) { renderSkeleton(); return; }
     var longs = all.filter(function (v) { return v.type === 'long'; });
@@ -325,7 +315,6 @@
       if (filter !== 'short') {
         wrapRail(smallGrid, shorts.map(shortCard).join(''));
         bind(smallGrid);
-        loopRail(smallGrid.querySelector('.yt-shorts-rail') || smallGrid);
       } else {
         smallGrid.classList.remove('rail-wrap');
         smallGrid.innerHTML = shorts.map(shortCard).join('');
