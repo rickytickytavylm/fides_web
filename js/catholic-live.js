@@ -112,8 +112,8 @@
     if (!p || !row.videoUrl || !row.id) return null;
     var title = row.title;
     if (p.id === 'antoniy-paduanskiy') {
-      var raw = (String(row.title || '') + ' ' + String(row.description || '')).toLowerCase();
-      if (raw.indexOf('маленьк') !== -1 || raw.indexOf('каникул') !== -1) title = 'Каникулы с Богом 2026';
+      var rawTitle = String(row.title || '').toLowerCase();
+      if (rawTitle.indexOf('маленьк') !== -1 || rawTitle.indexOf('каникул') !== -1) title = 'Каникулы с Богом 2026';
     }
     return {
       id: 'live-' + row.id,

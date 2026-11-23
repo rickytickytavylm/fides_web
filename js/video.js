@@ -165,7 +165,11 @@
       '</strong>' +
       '<em>' +
       esc(v.speaker || channelName(v.channelId) || 'Видео') +
-      '</em></span></span>'
+      '</em>' +
+      (v.type === 'parish' && v.description
+        ? '<span class="yt-desc">' + esc(v.description) + '</span>'
+        : '') +
+      '</span></span>'
     );
   }
 
