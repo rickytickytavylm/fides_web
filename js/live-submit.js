@@ -18,6 +18,7 @@
   var contactEl = $('lf-contact');
   var textEl = $('lf-text');
   var fileEl = $('lf-file');
+  var consentEl = $('lf-consent');
   var goEl = $('lf-go');
   var errEl = $('lf-error');
   var progEl = $('lf-progress');
@@ -202,6 +203,7 @@
     if (!typeOf(file)) return 'Нужен видеофайл: mp4, mov или webm.';
     if (!file.size) return 'Файл пустой.';
     if (file.size > MAX) return 'Ролик больше 1 ГБ. Сожмите его или пришлите короче.';
+    if (!consentEl || !consentEl.checked) return 'Отметьте согласие на обработку персональных данных.';
     return '';
   }
 
@@ -233,6 +235,7 @@
             senderName: nameEl.value,
             contact: contactEl.value,
             description: textEl.value,
+            consent: true,
             videoKey: ticket.key,
             website: trapEl ? trapEl.value : '',
           });
@@ -258,6 +261,7 @@
     textEl.value = '';
     fileEl.value = '';
     otherEl.value = '';
+    if (consentEl) consentEl.checked = false;
     barEl.style.width = '0';
     doneEl.hidden = true;
     form.hidden = false;

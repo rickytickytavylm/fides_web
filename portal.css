@@ -5249,7 +5249,20 @@ body.comp-open { overflow: hidden; }
 .lf-bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
 .lf-progress p { margin: 0; font-size: 13px; color: var(--stone-700); }
 .lf-error { margin: 0; padding: 12px 14px; border-radius: 12px; background: rgba(176, 52, 52, .1); color: #8f2a2a; font-size: 14px; line-height: 1.45; }
+.lf-consent {
+  display: flex; align-items: flex-start; gap: 12px; margin: 0;
+  padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface);
+}
+.lf-consent input { width: 20px; height: 20px; margin: 2px 0 0; flex: none; accent-color: var(--bronze, #8a6a3b); }
+.lf-consent p { margin: 0; font-size: 14.5px; line-height: 1.45; color: var(--ink); }
+.lf-consent a { color: var(--bronze-dark, #6b5230); text-underline-offset: 2px; }
 .lf-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; }
+.live-consent { max-width: 760px; }
+.live-consent .live-submit-head h1 { font-size: clamp(28px, 3.2vw, 38px); line-height: 1.15; }
+.live-consent h2 { margin: 1.7em 0 .45em; font-family: var(--serif); font-weight: 600; font-size: 26px; letter-spacing: -.02em; }
+.live-consent p { margin: 0 0 1em; line-height: 1.65; color: var(--stone-700); }
+.live-consent ul { margin: 0 0 1em; padding-left: 1.25em; }
+.live-consent li { margin: 0 0 .35em; line-height: 1.55; color: var(--stone-700); }
 .lf-actions .btn-primary, .lf-actions .btn-ghost { min-height: 46px; padding: 0 22px; font-size: 14px; cursor: pointer; }
 .lf-actions button:disabled { opacity: .6; cursor: default; }
 .live-done h2 { margin: 0 0 10px; font-family: var(--serif); font-weight: 600; font-size: 30px; }
